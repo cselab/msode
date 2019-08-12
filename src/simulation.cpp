@@ -16,6 +16,7 @@ real3 operator*(const PropulsionMatrix::SubMatrix& A, const real3& v)
             A[2] * v.z};
 }
 
+// TODO rotate Matrix
 static inline std::tuple<real3, real3> computeVelocities(const PropulsionMatrix& m,
                                                          const real3& F, const real3& T)
 {
@@ -48,7 +49,8 @@ void Simulation::advance(long nsteps, real dt)
         
         t += dt;
 
-        std::cout << "t = " << t << " : " << B << " " << rigidBody << std::endl;
+        // std::cout << "t = " << t << " : " << B << " " << rigidBody << std::endl;
+        std::cout << t << " " << rigidBody.r.x << " " << rigidBody.r.y << " " << rigidBody.r.z << std::endl;
     }
 }
 

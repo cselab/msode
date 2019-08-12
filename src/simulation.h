@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cmath>
+#include <functional>
 #include <iostream>
 
 struct PropulsionMatrix
@@ -25,7 +26,7 @@ struct RigidBody
 struct MagneticField
 {
     real magnitude, omega;
-    real3 rotatingDirection;
+    std::function<real3(real)> rotatingDirection;
     
     real3 operator()(real t) const
     {
@@ -35,7 +36,7 @@ struct MagneticField
                        0.0_r};
 
         constexpr real3 originalDirection {0.0_r, 0.0_r, 1.0_r};
-        const Quaternion q(originalDirection, rotatingDirection);
+        const Quaternion q(originalDirection, rotatingDirection(t));
         
         return q.rotate(B);
     }
