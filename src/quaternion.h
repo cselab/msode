@@ -2,6 +2,7 @@
 
 #include "types.h"
 #include "math.h"
+#include "log.h"
 
 #include <cmath>
 #include <iostream>
@@ -23,7 +24,9 @@ struct Quaternion
         y(v1.z * v2.x - v1.x * v2.z),
         z(v1.x * v2.y - v1.y * v2.x)
     {
+        Expect(length(v1) > 0._r && length(v2) > 0._r, "vector length must be greater than zero");
         this->normalize();
+        Ensure(length(rotate(v1)-v2) < 1e-6_r, "constructor from 2 vectors failed");
     }
 
     Quaternion(const Quaternion& q) = default;
@@ -101,7 +104,7 @@ struct Quaternion
     inline real3 rotate(real3 x) const
     {
         Quaternion _x(0.0_r, x);
-        return (*this * _x * conjugate()).vectorPart();
+        return ((*this) * _x * conjugate()).vectorPart();
     }
 
     friend inline std::ostream& operator<<(std::ostream& stream, const Quaternion& q)

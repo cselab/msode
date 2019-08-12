@@ -8,10 +8,10 @@ SRC=src
 
 all: main
 
-main.o: $(SRC)/main.cpp $(SRC)/simulation.h  $(SRC)/quaternion.h $(SRC)/types.h
+main.o: $(SRC)/main.cpp $(SRC)/simulation.h  $(SRC)/quaternion.h $(SRC)/types.h $(SRC)/log.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-simulation.o: $(SRC)/simulation.cpp $(SRC)/simulation.h $(SRC)/quaternion.h $(SRC)/types.h $(SRC)/math.h 
+simulation.o: $(SRC)/simulation.cpp $(SRC)/simulation.h $(SRC)/quaternion.h $(SRC)/types.h $(SRC)/math.h $(SRC)/log.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 main: main.o simulation.o
