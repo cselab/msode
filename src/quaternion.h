@@ -2,6 +2,8 @@
 
 #include "types.h"
 
+#include <cmath>
+
 struct Quaternion
 {
     Quaternion(real w, real3 u) :
@@ -21,6 +23,13 @@ struct Quaternion
     inline real3 vectorPart() const {return {x, y, z};}
 
     inline Quaternion conjugate() const {return {w, -x, -y, -z};}
+
+    inline real norm() const {return std::sqrt(w*w + x*x + y*y + z*z);}
+
+    inline Quaternion normalized() const
+    {
+        return (1.0_r / norm()) * *this;
+    }
 
     inline Quaternion& operator+=(const Quaternion& q)
     {
