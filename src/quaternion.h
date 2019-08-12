@@ -12,6 +12,16 @@ struct Quaternion
         w(w), x(x), y(y), z(z)
     {}
 
+    Quaternion(const Quaternion& q) = default;
+    Quaternion& operator=(const Quaternion& q) = default;
+    
+    ~Quaternion() = default;
+
+    inline real realPart() const {return w;}
+    inline real3 vectorPart() const {return {x, y, z};}
+
+    inline Quaternion conjugate() const {return {w, -x, -y, -z};}
+
     inline Quaternion& operator+=(const Quaternion& q)
     {
         x += q.x;
@@ -59,6 +69,14 @@ struct Quaternion
         return *this;
     }
 
+    inline real3 rotate(real3 x) const
+    {
+        Quaternion _x(0.0_r, x);
+        return (*this * _x * conjugate()).vectorPart();
+    }
+
     real w;        // real part
     real x, y, z;  // vector part
 };
+
+
