@@ -1,6 +1,8 @@
 #include "simulation.h"
 #include "math.h"
 
+#include <tuple>
+
 Simulation::Simulation(const RigidBody& initialRB,
                        const MagneticField& initialMF) :
     rigidBody(initialRB),
@@ -45,5 +47,12 @@ void Simulation::advance(long nsteps, real dt)
         rigidBody.q = q.normalized();
         
         t += dt;
+
+        std::cout << "t = " << t << " : " << B << " " << rigidBody << std::endl;
     }
+}
+
+std::ostream& operator<<(std::ostream& stream, const RigidBody& b)
+{
+    return stream << b.q << " " << b.r;
 }

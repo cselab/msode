@@ -4,6 +4,7 @@
 #include "math.h"
 
 #include <cmath>
+#include <iostream>
 
 struct Quaternion
 {
@@ -103,8 +104,11 @@ struct Quaternion
         return (*this * _x * conjugate()).vectorPart();
     }
 
+    friend inline std::ostream& operator<<(std::ostream& stream, const Quaternion& q)
+    {
+        return stream << "[" << q.realPart() << ", " << q.vectorPart() << "]";
+    }
+    
     real w;        // real part
     real x, y, z;  // vector part
 };
-
-

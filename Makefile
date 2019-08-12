@@ -1,4 +1,5 @@
 CXX=gcc
+LD=g++
 CXXFLAGS=-O3 -Wpedantic -std=c++14 -Wall
 
 SRC=src
@@ -14,6 +15,6 @@ simulation.o: $(SRC)/simulation.cpp $(SRC)/simulation.h $(SRC)/quaternion.h $(SR
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 main: main.o simulation.o
-	$(CXX) $(CXXFLAGS) -o $@ $^
+	$(LD) $(CXXFLAGS) -o $@ $^
 
 clean:; rm -rf main *.o

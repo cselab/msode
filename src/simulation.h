@@ -5,6 +5,7 @@
 
 #include <array>
 #include <cmath>
+#include <iostream>
 
 struct PropulsionMatrix
 {
@@ -15,22 +16,29 @@ struct PropulsionMatrix
 struct RigidBody
 {
     Quaternion q;
-    real3 r, v, omega, magnMoment;
+    real3 r, magnMoment;
     PropulsionMatrix propulsion;
+
+    real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r}; 
 };
 
 struct MagneticField
 {
     real magnitude, omega;
-    // real3 rotatingDirection;
-    Quaternion q;
+    real3 rotatingDirection;
     
     real3 operator()(real t) const
     {
         const real wt = omega * t;
-        real3 B {magnitude * std::cos(wt),
-                 magnitude * std::sin(wt),
-                 0.0_r};
+        const real3 B {magnitude * std::cos(wt),
+                       magnitude * std::sin(wt),
+                       0.0_r};
+
+        constexpr real3 originalDirection {0.0_r, 0.0_r, 1.0_r};
+        const Quaternion q(originalDirection, rotatingDirection);
+
+        std::cout << q << std::endl;
+        
         return q.rotate(B);
     }
 };
@@ -52,3 +60,6 @@ private:
     RigidBody rigidBody;
     MagneticField magneticField;
 };
+
+
+std::ostream& operator<<(std::ostream& stream, const RigidBody& b);
