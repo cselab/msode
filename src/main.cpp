@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     const Quaternion initialOrientation {0._r, 1._r, 0._r, 0._r};
     const real3 initialPosition{0._r, 0._r, 0._r};
     const real3 magneticMoment{magneticMomentMagnitude, 0._r, 0._r};
-    const PropulsionMatrix propulsion {{1._r, 0._r, 0._r}, {1._r, 0._r, 0._r}, {1._r, 0._r, 0._r}};
+    const PropulsionMatrix propulsion {{1._r, 1._r, 1._r}, {1._r, 0._r, 0._r}, {1._r, 1._r, 1._r}};
     
     RigidBody rigid {initialOrientation,
                      initialPosition,

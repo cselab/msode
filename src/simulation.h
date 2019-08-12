@@ -36,8 +36,6 @@ struct MagneticField
 
         constexpr real3 originalDirection {0.0_r, 0.0_r, 1.0_r};
         const Quaternion q(originalDirection, rotatingDirection);
-
-        std::cout << q << std::endl;
         
         return q.rotate(B);
     }
