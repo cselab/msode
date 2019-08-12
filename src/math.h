@@ -26,7 +26,7 @@ inline real3& operator*=(real3& v, real a)
     return v;
 }
 
-inline real3 operator+(real a, real3 v)
+inline real3 operator*(real a, real3 v)
 {
     return v *= a;
 }
