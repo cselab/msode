@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.h"
+#include "math.h"
 
 #include <cmath>
 
@@ -14,6 +15,16 @@ struct Quaternion
         w(w), x(x), y(y), z(z)
     {}
 
+    // https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another
+    Quaternion(real3 v1, real3 v2) :
+        w(std::sqrt(dot(v1, v1) + dot(v2, v2)) + dot(v1, v2)),
+        x(v1.y * v2.z - v1.z * v2.y),
+        y(v1.z * v2.x - v1.x * v2.z),
+        z(v1.x * v2.y - v1.y * v2.x)
+    {
+        this->normalize();
+    }
+
     Quaternion(const Quaternion& q) = default;
     Quaternion& operator=(const Quaternion& q) = default;
     
@@ -26,9 +37,17 @@ struct Quaternion
 
     inline real norm() const {return std::sqrt(w*w + x*x + y*y + z*z);}
 
+    inline Quaternion& normalize()
+    {
+        const real factor = 1.0_r / norm();
+        return *this *= factor;
+    }
+    
     inline Quaternion normalized() const
     {
-        return (1.0_r / norm()) * *this;
+        Quaternion ret = *this;
+        ret.normalize();
+        return ret;
     }
 
     inline Quaternion& operator+=(const Quaternion& q)
