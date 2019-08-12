@@ -24,21 +24,26 @@ static inline std::tuple<real3, real3> computeVelocities(const PropulsionMatrix&
 
 void Simulation::advance(long nsteps, real dt)
 {
-    auto q = rigidBody.q;
-    
-    const real3 B      = magneticField(t);
-    const real3 m      = q.rotate(rigidBody.magnMoment);
-    const real3 torque = cross(m, B);
-    constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
-
-    std::tie(rigidBody.v, rigidBody.omega) =
-        computeVelocities(rigidBody.propulsion, force, torque);
-
-    const Quaternion _omega (0.0_r, rigidBody.omega);
-    const auto dq_dt = 0.5_r * q * _omega;
-
-    rigidBody.r += dt * rigidBody.v;
-    q += dt * dq_dt;
-
-    rigidBody.q = q.normalized();
+    for (long step = 0; step < nsteps; ++step)
+    {
+        auto q = rigidBody.q;
+        
+        const real3 B      = magneticField(t);
+        const real3 m      = q.rotate(rigidBody.magnMoment);
+        const real3 torque = cross(m, B);
+        constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
+        
+        std::tie(rigidBody.v, rigidBody.omega) =
+            computeVelocities(rigidBody.propulsion, force, torque);
+        
+        const Quaternion _omega (0.0_r, rigidBody.omega);
+        const auto dq_dt = 0.5_r * q * _omega;
+        
+        rigidBody.r += dt * rigidBody.v;
+        q += dt * dq_dt;
+        
+        rigidBody.q = q.normalized();
+        
+        t += dt;
+    }
 }
