@@ -31,7 +31,7 @@ void Simulation::advance(long nsteps, real dt)
         auto q = rigidBody.q;
         
         const real3 B      = magneticField(t);
-        const real3 m      = q.rotate(rigidBody.magnMoment);
+        const real3 m      = q.conjugate().rotate(rigidBody.magnMoment);
         const real3 torque = cross(m, B);
         constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
         
