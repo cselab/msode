@@ -32,6 +32,7 @@ int main(int argc, char **argv)
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
     
     Simulation simulation(rigid, magneticField);
+    simulation.activateDump("out.txt", 100);
 
     const real dt {0.01_r};
     const long nsteps {100000};

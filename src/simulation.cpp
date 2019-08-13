@@ -24,10 +24,19 @@ static inline std::tuple<real3, real3> computeVelocities(const PropulsionMatrix&
     return {v, w};
 }
 
+void Simulation::activateDump(const std::string& fname, long dumpEvery)
+{
+    Expect(dumpEvery > 0, "expect positive dumpEvery");
+    this->dumpEvery = dumpEvery;
+    file.open(fname);
+    Ensure(file.is_open(), "could not open file for writing");
+}
+
 void Simulation::run(long nsteps, real dt)
 {
     for (long step = 0; step < nsteps; ++step)
     {
+        if (step % dumpEvery == 0) dump();
         advance(dt);
     }
 }
@@ -60,12 +69,16 @@ void Simulation::advance(real dt)
     t += dt;
 
     // std::cout << "t = " << t << " : " << B << " " << rigidBody << std::endl;
-    std::cout << t << " " << rigidBody.r.x << " " << rigidBody.r.y << " " << rigidBody.r.z << std::endl;
-
+    // std::cout << t << " " << rigidBody.r.x << " " << rigidBody.r.y << " " << rigidBody.r.z << std::endl;
     // std::cout << t << " " << m << " " << B << " " << torque << std::endl;
+}
+
+void Simulation::dump()
+{
+    file << t << " " << rigidBody << "\n";
 }
 
 std::ostream& operator<<(std::ostream& stream, const RigidBody& b)
 {
-    return stream << "q = " << b.q << ", r = " << b.r << ", omega = " << b.omega;
+    return stream<< b.q << b.r << b.omega;
 }

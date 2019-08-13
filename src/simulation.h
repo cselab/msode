@@ -5,8 +5,10 @@
 
 #include <array>
 #include <cmath>
+#include <fstream>
 #include <functional>
 #include <iostream>
+#include <string>
 
 struct PropulsionMatrix
 {
@@ -51,16 +53,21 @@ public:
 
     Simulation(const Simulation&) = default;
     Simulation& operator=(const Simulation&) = default;
-    
+
+    void activateDump(const std::string& fname, long dumpEvery);
     void run(long nsteps, real dt);
     
 private:
     void advance(real dt);
+    void dump();
     
 private:
     real t {0.0_r};
     RigidBody rigidBody;
     MagneticField magneticField;
+
+    long dumpEvery {0};
+    std::ofstream file {};
 };
 
 
