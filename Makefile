@@ -14,13 +14,16 @@ SRC=src
 
 all: main
 
+factory.o: $(SRC)/factory.cpp $(SRC)/factory.h $(SRC)/simulation.h $(SRC)/quaternion.h $(SRC)/types.h $(SRC)/math.h $(SRC)/log.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
 main.o: $(SRC)/main.cpp $(SRC)/simulation.h  $(SRC)/quaternion.h $(SRC)/types.h $(SRC)/log.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 simulation.o: $(SRC)/simulation.cpp $(SRC)/simulation.h $(SRC)/quaternion.h $(SRC)/types.h $(SRC)/math.h $(SRC)/log.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-main: main.o simulation.o
+main: main.o simulation.o factory.o
 	$(LD) $(CXXFLAGS) -o $@ $^
 
 clean:; rm -rf main *.o
