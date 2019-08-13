@@ -80,5 +80,5 @@ void Simulation::dump()
 
 std::ostream& operator<<(std::ostream& stream, const RigidBody& b)
 {
-    return stream<< b.q << b.r << b.omega;
+    return stream << b.q << ' ' << b.r << ' ' << b.omega;
 }
