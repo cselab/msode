@@ -9,6 +9,7 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <vector>
 
 struct PropulsionMatrix
 {
@@ -48,7 +49,7 @@ class Simulation
 {
 public:
 
-    Simulation(const RigidBody& initialRB, const MagneticField& initialMF);
+    Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
     ~Simulation() = default;
 
     Simulation(const Simulation&) = default;
@@ -63,7 +64,7 @@ private:
     
 private:
     real t {0.0_r};
-    RigidBody rigidBody;
+    std::vector<RigidBody> rigidBodies;
     MagneticField magneticField;
 
     long dumpEvery {0};

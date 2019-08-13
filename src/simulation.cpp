@@ -3,9 +3,9 @@
 
 #include <tuple>
 
-Simulation::Simulation(const RigidBody& initialRB,
+Simulation::Simulation(const std::vector<RigidBody>& initialRBs,
                        const MagneticField& initialMF) :
-    rigidBody(initialRB),
+    rigidBodies(initialRBs),
     magneticField(initialMF)
 {}
 
@@ -43,39 +43,41 @@ void Simulation::run(long nsteps, real dt)
 
 void Simulation::advance(real dt)
 {
-    auto q    = rigidBody.q;
-    auto qInv = q.conjugate();
+    const real3 B = magneticField(t);
+    
+    for (auto& rigidBody : rigidBodies)
+    {
+        auto q    = rigidBody.q;
+        auto qInv = q.conjugate();
         
-    const real3 B      = magneticField(t);
-    const real3 m      = qInv.rotate(rigidBody.magnMoment);
-    const real3 torque = cross(m, B);
-    constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
+        const real3 m      = qInv.rotate(rigidBody.magnMoment);
+        const real3 torque = cross(m, B);
+        constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
         
-    std::tie(rigidBody.v, rigidBody.omega) = computeVelocities(rigidBody.propulsion,
-                                                               q.rotate(force),
-                                                               q.rotate(torque));
+        std::tie(rigidBody.v, rigidBody.omega) = computeVelocities(rigidBody.propulsion,
+                                                                   q.rotate(force),
+                                                                   q.rotate(torque));
 
-    rigidBody.v     = qInv.rotate(rigidBody.v    );
-    rigidBody.omega = qInv.rotate(rigidBody.omega);
+        rigidBody.v     = qInv.rotate(rigidBody.v    );
+        rigidBody.omega = qInv.rotate(rigidBody.omega);
         
-    const Quaternion _omega (0.0_r, rigidBody.omega);
-    const auto dq_dt = 0.5_r * q * _omega;
+        const Quaternion _omega (0.0_r, rigidBody.omega);
+        const auto dq_dt = 0.5_r * q * _omega;
         
-    rigidBody.r += dt * rigidBody.v;
-    q += dt * dq_dt;
+        rigidBody.r += dt * rigidBody.v;
+        q += dt * dq_dt;
         
-    rigidBody.q = q.normalized();
-        
+        rigidBody.q = q.normalized();
+    }
+    
     t += dt;
-
-    // std::cout << "t = " << t << " : " << B << " " << rigidBody << std::endl;
-    // std::cout << t << " " << rigidBody.r.x << " " << rigidBody.r.y << " " << rigidBody.r.z << std::endl;
-    // std::cout << t << " " << m << " " << B << " " << torque << std::endl;
 }
 
 void Simulation::dump()
 {
-    file << t << " " << rigidBody << "\n";
+    file << t;
+    for (const auto& rigidBody : rigidBodies)
+        file << " " << rigidBody << "\n";
 }
 
 std::ostream& operator<<(std::ostream& stream, const RigidBody& b)
