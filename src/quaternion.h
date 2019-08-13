@@ -108,7 +108,7 @@ struct Quaternion
 
     friend inline std::ostream& operator<<(std::ostream& stream, const Quaternion& q)
     {
-        return stream << "[" << q.realPart() << ", " << q.vectorPart() << "]";
+        return stream << q.realPart() << " " << q.vectorPart();
     }
     
     real w;        // real part

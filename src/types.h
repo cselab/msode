@@ -18,5 +18,5 @@ constexpr inline real operator "" _r (const long double a)
 
 inline std::ostream& operator<<(std::ostream& stream, const real3& v)
 {
-    return stream << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+    return stream << v.x << " " << v.y << " " << v.z;
 }
