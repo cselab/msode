@@ -16,7 +16,6 @@ real3 operator*(const PropulsionMatrix::SubMatrix& A, const real3& v)
             A[2] * v.z};
 }
 
-// TODO rotate Matrix
 static inline std::tuple<real3, real3> computeVelocities(const PropulsionMatrix& m,
                                                          const real3& F, const real3& T)
 {
@@ -29,15 +28,20 @@ void Simulation::advance(long nsteps, real dt)
 {
     for (long step = 0; step < nsteps; ++step)
     {
-        auto q = rigidBody.q;
+        auto q    = rigidBody.q;
+        auto qInv = q.conjugate();
         
         const real3 B      = magneticField(t);
-        const real3 m      = q.conjugate().rotate(rigidBody.magnMoment);
+        const real3 m      = qInv.rotate(rigidBody.magnMoment);
         const real3 torque = cross(m, B);
         constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
         
-        std::tie(rigidBody.v, rigidBody.omega) =
-            computeVelocities(rigidBody.propulsion, force, torque);
+        std::tie(rigidBody.v, rigidBody.omega) = computeVelocities(rigidBody.propulsion,
+                                                                   q.rotate(force),
+                                                                   q.rotate(torque));
+
+        rigidBody.v     = qInv.rotate(rigidBody.v    );
+        rigidBody.omega = qInv.rotate(rigidBody.omega);
         
         const Quaternion _omega (0.0_r, rigidBody.omega);
         const auto dq_dt = 0.5_r * q * _omega;
