@@ -12,15 +12,28 @@ args = parser.parse_args()
 
 data = np.loadtxt(args.file)
 
+ncolumnds_per_rigid = 4 + 3 + 3 # q, r, w
+
+ncolumns = len(data[0,:])
+nrigids = (ncolumns-1) // ncolumnds_per_rigid
+
+def readRigidData(data):
+    q = data[:,0:4]
+    r = data[:,4:7]
+    w = data[:,7:10]
+    return q, r, w
+
 t     = data[:,0]
-q     = data[:,1:5]
-pos   = data[:,5:8]
-omega = data[:,8:11]
 
 fig = plt.figure(0)
 ax = fig.add_subplot(111, projection='3d')
 
-ax.plot(pos[:,0], pos[:,1], pos[:,2], '-k')
+for i in range(nrigids):
+    start = 1 + i * ncolumnds_per_rigid
+    end = start + ncolumnds_per_rigid
+    q, pos, omega = readRigidData(data[:, start:end]) 
+
+    ax.plot(pos[:,0], pos[:,1], pos[:,2], '-')
 
 ax.set_xlabel(r'$x$')
 ax.set_ylabel(r'$y$')
