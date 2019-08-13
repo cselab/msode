@@ -82,3 +82,10 @@ std::ostream& operator<<(std::ostream& stream, const RigidBody& b)
 {
     return stream << b.q << ' ' << b.r << ' ' << b.omega;
 }
+
+std::ostream& operator<<(std::ostream& stream, const PropulsionMatrix& m)
+{
+    return stream << m.A[0] << ' ' << m.A[1] << ' ' << m.A[0] << '\n'
+                  << m.B[0] << ' ' << m.B[1] << ' ' << m.B[1] << '\n'
+                  << m.C[0] << ' ' << m.C[1] << ' ' << m.C[2] << '\n';
+}

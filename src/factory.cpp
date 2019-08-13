@@ -58,7 +58,7 @@ static PropulsionMatrix getPropulsion(DataMap& dataMap)
             getSubMatrix(dataMap["C"])};
 }
 
-namespace Facory
+namespace Factory
 {
 RigidBody readRigidBodyConfig(const std::string& fname)
 {

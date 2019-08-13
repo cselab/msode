@@ -72,3 +72,4 @@ private:
 
 
 std::ostream& operator<<(std::ostream& stream, const RigidBody& b);
+std::ostream& operator<<(std::ostream& stream, const PropulsionMatrix& m);
