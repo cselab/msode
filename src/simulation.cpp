@@ -77,7 +77,8 @@ void Simulation::dump()
 {
     file << t;
     for (const auto& rigidBody : rigidBodies)
-        file << " " << rigidBody << "\n";
+        file << " " << rigidBody;
+    file << "\n";
 }
 
 std::ostream& operator<<(std::ostream& stream, const RigidBody& b)
