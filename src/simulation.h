@@ -52,7 +52,10 @@ public:
     Simulation(const Simulation&) = default;
     Simulation& operator=(const Simulation&) = default;
     
-    void advance(long nsteps, real dt);
+    void run(long nsteps, real dt);
+    
+private:
+    void advance(real dt);
     
 private:
     real t {0.0_r};

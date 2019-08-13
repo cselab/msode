@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
     const real dt {0.01_r};
     const long nsteps {100000};
-    simulation.advance(nsteps, dt);
+    simulation.run(nsteps, dt);
     
     return 0;
 }
