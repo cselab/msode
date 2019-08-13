@@ -51,10 +51,12 @@ void Simulation::advance(long nsteps, real dt)
 
         // std::cout << "t = " << t << " : " << B << " " << rigidBody << std::endl;
         std::cout << t << " " << rigidBody.r.x << " " << rigidBody.r.y << " " << rigidBody.r.z << std::endl;
+
+        // std::cout << t << " " << m << " " << B << " " << torque << std::endl;
     }
 }
 
 std::ostream& operator<<(std::ostream& stream, const RigidBody& b)
 {
-    return stream << b.q << " " << b.r;
+    return stream << "q = " << b.q << ", r = " << b.r << ", omega = " << b.omega;
 }
