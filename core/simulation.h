@@ -26,10 +26,8 @@ struct RigidBody
     real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r}; 
 };
 
-class MagneticField
+struct MagneticField
 {
-public:
-    
     MagneticField(real magnitude, std::function<real(real)> omega, std::function<real3(real)> rotatingDirection) :
         magnitude(magnitude),
         omega(omega),
@@ -57,7 +55,6 @@ public:
         return q.rotate(B);
     }
 
-private:
     real magnitude, phase {0};
     std::function<real(real)> omega;
     std::function<real3(real)> rotatingDirection;
@@ -78,6 +75,7 @@ public:
     void run(long nsteps, real dt);
 
     const std::vector<RigidBody>& getBodies() const {return rigidBodies;}
+    const MagneticField& getField() const {return magneticField;}
     real getCurrentTime() const {return currentTime;}
     
 private:
