@@ -64,6 +64,7 @@ private:
     
 private:
     real t {0.0_r};
+    long timeStep {0};
     std::vector<RigidBody> rigidBodies;
     MagneticField magneticField;
 

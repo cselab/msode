@@ -36,7 +36,7 @@ void Simulation::run(long nsteps, real dt)
 {
     for (long step = 0; step < nsteps; ++step)
     {
-        if (step % dumpEvery == 0) dump();
+        if (timeStep % dumpEvery == 0) dump();
         advance(dt);
     }
 }
@@ -71,6 +71,7 @@ void Simulation::advance(real dt)
     }
     
     t += dt;
+    ++timeStep;
 }
 
 void Simulation::dump()
