@@ -26,9 +26,24 @@ private:
     
     std::unique_ptr<Simulation> sim;
 
-    // magnetic field state
-    real omega {0._r};
-    real3 axis {1._r, 0._r, 0._r};
+    struct MagnFieldState
+    {
+        real lastOmega {0._r};
+        real3 lastAxis {1._r, 0._r, 0._r};
+        real lastActionTime {0._r};
+
+        real dOmega {0._r};
+        real3 dAxis {0._r, 0._r, 0._r};
+
+        static constexpr real maxOmega = 10.0_r; // TODO
+        
+        void setAction(const std::vector<double>& action);
+        real omegaActionChange(real t, real actionDt);
+        real3 axisActionChange(real t, real actionDt);
+        void advance(real t, real actionDt);
+    };
+
+    MagnFieldState magnFieldState;
 
     std::vector<real3> targetPositions;
 };

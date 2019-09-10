@@ -1,5 +1,43 @@
 #include "environment.h"
 
+void MSodeEnvironment::MagnFieldState::setAction(const std::vector<double>& action)
+{
+    Expect(action.size() == 4, "expect action of size 4");
+    dOmega = action[0];
+    dAxis.x = action[1];
+    dAxis.y = action[2];
+    dAxis.z = action[3];
+}
+
+// smooth function [0,1] -> [0,1] with derivatives zero at edges
+inline real transitionSmoothKernel(real x) { return x * x * (3.0_r - 2.0_r * x); }
+inline real transitionLinearKernel(real x) { return x; }
+
+real MSodeEnvironment::MagnFieldState::omegaActionChange(real t, real actionDt)
+{
+    const real tau = (t - lastActionTime) / actionDt;
+    return transitionLinearKernel(tau) * dOmega;
+}
+
+real3 MSodeEnvironment::MagnFieldState::axisActionChange(real t, real actionDt)
+{
+    const real tau = (t - lastActionTime) / actionDt;
+    return transitionSmoothKernel(tau) * dAxis;
+}
+
+void MSodeEnvironment::MagnFieldState::advance(real t, real actionDt)
+{
+    // advance
+    lastOmega += omegaActionChange(t, actionDt);
+    lastAxis += axisActionChange(t, actionDt);
+    lastActionTime = t;
+
+    // constraints
+    lastOmega = std::max(lastOmega, 0._r);
+    lastOmega = std::min(lastOmega, maxOmega);
+    lastAxis = normalized(lastAxis);
+}
+
 MSodeEnvironment::MSodeEnvironment(long nstepsPerAction, real dt,
                                    const std::vector<RigidBody>& initialRBs,
                                    const std::vector<real3>& targetPositions) :
@@ -10,15 +48,17 @@ MSodeEnvironment::MSodeEnvironment(long nstepsPerAction, real dt,
     Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
     constexpr real fieldMagnitude = 1.0_r; // hardcoded magnetic scale
-
-    auto omegaFunction = [this](real t)
+    const real dtAction = nstepsPerAction * dt;
+    
+    auto omegaFunction = [this, dtAction](real t)
     {
-        return omega;
+        return magnFieldState.lastOmega + magnFieldState.omegaActionChange(t, dtAction);
     };
 
-    auto rotatingDirection = [this](real t) -> real3
+    auto rotatingDirection = [this, dtAction](real t) -> real3
     {
-        return axis;
+        const real3 axis = magnFieldState.lastAxis + magnFieldState.axisActionChange(t, dtAction);
+        return normalized(axis);
     };
     
     MagneticField field{fieldMagnitude, omegaFunction, rotatingDirection};
@@ -72,23 +112,11 @@ void MSodeEnvironment::reset(std::mt19937& gen)
     sim->reset(bodies, field);
 }
 
-
-// smooth function [0,1] -> [0,1] with derivatives zero at edges
-inline real transitionSmoothKernel(real x)
-{
-    return x * x * (3.0_r - 2.0_r * x);
-}
-
-inline real transitionLinearKernel(real x)
-{
-    return x;
-}
-
-
 MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& action)
 {
-    // TODO: use action
-    
+    magnFieldState.advance(sim->getCurrentTime(), nstepsPerAction * dt);
+    magnFieldState.setAction(action);
+        
     sim->run(nstepsPerAction, dt);
 
     if (sim->getCurrentTime() > tmax)
@@ -99,7 +127,7 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
 
 std::vector<double> MSodeEnvironment::getState() const
 {
-    const real3 fieldDesc = omega * axis; 
+    const real3 fieldDesc = magnFieldState.lastOmega * magnFieldState.lastAxis;
     std::vector<double> state = {fieldDesc.x, fieldDesc.y, fieldDesc.z};
     
     const auto& bodies = sim->getBodies();
@@ -128,3 +156,4 @@ double MSodeEnvironment::getReward() const
     r -= dt * nstepsPerAction;
     return r;
 }
+
