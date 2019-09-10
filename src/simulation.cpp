@@ -50,8 +50,8 @@ void Simulation::advance(real dt)
     
     for (auto& rigidBody : rigidBodies)
     {
-        auto q    = rigidBody.q;
-        auto qInv = q.conjugate();
+        Quaternion q = rigidBody.q;
+        const Quaternion qInv = q.conjugate();
         
         const real3 m      = qInv.rotate(rigidBody.magnMoment);
         const real3 torque = cross(m, B);
