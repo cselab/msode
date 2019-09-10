@@ -1,13 +1,30 @@
 #include "environment.h"
 
-MSodeEnvironment::MSodeEnvironment(long nstepsPerAction, real dt,
-                                   std::unique_ptr<Simulation> sim,
-                                   const std::vector<real3>& targetPositions) :
+MSodeEnvironment::    MSodeEnvironment(long nstepsPerAction, real dt,
+                                       const std::vector<RigidBody>& initialRBs,
+                                       const std::vector<real3>& targetPositions) :
     nstepsPerAction(nstepsPerAction),
     dt(dt),
-    sim(std::move(sim)),
     targetPositions(targetPositions)
-{}
+{
+    Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
+
+    constexpr real fieldMagnitude = 1.0_r; // hardcoded magnetic scale
+
+    auto omegaFunction = [this](real t)
+    {
+        return omega;
+    };
+
+    auto rotatingDirection = [this](real t) -> real3
+    {
+        return {1.0_r, 0.0_r, 0.0_r};
+    };
+    
+    MagneticField field{fieldMagnitude, omegaFunction, rotatingDirection};
+
+    sim = std::make_unique<Simulation>(initialRBs, field);
+}
 
 
 inline real3 randomPosition(real3 lo, real3 hi, std::mt19937& gen)

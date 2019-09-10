@@ -10,7 +10,9 @@ class MSodeEnvironment
 public:
     enum class Status {Running, MaxTimeEllapsed};
     
-    MSodeEnvironment(long nstepsPerAction, real dt, std::unique_ptr<Simulation> sim, const std::vector<real3>& targetPositions);
+    MSodeEnvironment(long nstepsPerAction, real dt,
+                     const std::vector<RigidBody>& initialRBs,
+                     const std::vector<real3>& targetPositions);
 
     void reset(std::mt19937& gen);
 
