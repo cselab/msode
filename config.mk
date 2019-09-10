@@ -7,3 +7,5 @@ debug ?= 0
 ifeq ($(debug),1)
 CXXFLAGS += -DFAIL_ON_CONTRACT
 endif
+
+LDFLAGS = 

@@ -1,7 +1,7 @@
 #include "environment.h"
 
 MSodeEnvironment::MSodeEnvironment(real dt) :
-    st(dt)
+    dt(dt)
 {}
 
 void MSodeEnvironment::reset(std::mt19937& gen)

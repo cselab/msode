@@ -16,7 +16,7 @@ simulation.o: simulation.cpp simulation.h quaternion.h types.h math.h log.h
 
 
 main: main.o simulation.o factory.o
-	$(LD) $(CXXFLAGS) -o $@ $^
+	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 libmsode.a: factory.o simulation.o
 	ar rcs $@ $^
