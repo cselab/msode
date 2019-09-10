@@ -3,6 +3,7 @@
 
 inline void appMain(smarties::Communicator*const comm, int argc, char**argv)
 {
+    int nbodies = 1;
     const int nControlVars = 4; // fieldorientation (3) and frequency (1)
     const int nStateVars = 3 + 3 * nbodies;
     comm->set_state_action_dims(nStateVars, nControlVars);
@@ -63,6 +64,6 @@ int main(int argc, char**argv)
 {
     smarties::Engine e(argc, argv);
     if( e.parse() ) return 1;
-    e.run( app_main );
+    e.run( appMain );
     return 0;
 }
