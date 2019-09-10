@@ -24,10 +24,22 @@ static inline std::tuple<real3, real3> computeVelocities(const PropulsionMatrix&
     return {v, w};
 }
 
+void Simulation::reset(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF)
+{
+    currentTimeStep = 0;
+    currentTime     = 0._r;
+    rigidBodies = initialRBs;
+    magneticField = initialMF;
+}
+
 void Simulation::activateDump(const std::string& fname, long dumpEvery)
 {
     Expect(dumpEvery > 0, "expect positive dumpEvery");
     this->dumpEvery = dumpEvery;
+
+    if (file.is_open())
+        file.close();
+
     file.open(fname);
     Ensure(file.is_open(), "could not open file for writing");
 }

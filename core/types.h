@@ -13,7 +13,7 @@ constexpr inline real3 make_real3(real a)
 
 constexpr inline real operator "" _r (const long double a)
 {
-    return (real) a;
+    return static_cast<real>(a);
 }
 
 inline std::ostream& operator<<(std::ostream& stream, const real3& v)
