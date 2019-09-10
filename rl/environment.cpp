@@ -1,8 +1,8 @@
 #include "environment.h"
 
-MSodeEnvironment::    MSodeEnvironment(long nstepsPerAction, real dt,
-                                       const std::vector<RigidBody>& initialRBs,
-                                       const std::vector<real3>& targetPositions) :
+MSodeEnvironment::MSodeEnvironment(long nstepsPerAction, real dt,
+                                   const std::vector<RigidBody>& initialRBs,
+                                   const std::vector<real3>& targetPositions) :
     nstepsPerAction(nstepsPerAction),
     dt(dt),
     targetPositions(targetPositions)
@@ -18,7 +18,7 @@ MSodeEnvironment::    MSodeEnvironment(long nstepsPerAction, real dt,
 
     auto rotatingDirection = [this](real t) -> real3
     {
-        return {1.0_r, 0.0_r, 0.0_r};
+        return axis;
     };
     
     MagneticField field{fieldMagnitude, omegaFunction, rotatingDirection};
@@ -76,7 +76,6 @@ void MSodeEnvironment::reset(std::mt19937& gen)
 // smooth function [0,1] -> [0,1] with derivatives zero at edges
 inline real transitionSmoothKernel(real x)
 {
-    // polynomial p(x) = a x^3 + b x^2
     return x * x * (3.0_r - 2.0_r * x);
 }
 
@@ -100,14 +99,32 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
 
 std::vector<double> MSodeEnvironment::getState() const
 {
-    std::vector<double> state;
+    const real3 fieldDesc = omega * axis; 
+    std::vector<double> state = {fieldDesc.x, fieldDesc.y, fieldDesc.z};
+    
     const auto& bodies = sim->getBodies();
-    // TODO: get states
+
+    for (size_t i = 0; i < bodies.size(); ++i)
+    {
+        const real3 dr = bodies[i].r - targetPositions[i];
+        state.push_back(dr.x);
+        state.push_back(dr.y);
+        state.push_back(dr.z);
+    }
+
     return state;
 }
 
 double MSodeEnvironment::getReward() const
 {
+    real r {0.0_r};
+    
     const auto& bodies = sim->getBodies();
-    // TODO
+    for (size_t i = 0; i < bodies.size(); ++i)
+    {
+        const real3 dr = bodies[i].r - targetPositions[i];
+        r -= length(dr);
+    }
+    r -= dt * nstepsPerAction;
+    return r;
 }
