@@ -9,7 +9,7 @@ Simulation::Simulation(const std::vector<RigidBody>& initialRBs,
     magneticField(initialMF)
 {}
 
-real3 operator*(const PropulsionMatrix::SubMatrix& A, const real3& v)
+static inline real3 operator*(const PropulsionMatrix::SubMatrix& A, const real3& v)
 {
     return {A[0] * v.x,
             A[1] * v.y,
