@@ -19,7 +19,7 @@ int main(int argc, char **argv)
         const real wt_2  = 0.5_r * t * omega;
         constexpr real3 original {1._r, 0._r, 0._r};
         constexpr real3 axis {0._r, 0._r, 1._r};
-        const Quaternion q {std::cos(wt_2), std::sin(wt_2) * axis};
+        const auto q = Quaternion::createFromRotation(wt_2, axis);
         return q.rotate(original);
     };
 

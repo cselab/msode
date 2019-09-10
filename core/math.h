@@ -61,3 +61,8 @@ inline real length(real3 v)
 {
     return std::sqrt(dot(v, v));
 }
+
+inline real3 normalized(real3 v)
+{
+    return ( 1.0_r / length(v) ) * v;
+}

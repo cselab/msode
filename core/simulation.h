@@ -52,7 +52,7 @@ public:
                        0.0_r};
 
         constexpr real3 originalDirection {0.0_r, 0.0_r, 1.0_r};
-        const Quaternion q(originalDirection, rotatingDirection(t));
+        const auto q = Quaternion::createFromVectors(originalDirection, rotatingDirection(t));
         
         return q.rotate(B);
     }

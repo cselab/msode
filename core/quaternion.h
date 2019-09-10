@@ -9,23 +9,29 @@
 
 struct Quaternion
 {
-    Quaternion(real w, real3 u) :
-        w(w), x(u.x), y(u.y), z(u.z)
-    {}
-
-    Quaternion(real w, real x, real y, real z) :
-        w(w), x(x), y(y), z(z)
-    {}
-
-    // https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another
-    Quaternion(real3 v1, real3 v2) :
-        Quaternion(std::sqrt(dot(v1, v1) * dot(v2, v2)) + dot(v1, v2), cross(v1, v2))
+    static inline Quaternion createFromComponents(real w, real x, real y, real z)
     {
-        Expect(length(v1) > 0._r && length(v2) > 0._r, "vector length must be greater than zero");
-        this->normalize();
-        Ensure(length(rotate(v1)-v2) < 1e-6_r, "constructor from 2 vectors failed");
+        return {w, x, y, z};
     }
 
+    static inline Quaternion createFromComponents(real w, real3 v)
+    {
+        return {w, v};
+    }
+
+    static inline Quaternion createFromRotation(real angle, real3 axis)
+    {
+        const real alpha = 0.5_r * angle;
+        const real3 u = ::normalized(axis);
+        return {std::cos(alpha), std::sin(alpha) * u};
+    }
+
+    static inline Quaternion createFromVectors(real3 from, real3 to)
+    {
+        return {from, to};
+    }
+    
+    
     Quaternion(const Quaternion& q) = default;
     Quaternion& operator=(const Quaternion& q) = default;
     
@@ -113,4 +119,22 @@ struct Quaternion
     
     real w;        // real part
     real x, y, z;  // vector part
+
+private:
+    Quaternion(real w, real x, real y, real z) :
+        w(w), x(x), y(y), z(z)
+    {}
+
+    Quaternion(real w, real3 u) :
+        w(w), x(u.x), y(u.y), z(u.z)
+    {}
+
+    // https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another
+    Quaternion(real3 v1, real3 v2) :
+        Quaternion(std::sqrt(dot(v1, v1) * dot(v2, v2)) + dot(v1, v2), cross(v1, v2))
+    {
+        Expect(length(v1) > 0._r && length(v2) > 0._r, "vector length must be greater than zero");
+        this->normalize();
+        Ensure(length(rotate(v1)-v2) < 1e-6_r, "constructor from 2 vectors failed");
+    }
 };

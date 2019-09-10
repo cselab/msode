@@ -48,7 +48,7 @@ static Quaternion getQuaternion(const std::string& str)
     real3 u;
     std::istringstream iss(str);
     iss >> w >> u.x >> u.y >> u.z;
-    return {w, u};
+    return Quaternion::createFromComponents(w, u);
 }
 
 static PropulsionMatrix getPropulsion(DataMap& dataMap)
