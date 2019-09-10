@@ -36,14 +36,14 @@ void Simulation::run(long nsteps, real dt)
 {
     for (long step = 0; step < nsteps; ++step)
     {
-        if (timeStep % dumpEvery == 0) dump();
+        if (currentTimeStep % dumpEvery == 0) dump();
         advance(dt);
     }
 }
 
 void Simulation::advance(real dt)
 {
-    const real3 B = magneticField(t);
+    const real3 B = magneticField(currentTime);
     
     for (auto& rigidBody : rigidBodies)
     {
@@ -70,13 +70,13 @@ void Simulation::advance(real dt)
         rigidBody.q = q.normalized();
     }
     
-    t += dt;
-    ++timeStep;
+    currentTime += dt;
+    ++currentTimeStep;
 }
 
 void Simulation::dump()
 {
-    file << t;
+    file << currentTime;
     for (const auto& rigidBody : rigidBodies)
         file << " " << rigidBody;
     file << "\n";

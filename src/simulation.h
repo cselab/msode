@@ -63,8 +63,8 @@ private:
     void dump();
     
 private:
-    real t {0.0_r};
-    long timeStep {0};
+    real currentTime {0.0_r};
+    long currentTimeStep {0};
     std::vector<RigidBody> rigidBodies;
     MagneticField magneticField;
 
