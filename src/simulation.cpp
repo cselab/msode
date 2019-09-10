@@ -34,6 +34,9 @@ void Simulation::activateDump(const std::string& fname, long dumpEvery)
 
 void Simulation::run(long nsteps, real dt)
 {
+    Expect(nsteps > 0, "expect positive number of steps");
+    Expect(dt > 0._r, "expect positive time step");
+    
     for (long step = 0; step < nsteps; ++step)
     {
         if (currentTimeStep % dumpEvery == 0) dump();
