@@ -11,7 +11,7 @@ int main(int argc, char **argv)
         rigidBodies.push_back(Factory::readRigidBodyConfig(argv[i]));
     
     const real magneticFieldMagnitude {1.0_r};
-    const real omegaField {0.5_r};
+    auto omegaField = [](real t) {return 0.5_r;};
 
     auto rotatingDirection = [](real t)
     {

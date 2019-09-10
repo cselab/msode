@@ -58,6 +58,7 @@ void Simulation::run(long nsteps, real dt)
 
 void Simulation::advance(real dt)
 {
+    magneticField.advance(currentTime, dt);
     const real3 B = magneticField(currentTime);
     
     for (auto& rigidBody : rigidBodies)

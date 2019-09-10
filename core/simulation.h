@@ -26,16 +26,29 @@ struct RigidBody
     real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r}; 
 };
 
-struct MagneticField
+class MagneticField
 {
-    real magnitude, omega;
-    std::function<real3(real)> rotatingDirection;
+public:
+    
+    MagneticField(real magnitude, std::function<real(real)> omega, std::function<real3(real)> rotatingDirection) :
+        magnitude(magnitude),
+        omega(omega),
+        rotatingDirection(rotatingDirection)
+    {}
+
+    void advance(real t, real dt)
+    {
+        phase += omega(t) * dt;
+
+        constexpr real twoPi = 2._r * M_PI;
+        if (phase >= twoPi) phase -= twoPi;
+        if (phase < 0)      phase += twoPi;
+    }
     
     real3 operator()(real t) const
     {
-        const real wt = omega * t;
-        const real3 B {magnitude * std::cos(wt),
-                       magnitude * std::sin(wt),
+        const real3 B {magnitude * std::cos(phase),
+                       magnitude * std::sin(phase),
                        0.0_r};
 
         constexpr real3 originalDirection {0.0_r, 0.0_r, 1.0_r};
@@ -43,6 +56,11 @@ struct MagneticField
         
         return q.rotate(B);
     }
+
+private:
+    real magnitude, phase {0};
+    std::function<real(real)> omega;
+    std::function<real3(real)> rotatingDirection;
 };
 
 class Simulation
@@ -59,7 +77,8 @@ public:
     void activateDump(const std::string& fname, long dumpEvery);
     void run(long nsteps, real dt);
 
-    inline const std::vector<RigidBody>& getBodies() const {return rigidBodies;}
+    const std::vector<RigidBody>& getBodies() const {return rigidBodies;}
+    real getCurrentTime() const {return currentTime;}
     
 private:
     void advance(real dt);
