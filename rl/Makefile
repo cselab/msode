@@ -17,4 +17,4 @@ main: main.o environment.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 .PHONY: all clean
-clean: rm main
+clean:; rm -rf main *.o

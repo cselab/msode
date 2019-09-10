@@ -58,6 +58,8 @@ public:
     void reset(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
     void activateDump(const std::string& fname, long dumpEvery);
     void run(long nsteps, real dt);
+
+    inline const std::vector<RigidBody>& getBodies() const {return rigidBodies;}
     
 private:
     void advance(real dt);

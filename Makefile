@@ -1,14 +1,21 @@
+CORE_DIR=core
+RL_DIR=rl
 
+all: mainRl mainTest
 
-all: main
+mainTest:
+	@make -C $(CORE_DIR) main
+	@cp $(CORE_DIR)/main $@
 
+libmsode.a:
+	@make -C $(CORE_DIR) $@
 
-main:
-	make -C core/
-	make -C rl/
+mainRl: libmsode.a
+	@make -C $(RL_DIR)
+	@cp $(RL_DIR)/main $@
 
 clean:
-	make -C core/ clean
-	make -C rl/   clean
+	make -C $(CORE_DIR) clean
+	make -C $(RL_DIR)   clean
 
 .PHONY: all clean
