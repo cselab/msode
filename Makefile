@@ -17,5 +17,6 @@ mainRl: libmsode.a
 clean:
 	make -C $(CORE_DIR) clean
 	make -C $(RL_DIR)   clean
+	rm -rf mainTest mainRl
 
 .PHONY: all clean
