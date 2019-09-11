@@ -123,6 +123,9 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
 
     if (sim->getCurrentTime() > tmax)
         return Status::MaxTimeEllapsed;
+
+    if (bodiesWithinDistanceToTargets(distanceThreshold))
+        return Status::Success;
     
     return Status::Running;
 }
@@ -172,4 +175,17 @@ void MSodeEnvironment::setDistances()
         const real3 dr = bodies[i].r - targetPositions[i];
         previousDistance[i] = length(dr);
     }
+}
+
+bool MSodeEnvironment::bodiesWithinDistanceToTargets(real threshold) const
+{
+    real maxDistance = 0.0_r;
+    const auto& bodies = sim->getBodies();
+    
+    for (size_t i = 0; i < bodies.size(); ++i)
+    {
+        const real distance = length(bodies[i].r - targetPositions[i]);
+        maxDistance = std::max(maxDistance, distance);
+    }
+    return maxDistance < threshold;
 }

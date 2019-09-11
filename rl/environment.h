@@ -8,7 +8,7 @@
 class MSodeEnvironment
 {
 public:
-    enum class Status {Running, MaxTimeEllapsed};
+    enum class Status {Running, MaxTimeEllapsed, Success};
     
     MSodeEnvironment(long nstepsPerAction, real dt,
                      const std::vector<RigidBody>& initialRBs,
@@ -22,10 +22,13 @@ public:
 
 private:
     void setDistances();
+    bool bodiesWithinDistanceToTargets(real threshold) const;
     
 public:
     long nstepsPerAction;
-    real dt, tmax {2000.0_r};
+    real dt;
+    const real tmax {2000.0_r};
+    const real distanceThreshold {0.1_r};
     
     std::unique_ptr<Simulation> sim;
 

@@ -27,6 +27,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // TODO
     int nstepsPerAction = 1000;
     real dt = 1e-3;
+    real bonus = 10.0_r;
     std::vector<real3> targetPositions;
 
     for (int i = 0; i < nbodies; ++i)
@@ -61,6 +62,10 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
                 break;
             case MSodeEnvironment::Status::MaxTimeEllapsed:
                 comm->sendTermState(state, reward);
+                isRunning = false;
+                break;
+            case MSodeEnvironment::Status::Success:
+                comm->sendTermState(state, reward + bonus);
                 isRunning = false;
                 break;
             };
