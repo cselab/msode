@@ -64,8 +64,9 @@ MSodeEnvironment::MSodeEnvironment(long nstepsPerAction, real dt,
     MagneticField field{fieldMagnitude, omegaFunction, rotatingDirection};
 
     sim = std::make_unique<Simulation>(initialRBs, field);
+    sim->activateDump("out.txt", 100);
+    setDistances();
 }
-
 
 inline real3 randomPosition(real3 lo, real3 hi, std::mt19937& gen)
 {
@@ -110,6 +111,7 @@ void MSodeEnvironment::reset(std::mt19937& gen)
     }
 
     sim->reset(bodies, field);
+    setDistances();
 }
 
 MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& action)
@@ -151,9 +153,23 @@ double MSodeEnvironment::getReward() const
     for (size_t i = 0; i < bodies.size(); ++i)
     {
         const real3 dr = bodies[i].r - targetPositions[i];
-        r -= length(dr);
+        const real distance = length(dr);
+        
+        r += previousDistance[i] - distance;;
+        previousDistance[i] = distance;
     }
     r -= dt * nstepsPerAction;
     return r;
 }
 
+void MSodeEnvironment::setDistances()
+{
+    const auto& bodies = sim->getBodies();
+    previousDistance.resize(bodies.size());
+    
+    for (size_t i = 0; i < bodies.size(); ++i)
+    {
+        const real3 dr = bodies[i].r - targetPositions[i];
+        previousDistance[i] = length(dr);
+    }
+}

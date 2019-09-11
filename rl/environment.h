@@ -19,8 +19,11 @@ public:
     Status advance(const std::vector<double>& action);
     std::vector<double> getState() const;
     double getReward() const;
-    
+
 private:
+    void setDistances();
+    
+public:
     long nstepsPerAction;
     real dt, tmax {2000.0_r};
     
@@ -46,4 +49,5 @@ private:
     MagnFieldState magnFieldState;
 
     std::vector<real3> targetPositions;
+    mutable std::vector<real> previousDistance;
 };
