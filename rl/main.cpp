@@ -33,9 +33,9 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     Params params;
     params.nstepsPerAction = 1000l;
     params.dt = 1e-3_r;
-    params.maxOmega = 14.0_r;
-    params.distanceThreshold = 0.1_r;
-    params.tmax = 5000.0_r;
+    params.maxOmega = 10.0_r;
+    params.distanceThreshold = 0.5_r;
+    params.tmax = 2000.0_r;
     
     MSodeEnvironment env(params, bodies, targetPositions);
     bool isTraining {true};

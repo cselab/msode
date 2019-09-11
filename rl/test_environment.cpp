@@ -13,7 +13,7 @@ inline void appTest(int argc, char **argv)
     // const int nStateVars = 3 + 3 * nbodies;
 
     Params params;
-    params.nstepsPerAction = 1000l;
+    params.nstepsPerAction = 100l;
     params.dt = 1e-3_r;
     params.maxOmega = 14.0_r;
     params.distanceThreshold = 0.1_r;

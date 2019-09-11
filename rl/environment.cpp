@@ -164,7 +164,7 @@ double MSodeEnvironment::getReward() const
         r += previousDistance[i] - distance;
         previousDistance[i] = distance;
     }
-    r -= dt * nstepsPerAction;
+    // r -= dt * nstepsPerAction;
     return r;
 }
 
