@@ -12,10 +12,12 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const int nStateVars = 3 + 3 * nbodies;
     comm->set_state_action_dims(nStateVars, nControlVars);
 
-    //OPTIONAL: action bounds
-    // bool bounded = true;
-    // std::vector<double> upper_action_bound{10}, lower_action_bound{-10};
-    // comm->set_action_scales(upper_action_bound, lower_action_bound, bounded);
+    // action bounds
+    {
+        bool bounded = true;
+        std::vector<double> upper_action_bound{0.05, 0.1, 0.1, 0.1}, lower_action_bound{-0.05, -0.1, -0.1, -0.1};
+        comm->set_action_scales(upper_action_bound, lower_action_bound, bounded);
+    }
 
     //OPTIONAL: set space bounds
     // std::vector<double> upper_state_bound{ 1,  1,  1,  1,  1,  1};
@@ -23,12 +25,12 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // comm->set_state_scales(upper_state_bound, lower_state_bound);
 
     // TODO
-    int nstepsPerAction = 10000;
+    int nstepsPerAction = 1000;
     real dt = 1e-3;
     std::vector<real3> targetPositions;
 
     for (int i = 0; i < nbodies; ++i)
-        targetPositions.push_back({20.0_r, 0.0_r, 0.0_r}); // TODO
+        targetPositions.push_back({10.0_r, 0.0_r, 0.0_r}); // TODO
 
     MSodeEnvironment env(nstepsPerAction, dt, bodies, targetPositions);
     bool isTraining {true};
