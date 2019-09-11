@@ -12,14 +12,18 @@ inline void appTest(int argc, char **argv)
     // const int nControlVars = 4; // fieldorientation (3) and frequency (1)
     // const int nStateVars = 3 + 3 * nbodies;
 
-    int nstepsPerAction = 10000;
-    real dt = 1e-3;
+    Params params;
+    params.nstepsPerAction = 1000l;
+    params.dt = 1e-3_r;
+    params.maxOmega = 14.0_r;
+    params.distanceThreshold = 0.1_r;
+    params.tmax = 5000.0_r;
     std::vector<real3> targetPositions;
 
     for (int i = 0; i < nbodies; ++i)
         targetPositions.push_back({20.0_r, 0.0_r, 0.0_r});
 
-    MSodeEnvironment env(nstepsPerAction, dt, bodies, targetPositions);
+    MSodeEnvironment env(params, bodies, targetPositions);
     env.sim->activateDump("out.txt", 100);
 
     // env.reset(comm->getPRNG());

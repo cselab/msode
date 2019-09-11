@@ -38,11 +38,14 @@ void MSodeEnvironment::MagnFieldState::advance(real t, real actionDt)
     lastAxis = normalized(lastAxis);
 }
 
-MSodeEnvironment::MSodeEnvironment(long nstepsPerAction, real dt,
+MSodeEnvironment::MSodeEnvironment(const Params& params,
                                    const std::vector<RigidBody>& initialRBs,
                                    const std::vector<real3>& targetPositions) :
-    nstepsPerAction(nstepsPerAction),
-    dt(dt),
+    nstepsPerAction(params.nstepsPerAction),
+    dt(params.dt),
+    tmax(params.tmax),
+    distanceThreshold(params.distanceThreshold),
+    magnFieldState(params.maxOmega),
     targetPositions(targetPositions)
 {
     Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
@@ -161,7 +164,7 @@ double MSodeEnvironment::getReward() const
         r += previousDistance[i] - distance;
         previousDistance[i] = distance;
     }
-    // r -= dt * nstepsPerAction;
+    r -= dt * nstepsPerAction;
     return r;
 }
 

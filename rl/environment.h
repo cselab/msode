@@ -5,12 +5,21 @@
 #include <memory>
 #include <random>
 
+struct Params
+{
+    real maxOmega;
+    real tmax;
+    real distanceThreshold;
+    long nstepsPerAction;
+    real dt;
+};
+
 class MSodeEnvironment
 {
 public:
     enum class Status {Running, MaxTimeEllapsed, Success};
     
-    MSodeEnvironment(long nstepsPerAction, real dt,
+    MSodeEnvironment(const Params& params,
                      const std::vector<RigidBody>& initialRBs,
                      const std::vector<real3>& targetPositions);
 
@@ -25,15 +34,21 @@ private:
     bool bodiesWithinDistanceToTargets(real threshold) const;
     
 public:
-    long nstepsPerAction;
-    real dt;
-    const real tmax {2000.0_r};
-    const real distanceThreshold {0.1_r};
-    
     std::unique_ptr<Simulation> sim;
+
+private:
+    const long nstepsPerAction;
+    const real dt;
+    const real tmax;
+    const real distanceThreshold;
+    
 
     struct MagnFieldState
     {
+        MagnFieldState(real maxOmega) : maxOmega(maxOmega) {}
+
+        const real maxOmega;
+        
         real lastOmega {0._r};
         real3 lastAxis {1._r, 0._r, 0._r};
         real lastActionTime {0._r};
@@ -41,8 +56,6 @@ public:
         real dOmega {0._r};
         real3 dAxis {0._r, 0._r, 0._r};
 
-        static constexpr real maxOmega = 10.0_r; // TODO
-        
         void setAction(const std::vector<double>& action);
         real omegaActionChange(real t, real actionDt);
         real3 axisActionChange(real t, real actionDt);

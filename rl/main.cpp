@@ -24,16 +24,20 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // std::vector<double> lower_state_bound{-1, -1, -1, -1, -1, -1};
     // comm->set_state_scales(upper_state_bound, lower_state_bound);
 
-    // TODO
-    int nstepsPerAction = 1000;
-    real dt = 1e-3;
     real bonus = 10.0_r;
     std::vector<real3> targetPositions;
 
     for (int i = 0; i < nbodies; ++i)
         targetPositions.push_back({10.0_r, 0.0_r, 0.0_r}); // TODO
 
-    MSodeEnvironment env(nstepsPerAction, dt, bodies, targetPositions);
+    Params params;
+    params.nstepsPerAction = 1000l;
+    params.dt = 1e-3_r;
+    params.maxOmega = 14.0_r;
+    params.distanceThreshold = 0.1_r;
+    params.tmax = 5000.0_r;
+    
+    MSodeEnvironment env(params, bodies, targetPositions);
     bool isTraining {true};
 
     while (isTraining)
