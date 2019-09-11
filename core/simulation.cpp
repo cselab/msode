@@ -51,7 +51,8 @@ void Simulation::run(long nsteps, real dt)
     
     for (long step = 0; step < nsteps; ++step)
     {
-        if (currentTimeStep % dumpEvery == 0) dump();
+        if (file.is_open() && currentTimeStep % dumpEvery == 0)
+            dump();
         advance(dt);
     }
 }

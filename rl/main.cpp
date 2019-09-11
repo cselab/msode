@@ -23,7 +23,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // comm->set_state_scales(upper_state_bound, lower_state_bound);
 
     // TODO
-    int nstepsPerAction = 100;
+    int nstepsPerAction = 10000;
     real dt = 1e-3;
     std::vector<real3> targetPositions;
 
