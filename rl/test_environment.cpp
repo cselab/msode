@@ -9,8 +9,8 @@ inline void appTest(int argc, char **argv)
     bodies.push_back(Factory::readRigidBodyConfig("/home/amlucas/msode/config/test0.cfg"));
     
     int nbodies = bodies.size();
-    const int nControlVars = 4; // fieldorientation (3) and frequency (1)
-    const int nStateVars = 3 + 3 * nbodies;
+    // const int nControlVars = 4; // fieldorientation (3) and frequency (1)
+    // const int nStateVars = 3 + 3 * nbodies;
 
     int nstepsPerAction = 10000;
     real dt = 1e-3;
@@ -20,14 +20,19 @@ inline void appTest(int argc, char **argv)
         targetPositions.push_back({20.0_r, 0.0_r, 0.0_r});
 
     MSodeEnvironment env(nstepsPerAction, dt, bodies, targetPositions);
+    env.sim->activateDump("out.txt", 100);
 
     // env.reset(comm->getPRNG());
 
     bool isRunning {true};
-
+    int step = 0;
+    
     while (isRunning) // simulation loop
     {
-        std::vector<double> action {0.01_r, 0.02_r, 0.03_r, -0.05_r};
+        std::vector<double> action {0.0_r, 0.0_r, 0.0_r, 0.1_r};
+
+        if (step == 0) action[0] = 0.05;
+        
         auto status = env.advance(action);
         
         const auto state  = env.getState();
@@ -45,6 +50,7 @@ inline void appTest(int argc, char **argv)
             isRunning = false;
             break;
         }
+        ++step;
     }
 }
 
