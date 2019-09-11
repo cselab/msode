@@ -1,9 +1,13 @@
 #include "environment.h"
+#include "factory.h"
 #include "smarties.h"
 
-inline void appMain(smarties::Communicator*const comm, int argc, char**argv)
+inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 {
-    int nbodies = 1;
+    std::vector<RigidBody> bodies;
+    bodies.push_back(Factory::readRigidBodyConfig("/home/amlucas/msode/config/test0.cfg"));
+    
+    int nbodies = bodies.size();
     const int nControlVars = 4; // fieldorientation (3) and frequency (1)
     const int nStateVars = 3 + 3 * nbodies;
     comm->set_state_action_dims(nStateVars, nControlVars);
@@ -21,10 +25,12 @@ inline void appMain(smarties::Communicator*const comm, int argc, char**argv)
     // TODO
     int nstepsPerAction = 100;
     real dt = 1e-3;
-    std::vector<RigidBody> initialRBs;
     std::vector<real3> targetPositions;
 
-    MSodeEnvironment env(nstepsPerAction, dt, initialRBs, targetPositions);
+    for (int i = 0; i < nbodies; ++i)
+        targetPositions.push_back({20.0_r, 0.0_r, 0.0_r}); // TODO
+
+    MSodeEnvironment env(nstepsPerAction, dt, bodies, targetPositions);
     bool isTraining {true};
 
     while (isTraining)
@@ -36,9 +42,9 @@ inline void appMain(smarties::Communicator*const comm, int argc, char**argv)
 
         while (isRunning) // simulation loop
         {
-            std::vector<double> action = comm->recvAction();
+            const auto action = comm->recvAction();
 
-            if(comm->terminateTraining())
+            if (comm->terminateTraining())
                 return;
 
             auto status = env.advance(action);
@@ -60,7 +66,7 @@ inline void appMain(smarties::Communicator*const comm, int argc, char**argv)
     }
 }
 
-int main(int argc, char**argv)
+int main(int argc, char **argv)
 {
     smarties::Engine e(argc, argv);
     if( e.parse() ) return 1;
