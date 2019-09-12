@@ -121,14 +121,17 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
 {
     magnFieldState.advance(sim->getCurrentTime(), nstepsPerAction * dt);
     magnFieldState.setAction(action);
-        
-    sim->run(nstepsPerAction, dt);
 
-    if (sim->getCurrentTime() > tmax)
-        return Status::MaxTimeEllapsed;
+    for (long step = 0; step < nstepsPerAction; ++step)
+    {
+        sim->advance(dt);
 
-    if (bodiesWithinDistanceToTargets(distanceThreshold))
-        return Status::Success;
+        if (sim->getCurrentTime() > tmax)
+            return Status::MaxTimeEllapsed;
+
+        if (bodiesWithinDistanceToTargets(distanceThreshold))
+            return Status::Success;
+    }
     
     return Status::Running;
 }
