@@ -45,6 +45,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
     dt(params.time.dt),
     tmax(params.time.tmax),
     distanceThreshold(params.distanceThreshold),
+    initBox(params.initBox),
     magnFieldState(params.maxOmega),
     targetPositions(targetPositions)
 {
@@ -107,9 +108,7 @@ void MSodeEnvironment::reset(std::mt19937& gen)
     
     for (auto& b : bodies)
     {
-        constexpr real3 lo {-10.0_r, -10.0_r, -10.0_r};
-        constexpr real3 hi {+10.0_r, +10.0_r, +10.0_r};
-        b.r = randomPosition(lo, hi, gen);
+        b.r = randomPosition(initBox.lo, initBox.hi, gen);
         b.q = randomOrientation(gen);
     }
 

@@ -58,6 +58,7 @@ private:
     const real dt;
     const real tmax;
     const real distanceThreshold;
+    const Box initBox;
     
 
     struct MagnFieldState
