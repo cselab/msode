@@ -69,8 +69,8 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 
             auto status = env.advance(action);
 
-            const auto state  = env.getState();
-            const auto reward = env.getReward();
+            const auto& state  = env.getState();
+            const auto  reward = env.getReward();
 
             switch (status)
             {

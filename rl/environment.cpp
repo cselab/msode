@@ -135,27 +135,31 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
     return Status::Running;
 }
 
-std::vector<double> MSodeEnvironment::getState() const
+const std::vector<double>& MSodeEnvironment::getState() const
 {
     const real3 fieldDesc = magnFieldState.lastOmega * magnFieldState.lastAxis;
-    std::vector<double> state = {fieldDesc.x, fieldDesc.y, fieldDesc.z};
+    cachedState.resize(0);
+    cachedState.push_back(fieldDesc.x);
+    cachedState.push_back(fieldDesc.y);
+    cachedState.push_back(fieldDesc.z);
     
     const auto& bodies = sim->getBodies();
 
     for (size_t i = 0; i < bodies.size(); ++i)
     {
-        const auto q = bodies[i].q;
         const real3 dr = bodies[i].r - targetPositions[i];
-        state.push_back(dr.x);
-        state.push_back(dr.y);
-        state.push_back(dr.z);
-        state.push_back(q.w);
-        state.push_back(q.x);
-        state.push_back(q.y);
-        state.push_back(q.z);
+        cachedState.push_back(dr.x);
+        cachedState.push_back(dr.y);
+        cachedState.push_back(dr.z);
+
+        // const auto q = bodies[i].q;
+        // cachedState.push_back(q.w);
+        // cachedState.push_back(q.x);
+        // cachedState.push_back(q.y);
+        // cachedState.push_back(q.z);
     }
 
-    return state;
+    return cachedState;
 }
 
 double MSodeEnvironment::getReward() const
