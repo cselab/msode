@@ -28,7 +28,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     std::vector<real3> targetPositions;
 
     for (int i = 0; i < nbodies; ++i)
-        targetPositions.push_back({10.0_r, 0.0_r, 0.0_r}); // TODO
+        targetPositions.push_back({10.0_r, 0.0_r, 0.0_r});
 
     const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
     const real dt = 1e-3_r;
