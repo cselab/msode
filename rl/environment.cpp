@@ -144,10 +144,15 @@ std::vector<double> MSodeEnvironment::getState() const
 
     for (size_t i = 0; i < bodies.size(); ++i)
     {
+        const auto q = bodies[i].q;
         const real3 dr = bodies[i].r - targetPositions[i];
         state.push_back(dr.x);
         state.push_back(dr.y);
         state.push_back(dr.z);
+        state.push_back(q.w);
+        state.push_back(q.x);
+        state.push_back(q.y);
+        state.push_back(q.z);
     }
 
     return state;
