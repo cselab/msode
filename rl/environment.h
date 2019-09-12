@@ -8,6 +8,7 @@
 struct Box
 {
     real3 lo, hi;
+    std::array<real3, 8> getCorners() const;
 };
 
 struct TimeParams
