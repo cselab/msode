@@ -50,15 +50,14 @@ void Simulation::run(long nsteps, real dt)
     Expect(dt > 0._r, "expect positive time step");
     
     for (long step = 0; step < nsteps; ++step)
-    {
-        if (file.is_open() && currentTimeStep % dumpEvery == 0)
-            dump();
         advance(dt);
-    }
 }
 
 void Simulation::advance(real dt)
 {
+    if (file.is_open() && currentTimeStep % dumpEvery == 0)
+        dump();
+    
     magneticField.advance(currentTime, dt);
     const real3 B = magneticField(currentTime);
     

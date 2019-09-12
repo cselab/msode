@@ -78,7 +78,6 @@ public:
     const MagneticField& getField() const {return magneticField;}
     real getCurrentTime() const {return currentTime;}
     
-private:
     void advance(real dt);
     void dump();
     
