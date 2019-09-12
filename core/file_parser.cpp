@@ -8,7 +8,7 @@ static auto readFile(const std::string& fname)
 {
     FileParser::DataMap dataMap;
     std::ifstream file(fname);
-    Expect(file.is_open(), "could not open file for read");
+    Expect(file.is_open(), "could not open file '" + fname + "' for read");
 
     for (std::string line {}; std::getline(file, line); )
     {
@@ -16,6 +16,7 @@ static auto readFile(const std::string& fname)
         std::string key, tmp, data;
 
         iss >> key;
+        iss >> data;
         while (iss >> tmp) {data += " " + tmp;}
         dataMap[key] = data;
     }

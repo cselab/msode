@@ -1,11 +1,23 @@
 #include "environment.h"
 #include "factory.h"
+#include "file_parser.h"
 #include "smarties.h"
+
+static auto createBodies(const std::string& fileNameList)
+{
+    std::vector<RigidBody> bodies;
+    const FileParser parser(fileNameList);
+
+    for (auto entry : parser)
+        bodies.push_back(Factory::readRigidBodyConfig(entry.second));
+
+    return bodies;
+}
 
 inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 {
-    std::vector<RigidBody> bodies;
-    bodies.push_back(Factory::readRigidBodyConfig("/home/amlucas/msode/config/test0.cfg"));
+    // ../ because we run in ${RUNDIR}/simulation%2d_%d/
+    const auto bodies = createBodies("../config/swimmers_list.cfg");
     
     const int nbodies = bodies.size();
     const int nControlVars = 4; // fieldorientation (3) and frequency (1)

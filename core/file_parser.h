@@ -14,6 +14,9 @@ public:
 
     FileParser(const std::string& filename);
 
+    auto begin() const {return data.begin();}
+    auto end() const {return data.end();}
+
     std::string getStr(const std::string& key) const;
     real3 getReal3(const std::string& key) const;
     Quaternion getQuaternion(const std::string& key) const;
