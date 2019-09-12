@@ -14,16 +14,54 @@ static auto createBodies(const std::string& fileNameList)
     return bodies;
 }
 
-// static real computeTmax(real maxDistance, const std::vector<RigidBody>& bodies)
-// {
-//     real tmax = 0._r;
+static real computeMaxDistance(Box src, real3 dst)
+{
+    auto distFromDst = [dst] (real3 r) {return length(r-dst);};
+    real d{0.0_r};
+    for (auto r : src.getCorners())
+        d = std::max(d, distFromDst(r));
+    return d;
+}
+
+static real computeTimeToTravel(real maxDistance, real fieldMagnitude, const std::vector<RigidBody>& bodies)
+{
+    real t = 0._r;
     
-//     for (const auto& body : bodies)
-//     {
-//         const real vmaxBody = 
-//         tmax = std::max(tmax, );
-//     }
-// }
+    for (const auto& body : bodies)
+    {
+        const real vmaxBody = fieldMagnitude * length(body.magnMoment) * fabs(body.propulsion.B[0]);
+        t = std::max(t, maxDistance / vmaxBody);
+    }
+    return t;
+}
+
+static real computeActionTimeScale(real fieldMagnitude, const std::vector<RigidBody>& bodies)
+{
+    real wmax {0._r};
+
+    for (const auto& body : bodies)
+    {
+        const auto& C = body.propulsion.C;
+        const real cmax = std::max(C[1], C[2]);
+        const real w = length(body.magnMoment) * fieldMagnitude * cmax;
+        wmax = std::max(wmax, w);
+    }
+    return 1.0_r / wmax;
+}
+
+static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBody>& bodies)
+{
+    real wmax {0._r};
+
+    for (const auto& body : bodies)
+    {
+        const auto& C = body.propulsion.C;
+        const real w = length(body.magnMoment) * fieldMagnitude * fabs(C[0]);
+        wmax = std::max(wmax, w);
+    }
+    return wmax;
+}
+
 
 inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 {
@@ -31,24 +69,25 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const auto bodies = createBodies("../config/swimmers_list.cfg");
     
     const int nbodies = bodies.size();
-    const std::vector<real3> targetPositions(nbodies, {0.0_r, 0.0_r, 0.0_r});
     
     // parameters
     const real bonusReward = 10.0_r;
-    const real dt = 1e-3_r;
-    const Box box{{-10.0_r, -10.0_r, -10.0_r},
-                  {+10.0_r, +10.0_r, +10.0_r}};
-    
-    
-    
-
-    const real tmax = 20000.0_r;
-    const long nstepsPerAction = 1000l;
-    const TimeParams timeParams {dt, tmax, nstepsPerAction};
-    const real maxOmega = 20.0_r;
     const real fieldMagnitude = 1.0_r;
+    const real dt = 1e-3_r;
+    const Box box{{-20.0_r, -10.0_r, -10.0_r},
+                  {  0.0_r, +10.0_r, +10.0_r}};
+    const real3 target {0.0_r, 0.0_r, 0.0_r};
     const real distanceThreshold = 0.1_r;
+
+    const real tmax = 10 * computeTimeToTravel(computeMaxDistance(box, target), fieldMagnitude, bodies);
+    const real dtAction = computeActionTimeScale(fieldMagnitude, bodies);
+    const long nstepsPerAction = 0.5_r * dtAction / dt;
+    const TimeParams timeParams {dt, tmax, nstepsPerAction};
+    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+
     const Params params {timeParams, maxOmega, fieldMagnitude, distanceThreshold, box};
+
+    const std::vector<real3> targetPositions(nbodies, target);
 
     MSodeEnvironment env(params, bodies, targetPositions);
 
