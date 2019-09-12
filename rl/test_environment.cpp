@@ -18,8 +18,9 @@ inline void appTest(int argc, char **argv)
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
     const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
     const real maxOmega = 10.0_r;
+    const real fieldMagnitude = 1.0_r;
     const real distanceThreshold = 0.5_r;
-    const Params params {timeParams, maxOmega, distanceThreshold, box};
+    const Params params {timeParams, maxOmega, fieldMagnitude, distanceThreshold, box};
 
     std::vector<real3> targetPositions;
 

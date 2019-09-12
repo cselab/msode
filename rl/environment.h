@@ -18,15 +18,17 @@ struct TimeParams
 
 struct Params
 {
-    Params(TimeParams time, real maxOmega, real distanceThreshold, Box initBox) :
+    Params(TimeParams time, real maxOmega, real fieldMagnitude, real distanceThreshold, Box initBox) :
         time(time),
         maxOmega(maxOmega),
+        fieldMagnitude(fieldMagnitude),
         distanceThreshold(distanceThreshold),
         initBox(initBox)
     {}
 
     const TimeParams time;
     const real maxOmega;
+    const real fieldMagnitude;
     const real distanceThreshold;
     const Box initBox;
 };

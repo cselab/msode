@@ -51,7 +51,6 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
 {
     Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
-    constexpr real fieldMagnitude = 1.0_r; // hardcoded magnetic scale
     const real dtAction = nstepsPerAction * dt;
     
     auto omegaFunction = [this, dtAction](real t)
@@ -65,7 +64,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
         return normalized(axis);
     };
     
-    MagneticField field{fieldMagnitude, omegaFunction, rotatingDirection};
+    MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
     sim = std::make_unique<Simulation>(initialRBs, field);
     sim->activateDump("out.txt", 1000);

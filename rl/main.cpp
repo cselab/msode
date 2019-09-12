@@ -14,23 +14,41 @@ static auto createBodies(const std::string& fileNameList)
     return bodies;
 }
 
+// static real computeTmax(real maxDistance, const std::vector<RigidBody>& bodies)
+// {
+//     real tmax = 0._r;
+    
+//     for (const auto& body : bodies)
+//     {
+//         const real vmaxBody = 
+//         tmax = std::max(tmax, );
+//     }
+// }
+
 inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 {
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
     const auto bodies = createBodies("../config/swimmers_list.cfg");
     
     const int nbodies = bodies.size();
+    const std::vector<real3> targetPositions(nbodies, {0.0_r, 0.0_r, 0.0_r});
+    
+    // parameters
     const real bonusReward = 10.0_r;
-    const std::vector<real3> targetPositions(nbodies, {10.0_r, 0.0_r, 0.0_r});
-
-    const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
     const real dt = 1e-3_r;
-    const real tmax = 5000.0_r;
+    const Box box{{-10.0_r, -10.0_r, -10.0_r},
+                  {+10.0_r, +10.0_r, +10.0_r}};
+    
+    
+    
+
+    const real tmax = 20000.0_r;
     const long nstepsPerAction = 1000l;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
     const real maxOmega = 20.0_r;
+    const real fieldMagnitude = 1.0_r;
     const real distanceThreshold = 0.1_r;
-    const Params params {timeParams, maxOmega, distanceThreshold, box};
+    const Params params {timeParams, maxOmega, fieldMagnitude, distanceThreshold, box};
 
     MSodeEnvironment env(params, bodies, targetPositions);
 
