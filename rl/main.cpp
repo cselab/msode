@@ -7,7 +7,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     std::vector<RigidBody> bodies;
     bodies.push_back(Factory::readRigidBodyConfig("/home/amlucas/msode/config/test0.cfg"));
     
-    int nbodies = bodies.size();
+    const int nbodies = bodies.size();
     const int nControlVars = 4; // fieldorientation (3) and frequency (1)
     const int nStateVars = 3 + 3 * nbodies;
     comm->set_state_action_dims(nStateVars, nControlVars);
@@ -24,11 +24,8 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // std::vector<double> lower_state_bound{-1, -1, -1, -1, -1, -1};
     // comm->set_state_scales(upper_state_bound, lower_state_bound);
 
-    real bonus = 10.0_r;
-    std::vector<real3> targetPositions;
-
-    for (int i = 0; i < nbodies; ++i)
-        targetPositions.push_back({10.0_r, 0.0_r, 0.0_r});
+    const real bonus = 10.0_r;
+    const std::vector<real3> targetPositions(nbodies, {10.0_r, 0.0_r, 0.0_r});
 
     const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
     const real dt = 1e-3_r;
