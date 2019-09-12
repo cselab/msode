@@ -12,19 +12,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const int nStateVars = 3 + 3 * nbodies;
     comm->set_state_action_dims(nStateVars, nControlVars);
 
-    // action bounds
-    {
-        bool bounded = true;
-        std::vector<double> upper_action_bound{0.05, 0.1, 0.1, 0.1}, lower_action_bound{-0.05, -0.1, -0.1, -0.1};
-        comm->set_action_scales(upper_action_bound, lower_action_bound, bounded);
-    }
-
-    //OPTIONAL: set space bounds
-    // std::vector<double> upper_state_bound{ 1,  1,  1,  1,  1,  1};
-    // std::vector<double> lower_state_bound{-1, -1, -1, -1, -1, -1};
-    // comm->set_state_scales(upper_state_bound, lower_state_bound);
-
-    const real bonus = 10.0_r;
+    const real bonusReward = 10.0_r;
     const std::vector<real3> targetPositions(nbodies, {10.0_r, 0.0_r, 0.0_r});
 
     const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
@@ -33,8 +21,21 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const long nstepsPerAction = 1000l;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
     const real maxOmega = 10.0_r;
-    const real distanceThreshold = 0.5_r;
+    const real distanceThreshold = 0.1_r;
     const Params params {timeParams, maxOmega, distanceThreshold, box};
+
+    // action bounds
+    {
+        const bool bounded = true;
+        const std::vector<double> upper_action_bound{+0.5 * maxOmega, +0.5, +0.5, +0.5},
+                                  lower_action_bound{-0.5 * maxOmega, -0.5, -0.5, -0.5};
+        comm->set_action_scales(upper_action_bound, lower_action_bound, bounded);
+    }
+
+    //OPTIONAL: set space bounds
+    // std::vector<double> upper_state_bound{ 1,  1,  1,  1,  1,  1};
+    // std::vector<double> lower_state_bound{-1, -1, -1, -1, -1, -1};
+    // comm->set_state_scales(upper_state_bound, lower_state_bound);
     
     MSodeEnvironment env(params, bodies, targetPositions);
     bool isTraining {true};
@@ -68,7 +69,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
                 isRunning = false;
                 break;
             case MSodeEnvironment::Status::Success:
-                comm->sendTermState(state, reward + bonus);
+                comm->sendTermState(state, reward + bonusReward);
                 isRunning = false;
                 break;
             };
