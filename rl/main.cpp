@@ -20,21 +20,23 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const auto bodies = createBodies("../config/swimmers_list.cfg");
     
     const int nbodies = bodies.size();
-    const int nControlVars = 4; // fieldorientation (3) and frequency (1)
-    const int nStateVars = 3 + 3 * nbodies;
-    comm->set_state_action_dims(nStateVars, nControlVars);
-
     const real bonusReward = 10.0_r;
     const std::vector<real3> targetPositions(nbodies, {10.0_r, 0.0_r, 0.0_r});
 
     const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
     const real dt = 1e-3_r;
-    const real tmax = 2000.0_r;
+    const real tmax = 5000.0_r;
     const long nstepsPerAction = 1000l;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
-    const real maxOmega = 10.0_r;
+    const real maxOmega = 20.0_r;
     const real distanceThreshold = 0.1_r;
     const Params params {timeParams, maxOmega, distanceThreshold, box};
+
+    MSodeEnvironment env(params, bodies, targetPositions);
+
+    const int nControlVars = 4; // fieldorientation (3) and frequency (1)
+    const int nStateVars = env.getState().size();
+    comm->set_state_action_dims(nStateVars, nControlVars);
 
     // action bounds
     {
@@ -49,7 +51,6 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // std::vector<double> lower_state_bound{-1, -1, -1, -1, -1, -1};
     // comm->set_state_scales(upper_state_bound, lower_state_bound);
     
-    MSodeEnvironment env(params, bodies, targetPositions);
     bool isTraining {true};
 
     while (isTraining)
