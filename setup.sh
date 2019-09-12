@@ -14,4 +14,4 @@ CFG_DIR=`pwd`/$RUNDIR/config
 mkdir -p $RUNDIR/config
 cp $MSODE_ROOT/config/swimmer*cfg $CFG_DIR/
 echo "0 $CFG_DIR/swimmer0.cfg" >  $CFG_DIR/swimmers_list.cfg
-#echo "1 $CFG_DIR/swimmer1.cfg" >> $CFG_DIR/swimmers_list.cfg 
+echo "1 $CFG_DIR/swimmer1.cfg" >> $CFG_DIR/swimmers_list.cfg 
