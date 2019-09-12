@@ -81,12 +81,18 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 
     const real tmax = 10 * computeTimeToTravel(computeMaxDistance(box, target), fieldMagnitude, bodies);
     const real dtAction = computeActionTimeScale(fieldMagnitude, bodies);
-    const long nstepsPerAction = 0.5_r * dtAction / dt;
+    const long nstepsPerAction = dtAction / dt;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
     const Params params {timeParams, maxOmega, fieldMagnitude, distanceThreshold, box};
 
+    fprintf(stderr,
+            "----------------------------------------------------------\n"
+            "tmax %g ; steps %ld ; max omega %g\n"
+            "----------------------------------------------------------\n",
+            tmax, nstepsPerAction, maxOmega);
+    
     const std::vector<real3> targetPositions(nbodies, target);
 
     MSodeEnvironment env(params, bodies, targetPositions);
