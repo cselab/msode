@@ -30,12 +30,14 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     for (int i = 0; i < nbodies; ++i)
         targetPositions.push_back({10.0_r, 0.0_r, 0.0_r}); // TODO
 
-    Params params;
-    params.nstepsPerAction = 1000l;
-    params.dt = 1e-3_r;
-    params.maxOmega = 10.0_r;
-    params.distanceThreshold = 0.5_r;
-    params.tmax = 2000.0_r;
+    const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
+    const real dt = 1e-3_r;
+    const real tmax = 2000.0_r;
+    const long nstepsPerAction = 1000l;
+    const TimeParams timeParams {dt, tmax, nstepsPerAction};
+    const real maxOmega = 10.0_r;
+    const real distanceThreshold = 0.5_r;
+    const Params params {timeParams, maxOmega, distanceThreshold, box};
     
     MSodeEnvironment env(params, bodies, targetPositions);
     bool isTraining {true};

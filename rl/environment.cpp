@@ -41,9 +41,9 @@ void MSodeEnvironment::MagnFieldState::advance(real t, real actionDt)
 MSodeEnvironment::MSodeEnvironment(const Params& params,
                                    const std::vector<RigidBody>& initialRBs,
                                    const std::vector<real3>& targetPositions) :
-    nstepsPerAction(params.nstepsPerAction),
-    dt(params.dt),
-    tmax(params.tmax),
+    nstepsPerAction(params.time.nstepsPerAction),
+    dt(params.time.dt),
+    tmax(params.time.tmax),
     distanceThreshold(params.distanceThreshold),
     magnFieldState(params.maxOmega),
     targetPositions(targetPositions)

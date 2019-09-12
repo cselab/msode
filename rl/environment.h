@@ -5,13 +5,30 @@
 #include <memory>
 #include <random>
 
+struct Box
+{
+    real3 lo, hi;
+};
+
+struct TimeParams
+{
+    real dt, tmax;
+    long nstepsPerAction;
+};
+
 struct Params
 {
-    real maxOmega;
-    real tmax;
-    real distanceThreshold;
-    long nstepsPerAction;
-    real dt;
+    Params(TimeParams time, real maxOmega, real distanceThreshold, Box initBox) :
+        time(time),
+        maxOmega(maxOmega),
+        distanceThreshold(distanceThreshold),
+        initBox(initBox)
+    {}
+
+    const TimeParams time;
+    const real maxOmega;
+    const real distanceThreshold;
+    const Box initBox;
 };
 
 class MSodeEnvironment
