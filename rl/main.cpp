@@ -85,7 +85,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const long nstepsPerAction = dtAction / dt;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
     const RewardParams rewardParams {timeCoeffReward, bonusReward};
-    const real maxOmega = 4.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
     const Params params {timeParams, rewardParams, maxOmega, fieldMagnitude, distanceThreshold, box};
 
