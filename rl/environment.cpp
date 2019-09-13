@@ -187,7 +187,7 @@ double MSodeEnvironment::getReward() const
     }
     r -= rewardParams.timeCoeff * dt * nstepsPerAction;
 
-    if (getCurrentStatus() == Status::Succes)
+    if (getCurrentStatus() == Status::Success)
         r += rewardParams.termminalBonus;
     
     return r;
