@@ -186,6 +186,9 @@ double MSodeEnvironment::getReward() const
         previousDistance[i] = distance;
     }
     r -= rewardParams.timeCoeff * dt * nstepsPerAction;
+
+    if (getCurrentStatus() == Status::Succes)
+        r += rewardParams.termminalBonus;
     
     return r;
 }

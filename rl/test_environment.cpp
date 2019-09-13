@@ -59,8 +59,6 @@ inline void appTest(int argc, char **argv)
         case MSodeEnvironment::Status::Running:
             break;
         case MSodeEnvironment::Status::MaxTimeEllapsed:
-            isRunning = false;
-            break;
         case MSodeEnvironment::Status::Success:
             isRunning = false;
             break;

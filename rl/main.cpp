@@ -143,11 +143,8 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
                 comm->sendState(state, reward);
                 break;
             case MSodeEnvironment::Status::MaxTimeEllapsed:
-                comm->sendTermState(state, reward);
-                isRunning = false;
-                break;
             case MSodeEnvironment::Status::Success:
-                comm->sendTermState(state, reward + bonusReward);
+                comm->sendTermState(state, reward);
                 isRunning = false;
                 break;
             };
