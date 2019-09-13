@@ -124,7 +124,8 @@ private:
     const Box initBox;
     const RewardParams rewardParams;
     
-    MagnFieldFromActionChange magnFieldState;
+    //MagnFieldFromActionChange magnFieldState;
+    MagnFieldFromActionDirect magnFieldState;
 
     std::vector<real3> targetPositions;
     mutable std::vector<real> previousDistance;

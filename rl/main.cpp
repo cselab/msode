@@ -23,16 +23,21 @@ static real computeMaxDistance(Box src, real3 dst)
     return d;
 }
 
-static real computeTimeToTravel(real maxDistance, real fieldMagnitude, const std::vector<RigidBody>& bodies)
+static real computeMinForwardVelocity(real fieldMagnitude, const std::vector<RigidBody>& bodies)
 {
-    real t = 0._r;
+    real v = 1e9_r;
     
     for (const auto& body : bodies)
     {
         const real vmaxBody = fieldMagnitude * length(body.magnMoment) * fabs(body.propulsion.B[0]);
-        t = std::max(t, maxDistance / vmaxBody);
+        v = std::min(v, vmaxBody);
     }
-    return t;
+    return v;
+}
+
+static real computeTimeToTravel(real maxDistance, real fieldMagnitude, const std::vector<RigidBody>& bodies)
+{
+    return maxDistance / computeMinForwardVelocity(fieldMagnitude, bodies);
 }
 
 static real computeActionTimeScale(real fieldMagnitude, const std::vector<RigidBody>& bodies)
@@ -72,7 +77,6 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     
     // parameters
     const real bonusReward = 10.0_r;
-    const real timeCoeffReward = 0.0_r;
     const real fieldMagnitude = 1.0_r;
     const real dt = 1e-3_r;
     const Box box{{-20.0_r, -10.0_r, -10.0_r},
@@ -80,6 +84,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real3 target {0.0_r, 0.0_r, 0.0_r};
     const real distanceThreshold = 0.1_r;
 
+    const real timeCoeffReward = 0.1_r * computeMinForwardVelocity(fieldMagnitude, bodies);
     const real tmax = 100.0_r * computeTimeToTravel(computeMaxDistance(box, target), fieldMagnitude, bodies);
     const real dtAction = computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
@@ -92,8 +97,11 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     fprintf(stderr,
             "----------------------------------------------------------\n"
             "tmax %g ; steps %ld ; max omega %g\n"
+            "fieldMagnitude %g\n"
+            "timeCoeffReward %g\n"
             "----------------------------------------------------------\n",
-            tmax, nstepsPerAction, maxOmega);
+            tmax, nstepsPerAction, maxOmega,
+            fieldMagnitude, timeCoeffReward);
     
     const std::vector<real3> targetPositions(nbodies, target);
 
@@ -106,8 +114,8 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // action bounds
     {
         const bool bounded = true;
-        const std::vector<double> upper_action_bound{+0.5 * maxOmega, +0.5, +0.5, +0.5},
-                                  lower_action_bound{-0.5 * maxOmega, -0.5, -0.5, -0.5};
+        const std::vector<double> upper_action_bound{maxOmega, 1.0, 1.0, 1.0},
+                                  lower_action_bound{0.0, -1.0, -1.0, -1.0};
         comm->set_action_scales(upper_action_bound, lower_action_bound, bounded);
     }
 
@@ -120,34 +128,27 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 
     while (isTraining)
     {
-        bool isRunning {true};
+        auto status {MSodeEnvironment::Status::Running};
 
         env.reset(comm->getPRNG());
         comm->sendInitState(env.getState());
 
-        while (isRunning) // simulation loop
+        while (status == MSodeEnvironment::Status::Running) // simulation loop
         {
             const auto action = comm->recvAction();
 
             if (comm->terminateTraining())
                 return;
 
-            auto status = env.advance(action);
+            status = env.advance(action);
 
             const auto& state  = env.getState();
             const auto  reward = env.getReward();
 
-            switch (status)
-            {
-            case MSodeEnvironment::Status::Running:
+            if (status == MSodeEnvironment::Status::Running)
                 comm->sendState(state, reward);
-                break;
-            case MSodeEnvironment::Status::MaxTimeEllapsed:
-            case MSodeEnvironment::Status::Success:
+            else
                 comm->sendTermState(state, reward);
-                isRunning = false;
-                break;
-            };
         }
     }
 }
