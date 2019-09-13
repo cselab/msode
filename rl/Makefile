@@ -8,7 +8,7 @@ LDFLAGS += -L$(CORE_DIR) -lmsode
 CXXFLAGS += -Wall -O2 -I${SMARTIES_ROOT}/include
 LDFLAGS  += -L${SMARTIES_ROOT}/lib -lsmarties
 
-all: main
+all: msode_rl
 
 environment.o: environment.cpp environment.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
@@ -16,8 +16,8 @@ environment.o: environment.cpp environment.h
 main.o: main.cpp  environment.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-main: main.o environment.o
+msode_rl: main.o environment.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 .PHONY: all clean
-clean:; rm -rf main *.o
+clean:; rm -rf msode_rl *.o

@@ -11,8 +11,8 @@ apps:
 	@make -C $(APPS_DIR) all
 
 msode_rl: libmsode.a
-	@make -C $(RL_DIR) main
-	@cp $(RL_DIR)/main $@
+	@make -C $(RL_DIR) msode_rl
+	@cp $(RL_DIR)/msode_rl $@
 
 clean:
 	make -C $(CORE_DIR) clean
