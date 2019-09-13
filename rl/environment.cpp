@@ -61,6 +61,31 @@ real3 MagnFieldFromActionChange::getAxis(real t) const
 }
 
 
+
+
+
+void MagnFieldFromActionDirect::setAction(const std::vector<double>& action)
+{
+    Expect(action.size() == 4, "expect action of size 4");
+    constexpr real tolerance = 1e-6_r;
+    
+    omega = action[0];
+    axis.x = action[1];
+    axis.y = action[2];
+    axis.z = action[3];
+    if (dot(axis, axis) < tolerance)
+        axis.x = 1.0_r;
+    axis = normalized(axis);
+}
+
+void MagnFieldFromActionDirect::advance(real t) {}
+real MagnFieldFromActionDirect::getOmega(real t) const {return omega;}
+real3 MagnFieldFromActionDirect::getAxis(real t) const {return axis;}
+
+
+
+
+
 MSodeEnvironment::MSodeEnvironment(const Params& params,
                                    const std::vector<RigidBody>& initialRBs,
                                    const std::vector<real3>& targetPositions) :

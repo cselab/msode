@@ -72,6 +72,26 @@ private:
     real3 axisActionChange(real t) const;
 };
 
+struct MagnFieldFromActionDirect
+{
+    MagnFieldFromActionDirect(real maxOmega, real actionDt) :
+        maxOmega(maxOmega),
+        actionDt(actionDt)
+    {}
+
+    void setAction(const std::vector<double>& action);
+
+    void advance(real t);
+    real getOmega(real t) const;
+    real3 getAxis(real t) const;
+        
+private:
+    const real maxOmega;
+    const real actionDt;
+        
+    real omega {0._r};
+    real3 axis {1._r, 0._r, 0._r};
+};
 
 class MSodeEnvironment
 {
