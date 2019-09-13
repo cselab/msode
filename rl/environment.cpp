@@ -12,7 +12,7 @@ std::array<real3, 8> Box::getCorners() const
             real3 {hi.x, hi.y, hi.z}};
 }
 
-void MSodeEnvironment::MagnFieldState::setAction(const std::vector<double>& action)
+void MagnFieldFromActionChange::setAction(const std::vector<double>& action)
 {
     Expect(action.size() == 4, "expect action of size 4");
     dOmega = action[0];
@@ -25,19 +25,19 @@ void MSodeEnvironment::MagnFieldState::setAction(const std::vector<double>& acti
 inline real transitionSmoothKernel(real x) { return x * x * (3.0_r - 2.0_r * x); }
 inline real transitionLinearKernel(real x) { return x; }
 
-real MSodeEnvironment::MagnFieldState::omegaActionChange(real t) const
+real MagnFieldFromActionChange::omegaActionChange(real t) const
 {
     const real tau = (t - lastActionTime) / actionDt;
     return transitionLinearKernel(tau) * dOmega;
 }
 
-real3 MSodeEnvironment::MagnFieldState::axisActionChange(real t) const
+real3 MagnFieldFromActionChange::axisActionChange(real t) const
 {
     const real tau = (t - lastActionTime) / actionDt;
     return transitionSmoothKernel(tau) * dAxis;
 }
 
-void MSodeEnvironment::MagnFieldState::advance(real t)
+void MagnFieldFromActionChange::advance(real t)
 {
     // advance
     lastOmega += omegaActionChange(t);
@@ -50,12 +50,12 @@ void MSodeEnvironment::MagnFieldState::advance(real t)
     lastAxis = normalized(lastAxis);
 }
 
-real MSodeEnvironment::MagnFieldState::getOmega(real t) const
+real MagnFieldFromActionChange::getOmega(real t) const
 {
     return lastOmega + omegaActionChange(t);
 }
 
-real3 MSodeEnvironment::MagnFieldState::getAxis(real t) const
+real3 MagnFieldFromActionChange::getAxis(real t) const
 {
     return lastAxis + axisActionChange(t);
 }
