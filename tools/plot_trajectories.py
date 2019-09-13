@@ -10,30 +10,44 @@ parser.add_argument('--file', type=str, required=True, help='output of ODE simul
 parser.add_argument('--out', type=str, default="GUI")
 args = parser.parse_args()
 
-data = np.loadtxt(args.file)
-
-ncolumnds_per_rigid = 4 + 3 + 3 # q, r, w
-
-ncolumns = len(data[0,:])
-nrigids = (ncolumns-1) // ncolumnds_per_rigid
-
-def readRigidData(data):
+def read_rigid_data(data):
     q = data[:,0:4]
     r = data[:,4:7]
     w = data[:,7:10]
     return q, r, w
 
-t     = data[:,0]
+def plot_trajectory(ax, x, y, z):
+    ax.plot(x, y, z, '-')
+
+def plot_trajectory_time_colored(ax, t, x, y, z, cmap):
+    # ax.scatter(x, y, z, c = plt.cm.jet(t))
+
+    n = len(x)
+    for i in range(n-1):
+        ax.plot(x[i:i+2], y[i:i+2], z[i:i+2], color = cmap(i/(n-1)))
+
+
+data = np.loadtxt(args.file)[:-1,:]
+
+ncolumnds_per_rigid = 4 + 3 + 3 # q, r, w
+
+ncolumns = len(data[0,:])
+nrigids = (ncolumns-1) // ncolumnds_per_rigid
+t = data[:,0]
 
 fig = plt.figure(0)
 ax = fig.add_subplot(111, projection='3d')
 
+cmaps = [plt.cm.viridis, plt.cm.jet]
+
 for i in range(nrigids):
     start = 1 + i * ncolumnds_per_rigid
     end = start + ncolumnds_per_rigid
-    q, pos, omega = readRigidData(data[:, start:end]) 
+    q, pos, omega = read_rigid_data(data[:, start:end]) 
 
-    ax.plot(pos[:,0], pos[:,1], pos[:,2], '-')
+    #plot_trajectory(ax, pos[:,0], pos[:,1], pos[:,2])
+    plot_trajectory_time_colored(ax, t, pos[:,0], pos[:,1], pos[:,2], cmaps[i%len(cmaps)])
+    
 
 ax.set_xlabel(r'$x$')
 ax.set_ylabel(r'$y$')
