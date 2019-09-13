@@ -60,6 +60,7 @@ public:
 private:
     void setDistances();
     bool bodiesWithinDistanceToTargets() const;
+    Status getCurrentStatus() const;
     
 public:
     std::unique_ptr<Simulation> sim;

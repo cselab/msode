@@ -137,11 +137,9 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
     {
         sim->advance(dt);
 
-        if (sim->getCurrentTime() > tmax)
-            return Status::MaxTimeEllapsed;
-
-        if (bodiesWithinDistanceToTargets())
-            return Status::Success;
+        auto status = getCurrentStatus();
+        if (status != Status::Running)
+            return status;
     }
     
     return Status::Running;
@@ -188,6 +186,7 @@ double MSodeEnvironment::getReward() const
         previousDistance[i] = distance;
     }
     r -= rewardParams.timeCoeff * dt * nstepsPerAction;
+    
     return r;
 }
 
@@ -214,4 +213,15 @@ bool MSodeEnvironment::bodiesWithinDistanceToTargets() const
         maxDistance = std::max(maxDistance, distance);
     }
     return maxDistance < distanceThreshold;
+}
+
+MSodeEnvironment::Status MSodeEnvironment::getCurrentStatus() const
+{
+    if (sim->getCurrentTime() > tmax)
+        return Status::MaxTimeEllapsed;
+
+    if (bodiesWithinDistanceToTargets())
+        return Status::Success;
+
+    return Status::Running;
 }
