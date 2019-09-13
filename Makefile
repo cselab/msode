@@ -1,7 +1,7 @@
 CORE_DIR=core
 RL_DIR=rl
 
-all: msode_rl msode test_environment
+all: msode_rl msode
 
 msode:
 	@make -C $(CORE_DIR) main
@@ -13,10 +13,6 @@ libmsode.a:
 msode_rl: libmsode.a
 	@make -C $(RL_DIR) main
 	@cp $(RL_DIR)/main $@
-
-test_environment: libmsode.a
-	@make -C $(RL_DIR) test_environment
-	@cp $(RL_DIR)/test_environment $@
 
 clean:
 	make -C $(CORE_DIR) clean

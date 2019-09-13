@@ -175,8 +175,9 @@ const std::vector<double>& MSodeEnvironment::getState() const
 double MSodeEnvironment::getReward() const
 {
     real r {0.0_r};
-    
+    const auto status = getCurrentStatus();
     const auto& bodies = sim->getBodies();
+    
     for (size_t i = 0; i < bodies.size(); ++i)
     {
         const real3 dr = bodies[i].r - targetPositions[i];
@@ -184,10 +185,13 @@ double MSodeEnvironment::getReward() const
         
         r += previousDistance[i] - distance;
         previousDistance[i] = distance;
+
+        if (status != Status::Running) // termination state
+            r += 10.0_r * std::exp(-distance*distance);
     }
     r -= rewardParams.timeCoeff * dt * nstepsPerAction;
 
-    if (getCurrentStatus() == Status::Success)
+    if (status == Status::Success)
         r += rewardParams.termminalBonus;
     
     return r;
