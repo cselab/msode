@@ -215,10 +215,11 @@ double MSodeEnvironment::getReward() const
     
     for (size_t i = 0; i < bodies.size(); ++i)
     {
+        const real alpha = rewardParams.multipliers[i];
         const real3 dr = bodies[i].r - targetPositions[i];
         const real distance = length(dr);
         
-        r += previousDistance[i] - distance;
+        r += alpha * (previousDistance[i] - distance);
         previousDistance[i] = distance;
 
         // if (status != Status::Running) // termination state

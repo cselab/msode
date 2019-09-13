@@ -21,6 +21,7 @@ struct RewardParams
 {
     real timeCoeff;
     real termminalBonus;
+    std::vector<real> multipliers;
 };
 
 struct Params

@@ -67,6 +67,24 @@ static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
     return wmax;
 }
 
+static auto getRewardMultipliers(const std::vector<RigidBody>& bodies)
+{
+    Expect (bodies.size() >= 1, "can not work with nobody!!");
+
+    auto bodyValue = [](const RigidBody& body) // related to step-out frequency of body
+    {
+        return fabs(body.propulsion.C[0]) * length(body.magnMoment);
+    };
+    // set the first entry as reference
+    const auto refVal = bodyValue(bodies[0]);
+    
+    std::vector<real> multipliers;
+
+    for (const auto& body : bodies)
+        multipliers.push_back(refVal / bodyValue(body));
+    
+    return multipliers;
+}
 
 inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 {
@@ -79,8 +97,8 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real bonusReward = 10.0_r;
     const real fieldMagnitude = 1.0_r;
     const real dt = 1e-3_r;
-    const Box box{{-20.0_r, -10.0_r, -10.0_r},
-                  {  0.0_r, +10.0_r, +10.0_r}};
+    const Box box{{-10.0_r, -5.0_r, -5.0_r},
+                  {-10.0_r, +5.0_r, +5.0_r}};
     const real3 target {0.0_r, 0.0_r, 0.0_r};
     const real distanceThreshold = 0.1_r;
 
@@ -89,7 +107,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real dtAction = computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
-    const RewardParams rewardParams {timeCoeffReward, bonusReward};
+    const RewardParams rewardParams {timeCoeffReward, bonusReward, getRewardMultipliers(bodies)};
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
     const Params params {timeParams, rewardParams, maxOmega, fieldMagnitude, distanceThreshold, box};
