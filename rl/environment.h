@@ -59,7 +59,7 @@ public:
 
 private:
     void setDistances();
-    bool bodiesWithinDistanceToTargets(real threshold) const;
+    bool bodiesWithinDistanceToTargets() const;
     
 public:
     std::unique_ptr<Simulation> sim;
@@ -70,6 +70,7 @@ private:
     const real tmax;
     const real distanceThreshold;
     const Box initBox;
+    const RewardParams rewardParams;
     
 
     struct MagnFieldState

@@ -58,6 +58,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
     tmax(params.time.tmax),
     distanceThreshold(params.distanceThreshold),
     initBox(params.initBox),
+    rewardParams(params.reward),
     magnFieldState(params.maxOmega),
     targetPositions(targetPositions)
 {
@@ -139,7 +140,7 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
         if (sim->getCurrentTime() > tmax)
             return Status::MaxTimeEllapsed;
 
-        if (bodiesWithinDistanceToTargets(distanceThreshold))
+        if (bodiesWithinDistanceToTargets())
             return Status::Success;
     }
     
@@ -186,7 +187,7 @@ double MSodeEnvironment::getReward() const
         r += previousDistance[i] - distance;
         previousDistance[i] = distance;
     }
-    r -= 0.01_r * dt * nstepsPerAction; // TODO
+    r -= rewardParams.timeCoeff * dt * nstepsPerAction;
     return r;
 }
 
@@ -202,7 +203,7 @@ void MSodeEnvironment::setDistances()
     }
 }
 
-bool MSodeEnvironment::bodiesWithinDistanceToTargets(real threshold) const
+bool MSodeEnvironment::bodiesWithinDistanceToTargets() const
 {
     real maxDistance = 0.0_r;
     const auto& bodies = sim->getBodies();
@@ -212,5 +213,5 @@ bool MSodeEnvironment::bodiesWithinDistanceToTargets(real threshold) const
         const real distance = length(bodies[i].r - targetPositions[i]);
         maxDistance = std::max(maxDistance, distance);
     }
-    return maxDistance < threshold;
+    return maxDistance < distanceThreshold;
 }
