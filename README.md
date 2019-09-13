@@ -2,23 +2,26 @@
 
 microswimmer ODE solver
 
+## compilation
+
+In release mode:
+
+	make apps
+
+In debug mode:
+
+	debug=1 make apps
+
 ## usage
 
-in release mode:
-
-	make mainTest
-	./mainTest config0.cfg config1.cfg ...
-
-
-in debug mode:
-
-	debug=1 make mainTest
-	./mainTest config0.cfg config1.cfg ...
-
-where `config0.cfg` is the initial configuration of rigid 0 (see `config/test.cfg` for example).
+See `./app` help messages.
+Configuration files for swimmers examples can be found in the `config/`directory.
 
 
 ## Reinforcement Learning
 
-**work in progress**
+Compile the application:
 
+	make msode_rl
+
+See [smarties](https://github.com/cselab/smarties) for usage.
