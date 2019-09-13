@@ -72,6 +72,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     
     // parameters
     const real bonusReward = 10.0_r;
+    const real timeCoeffReward = 0.0_r;
     const real fieldMagnitude = 1.0_r;
     const real dt = 1e-3_r;
     const Box box{{-20.0_r, -10.0_r, -10.0_r},
@@ -83,9 +84,10 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real dtAction = computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
+    const RewardParams rewardParams {bonusReward, timeCoeffReward};
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
-    const Params params {timeParams, maxOmega, fieldMagnitude, distanceThreshold, box};
+    const Params params {timeParams, rewardParams, maxOmega, fieldMagnitude, distanceThreshold, box};
 
     fprintf(stderr,
             "----------------------------------------------------------\n"

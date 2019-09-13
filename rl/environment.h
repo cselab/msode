@@ -17,10 +17,17 @@ struct TimeParams
     long nstepsPerAction;
 };
 
+struct RewardParams
+{
+    real timeCoeff;
+    real termminalBonus;
+};
+
 struct Params
 {
-    Params(TimeParams time, real maxOmega, real fieldMagnitude, real distanceThreshold, Box initBox) :
+    Params(TimeParams time, RewardParams reward, real maxOmega, real fieldMagnitude, real distanceThreshold, Box initBox) :
         time(time),
+        reward(reward),
         maxOmega(maxOmega),
         fieldMagnitude(fieldMagnitude),
         distanceThreshold(distanceThreshold),
@@ -28,6 +35,7 @@ struct Params
     {}
 
     const TimeParams time;
+    const RewardParams reward;
     const real maxOmega;
     const real fieldMagnitude;
     const real distanceThreshold;

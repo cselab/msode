@@ -12,15 +12,19 @@ inline void appTest(int argc, char **argv)
     // const int nControlVars = 4; // fieldorientation (3) and frequency (1)
     // const int nStateVars = 3 + 3 * nbodies;
 
+    const real bonusReward = 10.0_r;
+    const real timeCoeffReward = 0.0_r;
+
     const real dt = 1e-3_r;
     const real tmax = 2000.0_r;
     const long nstepsPerAction = 1000l;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
+    const RewardParams rewardParams {bonusReward, timeCoeffReward};
     const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
     const real maxOmega = 10.0_r;
     const real fieldMagnitude = 1.0_r;
     const real distanceThreshold = 0.5_r;
-    const Params params {timeParams, maxOmega, fieldMagnitude, distanceThreshold, box};
+    const Params params {timeParams, rewardParams, maxOmega, fieldMagnitude, distanceThreshold, box};
 
     std::vector<real3> targetPositions;
 
