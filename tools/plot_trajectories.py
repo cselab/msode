@@ -45,8 +45,8 @@ for i in range(nrigids):
     end = start + ncolumnds_per_rigid
     q, pos, omega = read_rigid_data(data[:, start:end]) 
 
-    #plot_trajectory(ax, pos[:,0], pos[:,1], pos[:,2])
-    plot_trajectory_time_colored(ax, t, pos[:,0], pos[:,1], pos[:,2], cmaps[i%len(cmaps)])
+    plot_trajectory(ax, pos[:,0], pos[:,1], pos[:,2])
+    #plot_trajectory_time_colored(ax, t, pos[:,0], pos[:,1], pos[:,2], cmaps[i%len(cmaps)])
     
 
 ax.set_xlabel(r'$x$')
