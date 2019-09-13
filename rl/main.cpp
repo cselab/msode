@@ -80,12 +80,12 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real3 target {0.0_r, 0.0_r, 0.0_r};
     const real distanceThreshold = 0.1_r;
 
-    const real tmax = 100 * computeTimeToTravel(computeMaxDistance(box, target), fieldMagnitude, bodies);
+    const real tmax = 100.0_r * computeTimeToTravel(computeMaxDistance(box, target), fieldMagnitude, bodies);
     const real dtAction = computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
-    const RewardParams rewardParams {bonusReward, timeCoeffReward};
-    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+    const RewardParams rewardParams {timeCoeffReward, bonusReward};
+    const real maxOmega = 4.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
     const Params params {timeParams, rewardParams, maxOmega, fieldMagnitude, distanceThreshold, box};
 

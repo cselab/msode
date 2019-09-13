@@ -19,7 +19,7 @@ inline void appTest(int argc, char **argv)
     const real tmax = 2000.0_r;
     const long nstepsPerAction = 1000l;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
-    const RewardParams rewardParams {bonusReward, timeCoeffReward};
+    const RewardParams rewardParams {timeCoeffReward, bonusReward};
     const Box box{{-10.0_r, -10.0_r, -10.0_r}, {+10.0_r, +10.0_r, +10.0_r}};
     const real maxOmega = 10.0_r;
     const real fieldMagnitude = 1.0_r;

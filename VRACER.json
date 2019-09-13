@@ -3,7 +3,7 @@
   "ERoldSeqFilter": "oldest",
   "ESpopSize": 1,
   "batchSize": 256,
-  "clipImpWeight": 4,
+  "clipImpWeight": 1,
   "dataSamplingAlgo": "uniform",
   "encoderLayerSizes": [0],
   "epsAnneal": 0,
