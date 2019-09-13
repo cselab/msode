@@ -164,11 +164,11 @@ const std::vector<double>& MSodeEnvironment::getState() const
         cachedState.push_back(dr.y);
         cachedState.push_back(dr.z);
 
-        // const auto q = bodies[i].q;
-        // cachedState.push_back(q.w);
-        // cachedState.push_back(q.x);
-        // cachedState.push_back(q.y);
-        // cachedState.push_back(q.z);
+        const auto q = bodies[i].q;
+        cachedState.push_back(q.w);
+        cachedState.push_back(q.x);
+        cachedState.push_back(q.y);
+        cachedState.push_back(q.z);
     }
 
     return cachedState;
