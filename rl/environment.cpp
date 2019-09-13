@@ -25,23 +25,23 @@ void MSodeEnvironment::MagnFieldState::setAction(const std::vector<double>& acti
 inline real transitionSmoothKernel(real x) { return x * x * (3.0_r - 2.0_r * x); }
 inline real transitionLinearKernel(real x) { return x; }
 
-real MSodeEnvironment::MagnFieldState::omegaActionChange(real t, real actionDt)
+real MSodeEnvironment::MagnFieldState::omegaActionChange(real t) const
 {
     const real tau = (t - lastActionTime) / actionDt;
     return transitionLinearKernel(tau) * dOmega;
 }
 
-real3 MSodeEnvironment::MagnFieldState::axisActionChange(real t, real actionDt)
+real3 MSodeEnvironment::MagnFieldState::axisActionChange(real t) const
 {
     const real tau = (t - lastActionTime) / actionDt;
     return transitionSmoothKernel(tau) * dAxis;
 }
 
-void MSodeEnvironment::MagnFieldState::advance(real t, real actionDt)
+void MSodeEnvironment::MagnFieldState::advance(real t)
 {
     // advance
-    lastOmega += omegaActionChange(t, actionDt);
-    lastAxis += axisActionChange(t, actionDt);
+    lastOmega += omegaActionChange(t);
+    lastAxis += axisActionChange(t);
     lastActionTime = t;
 
     // constraints
@@ -49,6 +49,17 @@ void MSodeEnvironment::MagnFieldState::advance(real t, real actionDt)
     lastOmega = std::min(lastOmega, maxOmega);
     lastAxis = normalized(lastAxis);
 }
+
+real MSodeEnvironment::MagnFieldState::getOmega(real t) const
+{
+    return lastOmega + omegaActionChange(t);
+}
+
+real3 MSodeEnvironment::MagnFieldState::getAxis(real t) const
+{
+    return lastAxis + axisActionChange(t);
+}
+
 
 MSodeEnvironment::MSodeEnvironment(const Params& params,
                                    const std::vector<RigidBody>& initialRBs,
@@ -59,21 +70,19 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
     distanceThreshold(params.distanceThreshold),
     initBox(params.initBox),
     rewardParams(params.reward),
-    magnFieldState(params.maxOmega),
+    magnFieldState(params.maxOmega, nstepsPerAction * dt),
     targetPositions(targetPositions)
 {
     Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
-    const real dtAction = nstepsPerAction * dt;
-    
-    auto omegaFunction = [this, dtAction](real t)
+    auto omegaFunction = [this](real t)
     {
-        return magnFieldState.lastOmega + magnFieldState.omegaActionChange(t, dtAction);
+        return magnFieldState.getOmega(t);
     };
 
-    auto rotatingDirection = [this, dtAction](real t) -> real3
+    auto rotatingDirection = [this](real t) -> real3
     {
-        const real3 axis = magnFieldState.lastAxis + magnFieldState.axisActionChange(t, dtAction);
+        const real3 axis = magnFieldState.getAxis(t);
         return normalized(axis);
     };
     
@@ -130,7 +139,7 @@ void MSodeEnvironment::reset(std::mt19937& gen)
 
 MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& action)
 {
-    magnFieldState.advance(sim->getCurrentTime(), nstepsPerAction * dt);
+    magnFieldState.advance(sim->getCurrentTime());
     magnFieldState.setAction(action);
 
     for (long step = 0; step < nstepsPerAction; ++step)
@@ -147,7 +156,8 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
 
 const std::vector<double>& MSodeEnvironment::getState() const
 {
-    const real3 fieldDesc = magnFieldState.lastOmega * magnFieldState.lastAxis;
+    const auto t = sim->getCurrentTime();
+    const real3 fieldDesc = magnFieldState.getOmega(t) * magnFieldState.getAxis(t);
     cachedState.resize(0);
     cachedState.push_back(fieldDesc.x);
     cachedState.push_back(fieldDesc.y);
