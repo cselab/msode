@@ -10,13 +10,10 @@ LDFLAGS  += -L${SMARTIES_ROOT}/lib -lsmarties
 
 all: msode_rl
 
-environment.o: environment.cpp environment.h magnetic_field_from_action.h
+main.o: main.cpp  environment.h magnetic_field_from_action.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-main.o: main.cpp  environment.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-msode_rl: main.o environment.o
+msode_rl: main.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 .PHONY: all clean

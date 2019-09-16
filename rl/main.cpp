@@ -127,7 +127,8 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     
     const std::vector<real3> targetPositions(nbodies, target);
 
-    MSodeEnvironment env(params, bodies, targetPositions);
+    MSodeEnvironment<MagnFieldFromActionDirect> env(params, bodies, targetPositions);
+    using Status = MSodeEnvironment<MagnFieldFromActionDirect>::Status;
 
     const int nControlVars = 4; // fieldorientation (3) and frequency (1)
     const int nStateVars = env.getState().size();
@@ -150,12 +151,12 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 
     while (isTraining)
     {
-        auto status {MSodeEnvironment::Status::Running};
+        auto status {Status::Running};
 
         env.reset(comm->getPRNG());
         comm->sendInitState(env.getState());
 
-        while (status == MSodeEnvironment::Status::Running) // simulation loop
+        while (status == Status::Running) // simulation loop
         {
             const auto action = comm->recvAction();
 
@@ -167,7 +168,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
             const auto& state  = env.getState();
             const auto  reward = env.getReward();
 
-            if (status == MSodeEnvironment::Status::Running)
+            if (status == Status::Running)
                 comm->sendState(state, reward);
             else
                 comm->sendTermState(state, reward);
