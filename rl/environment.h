@@ -89,9 +89,12 @@ public:
         MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
         sim = std::make_unique<Simulation>(initialRBs, field);
-        sim->activateDump("trajectories.txt", 1000);
+        constexpr int dumpEvery = 1000;
+        sim->activateDump("trajectories.txt", dumpEvery);
         setDistances();
     }
+
+    static constexpr int numActions = MagnFieldFromAction::numActions;
 
     void reset(std::mt19937& gen)
     {

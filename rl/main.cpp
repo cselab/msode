@@ -130,7 +130,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     MSodeEnvironment<MagnFieldFromActionDirect> env(params, bodies, targetPositions);
     using Status = MSodeEnvironment<MagnFieldFromActionDirect>::Status;
 
-    const int nControlVars = 4; // fieldorientation (3) and frequency (1)
+    const int nControlVars = env.numActions;
     const int nStateVars = env.getState().size();
     comm->set_state_action_dims(nStateVars, nControlVars);
 

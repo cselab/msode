@@ -13,6 +13,8 @@ struct MagnFieldFromActionChange
         actionDt(actionDt)
     {}
 
+    static constexpr int numActions = 4;
+    
     void setAction(const std::vector<double>& action)
     {
         Expect(action.size() == 4, "expect action of size 4");
@@ -81,12 +83,14 @@ struct MagnFieldFromActionDirect
         actionDt(actionDt)
     {}
 
+    static constexpr int numActions = 4;
+    
     void setAction(const std::vector<double>& action)
     {
         Expect(action.size() == 4, "expect action of size 4");
         constexpr real tolerance = 1e-6_r;
     
-        omega = action[0];
+        omega = std::min(maxOmega, std::max(0._r, static_cast<real>(action[0])));
         axis.x = action[1];
         axis.y = action[2];
         axis.z = action[3];
