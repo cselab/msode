@@ -8,6 +8,7 @@ from mpl_toolkits.mplot3d import Axes3D
 parser = argparse.ArgumentParser()
 parser.add_argument('--file', type=str, required=True, help='output of ODE simulation')
 parser.add_argument('--out', type=str, default="GUI")
+parser.add_argument('--multi_color', action='store_true', default=False)
 args = parser.parse_args()
 
 def read_rigid_data(data):
@@ -45,8 +46,11 @@ for i in range(nrigids):
     end = start + ncolumnds_per_rigid
     q, pos, omega = read_rigid_data(data[:, start:end]) 
 
-    plot_trajectory(ax, pos[:,0], pos[:,1], pos[:,2])
-    #plot_trajectory_time_colored(ax, t, pos[:,0], pos[:,1], pos[:,2], cmaps[i%len(cmaps)])
+    if args.multi_color:
+        plot_trajectory_time_colored(ax, t, pos[:,0], pos[:,1], pos[:,2], cmaps[i%len(cmaps)])
+    else:
+        plot_trajectory(ax, pos[:,0], pos[:,1], pos[:,2])
+    
     
 
 ax.set_xlabel(r'$x$')
