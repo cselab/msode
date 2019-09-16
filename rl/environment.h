@@ -21,6 +21,7 @@ struct RewardParams
 {
     real timeCoeff;
     real termminalBonus;
+    real beta, K; // termination reward
     std::vector<real> multipliers;
 };
 
@@ -112,7 +113,7 @@ private:
     void setDistances();
     bool bodiesWithinDistanceToTargets() const;
     Status getCurrentStatus() const;
-    
+
 public:
     std::unique_ptr<Simulation> sim;
 

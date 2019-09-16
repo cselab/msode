@@ -181,12 +181,12 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
 
 const std::vector<double>& MSodeEnvironment::getState() const
 {
-    const auto t = sim->getCurrentTime();
-    const real3 fieldDesc = magnFieldState.getOmega(t) * magnFieldState.getAxis(t);
+    // const auto t = sim->getCurrentTime();
+    // const real3 fieldDesc = magnFieldState.getOmega(t) * magnFieldState.getAxis(t);
     cachedState.resize(0);
-    cachedState.push_back(fieldDesc.x);
-    cachedState.push_back(fieldDesc.y);
-    cachedState.push_back(fieldDesc.z);
+    // cachedState.push_back(fieldDesc.x);
+    // cachedState.push_back(fieldDesc.y);
+    // cachedState.push_back(fieldDesc.z);
     
     const auto& bodies = sim->getBodies();
 
@@ -222,13 +222,13 @@ double MSodeEnvironment::getReward() const
         r += alpha * (previousDistance[i] - distance);
         previousDistance[i] = distance;
 
-        // if (status != Status::Running) // termination state
-        //     r += 10.0_r * std::exp(-distance*distance);
+        if (status != Status::Running) // termination state
+            r += rewardParams.K * std::exp(-distance*distance * rewardParams.beta);
     }
     r -= rewardParams.timeCoeff * dt * nstepsPerAction;
 
-    if (status == Status::Success)
-        r += rewardParams.termminalBonus;
+    // if (status == Status::Success)
+    //     r += rewardParams.termminalBonus;
     
     return r;
 }
