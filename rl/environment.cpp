@@ -1,17 +1,5 @@
 #include "environment.h"
 
-std::array<real3, 8> Box::getCorners() const
-{
-    return {real3 {lo.x, lo.y, lo.z},
-            real3 {lo.x, lo.y, hi.z},
-            real3 {lo.x, hi.y, lo.z},
-            real3 {lo.x, hi.y, hi.z},
-            real3 {hi.x, lo.y, lo.z},
-            real3 {hi.x, lo.y, hi.z},
-            real3 {hi.x, hi.y, lo.z},
-            real3 {hi.x, hi.y, hi.z}};
-}
-
 void MagnFieldFromActionChange::setAction(const std::vector<double>& action)
 {
     Expect(action.size() == 4, "expect action of size 4");
