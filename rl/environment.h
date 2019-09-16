@@ -72,6 +72,8 @@ public:
     {
         Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
+        magnFieldState.attach(this);
+        
         auto omegaFunction = [this](real t)
         {
             return magnFieldState.getOmega(t);
@@ -92,6 +94,7 @@ public:
     }
 
     int numActions() const {return magnFieldState.numActions();}
+    auto getActionBounds() const {return magnFieldState.getActionBounds();}
 
     void reset(std::mt19937& gen)
     {

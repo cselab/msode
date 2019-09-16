@@ -129,9 +129,11 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const std::vector<real3> targetPositions(nbodies, target);
 
     using MagnFieldActionType = MagnFieldFromActionDirect;
+    MagnFieldActionType magnFieldAction(maxOmega);
+
     using Status = MSodeEnvironment<MagnFieldActionType>::Status;
     
-    MagnFieldActionType magnFieldAction(maxOmega);
+
     MSodeEnvironment<MagnFieldActionType> env(params, bodies, targetPositions, magnFieldAction);
     
 
@@ -142,9 +144,9 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // action bounds
     {
         const bool bounded = true;
-        const std::vector<double> upper_action_bound{maxOmega, 1.0, 1.0, 1.0},
-                                  lower_action_bound{0.0, -1.0, -1.0, -1.0};
-        comm->set_action_scales(upper_action_bound, lower_action_bound, bounded);
+        std::vector<double> lo, hi;
+        std::tie(lo, hi) = env.getActionBounds();
+        comm->set_action_scales(hi, lo, bounded);
     }
 
     //OPTIONAL: set space bounds

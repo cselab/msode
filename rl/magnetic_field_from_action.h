@@ -6,6 +6,7 @@
 #include <math.h>
 #include <types.h>
 
+#include <tuple>
 #include <vector>
 
 struct MagnFieldFromActionBase
@@ -15,7 +16,8 @@ struct MagnFieldFromActionBase
     {}
 
     virtual int numActions() const = 0;
-    
+
+    virtual std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const = 0;
     virtual void setAction(const std::vector<double>& action) = 0;
     virtual void advance(real t) {}
 
@@ -36,7 +38,15 @@ struct MagnFieldFromActionChange : MagnFieldFromActionBase
 
     MagnFieldFromActionChange(const MagnFieldFromActionChange&) = default;
 
+    void attach(const MSodeEnvironment<MagnFieldFromActionChange> *env) {this->env = env;}
+
     int numActions() const override {return 4;}
+
+    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
+    {
+        return {{0.0, -1.0, -1.0, -1.0},
+                {maxOmega, 1.0, 1.0, 1.0}};
+    }
     
     void setAction(const std::vector<double>& action) override
     {
@@ -72,6 +82,7 @@ struct MagnFieldFromActionChange : MagnFieldFromActionBase
 
 
 private:
+    const MSodeEnvironment<MagnFieldFromActionChange> *env {nullptr};
     const real actionDt;
     
     real lastOmega {0._r};
@@ -106,7 +117,15 @@ struct MagnFieldFromActionDirect : MagnFieldFromActionBase
 
     MagnFieldFromActionDirect(const MagnFieldFromActionDirect&) = default;
 
+    void attach(const MSodeEnvironment<MagnFieldFromActionDirect> *env) {this->env = env;}
+
     int numActions() const override {return 4;}
+
+    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
+    {
+        return {{0.0, -1.0, -1.0, -1.0},
+                {maxOmega, 1.0, 1.0, 1.0}};
+    }
     
     void setAction(const std::vector<double>& action) override
     {
@@ -129,19 +148,35 @@ private:
 
     real omega {0._r};
     real3 axis {1._r, 0._r, 0._r};
+
+    const MSodeEnvironment<MagnFieldFromActionDirect> *env{nullptr};
 };
 
 struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
 {
-    MagnFieldFromActionFromTargets(real maxOmega,
-                                   const MSodeEnvironment<MagnFieldFromActionFromTargets> *env) :
+    MagnFieldFromActionFromTargets(real maxOmega) :
         MagnFieldFromActionBase(maxOmega),
-        env(env)
+        env(nullptr)
     {}
 
     MagnFieldFromActionFromTargets(const MagnFieldFromActionFromTargets&) = default;
+
+    void attach(const MSodeEnvironment<MagnFieldFromActionFromTargets> *env) {this->env = env;}
     
     int numActions() const override {return 1 + env->getBodies().size();}
+
+    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
+    {
+        std::vector<double> lo{0.0}, hi{maxOmega};
+
+        for (size_t i = 0; i < env->getBodies().size(); ++i)
+        {
+            lo.push_back(0.0_r);
+            lo.push_back(1.0_r);
+        }
+        
+        return {std::move(lo), std::move(hi)};
+    }
     
     void setAction(const std::vector<double>& action) override
     {
