@@ -227,9 +227,6 @@ double MSodeEnvironment::getReward() const
     }
     r -= rewardParams.timeCoeff * dt * nstepsPerAction;
 
-    // if (status == Status::Success)
-    //     r += rewardParams.termminalBonus;
-    
     return r;
 }
 

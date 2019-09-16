@@ -20,7 +20,6 @@ struct TimeParams
 struct RewardParams
 {
     real timeCoeff;
-    real termminalBonus;
     real beta, K; // termination reward
     std::vector<real> multipliers;
 };
