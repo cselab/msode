@@ -94,20 +94,26 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const int nbodies = bodies.size();
     
     // parameters
-    const real bonusReward = 10.0_r;
+    const real bonusReward    = 10.0_r;
+    
     const real fieldMagnitude = 1.0_r;
     const real dt = 1e-3_r;
     const Box box{{-10.0_r, -5.0_r, -5.0_r},
                   {-10.0_r, +5.0_r, +5.0_r}};
     const real3 target {0.0_r, 0.0_r, 0.0_r};
+    const real maxDistance = computeMaxDistance(box, target);
     const real distanceThreshold = 0.1_r;
 
+    const real endRewardK      = 0.5_r * maxDistance;
+    const real typicalDistance = 0.1_r * maxDistance;
+    const real endRewardBeta   = 1.0_r / (typicalDistance * typicalDistance);
+    
     const real timeCoeffReward = 0.1_r * computeMinForwardVelocity(fieldMagnitude, bodies);
-    const real tmax = 100.0_r * computeTimeToTravel(computeMaxDistance(box, target), fieldMagnitude, bodies);
+    const real tmax = 100.0_r * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
     const real dtAction = computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
-    const RewardParams rewardParams {timeCoeffReward, bonusReward, getRewardMultipliers(bodies)};
+    const RewardParams rewardParams {timeCoeffReward, bonusReward, endRewardBeta, endRewardK, getRewardMultipliers(bodies)};
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
     const Params params {timeParams, rewardParams, maxOmega, fieldMagnitude, distanceThreshold, box};
