@@ -155,8 +155,7 @@ private:
 struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
 {
     MagnFieldFromActionFromTargets(real maxOmega) :
-        MagnFieldFromActionBase(maxOmega),
-        env(nullptr)
+        MagnFieldFromActionBase(maxOmega)
     {}
 
     MagnFieldFromActionFromTargets(const MagnFieldFromActionFromTargets&) = default;
@@ -167,12 +166,12 @@ struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
 
     std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
     {
-        std::vector<double> lo{0.0}, hi{maxOmega};
+        std::vector<double> lo{-maxOmega}, hi{+maxOmega};
 
         for (size_t i = 0; i < env->getBodies().size(); ++i)
         {
             lo.push_back(0.0_r);
-            lo.push_back(1.0_r);
+            hi.push_back(1.0_r);
         }
         
         return {std::move(lo), std::move(hi)};
@@ -183,7 +182,7 @@ struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
         Expect(action.size() == numActions(),
                std::string("expect action of size ") + std::to_string(numActions()));
 
-        omega = std::min(maxOmega, std::max(0._r, static_cast<real>(action[0])));
+        omega = std::min(+maxOmega, std::max(-maxOmega, static_cast<real>(action[0])));
 
         axis = real3{0.0_r, 0.0_r, 0.0_r};
 
@@ -204,7 +203,7 @@ struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
 
 private:
 
-    const MSodeEnvironment<MagnFieldFromActionFromTargets> *env;
+    const MSodeEnvironment<MagnFieldFromActionFromTargets> *env {nullptr};
     real omega {0._r};
     real3 axis {1._r, 0._r, 0._r};
 };
