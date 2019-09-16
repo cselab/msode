@@ -109,7 +109,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     
     const real timeCoeffReward = 0.1_r * computeMinForwardVelocity(fieldMagnitude, bodies);
     const real tmax = 100.0_r * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
-    const real dtAction = computeActionTimeScale(fieldMagnitude, bodies);
+    const real dtAction = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
     const TimeParams timeParams {dt, tmax, nstepsPerAction};
     const RewardParams rewardParams {timeCoeffReward, bonusReward, endRewardBeta, endRewardK, getRewardMultipliers(bodies)};
