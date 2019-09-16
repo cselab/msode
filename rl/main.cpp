@@ -128,7 +128,10 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     
     const std::vector<real3> targetPositions(nbodies, target);
 
-    using MagnFieldActionType = MagnFieldFromActionDirect;
+    // using MagnFieldActionType = MagnFieldFromActionDirect;
+    // MagnFieldActionType magnFieldAction(maxOmega);
+
+    using MagnFieldActionType = MagnFieldFromActionFromTargets;
     MagnFieldActionType magnFieldAction(maxOmega);
 
     using Status = MSodeEnvironment<MagnFieldActionType>::Status;
@@ -149,10 +152,25 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
         comm->set_action_scales(hi, lo, bounded);
     }
 
-    //OPTIONAL: set space bounds
-    // std::vector<double> upper_state_bound{ 1,  1,  1,  1,  1,  1};
-    // std::vector<double> lower_state_bound{-1, -1, -1, -1, -1, -1};
-    // comm->set_state_scales(upper_state_bound, lower_state_bound);
+    // state bounds
+    {
+        std::vector<double> lo, hi;
+        real3 minr {target}, maxr {target};
+        auto min3 = [](real3 a, real3 b) {return real3{std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)};};
+        auto max3 = [](real3 a, real3 b) {return real3{std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)};};
+
+        minr = min3(minr, box.lo);
+        maxr = max3(maxr, box.hi);
+
+        for (size_t i = 0; i < bodies.size(); ++i)
+        {
+            // quaternions, positions
+            lo.insert(lo.end(), {-1.0_r, -1.0_r, -1.0_r, -1.0_r, minr.x, minr.y, minr.z});
+            hi.insert(hi.end(), {+1.0_r, +1.0_r, +1.0_r, +1.0_r, maxr.x, maxr.y, maxr.z});
+        }
+        
+        comm->set_state_scales(hi, lo);
+    }
     
     bool isTraining {true};
 
