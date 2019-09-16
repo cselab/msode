@@ -1,7 +1,5 @@
 #pragma once
 
-#include "magnetic_field_from_action.h"
-
 #include <simulation.h>
 
 #include <memory>
@@ -38,10 +36,9 @@ struct RewardParams
 
 struct Params
 {
-    Params(TimeParams time, RewardParams reward, real maxOmega, real fieldMagnitude, real distanceThreshold, Box initBox) :
+    Params(TimeParams time, RewardParams reward, real fieldMagnitude, real distanceThreshold, Box initBox) :
         time(time),
         reward(reward),
-        maxOmega(maxOmega),
         fieldMagnitude(fieldMagnitude),
         distanceThreshold(distanceThreshold),
         initBox(initBox)
@@ -49,7 +46,6 @@ struct Params
 
     const TimeParams time;
     const RewardParams reward;
-    const real maxOmega;
     const real fieldMagnitude;
     const real distanceThreshold;
     const Box initBox;
@@ -63,14 +59,15 @@ public:
     
     MSodeEnvironment(const Params& params,
                      const std::vector<RigidBody>& initialRBs,
-                     const std::vector<real3>& targetPositions) :
+                     const std::vector<real3>& targetPositions,
+                     const MagnFieldFromAction& magnFieldStateFromAction) :
         nstepsPerAction(params.time.nstepsPerAction),
         dt(params.time.dt),
         tmax(params.time.tmax),
         distanceThreshold(params.distanceThreshold),
         initBox(params.initBox),
         rewardParams(params.reward),
-        magnFieldState(params.maxOmega, nstepsPerAction * dt),
+        magnFieldState(magnFieldStateFromAction),
         targetPositions(targetPositions)
     {
         Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");

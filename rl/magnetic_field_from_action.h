@@ -1,21 +1,42 @@
 #pragma once
 
+#include "environment.h"
+
 #include <log.h>
 #include <math.h>
 #include <types.h>
 
 #include <vector>
 
-struct MagnFieldFromActionChange
+struct MagnFieldFromActionBase
+{
+    MagnFieldFromActionBase(real maxOmega) :
+        maxOmega(maxOmega)
+    {}
+
+    virtual void setAction(const std::vector<double>& action) = 0;
+    virtual void advance(real t) {}
+
+    virtual real getOmega(real t) const = 0;
+    virtual real3 getAxis(real t) const = 0;
+
+protected:
+    const real maxOmega;
+};
+
+
+struct MagnFieldFromActionChange : MagnFieldFromActionBase
 {
     MagnFieldFromActionChange(real maxOmega, real actionDt) :
-        maxOmega(maxOmega),
+        MagnFieldFromActionBase(maxOmega),
         actionDt(actionDt)
     {}
 
+    MagnFieldFromActionChange(const MagnFieldFromActionChange&) = default;
+
     static constexpr int numActions = 4;
     
-    void setAction(const std::vector<double>& action)
+    void setAction(const std::vector<double>& action) override
     {
         Expect(action.size() == 4, "expect action of size 4");
         dOmega = action[0];
@@ -24,7 +45,7 @@ struct MagnFieldFromActionChange
         dAxis.z = action[3];
     }
 
-    void advance(real t)
+    void advance(real t) override
     {
         // advance
         lastOmega += omegaActionChange(t);
@@ -37,25 +58,24 @@ struct MagnFieldFromActionChange
         lastAxis = normalized(lastAxis);
     }
 
-    real getOmega(real t) const
+    real getOmega(real t) const override
     {
         return lastOmega + omegaActionChange(t);
     }
 
-    real3 getAxis(real t) const
+    real3 getAxis(real t) const override
     {
         return lastAxis + axisActionChange(t);
     }
 
 
 private:
-    const real maxOmega;
     const real actionDt;
-        
+    
     real lastOmega {0._r};
     real3 lastAxis {1._r, 0._r, 0._r};
     real lastActionTime {0._r};
-
+    
     real dOmega {0._r};
     real3 dAxis {0._r, 0._r, 0._r};
 
@@ -76,16 +96,17 @@ private:
 };
 
 
-struct MagnFieldFromActionDirect
+struct MagnFieldFromActionDirect : MagnFieldFromActionBase
 {
-    MagnFieldFromActionDirect(real maxOmega, real actionDt) :
-        maxOmega(maxOmega),
-        actionDt(actionDt)
+    MagnFieldFromActionDirect(real maxOmega) :
+        MagnFieldFromActionBase(maxOmega)
     {}
 
+    MagnFieldFromActionDirect(const MagnFieldFromActionDirect&) = default;
+    
     static constexpr int numActions = 4;
     
-    void setAction(const std::vector<double>& action)
+    void setAction(const std::vector<double>& action) override
     {
         Expect(action.size() == 4, "expect action of size 4");
         constexpr real tolerance = 1e-6_r;
@@ -99,13 +120,10 @@ struct MagnFieldFromActionDirect
         axis = normalized(axis);
     }
 
-    void advance(real t) {}
-    real getOmega(real t) const  {return omega;}
-    real3 getAxis(real t) const  {return axis;}
+    real getOmega(real t) const override  {return omega;}
+    real3 getAxis(real t) const override  {return axis;}
 
 private:
-    const real maxOmega;
-    const real actionDt;
 
     real omega {0._r};
     real3 axis {1._r, 0._r, 0._r};

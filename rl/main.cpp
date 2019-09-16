@@ -1,6 +1,7 @@
 #include "environment.h"
 #include "factory.h"
 #include "file_parser.h"
+#include "magnetic_field_from_action.h"
 #include "smarties.h"
 
 static auto createBodies(const std::string& fileNameList)
@@ -114,7 +115,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const RewardParams rewardParams {timeCoeffReward, endRewardBeta, endRewardK, getRewardMultipliers(bodies)};
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
-    const Params params {timeParams, rewardParams, maxOmega, fieldMagnitude, distanceThreshold, box};
+    const Params params {timeParams, rewardParams, fieldMagnitude, distanceThreshold, box};
 
     fprintf(stderr,
             "----------------------------------------------------------\n"
@@ -127,8 +128,12 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     
     const std::vector<real3> targetPositions(nbodies, target);
 
-    MSodeEnvironment<MagnFieldFromActionDirect> env(params, bodies, targetPositions);
-    using Status = MSodeEnvironment<MagnFieldFromActionDirect>::Status;
+    using MagnFieldActionType = MagnFieldFromActionDirect;
+    using Status = MSodeEnvironment<MagnFieldActionType>::Status;
+    
+    MagnFieldActionType magnFieldAction(maxOmega);
+    MSodeEnvironment<MagnFieldActionType> env(params, bodies, targetPositions, magnFieldAction);
+    
 
     const int nControlVars = env.numActions;
     const int nStateVars = env.getState().size();
