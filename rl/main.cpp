@@ -105,8 +105,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real distanceThreshold = 0.1_r;
 
     const real endRewardK      = 0.5_r * maxDistance;
-    const real typicalDistance = 0.1_r * maxDistance;
-    const real endRewardBeta   = 1.0_r / (typicalDistance * typicalDistance);
+    const real endRewardBeta   = 1.0_r / (distanceThreshold * distanceThreshold);
     
     const real timeCoeffReward = 0.1_r * computeMinForwardVelocity(fieldMagnitude, bodies);
     const real tmax = 100.0_r * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);

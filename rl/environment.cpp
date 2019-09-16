@@ -223,7 +223,7 @@ double MSodeEnvironment::getReward() const
         previousDistance[i] = distance;
 
         if (status != Status::Running) // termination state
-            r += rewardParams.K * std::exp(-distance*distance * rewardParams.beta);
+            r += alpha * rewardParams.K * std::exp(-distance*distance * rewardParams.beta);
     }
     r -= rewardParams.timeCoeff * dt * nstepsPerAction;
 
