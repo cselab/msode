@@ -56,7 +56,7 @@ struct MagnFieldFromActionChange
     void advance(real t);
     real getOmega(real t) const;
     real3 getAxis(real t) const;
-        
+
 private:
     const real maxOmega;
     const real actionDt;
@@ -68,7 +68,6 @@ private:
     real dOmega {0._r};
     real3 dAxis {0._r, 0._r, 0._r};
 
-        
     real omegaActionChange(real t) const;
     real3 axisActionChange(real t) const;
 };
@@ -85,11 +84,11 @@ struct MagnFieldFromActionDirect
     void advance(real t);
     real getOmega(real t) const;
     real3 getAxis(real t) const;
-        
+
 private:
     const real maxOmega;
     const real actionDt;
-        
+
     real omega {0._r};
     real3 axis {1._r, 0._r, 0._r};
 };
