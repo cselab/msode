@@ -14,6 +14,8 @@ struct MagnFieldFromActionBase
         maxOmega(maxOmega)
     {}
 
+    virtual int numActions() const = 0;
+    
     virtual void setAction(const std::vector<double>& action) = 0;
     virtual void advance(real t) {}
 
@@ -34,7 +36,7 @@ struct MagnFieldFromActionChange : MagnFieldFromActionBase
 
     MagnFieldFromActionChange(const MagnFieldFromActionChange&) = default;
 
-    static constexpr int numActions = 4;
+    int numActions() const override {return 4;}
     
     void setAction(const std::vector<double>& action) override
     {
@@ -103,8 +105,8 @@ struct MagnFieldFromActionDirect : MagnFieldFromActionBase
     {}
 
     MagnFieldFromActionDirect(const MagnFieldFromActionDirect&) = default;
-    
-    static constexpr int numActions = 4;
+
+    int numActions() const override {return 4;}
     
     void setAction(const std::vector<double>& action) override
     {
@@ -125,6 +127,49 @@ struct MagnFieldFromActionDirect : MagnFieldFromActionBase
 
 private:
 
+    real omega {0._r};
+    real3 axis {1._r, 0._r, 0._r};
+};
+
+struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
+{
+    MagnFieldFromActionFromTargets(real maxOmega,
+                                   const MSodeEnvironment<MagnFieldFromActionFromTargets> *env) :
+        MagnFieldFromActionBase(maxOmega),
+        env(env)
+    {}
+
+    MagnFieldFromActionFromTargets(const MagnFieldFromActionFromTargets&) = default;
+    
+    int numActions() const override {return 1 + env->getBodies().size();}
+    
+    void setAction(const std::vector<double>& action) override
+    {
+        Expect(action.size() == numActions(),
+               std::string("expect action of size ") + std::to_string(numActions()));
+
+        omega = std::min(maxOmega, std::max(0._r, static_cast<real>(action[0])));
+
+        axis = real3{0.0_r, 0.0_r, 0.0_r};
+
+        const auto& bodies  = env->getBodies();
+        const auto& targets = env->getTargetPositions();
+
+        for (size_t i = 0; i < bodies.size(); ++i)
+        {
+            auto u = normalized(bodies[i].r - targets[i]);
+            axis += action[i+1] * u;
+        }
+        
+        axis = normalized(axis);
+    }
+
+    real getOmega(real t) const override  {return omega;}
+    real3 getAxis(real t) const override  {return axis;}
+
+private:
+
+    const MSodeEnvironment<MagnFieldFromActionFromTargets> *env;
     real omega {0._r};
     real3 axis {1._r, 0._r, 0._r};
 };

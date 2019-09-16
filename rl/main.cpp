@@ -135,7 +135,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     MSodeEnvironment<MagnFieldActionType> env(params, bodies, targetPositions, magnFieldAction);
     
 
-    const int nControlVars = env.numActions;
+    const int nControlVars = env.numActions();
     const int nStateVars = env.getState().size();
     comm->set_state_action_dims(nStateVars, nControlVars);
 

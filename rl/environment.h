@@ -91,7 +91,7 @@ public:
         setDistances();
     }
 
-    static constexpr int numActions = MagnFieldFromAction::numActions;
+    int numActions() const {return magnFieldState.numActions();}
 
     void reset(std::mt19937& gen)
     {
@@ -178,6 +178,9 @@ public:
 
         return r;
     }
+
+    const std::vector<RigidBody>& getBodies() const {return sim->getBodies();}
+    const std::vector<real3>& getTargetPositions() const {return targetPositions;}
 
 
 private:
