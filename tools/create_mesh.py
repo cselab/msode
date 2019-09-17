@@ -52,5 +52,4 @@ for objid in range(nrigids):
         mesh = orig_mesh.copy()
         mesh.vertices = [x + transforms3d.quaternions.rotate_vector(v, qinv) for v in mesh.vertices]
         mesh_name = args.out_folder + "/swimmer_{:02d}_{:05d}.ply".format(objid, i)
-        print(x)
         mesh.export(mesh_name)
