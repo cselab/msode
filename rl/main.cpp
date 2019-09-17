@@ -113,6 +113,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real dtAction = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
     const long dumpEvery {1000}; // TODO
+    // const long dumpEvery {100};
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
     const RewardParams rewardParams {timeCoeffReward, endRewardBeta, endRewardK, getRewardMultipliers(bodies)};
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
