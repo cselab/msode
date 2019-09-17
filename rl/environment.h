@@ -25,6 +25,7 @@ struct TimeParams
 {
     real dt, tmax;
     long nstepsPerAction;
+    long dumpEvery;
 };
 
 struct RewardParams
@@ -88,8 +89,7 @@ public:
         MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
         sim = std::make_unique<Simulation>(initialRBs, field);
-        constexpr int dumpEvery = 1000;
-        sim->activateDump("trajectories.txt", dumpEvery);
+        sim->activateDump("trajectories.txt", params.time.dumpEvery);
         setDistances();
     }
 
