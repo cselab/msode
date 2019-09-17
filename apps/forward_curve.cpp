@@ -34,7 +34,11 @@ static real computeMeanVelocity(RigidBody body, real omega)
 
 int main(int argc, char **argv)
 {
-    Expect(argc == 2, "usage : ./main swimmer.cfg");
+    if (argc != 2)
+    {
+        fprintf(stderr, "usage : %s swimmer.cfg\n\n", argv[0]);
+        return 1;
+    }
 
     const auto body = Factory::readRigidBodyConfig(argv[1]);
 
