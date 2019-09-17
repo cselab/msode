@@ -165,8 +165,8 @@ public:
         const auto status = getCurrentStatus();
         const auto& bodies = sim->getBodies();
 
-        //auto kernel = [](real a) {return a*a;};
-        auto kernel = [](real a) {return a;};
+        auto kernel = [](real a) {return a*a;};
+        // auto kernel = [](real a) {return a;};
     
         for (size_t i = 0; i < bodies.size(); ++i)
         {
