@@ -2,6 +2,7 @@
 
 import numpy as np
 import argparse
+from utils import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -10,12 +11,6 @@ parser.add_argument('--file', type=str, required=True, help='output of ODE simul
 parser.add_argument('--out', type=str, default="GUI")
 parser.add_argument('--multi_color', action='store_true', default=False)
 args = parser.parse_args()
-
-def read_rigid_data(data):
-    q = data[:,0:4]
-    r = data[:,4:7]
-    w = data[:,7:10]
-    return q, r, w
 
 def plot_trajectory(ax, x, y, z):
     ax.plot(x, y, z, '-')
@@ -26,11 +21,6 @@ def plot_trajectory_time_colored(ax, t, x, y, z, cmap):
     n = len(x)
     for i in range(n-1):
         ax.plot(x[i:i+2], y[i:i+2], z[i:i+2], color = cmap(i/(n-1)))
-
-def remove_next_sim_data(data):
-    t = data[:,0]
-    end = np.argmax(t)
-    return data[:end,:]
 
 data = remove_next_sim_data(np.loadtxt(args.file))
 
