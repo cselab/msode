@@ -164,6 +164,9 @@ public:
         real r {0.0_r};
         const auto status = getCurrentStatus();
         const auto& bodies = sim->getBodies();
+
+        //auto kernel = [](real a) {return a*a;};
+        auto kernel = [](real a) {return a;};
     
         for (size_t i = 0; i < bodies.size(); ++i)
         {
@@ -171,7 +174,7 @@ public:
             const real3 dr = bodies[i].r - targetPositions[i];
             const real distance = length(dr);
         
-            r += alpha * (previousDistance[i] - distance);
+            r += alpha * (kernel(previousDistance[i]) - kernel(distance));
             previousDistance[i] = distance;
 
             if (status == Status::Success)
