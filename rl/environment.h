@@ -170,7 +170,8 @@ public:
     
         for (size_t i = 0; i < bodies.size(); ++i)
         {
-            const real alpha = rewardParams.multipliers[i];
+            //const real alpha = rewardParams.multipliers[i];
+            const real alpha = 1.0_r;
             const real3 dr = bodies[i].r - targetPositions[i];
             const real distance = length(dr);
         
