@@ -27,8 +27,12 @@ def plot_trajectory_time_colored(ax, t, x, y, z, cmap):
     for i in range(n-1):
         ax.plot(x[i:i+2], y[i:i+2], z[i:i+2], color = cmap(i/(n-1)))
 
+def remove_next_sim_data(data):
+    t = data[:,0]
+    end = np.argmax(t)
+    return data[:end,:]
 
-data = np.loadtxt(args.file)[:-1,:]
+data = remove_next_sim_data(np.loadtxt(args.file))
 
 ncolumnds_per_rigid = 4 + 3 + 3 # q, r, w
 
