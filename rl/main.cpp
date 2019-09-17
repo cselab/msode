@@ -98,8 +98,9 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     
     const real fieldMagnitude = 1.0_r;
     const real dt = 1e-3_r;
-    const Box box{{-50.0_r, -50.0_r, -50.0_r},
-                  {+50.0_r, +50.0_r, +50.0_r}};
+    const real L = 50.0_r;
+    const Box box{{-L, -L, -L},
+                  {+L, +L, +L}};
     const real3 target {0.0_r, 0.0_r, 0.0_r};
     const real maxDistance = computeMaxDistance(box, target);
     const real distanceThreshold = 1.0_r;
