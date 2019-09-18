@@ -10,7 +10,7 @@ MSODE_ROOT=${SMARTIES_ROOT}/../msode
 cp $MSODE_ROOT/msode_rl $RUNDIR/exec
 
 # copy config
-CFG_DIR=`pwd`/$RUNDIR/config
+CFG_DIR=$RUNDIR/config
 mkdir -p $RUNDIR/config
 cp $MSODE_ROOT/config/swimmer*cfg $CFG_DIR/
 echo "0 $CFG_DIR/swimmer0.cfg" >  $CFG_DIR/swimmers_list.cfg
