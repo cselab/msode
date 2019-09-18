@@ -132,12 +132,7 @@ public:
 
     const std::vector<double>& getState() const
     {
-        // const auto t = sim->getCurrentTime();
-        // const real3 fieldDesc = magnFieldState.getOmega(t) * magnFieldState.getAxis(t);
         cachedState.resize(0);
-        // cachedState.push_back(fieldDesc.x);
-        // cachedState.push_back(fieldDesc.y);
-        // cachedState.push_back(fieldDesc.z);
     
         const auto& bodies = sim->getBodies();
 
@@ -164,15 +159,14 @@ public:
         const auto status = getCurrentStatus();
         const auto& bodies = sim->getBodies();
 
-        auto kernel = [](real a) {return a*a;};
-        // auto kernel = [](real a) {return a;};
+        auto square = [](real a) {return a*a;};
     
         for (size_t i = 0; i < bodies.size(); ++i)
         {
             const real3 dr = bodies[i].r - targetPositions[i];
             const real distance = length(dr);
         
-            r += kernel(previousDistance[i]) - kernel(distance);
+            r += square(previousDistance[i]) - square(distance);
             previousDistance[i] = distance;
 
             if (status == Status::Success)
