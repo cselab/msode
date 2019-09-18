@@ -14,6 +14,8 @@ args = parser.parse_args()
 
 def plot_trajectory(ax, x, y, z):
     ax.plot(x, y, z, '-')
+    ax.plot([x[0]], [y[0]], [z[0]], 'og')
+    ax.plot([x[-1]], [y[-1]], [z[-1]], 'or')
 
 def plot_trajectory_time_colored(ax, t, x, y, z, cmap):
     # ax.scatter(x, y, z, c = plt.cm.jet(t))
