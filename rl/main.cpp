@@ -103,12 +103,12 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
                   {+L, +L, +L}};
     const real3 target {0.0_r, 0.0_r, 0.0_r};
     const real maxDistance = computeMaxDistance(box, target);
-    const real distanceThreshold = 1.0_r;
+    const real distanceThreshold = 2.0_r;
 
     const real endRewardK      = 5.0_r * maxDistance * nbodies;
     const real endRewardBeta   = 1.0_r / (nbodies * distanceThreshold * distanceThreshold);
     
-    const real timeCoeffReward = 0.1_r * nbodies * computeMinForwardVelocity(fieldMagnitude, bodies);
+    const real timeCoeffReward = 0.1_r * nbodies * L * computeMinForwardVelocity(fieldMagnitude, bodies);
     const real tmax = 10.0_r * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
     const real dtAction = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
