@@ -32,7 +32,6 @@ struct RewardParams
 {
     real timeCoeff;
     real beta, K; // termination reward
-    std::vector<real> multipliers;
 };
 
 struct Params
@@ -170,16 +169,14 @@ public:
     
         for (size_t i = 0; i < bodies.size(); ++i)
         {
-            //const real alpha = rewardParams.multipliers[i];
-            const real alpha = 1.0_r;
             const real3 dr = bodies[i].r - targetPositions[i];
             const real distance = length(dr);
         
-            r += alpha * (kernel(previousDistance[i]) - kernel(distance));
+            r += kernel(previousDistance[i]) - kernel(distance);
             previousDistance[i] = distance;
 
             if (status == Status::Success)
-                r += alpha * rewardParams.K * std::exp(-distance*distance * rewardParams.beta);
+                r += rewardParams.K * std::exp(-distance*distance * rewardParams.beta);
         }
         r -= rewardParams.timeCoeff * dt * nstepsPerAction;
 

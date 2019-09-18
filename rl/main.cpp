@@ -68,25 +68,6 @@ static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
     return wmax;
 }
 
-static auto getRewardMultipliers(const std::vector<RigidBody>& bodies)
-{
-    Expect (bodies.size() >= 1, "can not work with nobody!!");
-
-    auto bodyValue = [](const RigidBody& body) // related to step-out frequency of body
-    {
-        return fabs(body.propulsion.C[0]) * length(body.magnMoment);
-    };
-    // set the first entry as reference
-    const auto refVal = bodyValue(bodies[0]);
-    
-    std::vector<real> multipliers;
-
-    for (const auto& body : bodies)
-        multipliers.push_back(refVal / bodyValue(body));
-    
-    return multipliers;
-}
-
 inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 {
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
@@ -115,7 +96,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const long dumpEvery {1000}; // TODO
     // const long dumpEvery {100};
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
-    const RewardParams rewardParams {timeCoeffReward, endRewardBeta, endRewardK, getRewardMultipliers(bodies)};
+    const RewardParams rewardParams {timeCoeffReward, endRewardBeta, endRewardK};
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
     const Params params {timeParams, rewardParams, fieldMagnitude, distanceThreshold, box};
