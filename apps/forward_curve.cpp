@@ -3,6 +3,13 @@
 
 #include <iostream>
 
+constexpr real magneticFieldMagnitude {1.0_r};
+
+static real stepOutFrequency(const RigidBody body)
+{
+    return body.propulsion.C[0] * magneticFieldMagnitude * length(body.magnMoment);
+}
+
 static inline real meanVelocity(real3 r0, real3 r1, real T)
 {
     return length(r0-r1)/T;
@@ -17,7 +24,6 @@ static real computeMeanVelocity(RigidBody body, real omega)
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
     body.r = rStart;
         
-    const real magneticFieldMagnitude {1.0_r};
     auto omegaField        = [omega](real t) {return omega;};
     auto rotatingDirection = []     (real t) {return real3{1.0_r, 0.0_r, 0.0_r};};
 
@@ -42,10 +48,14 @@ int main(int argc, char **argv)
 
     const auto body = Factory::readRigidBodyConfig(argv[1]);
 
-    const int nOmegas = 200;
+    const real omegaC = stepOutFrequency(body);
+    const int nOmegas = 100;
+    const real maxOmega = 2.0_r * omegaC;
+    const real dOmega = maxOmega / nOmegas;
+    
     for (int i = 0; i < nOmegas; ++i)
     {
-        const real omega = i * 0.1_r;
+        const real omega = i * dOmega;
         const real v = computeMeanVelocity(body, omega);
         std::cout << omega << " " << v << std::endl;
     }
