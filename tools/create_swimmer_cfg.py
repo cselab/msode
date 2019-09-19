@@ -51,4 +51,7 @@ for i in range(n):
         v = props[i][key]
         f.write("%s %f %f %f\n" % (key, v[0], v[1], v[2]))
     f.close()
+
+    omegac = args.magnetic_field_magnitude * magn_moments[i] * props[i]['C'][0]
+    print("omega_c = %f" % omegac)
     
