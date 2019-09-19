@@ -17,6 +17,26 @@ In debug mode:
 See `./app` help messages.
 Configuration files for swimmers examples can be found in the `config/`directory.
 
+## Non Dimensionalization
+
+Input: 
+
+* dimensions of microswimmer
+* magnetic field intensity
+* step out frequency `omega_c` or max velocity `v_max`
+* propulsion matrix
+
+Procedure:
+
+* set length scale such that `1 (sim) = body` length (~20um typically)
+* set time scale such that `1 (sim) = 1s`
+* set energy scale such that `eta * B_xx = 0.1` (arbitrary) -> gives all entries of propulsion matrix
+* set magnetic scale such that `B (sim) = 1`
+* compute `m` given `B`, `B_xx` and `v_max` or `omega_c`
+
+Output:
+trajectories: length in body length, time in seconds
+
 
 ## Reinforcement Learning
 
