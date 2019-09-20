@@ -92,9 +92,14 @@ void Simulation::advance(real dt)
 
 void Simulation::dump()
 {
-    file << currentTime;
+    const real omega = magneticField.omega(currentTime);
+    const real3 dir  = magneticField.rotatingDirection(currentTime);
+    
+    file << currentTime << " " << omega << " "  << dir.x << " "  << dir.y << " "  << dir.z;
+
     for (const auto& rigidBody : rigidBodies)
         file << " " << rigidBody;
+
     file << "\n";
 }
 

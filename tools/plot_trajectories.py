@@ -39,7 +39,7 @@ ax = fig.add_subplot(111, projection='3d')
 cmaps = [plt.cm.viridis, plt.cm.jet]
 
 for i in range(nrigids):
-    start = 1 + i * ncolumnds_per_rigid
+    start = 5 + i * ncolumnds_per_rigid
     end = start + ncolumnds_per_rigid
     q, pos, omega = read_rigid_data(data[:, start:end]) 
 
