@@ -15,4 +15,6 @@ for i in `seq 0 $n`; do
     mir.post ./tools/plot_trajectories.py \
 	     --file $tmp  \
 	     --out $out_dir/$id.pdf
+
+    rm -rf $tmp
 done 
