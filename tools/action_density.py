@@ -13,7 +13,10 @@ args = parser.parse_args()
 all_data = None
 
 for f in args.files:
-    data = remove_next_sim_data(np.loadtxt(f))
+    data = np.loadtxt(f)
+    if len(data) == 0:
+        continue
+    data = remove_next_sim_data(data)
     if all_data is None:
         all_data = data
     else:
@@ -21,7 +24,7 @@ for f in args.files:
 
 omega = all_data[:,1]
 
-density, bin_edges = np.histogram(omega, bins=100, density=True)
+density, bin_edges = np.histogram(omega, bins=50, density=True)
 
 fig = plt.figure(0)
 ax = fig.add_subplot(111)

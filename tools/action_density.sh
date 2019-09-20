@@ -1,7 +1,9 @@
 #!/bin/bash
 
-n=19
-name=two_test
+set -eu
+
+n=$1; shift
+name=$1; shift
 
 for i in `seq 0 $n`; do
     id=`printf "%02d" $i`

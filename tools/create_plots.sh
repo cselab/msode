@@ -1,7 +1,10 @@
 #!/bin/bash
 
-n=19
-name=two_test
+set -eu
+
+n=$1; shift
+name=$1; shift
+
 out_dir=trajectories_$name
 
 mkdir -p $out_dir
