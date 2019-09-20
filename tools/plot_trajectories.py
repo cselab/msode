@@ -10,6 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--file', type=str, required=True, help='output of ODE simulation')
 parser.add_argument('--out', type=str, default="GUI")
 parser.add_argument('--multi_color', action='store_true', default=False)
+parser.add_argument('--L', type=float, default=50, help='initial half box length')
 args = parser.parse_args()
 
 def plot_trajectory(ax, x, y, z):
@@ -47,12 +48,19 @@ for i in range(nrigids):
     else:
         plot_trajectory(ax, pos[:,0], pos[:,1], pos[:,2])
     
-    
 
 ax.set_xlabel(r'$x$')
 ax.set_ylabel(r'$y$')
 ax.set_zlabel(r'$z$')
+
+L = args.L
+lims = [-L, L]
+ax.set_xlim(lims)
+ax.set_ylim(lims)
+ax.set_zlim(lims)
+
 plt.grid()
+
 
 if args.out == "GUI":
     plt.show()
