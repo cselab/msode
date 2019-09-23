@@ -19,9 +19,14 @@ cd $rundir
 
 . mir.load
 
-for i in `seq 1 $nevals`; do
+for i in `seq 0 $nevals`; do
+    id=`printf "%04d" $i`
+    
     smarties.py .. \
 		--nEvalSeqs 1 \
 		--nThreads 1 \
 		--nEnvironments 1
+
+    sim_dir=simulation_001_0$id
+    head -n -1 $sim_dir/trajectories.txt > $sim_dir/trajectories_clean.txt
 done
