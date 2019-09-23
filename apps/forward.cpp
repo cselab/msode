@@ -4,12 +4,13 @@
 #include <iostream>
 
 constexpr real magneticFieldMagnitude {1.0_r};
+constexpr real dt {1e-3_r};
 
 static void runAndDump(RigidBody body, real omega, const std::string& out, int dumpEvery)
 {
-    constexpr real tEnd = 200.0_r;
-    constexpr real dt {1e-3_r};
-    constexpr long nsteps = tEnd / dt;
+    const int nRevolutions = 10;
+    const real tEnd = nRevolutions * 2 * M_PI / omega;
+    const long nsteps = tEnd / dt;
 
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
     body.r = rStart;
@@ -27,7 +28,7 @@ static void runAndDump(RigidBody body, real omega, const std::string& out, int d
 
 int main(int argc, char **argv)
 {
-    if (argc != 4)
+    if (argc != 5)
     {
         fprintf(stderr, "usage : %s <swimmer.cfg> <omega> <fps> <trajectory_file> \n\n", argv[0]);
         return 1;
@@ -38,7 +39,8 @@ int main(int argc, char **argv)
     const int fps      = std::stoi(argv[3]);
     const std::string out (argv[4]);
 
-    const int dumpEvery = fps;
+    const real tDumpEvery = 1.0_r / fps;
+    const int dumpEvery = static_cast<int>(tDumpEvery / dt);
     
     runAndDump(body, omega, out, dumpEvery);
     
