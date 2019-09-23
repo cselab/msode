@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--file', type=str, required=True, help='output of ODE simulation')
 parser.add_argument('--mesh', type=str, nargs='+', required=True, help="input triangle mesh of the swimmers")
 parser.add_argument('--out_folder', type=str, default="ply", help="output folder mesh")
-parser.add_argument('--scale', type=float, default=0.5, help="length scaling")
+parser.add_argument('--length', type=float, default=1.0, help="length output of the mesh (input mesh will be rescaled)")
 parser.add_argument('--flip', action='store_true', default=False, help="if need to flip the mesh (wrong screw direction)")
 args = parser.parse_args()
 
@@ -21,6 +21,13 @@ def align_along_x(mesh):
     xaxis=np.argmax(extents)
     if xaxis != 0:
         mesh.vertices[:,[0,xaxis]] = mesh.vertices[:,[xaxis,0]]
+    return mesh
+
+# assume already correctly oriented
+def scale_to_length(mesh, length):
+    vv = mesh.vertices
+    l = max(vv[:,0]) - min(vv[:,0])
+    mesh.vertices *= (length / l)
     return mesh
 
 data = remove_next_sim_data(np.loadtxt(args.file))
@@ -40,7 +47,7 @@ for objid in range(nrigids):
     end = start + ncolumnds_per_rigid
     quaternions, positions, omegas = read_rigid_data(data[:, start:end])
     orig_mesh = align_along_x(trimesh.load_mesh(args.mesh[objid]))
-    orig_mesh.vertices *= args.scale
+    orig_mesh = scale_to_length(orig_mesh, args.length)
 
     if args.flip:
         orig_mesh.vertices[:,2] *=-1
