@@ -28,7 +28,7 @@ data = remove_next_sim_data(np.loadtxt(args.file))
 ncolumnds_per_rigid = 4 + 3 + 3 # q, r, w
 
 ncolumns = len(data[0,:])
-nrigids = (ncolumns-1) // ncolumnds_per_rigid
+nrigids = (ncolumns-5) // ncolumnds_per_rigid
 assert(nrigids == len(args.mesh))
 t = data[:,0]
 
@@ -36,7 +36,7 @@ if not os.path.exists(args.out_folder):
     os.mkdir(args.out_folder)
 
 for objid in range(nrigids):
-    start = 1 + objid * ncolumnds_per_rigid
+    start = 5 + objid * ncolumnds_per_rigid
     end = start + ncolumnds_per_rigid
     quaternions, positions, omegas = read_rigid_data(data[:, start:end])
     orig_mesh = align_along_x(trimesh.load_mesh(args.mesh[objid]))
