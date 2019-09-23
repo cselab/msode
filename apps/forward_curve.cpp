@@ -5,7 +5,7 @@
 
 constexpr real magneticFieldMagnitude {1.0_r};
 
-static real stepOutFrequency(const RigidBody body)
+inline real stepOutFrequency(const RigidBody body)
 {
     return body.propulsion.C[0] * magneticFieldMagnitude * length(body.magnMoment);
 }
@@ -40,17 +40,18 @@ static real computeMeanVelocity(RigidBody body, real omega)
 
 int main(int argc, char **argv)
 {
-    if (argc != 2)
+    if (argc != 4)
     {
-        fprintf(stderr, "usage : %s swimmer.cfg\n\n", argv[0]);
+        fprintf(stderr, "usage : %s <swimmer.cfg> <omega_max> <nomega> \n\n", argv[0]);
         return 1;
     }
 
     const auto body = Factory::readRigidBodyConfig(argv[1]);
+    const double maxOmega = std::stod(argv[2]);
+    const int nOmegas     = std::stoi(argv[3]);
 
-    const real omegaC = stepOutFrequency(body);
-    const int nOmegas = 100;
-    const real maxOmega = 2.0_r * omegaC;
+    // const real omegaC = stepOutFrequency(body);
+    // const real maxOmega = 2.0_r * omegaC;
     const real dOmega = maxOmega / nOmegas;
     
     for (int i = 0; i < nOmegas; ++i)
