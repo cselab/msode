@@ -7,6 +7,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--props', type=str, nargs='+', required=True, help='the file of propulsion given by the SDPD simulations (see msode/data/propulsion/)')
 parser.add_argument('--out_dir', type=str, default=".", help='directory where to dump the configuration files required by msode')
 
+parser.add_argument('--l_scale', type=float, default=20, help='length scale: 1 sim unit = this in um')
 parser.add_argument('--B_target', type=float, default=0.1, help='B_xx in simulation unit')
 parser.add_argument('--vmax', type=float, default=1, help='maximum velocity of all swimmers(assumed the same), in body length per second')
 parser.add_argument('--magnetic_field_magnitude', type=float, default=1, help='magnetic field magnitude in simulation unit')
@@ -23,6 +24,12 @@ def read_propulsion(fname):
     f.close()
     return prop
 
+
+def rescale_propulsion_length(prop, lscale):
+    prop['B'] = [b*lscale    for b in prop['B']]
+    prop['C'] = [c*lscale**2 for c in prop['C']]
+    return prop
+
 def compute_magn_moment(prop):
     return args.vmax / (args.magnetic_field_magnitude * prop['B'][0])
 
@@ -30,6 +37,9 @@ def compute_magn_moment(prop):
 
 props = [read_propulsion(fname) for fname in args.props]
 n = len(props)
+
+props = [rescale_propulsion_length(prop, args.l_scale) for prop in props]
+print(props)    
 
 scaling = args.B_target / props[0]['B'][0]
 
