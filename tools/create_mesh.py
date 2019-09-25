@@ -12,6 +12,7 @@ parser.add_argument('--mesh', type=str, nargs='+', required=True, help="input tr
 parser.add_argument('--out_folder', type=str, default="ply", help="output folder mesh")
 parser.add_argument('--length', type=float, default=1.0, help="length output of the mesh (input mesh will be rescaled)")
 parser.add_argument('--flip', action='store_true', default=False, help="if need to flip the mesh (wrong screw direction)")
+parser.add_argument('--nframes', type=int, default=-1, help="number of time frames to process; -1 : process all")
 args = parser.parse_args()
 
 
@@ -31,6 +32,9 @@ def scale_to_length(mesh, length):
     return mesh
 
 data = remove_next_sim_data(np.loadtxt(args.file))
+
+if args.nframes != -1:
+    data = data[:args.nframes,:]
 
 ncolumnds_per_rigid = 4 + 3 + 3 # q, r, w
 
