@@ -2,8 +2,8 @@
 
 set -eu
 
-n=$1; shift
 name=$1; shift
+n=$1; shift
 
 out_dir=trajectories_$name
 
