@@ -26,6 +26,35 @@ static inline auto computeStepOutFrequencies(const std::vector<RigidBody>& bodie
     return omegas;
 }
 
+static inline real meanVelocity(real3 r0, real3 r1, real T)
+{
+    return length(r0-r1)/T;
+}
+
+static inline real computeMeanVelocity(RigidBody body, real omega)
+{
+    constexpr real tEnd = 200.0_r;
+    constexpr real dt {1e-3_r};
+    constexpr long nsteps = tEnd / dt;
+
+    constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
+    body.r = rStart;
+        
+    auto omegaField        = [omega](real t) {return omega;};
+    auto rotatingDirection = []     (real t) {return real3{1.0_r, 0.0_r, 0.0_r};};
+
+    MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
+    const std::vector<RigidBody> rigidBodies {body};
+    Simulation simulation {rigidBodies, magneticField};
+
+    simulation.run(nsteps, dt);
+
+    const real3 rEnd = simulation.getBodies()[0].r;
+
+    return meanVelocity(rStart, rEnd, tEnd);
+}
+
+
 static inline real computeForwardVelocity(const RigidBody& body, real omega)
 {
     const real omegaC = computeStepOutFrequency(body);
@@ -38,8 +67,7 @@ static inline real computeForwardVelocity(const RigidBody& body, real omega)
     }
     else
     {
-        // TODO
-        return 0.0_r;
+        return computeMeanVelocity(body, omega);
     }
 }
 
@@ -64,14 +92,24 @@ static MatrixReal createVelocityMatrix(const std::vector<RigidBody>& bodies)
 
 int main(int argc, char **argv)
 {
-    if (argc != 4)
+    if (argc < 2                     ||
+        std::string(argv[1]) == "-h" ||
+        std::string(argv[1]) == "--help")
     {
-        fprintf(stderr, "usage : %s <swimmer.cfg> \n\n", argv[0]);
+        fprintf(stderr, "usage : %s <swimmer0.cfg> <swimmer1.cfg>... \n\n", argv[0]);
         return 1;
     }
-    std::vector<RigidBody> bodies; // TODO    
+
+    std::vector<RigidBody> bodies;
+    for (int i = 1; i < argc; ++i)
+    {
+        const RigidBody body = Factory::readRigidBodyConfig(argv[i]);
+        bodies.push_back(body);
+    }
 
     MatrixReal V = createVelocityMatrix(bodies);
+
+    std::cout << V << std::endl;
     
     return 0;
 }
