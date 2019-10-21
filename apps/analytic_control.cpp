@@ -132,24 +132,26 @@ static MatrixReal stackPositions(const std::vector<real3>& positions)
 static real3 findBestPlane(const MatrixReal& U, const MatrixReal& X)
 {
     int n = U.rows();
-    std::cout << U << "\n\n" << X << std::endl;
+    std::cout << n << "\n\n" << std::endl;
     MatrixReal A(U * X);
 
-    MatrixReal normal, signs;
+    MatrixReal normal(3,1), normalOld(3,1), signs(n,1);
 
     normal = A.colwise().sum().transpose();
     normal /= normal.norm();
+    normalOld = normal;
     
     for (int step = 0; step < 10; ++step)
     {
         signs = A * normal;
 
-        for (int i = 0; i < n; ++i)
-            signs(i,0) = std::abs(signs(i,0));
+        for (int i = 0; i < signs.rows(); ++i)
+            signs(i,0) = signs(i,0) >= 0 ? 1.0_r : -1.0_r;
         
         normal = A.transpose() * signs;
         normal /= normal.norm();
-        std::cout << normal << "\n\n";
+        std::cout << (normal - normalOld).norm() << "\n";
+        normalOld = normal;
     }
 
     return normalized({normal(0,0),
@@ -184,11 +186,14 @@ int main(int argc, char **argv)
     // std::cout << V << "\n\n";
     // std::cout << U << std::endl;
 
-    std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi);
-    auto stackedPositions = stackPositions(initialPositions);
-    
-    auto n = findBestPlane(U, stackedPositions);
-    std::cout << n << std::endl;
-    
+    for (int i = 0; i < 10; ++i)
+    {
+        std::cout << "=========== step " << i << std::endl;
+        std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, 42 * i + 13);
+        auto stackedPositions = stackPositions(initialPositions);
+        
+        auto n = findBestPlane(U, stackedPositions);
+        std::cout << n << std::endl;
+    }
     return 0;
 }
