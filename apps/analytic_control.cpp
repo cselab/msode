@@ -4,6 +4,7 @@
 #include <Eigen/LU>
 
 #include <iostream>
+#include <random>
 
 using MatrixReal = Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
 using ArrayReal  = Eigen::Array <real, Eigen::Dynamic, 1>;
@@ -90,6 +91,73 @@ static MatrixReal createVelocityMatrix(const std::vector<RigidBody>& bodies)
     return V;
 }
 
+static std::vector<real3> generateRandomPositions(int n, real3 boxLo, real3 boxHi, long seed = 42)
+{
+    std::vector<real3> positions;
+    positions.reserve(n);
+
+    std::mt19937 gen(seed);
+    std::uniform_real_distribution<real> distrx(boxLo.x, boxHi.x);
+    std::uniform_real_distribution<real> distry(boxLo.y, boxHi.y);
+    std::uniform_real_distribution<real> distrz(boxLo.z, boxHi.z);
+
+    for (int i = 0; i < n; ++i)
+    {
+        real3 r;
+        r.x = distrx(gen);
+        r.y = distry(gen);
+        r.z = distrz(gen);
+        positions.push_back(r);
+    }
+
+    return positions;
+}
+
+static MatrixReal stackPositions(const std::vector<real3>& positions)
+{
+    const size_t n = positions.size();
+    MatrixReal X(n, 3);
+
+    for (size_t i = 0; i < n; ++i)
+    {
+        const real3 r = positions[i];
+        X(i,0) = r.x;
+        X(i,1) = r.y;
+        X(i,2) = r.z;
+    }
+
+    return X;
+}
+
+static real3 findBestPlane(const MatrixReal& U, const MatrixReal& X)
+{
+    int n = U.rows();
+    std::cout << U << "\n\n" << X << std::endl;
+    MatrixReal A(U * X);
+
+    MatrixReal normal, signs;
+
+    normal = A.colwise().sum().transpose();
+    normal /= normal.norm();
+    
+    for (int step = 0; step < 10; ++step)
+    {
+        signs = A * normal;
+
+        for (int i = 0; i < n; ++i)
+            signs(i,0) = std::abs(signs(i,0));
+        
+        normal = A.transpose() * signs;
+        normal /= normal.norm();
+        std::cout << normal << "\n\n";
+    }
+
+    return normalized({normal(0,0),
+                       normal(1,0),
+                       normal(2,0)});
+}
+
+
 int main(int argc, char **argv)
 {
     if (argc < 2                     ||
@@ -100,6 +168,9 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
+    const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};
+    
     std::vector<RigidBody> bodies;
     for (int i = 1; i < argc; ++i)
     {
@@ -107,9 +178,17 @@ int main(int argc, char **argv)
         bodies.push_back(body);
     }
 
-    MatrixReal V = createVelocityMatrix(bodies);
+    const MatrixReal V = createVelocityMatrix(bodies);
+    const MatrixReal U = V.inverse();
 
-    std::cout << V << std::endl;
+    // std::cout << V << "\n\n";
+    // std::cout << U << std::endl;
+
+    std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi);
+    auto stackedPositions = stackPositions(initialPositions);
+    
+    auto n = findBestPlane(U, stackedPositions);
+    std::cout << n << std::endl;
     
     return 0;
 }
