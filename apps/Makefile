@@ -25,7 +25,10 @@ forward_curve: forward_curve.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 analytic_control.o: analytic_control.cpp
 	$(CXX) $(CXXFLAGS) $(KORALICFLAGS) -c $< -o $@
 
-analytic_control: analytic_control.o
+ac/helpers.o: ac/helpers.cpp ac/helpers.h
+	$(CXX) $(CXXFLAGS) $(KORALICFLAGS) -c $< -o $@
+
+analytic_control: analytic_control.o ac/helpers.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(KORALILIBS)
 
 .PHONY: all clean
