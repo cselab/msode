@@ -37,8 +37,11 @@ int main(int argc, char **argv)
         std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, 42 * i + 13);
         auto A = computeA(U, initialPositions);
         
-        auto n = findBestPlane(A);
-        std::cout << n << "\t\t" << computeTime(n) << std::endl;
+        // auto n = findBestPlane(A);
+        // std::cout << n << "\t\t" << computeTime(n) << std::endl;
+
+        auto q = findBestPath(A);
+        std::cout << q << "\t\t" << computeTime(q) << std::endl;
     }
     return 0;
 }
