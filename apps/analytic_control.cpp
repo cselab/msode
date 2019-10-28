@@ -2,6 +2,7 @@
 #include "factory.h"
 
 #include <Eigen/LU>
+#include <korali.hpp>
 
 #include <iostream>
 #include <random>
@@ -113,50 +114,156 @@ static std::vector<real3> generateRandomPositions(int n, real3 boxLo, real3 boxH
     return positions;
 }
 
-static MatrixReal stackPositions(const std::vector<real3>& positions)
+static std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& positions)
 {
     const size_t n = positions.size();
-    MatrixReal X(n, 3);
+    std::vector<real3> A;
+    A.reserve(n);
 
     for (size_t i = 0; i < n; ++i)
     {
-        const real3 r = positions[i];
-        X(i,0) = r.x;
-        X(i,1) = r.y;
-        X(i,2) = r.z;
+        auto ai = make_real3(0.0_r);
+        
+        for (size_t j = 0; j < n; ++j)
+            ai += U(i,j) * positions[j];
+
+        A.push_back(ai);
     }
 
-    return X;
+    return A;
 }
 
-static real3 findBestPlane(const MatrixReal& U, const MatrixReal& X)
-{
-    int n = U.rows();
-    std::cout << n << "\n\n" << std::endl;
-    MatrixReal A(U * X);
+// static real3 findBestPlaneGradientDescent(const std::vector<real3>& A)
+// {
+//     constexpr real eps = 1e-3_r;
+//     constexpr real invEps = 1.0_r / eps;
 
-    MatrixReal normal(3,1), normalOld(3,1), signs(n,1);
+//     auto smoothedSignFunction = [](real x)
+//     {
+//         return std::tanh(x * invEps);
+//     };
 
-    normal = A.colwise().sum().transpose();
-    normal /= normal.norm();
-    normalOld = normal;
-    
-    for (int step = 0; step < 10; ++step)
-    {
-        signs = A * normal;
+//     auto derSmoothedSignFunction = [](real x)
+//     {
+//         const real u = std::cosh(x * invEps);
+//         return invEps / (u*u);
+//     };
 
-        for (int i = 0; i < signs.rows(); ++i)
-            signs(i,0) = signs(i,0) >= 0 ? 1.0_r : -1.0_r;
+//     auto time = [&](real3 normal)
+//     {
+//         real t {0._r};
+//         for (auto ai : A)
+//         {
+//             const real ain = dot(ai, normal);
+//             t += smoothedSignFunction(ain) * ain;
+//         }
+//         return t;
+//     };
+
+//     auto timeGradient = [&](real3 normal)
+//     {
+//         real3 grad = make_real3(0.0_r);
+
+//         for (auto ai : A)
+//         {
+//             const real ain = dot(ai, normal);
+//             const real factor = smoothedSignFunction(ain) + ain * derSmoothedSignFunction(ain);
+//             grad += factor * ai;
+//         }
+//         return grad;
+//     };
+
+//     std::mt19937 gen(4242424242);
+//     std::uniform_real_distribution<real> distr(-1.0, 1.0);
+
+//     real3 normal {distr(gen), distr(gen), distr(gen)};
+//     normal = normalized(normal);
+
+//     // gradient descent
+//     const real stepSize = 1e-5_r;
+//     constexpr int maxIter = 10000;
+//     constexpr real tolerance = 1e-6_r;
+
+//     for (int step = 0; step < maxIter; ++step)
+//     {
+//         const real3 grad = timeGradient(normal);
+
+//         if (dot(grad, grad) < tolerance)
+//             break;
         
-        normal = A.transpose() * signs;
-        normal /= normal.norm();
-        std::cout << (normal - normalOld).norm() << "\n";
-        normalOld = normal;
-    }
+//         normal -= stepSize * grad;
+//         normal = normalized(normal);
 
-    return normalized({normal(0,0),
-                       normal(1,0),
-                       normal(2,0)});
+//         real t = time(normal);
+
+//         if (step % 100 == 0)
+//             std::cout << normal << "\t" << t << std::endl;
+
+//     }
+
+//     return normal;
+// }
+
+
+// because korali passes functions through json... (WTF!?)
+// need to use global variables
+
+std::vector<real3> AGlobal;
+
+static inline real computeTime(real3 normal)
+{
+    real t {0._r};
+    for (auto ai : AGlobal)
+        t += std::fabs(dot(ai, normal));
+    return t;
+}
+
+static inline real3 paramsToNormal(const std::vector<double>& params)
+{
+    const real theta = static_cast<real>(params[0]);
+    const real phi   = static_cast<real>(params[1]);
+    
+    const real3 normal {std::cos(theta) * std::sin(phi),
+                        std::sin(theta) * std::sin(phi),
+                        std::cos(phi)};
+    return normal;
+}
+    
+void evaluate(korali::Sample& k)
+{
+    const real3 normal = paramsToNormal(k["Parameters"]);
+    k["Evaluation"] = computeTime(normal);
+}
+
+static real3 findBestPlane(const std::vector<real3>& A)
+{
+    AGlobal = A;
+
+    auto k = korali::Engine();
+
+    k["Problem"]["Type"] = "Evaluation/Direct/Basic";
+    k["Problem"]["Objective"] = "Minimize";
+    k["Problem"]["Objective Function"] = &evaluate;
+
+    k["Solver"]["Type"] = "Optimizer/CMAES";
+    k["Solver"]["Population Size"] = 32;
+    k["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
+    k["Solver"]["Termination Criteria"]["Max Generations"] = 100;
+
+    k["Variables"][0]["Name"] = "theta";
+    k["Variables"][0]["Lower Bound"] = -2 * M_PI;
+    k["Variables"][0]["Upper Bound"] = +4 * M_PI;
+
+    k["Variables"][1]["Name"] = "phi";
+    k["Variables"][1]["Lower Bound"] =   - M_PI;
+    k["Variables"][1]["Upper Bound"] = 2 * M_PI;
+
+    k["Console Output"]["Frequency"] = 10;
+    k["Results Output"]["Frequency"] = 10;
+    
+    k.runSingle();
+
+    return paramsToNormal(k["Solver"]["Internal"]["Best Ever Variables"]);
 }
 
 
@@ -186,14 +293,14 @@ int main(int argc, char **argv)
     // std::cout << V << "\n\n";
     // std::cout << U << std::endl;
 
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         std::cout << "=========== step " << i << std::endl;
         std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, 42 * i + 13);
-        auto stackedPositions = stackPositions(initialPositions);
+        auto A = computeA(U, initialPositions);
         
-        auto n = findBestPlane(U, stackedPositions);
-        std::cout << n << std::endl;
+        auto n = findBestPlane(A);
+        std::cout << n << "\t\t" << computeTime(n) << std::endl;
     }
     return 0;
 }
