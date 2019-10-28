@@ -28,10 +28,10 @@ static inline real computeStepOutFrequency(real magneticFieldMagnitude, const Ri
 {
     const real m = length(body.magnMoment);
     const real Cxx = body.propulsion.C[0];
-    return magneticFieldMagnitude * m * Cxx;
+    return 0.9 * magneticFieldMagnitude * m * Cxx;
 }
 
-static inline auto computeStepOutFrequencies(real magneticFieldMagnitude, const std::vector<RigidBody>& bodies)
+std::vector<real> computeStepOutFrequencies(real magneticFieldMagnitude, const std::vector<RigidBody>& bodies)
 {
     std::vector<real> omegas;
     omegas.reserve(bodies.size());

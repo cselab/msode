@@ -3,6 +3,11 @@
 
 #include <korali.hpp>
 
+// because korali passes functions through json... (WTF!?)
+// need to use global variables
+
+std::vector<real3> AGlobal;
+
 std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& positions)
 {
     const size_t n = positions.size();
@@ -22,15 +27,11 @@ std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& posit
     return A;
 }
 
-// because korali passes functions through json... (WTF!?)
-// need to use global variables
 
-std::vector<real3> AGlobal;
-
-real computeTime(real3 normal)
+real computeTime(const std::vector<real3>& A, real3 normal)
 {
     real t {0._r};
-    for (auto ai : AGlobal)
+    for (auto ai : A)
         t += std::fabs(dot(ai, normal));
     return t;
 }
@@ -45,11 +46,11 @@ static inline real3 paramsToNormal(const std::vector<double>& params)
                         std::cos(phi)};
     return normal;
 }
-    
+
 static void evaluate(korali::Sample& k)
 {
     const real3 normal = paramsToNormal(k["Parameters"]);
-    k["Evaluation"] = computeTime(normal);
+    k["Evaluation"] = computeTime(AGlobal, normal);
 }
 
 real3 findBestPlane(const std::vector<real3>& A)
@@ -85,18 +86,16 @@ real3 findBestPlane(const std::vector<real3>& A)
 
 
 
-
-
-real computeTime(Quaternion q)
+real computeTime(const std::vector<real3>& A, Quaternion q)
 {
     const real3 e1 {1.0_r, 0.0_r, 0.0_r};
     const real3 e2 {0.0_r, 1.0_r, 0.0_r};
     const real3 e3 {0.0_r, 0.0_r, 1.0_r};
 
     return
-        computeTime(q.rotate(e1)) +
-        computeTime(q.rotate(e2)) +
-        computeTime(q.rotate(e3));
+        computeTime(A, q.rotate(e1)) +
+        computeTime(A, q.rotate(e2)) +
+        computeTime(A, q.rotate(e3));
 }
 
 static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
@@ -112,12 +111,13 @@ static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
     const auto q = Quaternion::createFromRotation(psi, normal);
     return q.normalized();
 }
-    
+
 static void evaluatePath(korali::Sample& k)
 {
     const auto q = paramsToQuaternion(k["Parameters"]);
-    k["Evaluation"] = computeTime(q);
+    k["Evaluation"] = computeTime(AGlobal, q);
 }
+
 
 Quaternion findBestPath(const std::vector<real3>& A)
 {
