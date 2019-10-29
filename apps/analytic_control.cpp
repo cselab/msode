@@ -140,23 +140,10 @@ int main(int argc, char **argv)
     const MatrixReal V = createVelocityMatrix(magneticFieldMagnitude, bodies);
     const MatrixReal U = V.inverse();
 
-    // std::cout << V << "\n\n";
-    // std::cout << U << std::endl;
+    std::cout << V << "\n\n";
+    std::cout << U << std::endl;
 
-    // for (int i = 0; i < 1; ++i)
-    // {
-    //     std::cout << "=========== step " << i << std::endl;
-    //     std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, 42 * i + 13);
-    //     auto A = computeA(U, initialPositions);
-        
-    //     // auto n = findBestPlane(A);
-    //     // std::cout << n << "\t\t" << computeTime(A, n) << std::endl;
-
-    //     auto q = findBestPath(A);
-    //     std::cout << q << "\t\t" << computeTime(A, q) << std::endl;
-    // }
-
-    long seed = 42424242;
+    const long seed = 42424242;
     std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
     simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U);
     return 0;
