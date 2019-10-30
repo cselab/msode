@@ -50,7 +50,7 @@ static inline real3 makeRandomUnitVector(std::mt19937& gen)
              std::cos(phi)};
 }
 
-TEST_CASE( "Construct from vectors", "[construction]" )
+TEST_CASE( "Construct from random vectors", "[construction]" )
 {
     const unsigned long seed = 424242;
     const int numTries = 50;
@@ -60,6 +60,24 @@ TEST_CASE( "Construct from vectors", "[construction]" )
     {
         const auto u = makeRandomUnitVector(gen);
         const auto v = makeRandomUnitVector(gen);
+
+        const auto q = Quaternion::createFromVectors(u,v);
+        requireEquals(v, q.rotate(u));
+    }
+}
+
+TEST_CASE( "Construct from aligned vectors", "[construction]" )
+{
+    {
+        const real3 u = ex;
+        const real3 v = ex;
+
+        const auto q = Quaternion::createFromVectors(u,v);
+        requireEquals(v, q.rotate(u));
+    }
+    {
+        const real3 u = ex;
+        const real3 v = {-1.0_r, 0.0_r, 0.0_r};
 
         const auto q = Quaternion::createFromVectors(u,v);
         requireEquals(v, q.rotate(u));
