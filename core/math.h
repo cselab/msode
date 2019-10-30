@@ -69,3 +69,17 @@ inline real3 normalized(real3 v)
     Expect(l > 0, "can not normalize zero quaternion");
     return ( 1.0_r / l ) * v;
 }
+
+static inline real3 anyOrthogonal(real3 v)
+{
+    const real x = std::abs(v.x);
+    const real y = std::abs(v.y);
+    const real z = std::abs(v.z);
+
+    constexpr real3 ex {1.0_r, 0.0_r, 0.0_r};
+    constexpr real3 ey {0.0_r, 1.0_r, 0.0_r};
+    constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
+        
+    const real3 other = x < y ? (x < z ? ex : ez) : (y < z ? ey : ez);
+    return cross(v, other);
+}

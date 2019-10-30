@@ -130,20 +130,6 @@ private:
     Quaternion(real w, real3 u) :
         w(w), x(u.x), y(u.y), z(u.z)
     {}
-
-    static inline real3 anyOrthogonal(real3 v)
-    {
-        const real x = std::abs(v.x);
-        const real y = std::abs(v.y);
-        const real z = std::abs(v.z);
-
-        constexpr real3 ex {1.0_r, 0.0_r, 0.0_r};
-        constexpr real3 ey {0.0_r, 1.0_r, 0.0_r};
-        constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
-        
-        const real3 other = x < y ? (x < z ? ex : ez) : (y < z ? ey : ez);
-        return cross(v, other);
-    }
     
     // https://stackoverflow.com/a/11741520/11630848
     Quaternion(real3 u, real3 v)
