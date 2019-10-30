@@ -41,13 +41,10 @@ int main(int argc, char **argv)
     
     auto omegaField = [omegaC](real t) {return omegaC * 0.5;};
 
-    auto rotatingDirection = [omegaTurn](real t)
+    auto rotatingDirection = [omegaTurn](real t) -> real3
     {
         const real wt  = t * omegaTurn;
-        constexpr real3 original {1._r, 0._r, 0._r};
-        constexpr real3 axis {0._r, 0._r, 1._r};
-        const auto q = Quaternion::createFromRotation(wt, axis);
-        return q.rotate(original);
+        return {std::cos(wt), std::sin(wt), 0.0_r};
     };
 
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
