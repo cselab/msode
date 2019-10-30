@@ -1,7 +1,43 @@
 #include "simulation.h"
 #include "factory.h"
 
+#include <random>
 #include <string>
+
+static inline Quaternion makeRandomOrientation(std::mt19937& gen)
+{
+     std::uniform_real_distribution<real> U(0.0_r, 1.0_r);
+     const real theta = 2.0_r * M_PI * U(gen);
+     const real phi   = std::acos(1.0_r - 2.0_r * U(gen));
+
+     constexpr real3 from {1.0_r, 0.0_r, 0.0_r};
+     
+     const real3 to {std::sin(phi) * std::cos(theta),
+                     std::sin(phi) * std::sin(theta),
+                     std::cos(phi)};
+
+     return Quaternion::createFromVectors(from, to);     
+}
+
+static inline auto readBodyAndRandomIC(const std::string& fname, int numBodies, unsigned long seed = 424242)
+{
+    const auto refBody = Factory::readRigidBodyConfig(fname);
+
+    std::vector<RigidBody> bodies;
+    bodies.reserve(numBodies);
+
+    std::mt19937 gen(seed);
+    
+    for (int i = 0; i < numBodies; ++i)
+    {
+        RigidBody b = refBody;
+        b.q = makeRandomOrientation(gen);
+        b.r = {i * 1.0_r, 0.0_r, 0.0_r};
+        bodies.push_back(b);
+    }
+
+    return bodies;
+}
 
 // assume m is along y
 static inline real computeStepOutFrequency(real magneticFieldMagnitude, const RigidBody& body)
@@ -25,19 +61,19 @@ static inline real computePerpStepOutFrequency(real magneticFieldMagnitude, cons
     return magneticFieldMagnitude * m * Czz;
 }
 
-
 int main(int argc, char **argv)
 {
-    Expect(argc == 5, "usage : ./main <config0> <target direction (x, y, z)>");
+    Expect(argc == 6, "usage : ./main <config0> <numBodies> <target direction (x, y, z)>");
 
-    std::vector<RigidBody> bodies = {Factory::readRigidBodyConfig(argv[1])};
+    const int numBodies = std::stoi(arg[2]);
+    std::vector<RigidBody> bodies = readBodyAndRandomIC(argv[1], numBodies);
 
     const real3 targetDir = [argv]()
     {
         real3 dir;
-        dir.x = std::stod(argv[2]);
-        dir.y = std::stod(argv[3]);
-        dir.z = std::stod(argv[4]);
+        dir.x = std::stod(argv[3]);
+        dir.y = std::stod(argv[4]);
+        dir.z = std::stod(argv[5]);
         return normalized(dir);
     }();
 
@@ -50,7 +86,7 @@ int main(int argc, char **argv)
     const real omegaC     = computeStepOutFrequency    (magneticFieldMagnitude, body);
     const real omegaCPerp = computePerpStepOutFrequency(magneticFieldMagnitude, body);
 
-    const real omegaTurn = 0.1_r * omegaCPerp;
+    const real omegaTurn = 0.5_r * omegaCPerp;
     
     auto omegaField = [omegaC](real t) -> real
     {
