@@ -11,7 +11,7 @@ KORALILIBS=`python3 -m korali.cxx --libs`
 
 LDFLAGS += -L$(CORE_DIR) -lmsode
 
-EXECS = rotating forward forward_curve analytic_control
+EXECS = rotating forward forward_curve analytic_control turn
 
 all: $(EXECS)
 
@@ -19,6 +19,7 @@ all: $(EXECS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 rotating: rotating.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+turn: turn.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 forward: forward.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 forward_curve: forward_curve.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
