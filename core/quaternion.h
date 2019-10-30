@@ -117,8 +117,10 @@ struct Quaternion
         return stream << q.realPart() << " " << q.vectorPart();
     }
     
-    real w;        // real part
-    real x, y, z;  // vector part
+    real w {0.0_r}; // real part
+    real x {0.0_r}; // vector part
+    real y {0.0_r};
+    real z {0.0_r};
 
 private:
     Quaternion(real w, real x, real y, real z) :
@@ -129,12 +131,46 @@ private:
         w(w), x(u.x), y(u.y), z(u.z)
     {}
 
-    // https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another
-    Quaternion(real3 v1, real3 v2) :
-        Quaternion(std::sqrt(dot(v1, v1) * dot(v2, v2)) + dot(v1, v2), cross(v1, v2))
+    static inline real3 anyOrthogonal(real3 v)
     {
-        Expect(length(v1) > 0._r && length(v2) > 0._r, "vector length must be greater than zero");
+        const real x = std::abs(v.x);
+        const real y = std::abs(v.y);
+        const real z = std::abs(v.z);
+
+        constexpr real3 ex {1.0_r, 0.0_r, 0.0_r};
+        constexpr real3 ey {0.0_r, 1.0_r, 0.0_r};
+        constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
+        
+        const real3 other = x < y ? (x < z ? ex : ez) : (y < z ? ey : ez);
+        return cross(v, other);
+    }
+    
+    // https://stackoverflow.com/a/11741520/11630848
+    Quaternion(real3 u, real3 v)
+    {
+        constexpr real tolerance = 1e-6_r;
+        Expect(length(u) > 0._r && length(v) > 0._r, "vector length must be greater than zero");
+
+        const real k_cos_theta = dot(u, v);
+        const real k = std::sqrt(dot(u, u) * dot(v, v));
+
+        if (std::abs(k_cos_theta + k) < tolerance) // opposite directions
+        {
+            w = 0.0_r;
+            const real3 n = anyOrthogonal(u);
+            x = n.x;
+            y = n.y;
+            z = n.z;
+        }
+        else
+        {
+            w = k_cos_theta + k;
+            const real3 n = cross(u, v);
+            x = n.x;
+            y = n.y;
+            z = n.z;
+        }
         this->normalize();
-        Ensure(length(rotate(v1)-v2) < 1e-6_r, "constructor from 2 vectors failed");
+        Ensure(length(rotate(u)-v) < 1e-6_r, "constructor from 2 vectors failed");
     }
 };
