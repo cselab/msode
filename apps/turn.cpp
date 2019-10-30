@@ -29,18 +29,24 @@ int main(int argc, char **argv)
     Expect(argc != 2, "usage : ./main <config0>");
 
     std::vector<RigidBody> bodies = {Factory::readRigidBodyConfig(argv[1])};
-    
-    
-    const real magneticFieldMagnitude {1.0_r};
-    auto omegaField = [](real t) {return 0.5_r;};
 
-    auto rotatingDirection = [](real t)
+    const real magneticFieldMagnitude {1.0_r};
+
+    const auto& body = bodies[0];
+    
+    const real omegaC     = computeStepOutFrequency    (magneticFieldMagnitude, body);
+    const real omegaCPerp = computePerpStepOutFrequency(magneticFieldMagnitude, body);
+
+    const real omegaTurn = 0.1_r * omegaCPerp;
+    
+    auto omegaField = [omegaC](real t) {return omegaC * 0.5;};
+
+    auto rotatingDirection = [omegaTurn](real t)
     {
-        const real omega = 0.01_r;
-        const real wt_2  = 0.5_r * t * omega;
+        const real wt  = t * omegaTurn;
         constexpr real3 original {1._r, 0._r, 0._r};
         constexpr real3 axis {0._r, 0._r, 1._r};
-        const auto q = Quaternion::createFromRotation(wt_2, axis);
+        const auto q = Quaternion::createFromRotation(wt, axis);
         return q.rotate(original);
     };
 
@@ -48,13 +54,15 @@ int main(int argc, char **argv)
 
     Simulation simulation {bodies, magneticField};
 
-    const real tEnd = 2000.0_r;
-    const real tDump = 0.1_r;
-    const real dt {0.001_r};
+    const real nTurns = 5;
+    const int nFrames = nTurns * 50;
+    
+    const real tEnd = nTurns * 2 * M_PI / omegaTurn;
+    const real tDump = tEnd / nFrames;
+    const real dt    = 1.0_r / (50.0_r * omegaC);
     const long nsteps = tEnd / dt;
 
     simulation.activateDump("out.txt", tDump / dt);
-    simulation.run(nsteps, dt);
     simulation.run(nsteps, dt);
     
     return 0;
