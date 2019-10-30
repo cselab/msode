@@ -15,5 +15,5 @@
 #endif
 
 
-#define Expect(val, msg) _CHECK(val, std::string("Failed Expect : ") + msg)
-#define Ensure(val, msg) _CHECK(val, std::string("Failed Ensure : ") + msg)
+#define Expect(val, msg) _CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Expect : " + msg)
+#define Ensure(val, msg) _CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Ensure : " + msg)
