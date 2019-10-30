@@ -1,3 +1,6 @@
 [submodule "extern/eigen-git-mirror"]
 	path = extern/eigen-git-mirror
 	url = git@github.com:eigenteam/eigen-git-mirror.git
+[submodule "extern/Catch2"]
+	path = extern/Catch2
+	url = https://github.com/catchorg/Catch2.git
