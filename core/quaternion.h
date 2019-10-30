@@ -154,7 +154,7 @@ private:
         const real k_cos_theta = dot(u, v);
         const real k = std::sqrt(dot(u, u) * dot(v, v));
 
-        if (std::abs(k_cos_theta + k) < tolerance) // opposite directions
+        if (std::abs(k_cos_theta + k) == 0.0_r) // opposite directions
         {
             w = 0.0_r;
             const real3 n = anyOrthogonal(u);
@@ -171,6 +171,6 @@ private:
             z = n.z;
         }
         this->normalize();
-        Ensure(length(rotate(u)-v) < 1e-6_r, "constructor from 2 vectors failed");
+        Ensure(length(rotate(u)-v) < tolerance, "constructor from 2 vectors failed by " + std::to_string(length(rotate(u)-v)));
     }
 };
