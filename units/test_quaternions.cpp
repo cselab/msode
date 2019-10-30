@@ -3,6 +3,8 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
+#include <random>
+
 constexpr real3 ex {1.0_r, 0.0_r, 0.0_r};
 constexpr real3 ey {0.0_r, 1.0_r, 0.0_r};
 constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
@@ -34,6 +36,33 @@ TEST_CASE( "Rotations around axis", "[rotation]" )
         const auto v = q.rotate(ex);
         
         requireEquals(v, ez);
+    }
+}
+
+static inline real3 makeRandomUnitVector(std::mt19937& gen)
+{
+     std::uniform_real_distribution<real> U(0.0_r, 1.0_r);
+     const real theta = 2.0_r * M_PI * U(gen);
+     const real phi   = std::acos(1.0_r - 2.0_r * U(gen));
+
+     return {std::sin(phi) * std::cos(theta),
+             std::sin(phi) * std::sin(theta),
+             std::cos(phi)};
+}
+
+TEST_CASE( "Construct from vectors", "[construction]" )
+{
+    const unsigned long seed = 424242;
+    const int numTries = 50;
+    std::mt19937 gen(seed);
+
+    for (int i = 0; i < numTries; ++i)
+    {
+        const auto u = makeRandomUnitVector(gen);
+        const auto v = makeRandomUnitVector(gen);
+
+        const auto q = Quaternion::createFromVectors(u,v);
+        requireEquals(v, q.rotate(u));
     }
 }
 
