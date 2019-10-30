@@ -1,5 +1,6 @@
 #pragma once
 
+#include "log.h"
 #include "types.h"
 
 #include <cmath>
@@ -64,5 +65,7 @@ inline real length(real3 v)
 
 inline real3 normalized(real3 v)
 {
-    return ( 1.0_r / length(v) ) * v;
+    const auto l = length(v);
+    Expect(l > 0, "can not normalize zero quaternion");
+    return ( 1.0_r / l ) * v;
 }
