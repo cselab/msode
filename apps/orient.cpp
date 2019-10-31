@@ -4,18 +4,20 @@
 #include <random>
 #include <string>
 
+static inline real3 makeRandomUnitVector(std::mt19937& gen)
+{
+    std::uniform_real_distribution<real> U(0.0_r, 1.0_r);
+    const real theta = 2.0_r * M_PI * U(gen);
+    const real phi   = std::acos(1.0_r - 2.0_r * U(gen));
+    return {std::sin(phi) * std::cos(theta),
+            std::sin(phi) * std::sin(theta),
+            std::cos(phi)};
+}
+
 static inline Quaternion makeRandomOrientation(std::mt19937& gen)
 {
-     std::uniform_real_distribution<real> U(0.0_r, 1.0_r);
-     const real theta = 2.0_r * M_PI * U(gen);
-     const real phi   = std::acos(1.0_r - 2.0_r * U(gen));
-
      constexpr real3 from {1.0_r, 0.0_r, 0.0_r};
-     
-     const real3 to {std::sin(phi) * std::cos(theta),
-                     std::sin(phi) * std::sin(theta),
-                     std::cos(phi)};
-
+     const real3 to = makeRandomUnitVector(gen);
      return Quaternion::createFromVectors(from, to);     
 }
 
