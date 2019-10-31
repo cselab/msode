@@ -86,8 +86,6 @@ int main(int argc, char **argv)
     std::vector<RigidBody> bodies = readBodyAndPeropIC(argv[1], numBodies, targetDir);
 
 
-    const real3 srcDir {1.0_r, 0.0_r, 0.0_r};
-    
     const real magneticFieldMagnitude {1.0_r};
 
     const auto& body = bodies[0];
@@ -105,7 +103,7 @@ int main(int argc, char **argv)
         return sign * omegaC * 0.5;
     };
     
-    auto rotatingDirection = [omegaTurn, targetDir, srcDir](real t) -> real3
+    auto rotatingDirection = [targetDir](real t) -> real3
     {
         return normalized(targetDir);
     };
