@@ -24,19 +24,12 @@ std::vector<real3> generateRandomPositions(int n, real3 boxLo, real3 boxHi, long
     return positions;
 }
 
-static inline real computeStepOutFrequency(real magneticFieldMagnitude, const RigidBody& body)
-{
-    const real m = length(body.magnMoment);
-    const real Cxx = body.propulsion.C[0];
-    return magneticFieldMagnitude * m * Cxx;
-}
-
 std::vector<real> computeStepOutFrequencies(real magneticFieldMagnitude, const std::vector<RigidBody>& bodies)
 {
     std::vector<real> omegas;
     omegas.reserve(bodies.size());
     for (const auto& b : bodies)
-        omegas.push_back(computeStepOutFrequency(magneticFieldMagnitude, b));
+        omegas.push_back(b.stepOutFrequency(magneticFieldMagnitude));
     return omegas;
 }
 
@@ -71,7 +64,7 @@ static inline real computeMeanVelocity(RigidBody body, real magneticFieldMagnitu
 
 static inline real computeForwardVelocity(const RigidBody& body, real magneticFieldMagnitude, real omega)
 {
-    const real omegaC = computeStepOutFrequency(magneticFieldMagnitude, body);
+    const real omegaC = body.stepOutFrequency(magneticFieldMagnitude);
 
     if (omega <= omegaC)
     {

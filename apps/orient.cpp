@@ -39,33 +39,11 @@ static inline auto readBodyAndRandomIC(const std::string& fname, int numBodies, 
     return bodies;
 }
 
-// assume m is along y
-static inline real computeStepOutFrequency(real magneticFieldMagnitude, const RigidBody& body)
-{
-    Expect(std::abs(body.magnMoment.x) < 1e-6_r &&
-           std::abs(body.magnMoment.z) < 1e-6_r,
-           "Assume m along y");
-    const real m = length(body.magnMoment);
-    const real Cxx = body.propulsion.C[0];
-    return magneticFieldMagnitude * m * Cxx;
-}
-
-// assume m is along y
-static inline real computePerpStepOutFrequency(real magneticFieldMagnitude, const RigidBody& body)
-{
-    Expect(std::abs(body.magnMoment.x) < 1e-6_r &&
-           std::abs(body.magnMoment.z) < 1e-6_r,
-           "Assume m along y");
-    const real m = length(body.magnMoment);
-    const real Czz = body.propulsion.C[2];
-    return magneticFieldMagnitude * m * Czz;
-}
-
 int main(int argc, char **argv)
 {
     Expect(argc == 6, "usage : ./main <config0> <numBodies> <target direction (x, y, z)>");
 
-    const int numBodies = std::stoi(arg[2]);
+    const int numBodies = std::stoi(argv[2]);
     std::vector<RigidBody> bodies = readBodyAndRandomIC(argv[1], numBodies);
 
     const real3 targetDir = [argv]()
@@ -83,8 +61,8 @@ int main(int argc, char **argv)
 
     const auto& body = bodies[0];
     
-    const real omegaC     = computeStepOutFrequency    (magneticFieldMagnitude, body);
-    const real omegaCPerp = computePerpStepOutFrequency(magneticFieldMagnitude, body);
+    const real omegaC     = body.stepOutFrequency(magneticFieldMagnitude, 0);
+    const real omegaCPerp = body.stepOutFrequency(magneticFieldMagnitude, 2);
 
     const real omegaTurn = 0.5_r * omegaCPerp;
     

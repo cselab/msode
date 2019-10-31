@@ -23,7 +23,19 @@ struct RigidBody
     real3 r, magnMoment;
     PropulsionMatrix propulsion;
 
-    real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r}; 
+    real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r};
+
+    inline real stepOutFrequency(real magneticFieldMagnitude, int dir = 0) const
+    {
+        Expect(std::abs(body.magnMoment.x) < 1e-6_r &&
+               std::abs(body.magnMoment.z) < 1e-6_r,
+               "Assume m along y");
+        Expect(dir == 0 || dir == 2, "Can only compute step out frequency along x or z direction");
+
+        const real m = length(magnMoment);
+        const real C = propulsion.C[dir];
+        return magneticFieldMagnitude * m * C;
+    }
 };
 
 struct MagneticField
