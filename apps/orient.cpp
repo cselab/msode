@@ -41,12 +41,37 @@ static inline auto readBodyAndRandomIC(const std::string& fname, int numBodies, 
     return bodies;
 }
 
+static inline Quaternion makePerpendicularOrientation(real3 dir)
+{
+     constexpr real3 from {1.0_r, 0.0_r, 0.0_r};
+     const real3 to = normalized(anyOrthogonal(dir));
+     return Quaternion::createFromVectors(from, to);     
+}
+
+static inline auto readBodyAndPeropIC(const std::string& fname, int numBodies, real3 dir)
+{
+    const auto refBody = Factory::readRigidBodyConfig(fname);
+
+    std::vector<RigidBody> bodies;
+    bodies.reserve(numBodies);
+
+    for (int i = 0; i < numBodies; ++i)
+    {
+        RigidBody b = refBody;
+        b.q = makePerpendicularOrientation(dir);
+        b.r = {i * 1.0_r, 0.0_r, 0.0_r};
+        bodies.push_back(b);
+    }
+
+    return bodies;
+}
+
+
 int main(int argc, char **argv)
 {
     Expect(argc == 6, "usage : ./main <config0> <numBodies> <target direction (x, y, z)>");
 
     const int numBodies = std::stoi(argv[2]);
-    std::vector<RigidBody> bodies = readBodyAndRandomIC(argv[1], numBodies);
 
     const real3 targetDir = [argv]()
     {
@@ -57,6 +82,10 @@ int main(int argc, char **argv)
         return normalized(dir);
     }();
 
+    //std::vector<RigidBody> bodies = readBodyAndRandomIC(argv[1], numBodies);
+    std::vector<RigidBody> bodies = readBodyAndPeropIC(argv[1], numBodies, targetDir);
+
+
     const real3 srcDir {1.0_r, 0.0_r, 0.0_r};
     
     const real magneticFieldMagnitude {1.0_r};
@@ -66,7 +95,7 @@ int main(int argc, char **argv)
     const real omegaC     = body.stepOutFrequency(magneticFieldMagnitude, 0);
     const real omegaCPerp = body.stepOutFrequency(magneticFieldMagnitude, 2);
 
-    const real omegaTurn = 0.5_r * omegaCPerp;
+    const real omegaTurn = omegaCPerp;
     
     auto omegaField = [omegaC](real t) -> real
     {
@@ -78,11 +107,7 @@ int main(int argc, char **argv)
     
     auto rotatingDirection = [omegaTurn, targetDir, srcDir](real t) -> real3
     {
-        // const real wt  = t * omegaTurn;
-        // return {std::cos(wt), std::sin(wt), 0.0_r};
-        const real tau = 2.0_r * M_PI / omegaTurn;
-        const real lambda = std::max(0.0_r, std::min(1.0_r, t / tau));
-        return normalized(lambda * targetDir + (1.0_r-lambda) * srcDir);
+        return normalized(targetDir);
     };
 
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
