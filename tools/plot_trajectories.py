@@ -11,6 +11,7 @@ parser.add_argument('--file', type=str, required=True, help='output of ODE simul
 parser.add_argument('--out', type=str, default="GUI")
 parser.add_argument('--multi_color', action='store_true', default=False)
 parser.add_argument('--L', type=float, default=50, help='initial half box length')
+parser.add_argument('--plot_shade', default=False, action='store_true', help='plot projection of trajectories along each axis')
 args = parser.parse_args()
 
 xG=[0,0,0]
@@ -19,19 +20,20 @@ max_swimmers = 32
 colors = ['C'+str(i%10) for i in range(max_swimmers)]
 
 def plot_trajectory(i, ax, x, y, z):
-    # shadows
-    x0 = -np.ones(len(x)) * args.L
-    y0 = x0
-    z0 = x0
-    shade_color='0.75'
-    ax.plot([xG[0], xG[0], x0[0],   x[0], x[0], x0[0]],
-            [xG[1], y0[0], xG[1],   y[0], y0[0], y[0]],
-            [z0[2], xG[2], xG[2],   z0[0], z[0], z[0]],
-            'o', color = shade_color)
-    
-    ax.plot(x, y, z0, '-', color = shade_color)
-    ax.plot(x, y0, z, '-', color = shade_color)
-    ax.plot(x0, y, z, '-', color = shade_color)
+    if args.plot_shade:
+        x0 = -np.ones(len(x)) * args.L
+        y0 = x0
+        z0 = x0
+        shade_color='0.75'
+
+        ax.plot([xG[0], xG[0], x0[0],   x[0], x[0], x0[0]],
+                [xG[1], y0[0], xG[1],   y[0], y0[0], y[0]],
+                [z0[2], xG[2], xG[2],   z0[0], z[0], z[0]],
+                'o', color = shade_color)
+
+        ax.plot(x, y, z0, '-', color = shade_color)
+        ax.plot(x, y0, z, '-', color = shade_color)
+        ax.plot(x0, y, z, '-', color = shade_color)
 
     ax.plot(x, y, z, '-' + colors[i])
     ax.plot([x[0]], [y[0]], [z[0]], 'o' + colors[i])
