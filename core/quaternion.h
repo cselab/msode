@@ -134,7 +134,6 @@ private:
     // https://stackoverflow.com/a/11741520/11630848
     Quaternion(real3 u, real3 v)
     {
-        constexpr real tolerance = 1e-6_r;
         Expect(length(u) > 0._r && length(v) > 0._r, "vector length must be greater than zero");
 
         const real k_cos_theta = dot(u, v);
@@ -157,6 +156,6 @@ private:
             z = n.z;
         }
         this->normalize();
-        Ensure(length(rotate(u)-v) < tolerance, "constructor from 2 vectors failed by " + std::to_string(length(rotate(u)-v)));
+        Ensure(length(rotate(u)-v) < 1e-6_r, "constructor from 2 vectors failed by " + std::to_string(length(rotate(u)-v)));
     }
 };

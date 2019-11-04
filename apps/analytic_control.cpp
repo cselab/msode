@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <limits>
 
 static inline std::vector<real> computeBetas(const std::vector<real3>& initialPositions,
                                              const MatrixReal& U, real3 dir)
@@ -19,12 +20,13 @@ static inline std::vector<real> computeBetas(const std::vector<real3>& initialPo
     return betas;
 }
 
-// static inline void print(const std::vector<real>& vec)
-// {
-//     for (auto v : vec)
-//         std::cout << v << "\n";
-//     std::cout << std::endl;
-// }
+static inline real computeMinOmega(int dir, const std::vector<RigidBody>& bodies, real magneticFieldMagnitude)
+{
+    real minVal = std::numeric_limits<real>::max();
+    for (const auto& b : bodies)
+        minVal = std::min(minVal, b.stepOutFrequency(magneticFieldMagnitude, dir));
+    return minVal;
+}
 
 static void simulateOptimalPath(real magneticFieldMagnitude,
                                 std::vector<RigidBody> bodies, // by copy because will be modified (IC)
@@ -36,12 +38,14 @@ static void simulateOptimalPath(real magneticFieldMagnitude,
 
     const std::vector<real> omegas = computeStepOutFrequencies(magneticFieldMagnitude, bodies);
 
+    // std::cout << "omegas = " << std::endl;
+    // print(omegas);
+
     for (size_t i = 0; i < bodies.size(); ++i)
     {
         bodies[i].r = initialPositions[i];
         bodies[i].q = q;
     }
-    
     
     const real3 e1 {1.0_r, 0.0_r, 0.0_r};
     const real3 e2 {0.0_r, 1.0_r, 0.0_r};
@@ -55,20 +59,29 @@ static void simulateOptimalPath(real magneticFieldMagnitude,
     const auto betas2 = computeBetas(initialPositions, U, dir2);
     const auto betas3 = computeBetas(initialPositions, U, dir3);
 
-    // print(betas1);
-    // print(betas2);
-    // print(betas3);
-    
     const real t1 = computeTime(A, dir1);
     const real t2 = computeTime(A, dir2);
     const real t3 = computeTime(A, dir3);
 
-    const real scan1 = t1;
-    const real scan2 = scan1 + t2;
-    // const real scan3 = scan2 + t3;
+    const real omegaPerpMin = computeMinOmega(2, bodies, magneticFieldMagnitude);
+    constexpr real secureFactor = 5.0_r;
+    const real tReorient = secureFactor * 2.0_r * M_PI / omegaPerpMin;
+    const real omegaCMin = computeMinOmega(0, bodies, magneticFieldMagnitude);
+
+    const real scan1 = tReorient + t1;
+    const real scan2 = scan1 + tReorient + t2;
 
     auto getOmega = [&](real t, const std::vector<real>& betas)
     {
+        if (t < tReorient)
+        {
+            const real period = 2.0_r * 2.0_r * M_PI / omegaCMin;
+            const int id = t / period;
+            const real sign = (id % 2) ? 1 : -1;
+            return sign * omegaCMin * 0.5_r;
+        }
+
+        t -= tReorient;
         real tcum = 0.0_r;
         for (size_t i = 0; i < betas.size(); ++i)
         {
@@ -101,15 +114,13 @@ static void simulateOptimalPath(real magneticFieldMagnitude,
     MagneticField field(magneticFieldMagnitude, omega, rotatingDirection);
     Simulation sim(bodies, field);
 
-    const real tTot = t1 + t2 + t3;
+    const real tTot = scan2 + tReorient + t3;
     const real omegaMax = *std::max_element(omegas.begin(), omegas.end());
     
     const real dt = 1.0_r / (omegaMax * 20);
     const long nsteps = static_cast<long>(tTot/dt);
 
-    std::cout << "nsteps = " << nsteps << std::endl;
-
-    sim.activateDump("optimal_trajectories.txt", nsteps / 1000);
+    sim.activateDump("optimal_trajectories.txt", nsteps / 300);
 
     sim.run(nsteps, dt);
 }

@@ -25,11 +25,10 @@ struct RigidBody
 
     real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r};
 
+    // assume m is along y
     inline real stepOutFrequency(real magneticFieldMagnitude, int dir = 0) const
     {
-        Expect(std::abs(body.magnMoment.x) < 1e-6_r &&
-               std::abs(body.magnMoment.z) < 1e-6_r,
-               "Assume m along y");
+        Expect(std::abs(magnMoment.x) < 1e-6_r && std::abs(magnMoment.z) < 1e-6_r, "Assume m along y");
         Expect(dir == 0 || dir == 2, "Can only compute step out frequency along x or z direction");
 
         const real m = length(magnMoment);
