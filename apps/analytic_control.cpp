@@ -123,6 +123,10 @@ static void simulateOptimalPath(real magneticFieldMagnitude,
     sim.activateDump("optimal_trajectories.txt", nsteps / 300);
 
     sim.run(nsteps, dt);
+
+    std::cout << "Final positions:\n";
+    for (auto b : sim.getBodies())
+        std::cout << b.r << std::endl;
 }
 
 
@@ -151,11 +155,12 @@ int main(int argc, char **argv)
     const MatrixReal V = createVelocityMatrix(magneticFieldMagnitude, bodies);
     const MatrixReal U = V.inverse();
 
-    std::cout << V << "\n\n";
-    std::cout << U << std::endl;
+    // std::cout << V << "\n\n";
+    // std::cout << U << std::endl;
 
     const long seed = 42424242;
     std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
     simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U);
+
     return 0;
 }
