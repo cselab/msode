@@ -76,9 +76,10 @@ real3 findBestPlane(const std::vector<real3>& A)
     k["Variables"][1]["Lower Bound"] =   - M_PI;
     k["Variables"][1]["Upper Bound"] = 2 * M_PI;
 
-    k["Console Output"]["Frequency"] = 100;
-    k["Results Output"]["Frequency"] = 100;
-
+    k["Console Output"]["Frequency"] = 0;
+    k["Results Output"]["Frequency"] = 0;
+    k["Results Output"]["Active"] = false;
+    
     k["Random Seed"] = 424242;
     
     k.runSingle();
@@ -148,8 +149,11 @@ Quaternion findBestPath(const std::vector<real3>& A)
     k["Variables"][2]["Lower Bound"] =   - M_PI;
     k["Variables"][2]["Upper Bound"] = 3 * M_PI;
 
-    k["Console Output"]["Frequency"] = 10;
-    k["Results Output"]["Frequency"] = 10;
+    k["Console Output"]["Frequency"] = 0;
+    k["Results Output"]["Frequency"] = 0;
+    k["Results Output"]["Active"] = false;
+
+    k["Random Seed"] = 424242;
     
     k.runSingle();
 
