@@ -7,7 +7,7 @@ all: msode_rl apps
 libmsode.a:
 	@make -C $(CORE_DIR) $@
 
-apps:
+apps: libmsode.a
 	@make -C $(APPS_DIR) all
 
 msode_rl: libmsode.a
