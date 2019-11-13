@@ -4,8 +4,11 @@
 #include "math.h"
 #include "log.h"
 
+#include <array>
 #include <cmath>
 #include <iostream>
+
+using RotMatrix = std::array<std::array<real, 3>, 3>; 
 
 struct Quaternion
 {
@@ -26,6 +29,44 @@ struct Quaternion
         return {std::cos(alpha), std::sin(alpha) * u};
     }
 
+
+    // https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
+    static inline Quaternion createFromMatrix(const RotMatrix& R)
+    {
+        auto makeQ = [](real t, real w, real x, real y, real z)
+        {
+            const auto q = createFromComponents(w, x, y, z);
+            return q * (0.5_r / std::sqrt(t));
+        };
+        
+        if (R[2][2] < 0.0_r)
+        {
+            if (R[0][0] > R[1][1])
+            {
+                const real t = 1.0_r + R[0][0] - R[1][1] - R[2][2];
+                return makeQ(t, R[2][1] - R[1][2], t, R[1][0] + R[0][1], R[0][2] + R[2][0]);
+            }
+            else
+            {
+                const real t = 1.0_r - R[0][0] + R[1][1] - R[2][2];
+                return makeQ(t, R[0][2] - R[2][0], R[1][0] + R[0][1], t, R[2][1] + R[1][2]);
+            }
+        }
+        else
+        {
+            if (R[0][0] < -R[1][1])
+            {
+                const real t = 1.0_r - R[0][0] - R[1][1] + R[2][2];
+                return makeQ(t, R[1][0] - R[0][1], R[0][2] + R[2][0], R[2][1] + R[1][2], t);
+            }
+            else
+            {
+                const real t = 1.0_r + R[0][0] + R[1][1] + R[2][2];
+                return makeQ(t, t, R[2][1] - R[1][2], R[0][2] - R[2][0], R[1][0] - R[0][1]);
+            }
+        }
+    }
+
     static inline Quaternion createFromVectors(real3 from, real3 to)
     {
         return {from, to};
@@ -37,28 +78,36 @@ struct Quaternion
     
     ~Quaternion() = default;
 
-    inline real realPart() const {return w;}
-    inline real3 vectorPart() const {return {x, y, z};}
+    real realPart() const {return w;}
+    real3 vectorPart() const {return {x, y, z};}
 
-    inline Quaternion conjugate() const {return {w, -x, -y, -z};}
+    RotMatrix getRotationMatrix() const
+    {
+        const std::array<real, 3> row0 {1.0_r - 2*y*y - 2*z*z, 2*x*y - 2*z*w, 2*y*z + 2*y*w};
+        const std::array<real, 3> row1 {2*x*y + 2*z*w, 1.0_r - 2*x*x - 2*z*z, 2*y*z - 2*x*w};
+        const std::array<real, 3> row2 {2*x*z - 2*y*w, 2*y*z + 2*x*w, 1.0_r - 2*x*x - 2*y*y};
+        return {row0, row1, row2};
+    }
 
-    inline real norm() const {return std::sqrt(w*w + x*x + y*y + z*z);}
+    Quaternion conjugate() const {return {w, -x, -y, -z};}
 
-    inline Quaternion& normalize()
+    real norm() const {return std::sqrt(w*w + x*x + y*y + z*z);}
+
+    Quaternion& normalize()
     {
         Expect(norm() > 0, "can not normalize zero quaternion");
         const real factor = 1.0_r / norm();
         return *this *= factor;
     }
     
-    inline Quaternion normalized() const
+    Quaternion normalized() const
     {
         Quaternion ret = *this;
         ret.normalize();
         return ret;
     }
 
-    inline Quaternion& operator+=(const Quaternion& q)
+    Quaternion& operator+=(const Quaternion& q)
     {
         x += q.x;
         y += q.y;
@@ -67,7 +116,7 @@ struct Quaternion
         return *this;
     }
 
-    inline Quaternion& operator-=(const Quaternion& q)
+    Quaternion& operator-=(const Quaternion& q)
     {
         x -= q.x;
         y -= q.y;
@@ -76,7 +125,7 @@ struct Quaternion
         return *this;
     }
 
-    inline Quaternion& operator*=(real a)
+    Quaternion& operator*=(real a)
     {
         x *= a;
         y *= a;
@@ -99,13 +148,13 @@ struct Quaternion
                 q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w};
     }
     
-    inline Quaternion& operator*=(const Quaternion& q)
+    Quaternion& operator*=(const Quaternion& q)
     {
         *this = (*this) * q;
         return *this;
     }
 
-    inline real3 rotate(real3 v) const
+    real3 rotate(real3 v) const
     {
         Quaternion qv(0.0_r, v);
         const auto& q = *this;

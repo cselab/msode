@@ -84,3 +84,18 @@ TEST_CASE( "Construct from aligned vectors", "[construction]" )
     }
 }
 
+TEST_CASE( "Construct from rotation matrix", "[construction]" )
+{
+    {
+        const std::array<real, 3> row0 {1.0_r, 0.0_r, 0.0_r};
+        const std::array<real, 3> row1 {0.0_r, 1.0_r, 0.0_r};
+        const std::array<real, 3> row2 {0.0_r, 0.0_r, 1.0_r};
+        const RotMatrix identityMatrix {row0, row1, row2};
+        
+        const auto q = Quaternion::createFromMatrix(identityMatrix);
+        requireEquals(ex, q.rotate(ex));
+        requireEquals(ey, q.rotate(ey));
+        requireEquals(ez, q.rotate(ez));
+    }
+}
+
