@@ -44,14 +44,11 @@ static real computeTimeToTravel(real maxDistance, real fieldMagnitude, const std
 static real computeActionTimeScale(real fieldMagnitude, const std::vector<RigidBody>& bodies)
 {
     real wmax {0._r};
+    constexpr int perpDirection = 2;
 
     for (const auto& body : bodies)
-    {
-        const auto& C = body.propulsion.C;
-        const real cmax = std::max(C[1], C[2]);
-        const real w = length(body.magnMoment) * fieldMagnitude * cmax;
-        wmax = std::max(wmax, w);
-    }
+        wmax = std::max(wmax, body.stepOutFrequency(fieldMagnitude, perpDirection));
+
     return 1.0_r / wmax;
 }
 
@@ -60,11 +57,8 @@ static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
     real wmax {0._r};
 
     for (const auto& body : bodies)
-    {
-        const auto& C = body.propulsion.C;
-        const real w = length(body.magnMoment) * fieldMagnitude * fabs(C[0]);
-        wmax = std::max(wmax, w);
-    }
+        wmax = std::max(wmax, body.stepOutFrequency(fieldMagnitude));
+
     return wmax;
 }
 
