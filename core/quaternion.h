@@ -83,7 +83,7 @@ struct Quaternion
 
     RotMatrix getRotationMatrix() const
     {
-        const std::array<real, 3> row0 {1.0_r - 2*y*y - 2*z*z, 2*x*y - 2*z*w, 2*y*z + 2*y*w};
+        const std::array<real, 3> row0 {1.0_r - 2*y*y - 2*z*z, 2*x*y - 2*z*w, 2*x*z + 2*y*w};
         const std::array<real, 3> row1 {2*x*y + 2*z*w, 1.0_r - 2*x*x - 2*z*z, 2*y*z - 2*x*w};
         const std::array<real, 3> row2 {2*x*z - 2*y*w, 2*y*z + 2*x*w, 1.0_r - 2*x*x - 2*y*y};
         return {row0, row1, row2};
@@ -159,6 +159,13 @@ struct Quaternion
         Quaternion qv(0.0_r, v);
         const auto& q = *this;
         return (q * qv * q.conjugate()).vectorPart();
+    }
+
+    real3 inverseRotate(real3 v) const
+    {
+        Quaternion qv(0.0_r, v);
+        const auto& q = *this;
+        return (q.conjugate() * qv * q).vectorPart();
     }
 
     friend inline std::ostream& operator<<(std::ostream& stream, const Quaternion& q)

@@ -84,8 +84,46 @@ TEST_CASE( "Construct from aligned vectors", "[construction]" )
     }
 }
 
+static inline real dot(const std::array<real,3>& a, real3 b)
+{
+    return a[0] * b.x + a[1] * b.y + a[2] * b.z;
+}
+
+static inline real3 multiply(const RotMatrix& R, real3 v)
+{
+    return {dot(R[0], v),
+            dot(R[1], v),
+            dot(R[2], v)};
+}
+
+static inline void checkSameRotation(const RotMatrix& R, const Quaternion& q)
+{
+    requireEquals(q.rotate(ex), multiply(R, ex));
+    requireEquals(q.rotate(ey), multiply(R, ey));
+    requireEquals(q.rotate(ez), multiply(R, ez));
+}
+
+TEST_CASE( "Construct random rotation matrix", "[rotation matrix]" )
+{
+    const unsigned long seed = 424242;
+    const int numTries = 50;
+    std::mt19937 gen(seed);
+
+    for (int i = 0; i < numTries; ++i)
+    {
+        const auto u = makeRandomUnitVector(gen);
+        const auto v = makeRandomUnitVector(gen);
+
+        const auto q = Quaternion::createFromVectors(u,v);
+        const auto R = q.getRotationMatrix();
+        checkSameRotation(R, q);
+    }
+}
+
+
 TEST_CASE( "Construct from rotation matrix", "[construction]" )
 {
+    // identity
     {
         const std::array<real, 3> row0 {1.0_r, 0.0_r, 0.0_r};
         const std::array<real, 3> row1 {0.0_r, 1.0_r, 0.0_r};
