@@ -103,6 +103,14 @@ static inline void checkSameRotation(const RotMatrix& R, const Quaternion& q)
     requireEquals(q.rotate(ez), multiply(R, ez));
 }
 
+static inline Quaternion generateRandomQuaternion(std::mt19937& gen)
+{
+    const auto u = makeRandomUnitVector(gen);
+    const auto v = makeRandomUnitVector(gen);
+
+    return Quaternion::createFromVectors(u,v);
+}
+
 TEST_CASE( "Construct random rotation matrix", "[rotation matrix]" )
 {
     const unsigned long seed = 424242;
@@ -111,13 +119,16 @@ TEST_CASE( "Construct random rotation matrix", "[rotation matrix]" )
 
     for (int i = 0; i < numTries; ++i)
     {
-        const auto u = makeRandomUnitVector(gen);
-        const auto v = makeRandomUnitVector(gen);
-
-        const auto q = Quaternion::createFromVectors(u,v);
+        const auto q = generateRandomQuaternion(gen);
         const auto R = q.getRotationMatrix();
         checkSameRotation(R, q);
     }
+}
+
+static inline RotMatrix generateRandomRotMatrix(std::mt19937& gen)
+{
+    const auto q = generateRandomQuaternion(gen);
+    return q.getRotationMatrix();
 }
 
 
@@ -134,6 +145,21 @@ TEST_CASE( "Construct from rotation matrix", "[construction]" )
         requireEquals(ex, q.rotate(ex));
         requireEquals(ey, q.rotate(ey));
         requireEquals(ez, q.rotate(ez));
+    }
+
+    // random matrices
+    {    
+        const unsigned long seed = 424242;
+        const int numTries = 50;
+        std::mt19937 gen(seed);
+
+        for (int i = 0; i < numTries; ++i)
+        {
+            const auto R = generateRandomRotMatrix(gen);
+            const auto q = Quaternion::createFromMatrix(R);
+        
+            checkSameRotation(R, q);
+        }
     }
 }
 

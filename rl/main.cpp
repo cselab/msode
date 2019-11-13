@@ -148,7 +148,10 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // using MagnFieldActionType = MagnFieldFromActionDirect;
     // MagnFieldActionType magnFieldAction(maxOmega);
 
-    using MagnFieldActionType = MagnFieldFromActionFromTargets;
+    // using MagnFieldActionType = MagnFieldFromActionFromTargets;
+    // MagnFieldActionType magnFieldAction(maxOmega);
+
+    using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
     MagnFieldActionType magnFieldAction(maxOmega);
 
     using Status = MSodeEnvironment<MagnFieldActionType>::Status;

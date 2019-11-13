@@ -207,3 +207,56 @@ private:
     real omega {0._r};
     real3 axis {1._r, 0._r, 0._r};
 };
+
+
+struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
+{
+    MagnFieldFromActionFromLocalFrame(real maxOmega) :
+        MagnFieldFromActionBase(maxOmega)
+    {}
+
+    MagnFieldFromActionFromLocalFrame(const MagnFieldFromActionFromLocalFrame&) = default;
+
+    void attach(const MSodeEnvironment<MagnFieldFromActionFromLocalFrame> *env) {this->env = env;}
+    
+    int numActions() const override {return 1+3;}
+
+    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
+    {
+        return {{-maxOmega, -1.0, -1.0, -1.0},
+                {+maxOmega, +1.0, +1.0, +1.0}};
+    }
+    
+    void setAction(const std::vector<double>& action) override
+    {
+        Expect(static_cast<int>(action.size()) == numActions(),
+               std::string("expect action of size ") + std::to_string(numActions()));
+
+        const real3 a {static_cast<real>(action[1]),
+                       static_cast<real>(action[2]),
+                       static_cast<real>(action[3])};
+        
+        omega = std::min(+maxOmega, std::max(-maxOmega, static_cast<real>(action[0])));
+
+        const auto& bodies  = env->getBodies();
+        const auto& targets = env->getTargetPositions();
+
+        const real3 dirx = normalized(bodies[0].r - targets[0]);
+        real3 diry = normalized(bodies[1].r - targets[1]);
+        diry -= dot(dirx, diry) * diry;
+        diry = normalized(diry);
+        const real3 dirz = cross(dirx, diry);
+
+        axis = a.x * dirx + a.y * diry + a.z * dirz;
+        axis = normalized(axis);
+    }
+
+    real getOmega(real t) const override  {return omega;}
+    real3 getAxis(real t) const override  {return axis;}
+
+private:
+
+    const MSodeEnvironment<MagnFieldFromActionFromLocalFrame> *env {nullptr};
+    real omega {0._r};
+    real3 axis {1._r, 0._r, 0._r};
+};
