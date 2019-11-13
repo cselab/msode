@@ -160,12 +160,13 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     setStateBounds(bodies, box, target, comm);
     
     bool isTraining {true};
+    long simId {0};
 
     while (isTraining)
     {
         auto status {Status::Running};
 
-        env.reset(comm->getPRNG());
+        env.reset(simId, comm->getPRNG());
         comm->sendInitState(env.getState());
 
         while (status == Status::Running) // simulation loop
@@ -185,6 +186,8 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
             else
                 comm->sendTermState(state, reward);
         }
+
+        ++simId;
     }
 }
 

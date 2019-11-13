@@ -2,8 +2,10 @@
 
 #include <simulation.h>
 
+#include <iomanip>
 #include <memory>
 #include <random>
+#include <sstream>
 
 struct Box
 {
@@ -68,7 +70,8 @@ public:
         initBox(params.initBox),
         rewardParams(params.reward),
         magnFieldState(magnFieldStateFromAction),
-        targetPositions(targetPositions)
+        targetPositions(targetPositions),
+        dumpEvery(params.time.dumpEvery)
     {
         Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
@@ -88,16 +91,15 @@ public:
         MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
         sim = std::make_unique<Simulation>(initialRBs, field);
-        sim->activateDump("trajectories.txt", params.time.dumpEvery);
         setDistances();
     }
 
     int numActions() const {return magnFieldState.numActions();}
     auto getActionBounds() const {return magnFieldState.getActionBounds();}
 
-    void reset(std::mt19937& gen)
+    void reset(long simId, std::mt19937& gen)
     {
-        auto field = sim->getField();
+        auto field  = sim->getField();
         auto bodies = sim->getBodies();
 
         field.phase = 0.0_r;
@@ -108,7 +110,12 @@ public:
             b.q = randomOrientation(gen);
         }
 
+        std::ostringstream ss;
+        ss << std::setw(5) << std::setfill('0') << simId;
+        const std::string outputFileName = "trajectories_" + ss.str() + ".txt";
+
         sim->reset(bodies, field);
+        sim->activateDump(outputFileName, dumpEvery);
         setDistances();
     }
 
@@ -262,4 +269,6 @@ private:
     std::vector<real3> targetPositions;
     mutable std::vector<real> previousDistance;
     mutable std::vector<real> cachedState;
+
+    const long dumpEvery;
 };
