@@ -62,6 +62,44 @@ static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
     return wmax;
 }
 
+template<typename Env>
+static void setActionDims(const Env& env, smarties::Communicator *const comm)
+{
+    const int nControlVars = env.numActions();
+    const int nStateVars   = env.getState().size();
+    comm->set_state_action_dims(nStateVars, nControlVars);
+}
+
+template<typename Env>
+static void setActionBounds(const Env& env, smarties::Communicator *const comm)
+{
+    const bool bounded = true;
+    std::vector<double> lo, hi;
+    std::tie(lo, hi) = env.getActionBounds();
+    comm->set_action_scales(hi, lo, bounded);
+}
+
+static void setStateBounds(const std::vector<RigidBody>& bodies, Box box, real3 target, smarties::Communicator *const comm)
+{
+    std::vector<double> lo, hi;
+    real3 minr {target}, maxr {target};
+    auto min3 = [](real3 a, real3 b) {return real3{std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)};};
+    auto max3 = [](real3 a, real3 b) {return real3{std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)};};
+
+    minr = min3(minr, box.lo);
+    maxr = max3(maxr, box.hi);
+
+    for (size_t i = 0; i < bodies.size(); ++i)
+    {
+        // quaternions, positions
+        lo.insert(lo.end(), {-1.0_r, -1.0_r, -1.0_r, -1.0_r, minr.x, minr.y, minr.z});
+        hi.insert(hi.end(), {+1.0_r, +1.0_r, +1.0_r, +1.0_r, maxr.x, maxr.y, maxr.z});
+    }
+        
+    comm->set_state_scales(hi, lo);
+}
+
+
 inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 {
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
@@ -115,41 +153,11 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 
     using Status = MSodeEnvironment<MagnFieldActionType>::Status;
     
-
     MSodeEnvironment<MagnFieldActionType> env(params, bodies, targetPositions, magnFieldAction);
     
-
-    const int nControlVars = env.numActions();
-    const int nStateVars = env.getState().size();
-    comm->set_state_action_dims(nStateVars, nControlVars);
-
-    // action bounds
-    {
-        const bool bounded = true;
-        std::vector<double> lo, hi;
-        std::tie(lo, hi) = env.getActionBounds();
-        comm->set_action_scales(hi, lo, bounded);
-    }
-
-    // state bounds
-    {
-        std::vector<double> lo, hi;
-        real3 minr {target}, maxr {target};
-        auto min3 = [](real3 a, real3 b) {return real3{std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)};};
-        auto max3 = [](real3 a, real3 b) {return real3{std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)};};
-
-        minr = min3(minr, box.lo);
-        maxr = max3(maxr, box.hi);
-
-        for (size_t i = 0; i < bodies.size(); ++i)
-        {
-            // quaternions, positions
-            lo.insert(lo.end(), {-1.0_r, -1.0_r, -1.0_r, -1.0_r, minr.x, minr.y, minr.z});
-            hi.insert(hi.end(), {+1.0_r, +1.0_r, +1.0_r, +1.0_r, maxr.x, maxr.y, maxr.z});
-        }
-        
-        comm->set_state_scales(hi, lo);
-    }
+    setActionDims  (env, comm);
+    setActionBounds(env, comm);
+    setStateBounds(bodies, box, target, comm);
     
     bool isTraining {true};
 
