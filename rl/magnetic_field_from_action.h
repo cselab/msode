@@ -232,8 +232,8 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
 
     std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
     {
-        return {{-maxOmega, -1.0, -1.0, -1.0},
-                {+maxOmega, +1.0, +1.0, +1.0}};
+        return {{0.0, -1.0, -1.0, -1.0},
+                {maxOmega, +1.0, +1.0, +1.0}};
     }
 
     std::tuple<real3, real3, real3> getFrameReference() const
@@ -288,7 +288,7 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
                        static_cast<real>(action[2]),
                        static_cast<real>(action[3])};
         
-        omega = std::min(+maxOmega, std::max(-maxOmega, static_cast<real>(action[0])));
+        omega = std::min(+maxOmega, std::max(0.0_r, static_cast<real>(action[0])));
 
         real3 n1, n2, n3;
         std::tie(n1, n2, n3) = getFrameReference();
