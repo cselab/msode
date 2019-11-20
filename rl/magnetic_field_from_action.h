@@ -9,6 +9,10 @@
 #include <tuple>
 #include <vector>
 
+constexpr real3 ex {1.0_r, 0.0_r, 0.0_r};
+constexpr real3 ey {0.0_r, 1.0_r, 0.0_r};
+constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
+
 struct MagnFieldFromActionBase
 {
     MagnFieldFromActionBase(real maxOmega) :
@@ -18,6 +22,7 @@ struct MagnFieldFromActionBase
     virtual int numActions() const = 0;
 
     virtual std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const = 0;
+    virtual std::tuple<real3, real3, real3> getFrameReference() const = 0;
     virtual void setAction(const std::vector<double>& action) = 0;
     virtual void advance(real t) {}
 
@@ -47,6 +52,8 @@ struct MagnFieldFromActionChange : MagnFieldFromActionBase
         return {{0.0, -1.0, -1.0, -1.0},
                 {maxOmega, 1.0, 1.0, 1.0}};
     }
+
+    std::tuple<real3, real3, real3> getFrameReference() const {return {ex, ey, ez};}
     
     void setAction(const std::vector<double>& action) override
     {
@@ -176,6 +183,8 @@ struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
         
         return {std::move(lo), std::move(hi)};
     }
+
+    std::tuple<real3, real3, real3> getFrameReference() const {return {ex, ey, ez};}
     
     void setAction(const std::vector<double>& action) override
     {
@@ -226,6 +235,49 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
         return {{-maxOmega, -1.0, -1.0, -1.0},
                 {+maxOmega, +1.0, +1.0, +1.0}};
     }
+
+    std::tuple<real3, real3, real3> getFrameReference() const
+    {
+        constexpr int NotFound = -1;
+        
+        const auto& bodies  = env->getBodies();
+        const auto& targets = env->getTargetPositions();
+
+        auto selectId = [&bodies, &targets](int start) -> int
+        {
+            constexpr real minDist = 1e-1_r;
+
+            for (size_t i = start; i < bodies.size(); ++i)
+            {
+                const real l = length(bodies[i].r - targets[i]);
+                if (l < minDist) return i;
+            }
+            return NotFound;
+        };
+        
+        const int i1 = selectId(0);
+        const int i2 = selectId(i1 + 1);
+
+        if (i1 == NotFound)
+            return {ex, ey, ez};
+        
+        const real3 n1 = normalized(bodies[i1].r - targets[i1]);
+
+        real3 n2;
+        
+        if (i2 == NotFound)
+        {
+            n2 = normalized(anyOrthogonal(n1));
+        }
+        else
+        {
+            real3 n2 = normalized(bodies[i2].r - targets[i2]);
+            n2 -= dot(n1, n2) * n1;
+            n2 = normalized(n2);
+        }
+        
+        return {n1, n2, cross(n1, n2)};
+    }
     
     void setAction(const std::vector<double>& action) override
     {
@@ -238,16 +290,10 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
         
         omega = std::min(+maxOmega, std::max(-maxOmega, static_cast<real>(action[0])));
 
-        const auto& bodies  = env->getBodies();
-        const auto& targets = env->getTargetPositions();
+        real3 n1, n2, n3;
+        std::tie(n1, n2, n3) = getFrameReference();
 
-        const real3 dirx = normalized(bodies[0].r - targets[0]);
-        real3 diry = normalized(bodies[1].r - targets[1]);
-        diry -= dot(dirx, diry) * diry;
-        diry = normalized(diry);
-        const real3 dirz = cross(dirx, diry);
-
-        axis = a.x * dirx + a.y * diry + a.z * dirz;
+        axis = a.x * n1 + a.y * n2 + a.z * n3;
         axis = normalized(axis);
     }
 
