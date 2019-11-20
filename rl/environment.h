@@ -139,6 +139,19 @@ public:
 
     const std::vector<double>& getState() const
     {
+        real3 n1, n2, n3;
+        std::tie(n1, n2, n3) = magnFieldState.getFrameReference();
+
+        const RotMatrix rot = [n1,n2,n3]()
+        {
+            const std::array<real, 3> n1_ {n1.x, n1.y, n1.z};
+            const std::array<real, 3> n2_ {n2.x, n2.y, n2.z};
+            const std::array<real, 3> n3_ {n3.x, n3.y, n3.z};
+            return RotMatrix{n1_, n2_, n3_};
+        }();
+
+        const auto qRot = Quaternion::createFromMatrix(rot);
+        
         cachedState.resize(0);
     
         const auto& bodies = sim->getBodies();
@@ -146,11 +159,11 @@ public:
         for (size_t i = 0; i < bodies.size(); ++i)
         {
             const real3 dr = bodies[i].r - targetPositions[i];
-            cachedState.push_back(dr.x);
-            cachedState.push_back(dr.y);
-            cachedState.push_back(dr.z);
+            cachedState.push_back(dot(dr, n1));
+            cachedState.push_back(dot(dr, n2));
+            cachedState.push_back(dot(dr, n3));
 
-            const auto q = bodies[i].q;
+            const auto q = bodies[i].q * qRot;
             cachedState.push_back(q.w);
             cachedState.push_back(q.x);
             cachedState.push_back(q.y);
