@@ -250,7 +250,7 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
             for (size_t i = start; i < bodies.size(); ++i)
             {
                 const real l = length(bodies[i].r - targets[i]);
-                if (l < minDist) return i;
+                if (l > minDist) return i;
             }
             return NotFound;
         };
