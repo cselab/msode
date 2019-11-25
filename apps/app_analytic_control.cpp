@@ -1,5 +1,5 @@
-#include "ac/helpers.h"
-#include "ac/optimal_path.h"
+#include "analytic_control/helpers.h"
+#include "analytic_control/optimal_path.h"
 
 #include <algorithm>
 #include <iostream>

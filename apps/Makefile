@@ -11,28 +11,28 @@ KORALILIBS=`python3 -m korali.cxx --libs`
 
 LDFLAGS += -L$(CORE_DIR) -lmsode
 
-EXECS = rotating forward forward_curve analytic_control orient
+EXECS = app_rotating app_forward app_forward_curve app_analytic_control app_orient
 
 all: $(EXECS)
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-rotating: rotating.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-orient: orient.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-forward: forward.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-forward_curve: forward_curve.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+app_rotating:      app_rotating.o;      $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+app_orient:        app_orient.o;        $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+app_forward:       app_forward.o;       $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+app_forward_curve: app_forward_curve.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-analytic_control.o: analytic_control.cpp ac/helpers.h ac/optimal_path.h
+app_analytic_control.o: app_analytic_control.cpp analytic_control/helpers.h analytic_control/optimal_path.h
 	$(CXX) $(CXXFLAGS) $(KORALICFLAGS) -c $< -o $@
 
-ac/helpers.o: ac/helpers.cpp ac/helpers.h
+analytic_control/helpers.o: analytic_control/helpers.cpp analytic_control/helpers.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-ac/optimal_path.o: ac/optimal_path.cpp ac/optimal_path.h ac/helpers.h
+analytic_control/optimal_path.o: analytic_control/optimal_path.cpp analytic_control/optimal_path.h analytic_control/helpers.h
 	$(CXX) $(CXXFLAGS) $(KORALICFLAGS) -c $< -o $@
 
-analytic_control: analytic_control.o ac/helpers.o ac/optimal_path.o
+app_analytic_control: app_analytic_control.o analytic_control/helpers.o analytic_control/optimal_path.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(KORALILIBS)
 
 .PHONY: all clean
