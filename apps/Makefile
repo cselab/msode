@@ -36,7 +36,10 @@ analytic_control/helpers.o: analytic_control/helpers.cpp analytic_control/helper
 analytic_control/optimal_path.o: analytic_control/optimal_path.cpp analytic_control/optimal_path.h analytic_control/helpers.h
 	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
 
-app_analytic_control: app_analytic_control.o analytic_control/helpers.o analytic_control/optimal_path.o
+analytic_control/apply_strategy.o: analytic_control/apply_strategy.cpp analytic_control/apply_strategy.h analytic_control/optimal_path.h analytic_control/helpers.h
+	$(CXX) $(CXXFLAGS) $(CXX_EIGEN) -c $< -o $@
+
+app_analytic_control: app_analytic_control.o analytic_control/helpers.o analytic_control/optimal_path.o analytic_control/apply_strategy.o 
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
 

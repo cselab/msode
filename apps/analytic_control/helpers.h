@@ -1,7 +1,7 @@
 #pragma once
 
-#include "simulation.h"
-#include "factory.h"
+#include <simulation.h>
+#include <factory.h>
 
 #include <Eigen/LU>
 

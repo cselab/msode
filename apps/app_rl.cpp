@@ -112,7 +112,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // parameters
     
     const real fieldMagnitude = 1.0_r;
-    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+    const real maxOmega       = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real dt             = 1.0 / (maxOmega * 20); // s
     const real L              = 50.0_r; // body lengths
     const Box box{{-L, -L, -L},
