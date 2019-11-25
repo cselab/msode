@@ -17,6 +17,8 @@ ABF in a rotating field with direction changing direction over time (describes a
 
 ## app_analytic_control
 
+Finds a sequence of magnetic field rotation frequencies and directions to bring given ABFs to a target position.
+
 ## app_orient
 
 A small case for reorienting randomly oriented ABFs along a given axis.
