@@ -2,6 +2,8 @@
 #include "analytic_control/optimal_path.h"
 #include "analytic_control/apply_strategy.h"
 
+#include <iostream>
+
 int main(int argc, char **argv)
 {
     if (argc < 2                     ||
@@ -32,7 +34,9 @@ int main(int argc, char **argv)
 
     const long seed = 42424242;
     std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
-    simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U);
+    const real tTot = simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U, "optimal_trajectories.txt", 1000);
 
+    std::cout << "Took " << tTot << " time units to bring to target" << std::endl;
+    
     return 0;
 }

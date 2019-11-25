@@ -29,10 +29,10 @@ static inline real computeMinOmega(int dir, const std::vector<RigidBody>& bodies
     return minVal;
 }
 
-void simulateOptimalPath(real magneticFieldMagnitude,
+real simulateOptimalPath(real magneticFieldMagnitude,
                          std::vector<RigidBody> bodies, // by copy because will be modified (IC)
                          const std::vector<real3>& initialPositions,
-                         const MatrixReal& U)
+                         const MatrixReal& U, const std::string& fname, int dump_every)
 {
     const auto A = computeA(U, initialPositions);
     const Quaternion q = findBestPath(A);
@@ -121,11 +121,13 @@ void simulateOptimalPath(real magneticFieldMagnitude,
     const real dt = 1.0_r / (omegaMax * 20);
     const long nsteps = static_cast<long>(tTot/dt);
 
-    sim.activateDump("optimal_trajectories.txt", nsteps / 300);
+    sim.activateDump(fname, dump_every);
 
     sim.run(nsteps, dt);
 
     std::cout << "Final positions:\n";
     for (auto b : sim.getBodies())
         std::cout << b.r << std::endl;
+
+    return tTot;
 }
