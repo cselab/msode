@@ -72,7 +72,7 @@ static void setActionDims(const Env& env, smarties::Communicator *const comm)
 {
     const int nControlVars = env.numActions();
     const int nStateVars   = env.getState().size();
-    comm->set_state_action_dims(nStateVars, nControlVars);
+    comm->setStateActionDims(nStateVars, nControlVars);
 }
 
 template<typename Env>
@@ -81,7 +81,7 @@ static void setActionBounds(const Env& env, smarties::Communicator *const comm)
     const bool bounded = true;
     std::vector<double> lo, hi;
     std::tie(lo, hi) = env.getActionBounds();
-    comm->set_action_scales(hi, lo, bounded);
+    comm->setActionScales(hi, lo, bounded);
 }
 
 static void setStateBounds(const std::vector<RigidBody>& bodies, Box box, real3 target, smarties::Communicator *const comm)
@@ -101,7 +101,7 @@ static void setStateBounds(const std::vector<RigidBody>& bodies, Box box, real3 
         hi.insert(hi.end(), {+1.0_r, +1.0_r, +1.0_r, +1.0_r, maxr.x, maxr.y, maxr.z});
     }
         
-    comm->set_state_scales(hi, lo);
+    comm->setStateScales(hi, lo);
 }
 
 static std::string generateACfname(int simId)
