@@ -1,17 +1,20 @@
 include ../config.mk
 
-CORE_DIR=../core
+CORE_DIR  = ../core
 EIGEN_DIR = ../extern/eigen-git-mirror
 
 CXXFLAGS += -I$(CORE_DIR)
 CXXFLAGS += -I$(EIGEN_DIR)
 
-KORALICFLAGS=`python3 -m korali.cxx --cflags`
-KORALILIBS=`python3 -m korali.cxx --libs`
+KORALICFLAGS = `python3 -m korali.cxx --cflags`
+KORALILIBS   = `python3 -m korali.cxx --libs`
+
+CXX_SMARTIES = -I${SMARTIES_ROOT}/include
+LD_SMARTIES  = -L${SMARTIES_ROOT}/lib -lsmarties
 
 LDFLAGS += -L$(CORE_DIR) -lmsode
 
-EXECS = app_rotating app_forward app_forward_curve app_analytic_control app_orient
+EXECS = app_rotating app_forward app_forward_curve app_analytic_control app_orient app_rl
 
 all: $(EXECS)
 
@@ -34,6 +37,13 @@ analytic_control/optimal_path.o: analytic_control/optimal_path.cpp analytic_cont
 
 app_analytic_control: app_analytic_control.o analytic_control/helpers.o analytic_control/optimal_path.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(KORALILIBS)
+
+
+app_rl.o: app_rl.cpp rl/environment.h rl/magnetic_field_from_action.h
+	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
+
+app_rl: app_rl.o
+	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
 
 .PHONY: all clean
 clean:; rm -rf $(EXECS) *.o
