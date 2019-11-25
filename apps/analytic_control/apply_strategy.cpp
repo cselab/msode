@@ -39,9 +39,6 @@ real simulateOptimalPath(real magneticFieldMagnitude,
 
     const std::vector<real> omegas = computeStepOutFrequencies(magneticFieldMagnitude, bodies);
 
-    // std::cout << "omegas = " << std::endl;
-    // print(omegas);
-
     for (size_t i = 0; i < bodies.size(); ++i)
     {
         bodies[i].r = initialPositions[i];
@@ -124,10 +121,6 @@ real simulateOptimalPath(real magneticFieldMagnitude,
     sim.activateDump(fname, dump_every);
 
     sim.run(nsteps, dt);
-
-    std::cout << "Final positions:\n";
-    for (auto b : sim.getBodies())
-        std::cout << b.r << std::endl;
 
     return tTot;
 }
