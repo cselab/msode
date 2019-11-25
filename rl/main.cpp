@@ -110,7 +110,8 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // parameters
     
     const real fieldMagnitude = 1.0_r;
-    const real dt             = 1e-3_r; // s
+    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+    const real dt             = 1.0 / (maxOmega * 20); // s
     const real L              = 50.0_r; // body lengths
     const Box box{{-L, -L, -L},
                   {+L, +L, +L}};
@@ -122,7 +123,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real endRewardBeta   = 1.0_r / (nbodies * distanceThreshold * distanceThreshold);
     
     const real timeCoeffReward = 0.1_r * nbodies * L * computeMinForwardVelocity(fieldMagnitude, bodies);
-    const real tmax            = 10.0_r * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
+    const real tmax            = 10.0_r  * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
     const real dtAction        = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
 
@@ -130,7 +131,6 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     // const long dumpEvery {30};
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
     const RewardParams rewardParams {timeCoeffReward, endRewardBeta, endRewardK};
-    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
 
     const Params params {timeParams, rewardParams, fieldMagnitude, distanceThreshold, box};
 
@@ -153,6 +153,9 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 
     using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
     MagnFieldActionType magnFieldAction(maxOmega);
+
+    // using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
+    // MagnFieldActionType magnFieldAction(maxOmega);
 
     using Status = MSodeEnvironment<MagnFieldActionType>::Status;
     

@@ -306,3 +306,92 @@ private:
     real omega {0._r};
     real3 axis {1._r, 0._r, 0._r};
 };
+
+
+struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionBase
+{
+    MagnFieldFromActionFromLocalPlane(real maxOmega) :
+        MagnFieldFromActionBase(maxOmega)
+    {}
+
+    MagnFieldFromActionFromLocalPlane(const MagnFieldFromActionFromLocalPlane&) = default;
+
+    void attach(const MSodeEnvironment<MagnFieldFromActionFromLocalPlane> *env) {this->env = env;}
+    
+    int numActions() const override {return 1+2;}
+
+    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
+    {
+        return {{0.0, -1.0, -1.0},
+                {maxOmega, +1.0, +1.0}};
+    }
+
+    std::tuple<real3, real3, real3> getFrameReference() const
+    {
+        constexpr int NotFound = -1;
+        
+        const auto& bodies  = env->getBodies();
+        const auto& targets = env->getTargetPositions();
+
+        auto selectId = [&bodies, &targets](int start) -> int
+        {
+            constexpr real minDist = 1e-1_r;
+
+            for (size_t i = start; i < bodies.size(); ++i)
+            {
+                const real l = length(bodies[i].r - targets[i]);
+                if (l > minDist) return i;
+            }
+            return NotFound;
+        };
+        
+        const int i1 = selectId(0);
+        const int i2 = selectId(i1 + 1);
+
+        if (i1 == NotFound)
+            return {ex, ey, ez};
+        
+        const real3 n1 = normalized(bodies[i1].r - targets[i1]);
+
+        real3 n2;
+        
+        if (i2 == NotFound)
+        {
+            n2 = normalized(anyOrthogonal(n1));
+        }
+        else
+        {
+            real3 n2 = normalized(bodies[i2].r - targets[i2]);
+            n2 -= dot(n1, n2) * n1;
+            n2 = normalized(n2);
+        }
+        
+        return {n1, n2, cross(n1, n2)};
+    }
+    
+    void setAction(const std::vector<double>& action) override
+    {
+        Expect(static_cast<int>(action.size()) == numActions(),
+               std::string("expect action of size ") + std::to_string(numActions()));
+
+        const real ax = static_cast<real>(action[1]);
+        const real ay = static_cast<real>(action[2]);
+        
+        omega = std::min(+maxOmega, std::max(0.0_r, static_cast<real>(action[0])));
+
+        real3 n1, n2, n3;
+        std::tie(n1, n2, n3) = getFrameReference();
+
+        axis = ax * n1 + ay * n2;
+        axis = normalized(axis);
+    }
+
+    real getOmega(real t) const override  {return omega;}
+    real3 getAxis(real t) const override  {return axis;}
+
+private:
+
+    const MSodeEnvironment<MagnFieldFromActionFromLocalPlane> *env {nullptr};
+    real omega {0._r};
+    real3 axis {1._r, 0._r, 0._r};
+};
