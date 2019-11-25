@@ -1,6 +1,9 @@
 #include "rl/environment.h"
 #include "rl/magnetic_field_from_action.h"
 
+#include "analytic_control/optimal_path.h"
+#include "analytic_control/apply_strategy.h"
+
 #include <factory.h>
 #include <file_parser.h>
 
@@ -101,6 +104,34 @@ static void setStateBounds(const std::vector<RigidBody>& bodies, Box box, real3 
     comm->set_state_scales(hi, lo);
 }
 
+static std::string generateACfname(int simId)
+{
+    std::ostringstream ss;
+    ss << std::setw(6) << std::setfill('0') << simId;
+    return "ac_trajectories_" + ss.str() + ".txt";
+}
+
+static std::vector<real3> extractPositions(const std::vector<RigidBody>& bodies)
+{
+    std::vector<real3> positions;
+    positions.reserve(bodies.size());
+
+    for (const auto& b : bodies)
+        positions.push_back(b.r);
+
+    return positions;
+}
+
+static void dumpComparisonInfos(std::ofstream& stream, int simId, real timeAC, real timeRL, const std::vector<RigidBody>& bodiesRL)
+{
+    auto getDistance = [](const RigidBody& b) {return length(b.r);};
+    
+    real maxDistance = 0;
+    for (auto b : bodiesRL)
+        maxDistance = std::max(maxDistance, getDistance(b));
+    
+    stream << simId << " " << timeAC << " " << timeRL << " " << maxDistance << std::endl;
+}
 
 inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
 {
@@ -117,7 +148,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     const real L              = 50.0_r; // body lengths
     const Box box{{-L, -L, -L},
                   {+L, +L, +L}};
-    const real3 target {0.0_r, 0.0_r, 0.0_r};
+    constexpr real3 target {0.0_r, 0.0_r, 0.0_r}; // Do not change this
     const real maxDistance = computeMaxDistance(box, target);
     const real distanceThreshold = 2.0_r; // body_length
 
@@ -144,6 +175,10 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
             "----------------------------------------------------------\n",
             tmax, nstepsPerAction, maxOmega,
             fieldMagnitude, timeCoeffReward);
+
+
+    const MatrixReal V = createVelocityMatrix(fieldMagnitude, bodies);
+    const MatrixReal U = V.inverse();
     
     const std::vector<real3> targetPositions(nbodies, target);
 
@@ -170,12 +205,18 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     bool isTraining {true};
     long simId {0};
 
+    std::ofstream fileCompareInfos("CompareInfos.txt");
+
     while (isTraining)
     {
         auto status {Status::Running};
 
         env.reset(simId, comm->getPRNG());
         comm->sendInitState(env.getState());
+
+        const std::string ACfname = generateACfname(simId);
+        const real timeAC = simulateOptimalPath(fieldMagnitude, env.getBodies(), extractPositions(env.getBodies()),
+                                                U, ACfname, dumpEvery);
 
         while (status == Status::Running) // simulation loop
         {
@@ -190,13 +231,22 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
             const auto  reward = env.getReward();
 
             if (status == Status::Running)
+            {
                 comm->sendState(state, reward);
+            }
             else
+            {
                 comm->sendTermState(state, reward);
+                dumpComparisonInfos(fileCompareInfos, simId, timeAC, env.getSimulationTime(), env.getBodies());
+                fileCompareInfos.flush();
+                std::cout << "Done with sim " << simId << std::endl;
+            }
         }
 
         ++simId;
     }
+
+    fileCompareInfos.close();
 }
 
 int main(int argc, char **argv)

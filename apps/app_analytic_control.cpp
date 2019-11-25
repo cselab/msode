@@ -1,4 +1,3 @@
-#include "analytic_control/helpers.h"
 #include "analytic_control/optimal_path.h"
 #include "analytic_control/apply_strategy.h"
 
