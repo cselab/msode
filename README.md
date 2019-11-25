@@ -42,8 +42,9 @@ trajectories: length in body length, time in seconds
 
 Compile the application:
 
-	make msode_rl
+	make apps
 
+This will create `apps/ap_rl`, used in `setup.sh`.
 See [smarties](https://github.com/cselab/smarties) for usage.
 
 

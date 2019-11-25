@@ -22,6 +22,10 @@ Finds a sequence of magnetic field rotation frequencies and directions to bring 
 ## app_orient
 
 A small case for reorienting randomly oriented ABFs along a given axis.
-The method for reorienting consists in applying a field rotating along the target axis with alternating +/- omega.
-The magnitude omega is lower than the step out frequency to allow the rotation of the ABF.
-This is the method used used in app_analytic_control.
+The method for reorienting consists in applying a field rotating along the target axis with alternating +/- `omega`.
+The magnitude `omega` is lower than the step out frequency to allow the rotation of the ABF.
+This is the method used used in `app_analytic_control`.
+
+## app_rl
+
+Use smarties to find optimal policy for the problem stated in `app_analytic_control`.
