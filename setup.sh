@@ -7,7 +7,7 @@
 MSODE_ROOT=${SMARTIES_ROOT}/../msode
 
 # copy executable:
-cp $MSODE_ROOT/msode_rl $RUNDIR/exec
+cp $MSODE_ROOT/apps/app_rl $RUNDIR/exec
 
 # copy config
 CFG_DIR=$RUNDIR/config
