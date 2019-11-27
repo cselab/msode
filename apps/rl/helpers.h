@@ -115,13 +115,12 @@ static void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace&
     comm->setStateScales(hi, lo);
 }
 
-static auto createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace& space)
+static auto createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace& space, real fieldMagnitude)
 {
     const int nbodies = bodies.size();
     
     // parameters
     
-    const real fieldMagnitude = 1.0_r;
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real dt             = 1.0 / (maxOmega * 20); // s
     const real maxDistance = computeMaxDistance(space.domain, space.target);

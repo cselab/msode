@@ -5,10 +5,12 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
     const auto bodies = createBodies("../config/swimmers_list.cfg");
 
+    const real magneticFieldMagnitude = 1.0_r;
+
     const real L = 50.0_r; // in body lengths units
     const EnvSpace spaceInfos(L);
     
-    auto env = createEnvironment(bodies, spaceInfos);
+    auto env = createEnvironment(bodies, spaceInfos, magneticFieldMagnitude);
     
     setActionDims  (env, comm);
     setActionBounds(env, comm);
