@@ -11,6 +11,9 @@
 #include <string>
 #include <vector>
 
+namespace msode
+{
+
 struct PropulsionMatrix
 {
     using SubMatrix = std::array<real,3>;
@@ -28,8 +31,8 @@ struct RigidBody
     // assume m is along y
     inline real stepOutFrequency(real magneticFieldMagnitude, int dir = 0) const
     {
-        Expect(std::abs(magnMoment.x) < 1e-6_r && std::abs(magnMoment.z) < 1e-6_r, "Assume m along y");
-        Expect(dir == 0 || dir == 2, "Can only compute step out frequency along x or z direction");
+        MSODE_Expect(std::abs(magnMoment.x) < 1e-6_r && std::abs(magnMoment.z) < 1e-6_r, "Assume m along y");
+        MSODE_Expect(dir == 0 || dir == 2, "Can only compute step out frequency along x or z direction");
 
         const real m = length(magnMoment);
         const real C = propulsion.C[dir];
@@ -105,3 +108,5 @@ private:
 
 std::ostream& operator<<(std::ostream& stream, const RigidBody& b);
 std::ostream& operator<<(std::ostream& stream, const PropulsionMatrix& m);
+
+} // namespace msode

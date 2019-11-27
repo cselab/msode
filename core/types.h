@@ -2,6 +2,9 @@
 
 #include <iostream>
 
+namespace msode
+{
+
 using real = double;
 
 struct real3 {real x, y, z;};
@@ -20,3 +23,5 @@ inline std::ostream& operator<<(std::ostream& stream, const real3& v)
 {
     return stream << v.x << " " << v.y << " " << v.z;
 }
+
+} // namespace msode

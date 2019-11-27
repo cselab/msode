@@ -5,6 +5,9 @@
 
 #include <cmath>
 
+namespace msode
+{
+
 inline real3& operator+=(real3& a, const real3& b)
 {
     a.x += b.x;
@@ -66,7 +69,7 @@ inline real length(real3 v)
 inline real3 normalized(real3 v)
 {
     const auto l = length(v);
-    Expect(l > 0, "can not normalize zero quaternion");
+    MSODE_Expect(l > 0, "can not normalize zero quaternion");
     return ( 1.0_r / l ) * v;
 }
 
@@ -83,3 +86,5 @@ static inline real3 anyOrthogonal(real3 v)
     const real3 other = x < y ? (x < z ? ex : ez) : (y < z ? ey : ez);
     return cross(v, other);
 }
+
+} // namespace msode

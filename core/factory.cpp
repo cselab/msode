@@ -7,6 +7,9 @@
 #include <fstream>
 #include <sstream>
 
+namespace msode
+{
+
 static PropulsionMatrix getPropulsion(const FileParser& parser)
 {
     return {parser.getSubMatrix("A"),
@@ -27,3 +30,4 @@ RigidBody readRigidBodyConfig(const std::string& fname)
     return {q, r, m, propulsion};
 }
 } // namespace Factory
+} // namespace msode

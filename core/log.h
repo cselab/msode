@@ -3,17 +3,17 @@
 #include <iostream>
 #include <string>
 
-#ifdef FAIL_ON_CONTRACT
-#define _CHECK(val, msg) do {                   \
+#ifdef MSODE_FAIL_ON_CONTRACT
+#define MSODE_CHECK(val, msg) do {                   \
         if (!(val)) {                           \
             std::cerr << (msg) << std::endl;    \
             exit(1);                            \
         }                                       \
     } while(0)
 #else
-#define _CHECK(val, msg) do {} while(0)
+#define MSODE_CHECK(val, msg) do {} while(0)
 #endif
 
 
-#define Expect(val, msg) _CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Expect : " + msg)
-#define Ensure(val, msg) _CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Ensure : " + msg)
+#define MSODE_Expect(val, msg) MSODE_CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Expect : " + msg)
+#define MSODE_Ensure(val, msg) MSODE_CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Ensure : " + msg)

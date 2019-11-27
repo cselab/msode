@@ -7,6 +7,8 @@
 #include <map>
 #include <string>
 
+namespace msode
+{
 class FileParser
 {
 public:
@@ -25,3 +27,4 @@ public:
 private:
     const DataMap data;
 };
+} // namespace msode

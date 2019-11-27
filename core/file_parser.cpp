@@ -4,11 +4,14 @@
 #include <fstream>
 #include <sstream>
 
+namespace msode
+{
+
 static auto readFile(const std::string& fname)
 {
     FileParser::DataMap dataMap;
     std::ifstream file(fname);
-    Expect(file.is_open(), "could not open file '" + fname + "' for read");
+    MSODE_Expect(file.is_open(), "could not open file '" + fname + "' for read");
 
     for (std::string line {}; std::getline(file, line); )
     {
@@ -34,7 +37,7 @@ std::string FileParser::getStr(const std::string& key) const
     auto it = data.find(key);
     if (it != data.end())
         return it->second;
-    Ensure(it != data.end(), "could not find key");
+    MSODE_Ensure(it != data.end(), "could not find key");
     return std::string();
 }
 
@@ -65,5 +68,5 @@ PropulsionMatrix::SubMatrix FileParser::getSubMatrix(const std::string& key) con
     iss >> M[0] >> M[1] >> M[2];
     return M;
 }
-
          
+} // namespace msode

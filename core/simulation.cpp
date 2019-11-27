@@ -3,6 +3,9 @@
 
 #include <tuple>
 
+namespace msode
+{
+
 Simulation::Simulation(const std::vector<RigidBody>& initialRBs,
                        const MagneticField& initialMF) :
     rigidBodies(initialRBs),
@@ -34,20 +37,20 @@ void Simulation::reset(const std::vector<RigidBody>& initialRBs, const MagneticF
 
 void Simulation::activateDump(const std::string& fname, long dumpEvery)
 {
-    Expect(dumpEvery > 0, "expect positive dumpEvery");
+    MSODE_Expect(dumpEvery > 0, "expect positive dumpEvery");
     this->dumpEvery = dumpEvery;
 
     if (file.is_open())
         file.close();
 
     file.open(fname);
-    Ensure(file.is_open(), "could not open file for writing");
+    MSODE_Ensure(file.is_open(), "could not open file for writing");
 }
 
 void Simulation::run(long nsteps, real dt)
 {
-    Expect(nsteps > 0, "expect positive number of steps");
-    Expect(dt > 0._r, "expect positive time step");
+    MSODE_Expect(nsteps > 0, "expect positive number of steps");
+    MSODE_Expect(dt > 0._r, "expect positive time step");
     
     for (long step = 0; step < nsteps; ++step)
         advance(dt);
@@ -114,3 +117,5 @@ std::ostream& operator<<(std::ostream& stream, const PropulsionMatrix& m)
                   << m.B[0] << ' ' << m.B[1] << ' ' << m.B[1] << '\n'
                   << m.C[0] << ' ' << m.C[1] << ' ' << m.C[2] << '\n';
 }
+
+} // namespace msode
