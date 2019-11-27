@@ -5,6 +5,8 @@
 
 int main(int argc, char **argv)
 {
+    using namespace msode;
+    
     if (argc < 2                     ||
         std::string(argv[1]) == "-h" ||
         std::string(argv[1]) == "--help")
@@ -21,7 +23,7 @@ int main(int argc, char **argv)
     std::vector<RigidBody> bodies;
     for (int i = 1; i < argc; ++i)
     {
-        const RigidBody body = Factory::readRigidBodyConfig(argv[i]);
+        const auto body = Factory::readRigidBodyConfig(argv[i]);
         bodies.push_back(body);
     }
 
@@ -32,7 +34,7 @@ int main(int argc, char **argv)
     // std::cout << U << std::endl;
 
     const long seed = 42424242;
-    std::vector<real3> initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
+    auto initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
     const real tTot = simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U, "ac_trajectories.txt", 1000);
 
     std::cout << "Took " << tTot << " time units to bring to target" << std::endl;

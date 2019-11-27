@@ -57,7 +57,7 @@ struct MagnFieldFromActionChange : MagnFieldFromActionBase
     
     void setAction(const std::vector<double>& action) override
     {
-        Expect(static_cast<int>(action.size()) == 4, "expect action of size 4");
+        MSODE_Expect(static_cast<int>(action.size()) == 4, "expect action of size 4");
         dOmega = action[0];
         dAxis.x = action[1];
         dAxis.y = action[2];
@@ -136,7 +136,7 @@ struct MagnFieldFromActionDirect : MagnFieldFromActionBase
     
     void setAction(const std::vector<double>& action) override
     {
-        Expect(static_cast<int>(action.size()) == 4, "expect action of size 4");
+        MSODE_Expect(static_cast<int>(action.size()) == 4, "expect action of size 4");
         constexpr real tolerance = 1e-6_r;
     
         omega = std::min(maxOmega, std::max(0._r, static_cast<real>(action[0])));
@@ -188,8 +188,8 @@ struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
     
     void setAction(const std::vector<double>& action) override
     {
-        Expect(static_cast<int>(action.size()) == numActions(),
-               std::string("expect action of size ") + std::to_string(numActions()));
+        MSODE_Expect(static_cast<int>(action.size()) == numActions(),
+                     std::string("expect action of size ") + std::to_string(numActions()));
 
         omega = std::min(+maxOmega, std::max(-maxOmega, static_cast<real>(action[0])));
 
@@ -281,8 +281,8 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
     
     void setAction(const std::vector<double>& action) override
     {
-        Expect(static_cast<int>(action.size()) == numActions(),
-               std::string("expect action of size ") + std::to_string(numActions()));
+        MSODE_Expect(static_cast<int>(action.size()) == numActions(),
+                     std::string("expect action of size ") + std::to_string(numActions()));
 
         const real3 a {static_cast<real>(action[1]),
                        static_cast<real>(action[2]),
@@ -371,8 +371,8 @@ struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionBase
     
     void setAction(const std::vector<double>& action) override
     {
-        Expect(static_cast<int>(action.size()) == numActions(),
-               std::string("expect action of size ") + std::to_string(numActions()));
+        MSODE_Expect(static_cast<int>(action.size()) == numActions(),
+                     std::string("expect action of size ") + std::to_string(numActions()));
 
         const real ax = static_cast<real>(action[1]);
         const real ay = static_cast<real>(action[2]);

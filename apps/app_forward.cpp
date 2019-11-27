@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+using namespace msode;
+
 constexpr real magneticFieldMagnitude {1.0_r};
 constexpr real dt {1e-3_r};
 

@@ -2,6 +2,8 @@
 
 #include <random>
 
+using namespace msode;
+
 std::vector<real3> generateRandomPositions(int n, real3 boxLo, real3 boxHi, long seed)
 {
     std::vector<real3> positions;
@@ -47,8 +49,8 @@ static inline real computeMeanVelocity(RigidBody body, real magneticFieldMagnitu
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
     body.r = rStart;
         
-    auto omegaField        = [omega](real t) {return omega;};
-    auto rotatingDirection = []     (real t) {return real3{1.0_r, 0.0_r, 0.0_r};};
+    auto omegaField        = [omega](real) {return omega;};
+    auto rotatingDirection = []     (real) {return real3{1.0_r, 0.0_r, 0.0_r};};
 
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
     const std::vector<RigidBody> rigidBodies {body};

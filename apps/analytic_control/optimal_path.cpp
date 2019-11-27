@@ -6,6 +6,8 @@
 // because korali passes functions through json... (WTF!?)
 // need to use global variables
 
+using namespace msode;
+
 std::vector<real3> AGlobal;
 
 std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& positions)

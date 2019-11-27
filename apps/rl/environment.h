@@ -7,6 +7,8 @@
 #include <random>
 #include <sstream>
 
+using namespace msode;
+
 struct Box
 {
     real3 lo, hi;
@@ -73,7 +75,7 @@ public:
         targetPositions(targetPositions),
         dumpEvery(params.time.dumpEvery)
     {
-        Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
+        MSODE_Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
         magnFieldState.attach(this);
         

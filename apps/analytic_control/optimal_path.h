@@ -4,12 +4,12 @@
 
 #include <quaternion.h>
 
-std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& positions);
+std::vector<msode::real3> computeA(const MatrixReal& U, const std::vector<msode::real3>& positions);
 
 
-real computeTime(const std::vector<real3>& A, real3 normal);
-real3 findBestPlane(const std::vector<real3>& A);
+msode::real computeTime(const std::vector<msode::real3>& A, msode::real3 normal);
+msode::real3 findBestPlane(const std::vector<msode::real3>& A);
 
 
-real computeTime(const std::vector<real3>& A, Quaternion q);
-Quaternion findBestPath(const std::vector<real3>& A);
+msode::real computeTime(const std::vector<msode::real3>& A, msode::Quaternion q);
+msode::Quaternion findBestPath(const std::vector<msode::real3>& A);

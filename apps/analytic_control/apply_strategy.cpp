@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <limits>
 
+using namespace msode;
+
 static inline std::vector<real> computeBetas(const std::vector<real3>& initialPositions,
                                              const MatrixReal& U, real3 dir)
 {

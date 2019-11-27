@@ -3,6 +3,8 @@
 
 #include <iostream>
 
+using namespace msode;
+
 constexpr real magneticFieldMagnitude {1.0_r};
 
 inline real stepOutFrequency(const RigidBody body)

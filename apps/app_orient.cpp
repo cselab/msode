@@ -4,6 +4,8 @@
 #include <random>
 #include <string>
 
+using namespace msode;
+
 static inline real3 makeRandomUnitVector(std::mt19937& gen)
 {
     std::uniform_real_distribution<real> U(0.0_r, 1.0_r);

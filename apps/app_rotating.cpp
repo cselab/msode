@@ -3,7 +3,13 @@
 
 int main(int argc, char **argv)
 {
-    Expect(argc > 1, "usage : ./main <config0> <config1>...");
+    using namespace msode;
+    
+    if (argc < 2)
+    {
+        fprintf(stderr, "usage : ./main <config0> <config1>...");
+        return 1;
+    }
 
     std::vector<RigidBody> rigidBodies;
     
