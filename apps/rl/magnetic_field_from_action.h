@@ -24,7 +24,7 @@ struct MagnFieldFromActionBase
     virtual std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const = 0;
     virtual std::tuple<real3, real3, real3> getFrameReference() const = 0;
     virtual void setAction(const std::vector<double>& action) = 0;
-    virtual void advance(real t) {}
+    virtual void advance(real) {}
 
     virtual real getOmega(real t) const = 0;
     virtual real3 getAxis(real t) const = 0;
@@ -148,8 +148,8 @@ struct MagnFieldFromActionDirect : MagnFieldFromActionBase
         axis = normalized(axis);
     }
 
-    real getOmega(real t) const override  {return omega;}
-    real3 getAxis(real t) const override  {return axis;}
+    real getOmega(real) const override  {return omega;}
+    real3 getAxis(real) const override  {return axis;}
 
 private:
 
@@ -207,8 +207,8 @@ struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
         axis = normalized(axis);
     }
 
-    real getOmega(real t) const override  {return omega;}
-    real3 getAxis(real t) const override  {return axis;}
+    real getOmega(real) const override  {return omega;}
+    real3 getAxis(real) const override  {return axis;}
 
 private:
 
@@ -297,8 +297,8 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
         axis = normalized(axis);
     }
 
-    real getOmega(real t) const override  {return omega;}
-    real3 getAxis(real t) const override  {return axis;}
+    real getOmega(real) const override  {return omega;}
+    real3 getAxis(real) const override  {return axis;}
 
 private:
 
@@ -386,8 +386,8 @@ struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionBase
         axis = normalized(axis);
     }
 
-    real getOmega(real t) const override  {return omega;}
-    real3 getAxis(real t) const override  {return axis;}
+    real getOmega(real) const override  {return omega;}
+    real3 getAxis(real) const override  {return axis;}
 
 private:
 

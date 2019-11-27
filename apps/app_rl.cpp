@@ -1,6 +1,6 @@
 #include "rl/helpers.h"
 
-inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
+inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*argv*/)
 {
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
     const auto bodies = createBodies("../config/swimmers_list.cfg");

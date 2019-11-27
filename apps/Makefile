@@ -4,6 +4,7 @@ CORE_DIR  = ../core
 EIGEN_DIR = ../extern/eigen-git-mirror
 
 CXXFLAGS += -I$(CORE_DIR)
+CXXFLAGS += -Wpedantic -Wextra -Werror
 
 CXX_EIGEN = -I$(EIGEN_DIR)
 

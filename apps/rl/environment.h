@@ -200,7 +200,7 @@ public:
     const std::vector<RigidBody>& getBodies() const {return sim->getBodies();}
     const std::vector<real3>& getTargetPositions() const {return targetPositions;}
 
-    const real getSimulationTime() const {return sim->getCurrentTime();}
+    real getSimulationTime() const {return sim->getCurrentTime();}
 
 private:
     static inline real3 randomPosition(real3 lo, real3 hi, std::mt19937& gen)

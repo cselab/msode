@@ -69,7 +69,11 @@ static inline auto readBodyAndPeropIC(const std::string& fname, int numBodies, r
 
 int main(int argc, char **argv)
 {
-    Expect(argc == 6, "usage : ./main <config0> <numBodies> <target direction (x, y, z)>");
+    if (argc != 6)
+    {
+        fprintf(stderr, "usage : ./main <config0> <numBodies> <target direction (x, y, z)>");
+        return(1);
+    }
 
     const int numBodies = std::stoi(argv[2]);
 
@@ -103,7 +107,7 @@ int main(int argc, char **argv)
         return sign * omegaC * 0.5;
     };
     
-    auto rotatingDirection = [targetDir](real t) -> real3
+    auto rotatingDirection = [targetDir](real) -> real3
     {
         return normalized(targetDir);
     };

@@ -15,8 +15,8 @@ static void runAndDump(RigidBody body, real omega, const std::string& out, int d
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
     body.r = rStart;
         
-    auto omegaField        = [omega](real t) {return omega;};
-    auto rotatingDirection = []     (real t) {return real3{1.0_r, 0.0_r, 0.0_r};};
+    auto omegaField        = [omega](real) {return omega;};
+    auto rotatingDirection = []     (real) {return real3{1.0_r, 0.0_r, 0.0_r};};
 
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
     const std::vector<RigidBody> rigidBodies {body};
