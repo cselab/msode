@@ -11,6 +11,7 @@ static inline std::string generateACfname(long simId)
     return "ac_trajectories_" + ss.str() + ".txt";
 }
 
+
 static inline std::vector<real3> extractPositions(const std::vector<RigidBody>& bodies)
 {
     std::vector<real3> positions;
@@ -22,7 +23,7 @@ static inline std::vector<real3> extractPositions(const std::vector<RigidBody>& 
     return positions;
 }
 
-static void dumpComparisonInfos(std::ostream& stream, int simId, real timeAC, real timeRL, const std::vector<RigidBody>& bodiesRL)
+static inline void dumpComparisonInfos(std::ostream& stream, int simId, real timeAC, real timeRL, const std::vector<RigidBody>& bodiesRL)
 {
     auto getDistance = [](const RigidBody& b) {return length(b.r);};
     
@@ -44,11 +45,11 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     const real L = 50.0_r; // in body lengths units
     const EnvSpace spaceInfos(L);
     const int dumpEvery = 1000;
-    
+
     auto env = createEnvironment(bodies, spaceInfos, magneticFieldMagnitude);
 
-    const MatrixReal V = createVelocityMatrix(magneticFieldMagnitude, bodies);
-    const MatrixReal U = V.inverse();
+    const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
+    const analytic_control::MatrixReal U = V.inverse();
     
     setActionDims  (env, comm);
     setActionBounds(env, comm);
@@ -65,11 +66,6 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
         env.reset(simId, comm->getPRNG());
         comm->sendInitState(env.getState());
-
-        const real tAC = simulateOptimalPath(magneticFieldMagnitude,
-                                             env.getBodies(),
-                                             extractPositions(env.getBodies()), U,
-                                             generateACfname(simId), dumpEvery);
         
         while (status == Status::Running) // simulation loop
         {
@@ -90,8 +86,11 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
             else
             {
                 comm->sendTermState(state, reward);
+
+                const auto bodies = env.getBodies();
+                const real tAC =  simulateOptimalPath(magneticFieldMagnitude, bodies, extractPositions(bodies), U, generateACfname(simId), dumpEvery);
                 const real tRL = env.getSimulationTime();
-                dumpComparisonInfos(std::cout, simId, tAC, tRL, env.getBodies());
+                dumpComparisonInfos(std::cout, simId, tAC, tRL, bodies);
             }
         }
 

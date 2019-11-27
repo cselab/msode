@@ -4,6 +4,9 @@
 
 using namespace msode;
 
+namespace analytic_control
+{
+
 std::vector<real3> generateRandomPositions(int n, real3 boxLo, real3 boxHi, long seed)
 {
     std::vector<real3> positions;
@@ -98,3 +101,5 @@ MatrixReal createVelocityMatrix(real magneticFieldMagnitude, const std::vector<R
     }
     return V;
 }
+
+} // namespace analytic_control

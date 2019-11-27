@@ -27,15 +27,15 @@ int main(int argc, char **argv)
         bodies.push_back(body);
     }
 
-    const MatrixReal V = createVelocityMatrix(magneticFieldMagnitude, bodies);
-    const MatrixReal U = V.inverse();
+    const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
+    const analytic_control::MatrixReal U = V.inverse();
 
     // std::cout << V << "\n\n";
     // std::cout << U << std::endl;
 
     const long seed = 42424242;
-    auto initialPositions = generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
-    const real tTot = simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U, "ac_trajectories.txt", 1000);
+    auto initialPositions = analytic_control::generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
+    const real tTot = analytic_control::simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U, "ac_trajectories.txt", 1000);
 
     std::cout << "Took " << tTot << " time units to bring to target" << std::endl;
     

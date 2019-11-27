@@ -79,4 +79,4 @@ app_rl_comp: app_rl_comp.o $(analytic_control_objects)
 
 
 .PHONY: all clean
-clean:; rm -rf $(EXECS) *.o
+clean:; rm -rf $(EXECS) *.o $(analytic_control_objects)

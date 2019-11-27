@@ -3,6 +3,9 @@
 
 #include <korali.hpp>
 
+namespace analytic_control
+{
+
 // because korali passes functions through json... (WTF!?)
 // need to use global variables
 
@@ -161,3 +164,5 @@ Quaternion findBestPath(const std::vector<real3>& A)
 
     return paramsToQuaternion(e["Solver"]["Internal"]["Best Ever Variables"]);
 }
+
+} // namespace analytic_control

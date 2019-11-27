@@ -6,6 +6,9 @@
 #include <algorithm>
 #include <limits>
 
+namespace analytic_control
+{
+
 using namespace msode;
 
 static inline std::vector<real> computeBetas(const std::vector<real3>& initialPositions,
@@ -126,3 +129,4 @@ real simulateOptimalPath(real magneticFieldMagnitude,
 
     return tTot;
 }
+} // namespace analytic_control
