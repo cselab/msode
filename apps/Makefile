@@ -47,7 +47,7 @@ app_analytic_control: app_analytic_control.o $(analytic_control_objects)
 
 
 
-app_rl.o: app_rl.cpp rl/environment.h rl/magnetic_field_from_action.h
+app_rl.o: app_rl.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
 
 #app_rl: app_rl.o $(analytic_control_objects)
