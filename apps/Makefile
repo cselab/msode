@@ -39,7 +39,8 @@ analytic_control_objects = analytic_control/helpers.o \
 			   analytic_control/apply_strategy.o
 
 analytic_control_headers = analytic_control/helpers.h \
-			   analytic_control/optimal_path.h
+			   analytic_control/optimal_path.h \
+			   analytic_control/apply_strategy.h
 
 app_analytic_control.o: app_analytic_control.cpp $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
