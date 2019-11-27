@@ -59,34 +59,34 @@ real3 findBestPlane(const std::vector<real3>& A)
 {
     AGlobal = A;
 
+    auto e = korali::Experiment();
+    e["Problem"]["Type"] = "Evaluation/Direct/Basic";
+    e["Problem"]["Objective"] = "Minimize";
+    e["Problem"]["Objective Function"] = &evaluate;
+
+    e["Solver"]["Type"] = "Optimizer/CMAES";
+    e["Solver"]["Population Size"] = 32;
+    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
+    e["Solver"]["Termination Criteria"]["Max Generations"] = 100;
+
+    e["Variables"][0]["Name"] = "theta";
+    e["Variables"][0]["Lower Bound"] = -2 * M_PI;
+    e["Variables"][0]["Upper Bound"] = +4 * M_PI;
+
+    e["Variables"][1]["Name"] = "phi";
+    e["Variables"][1]["Lower Bound"] =   - M_PI;
+    e["Variables"][1]["Upper Bound"] = 2 * M_PI;
+
+    e["Console"]["Frequency"] = 0;
+    e["Results"]["Frequency"] = 0;
+    e["Console"]["Verbosity"] = "Silent";
+    
+    e["Random Seed"] = 424242;
+
     auto k = korali::Engine();
+    k.run(e);
 
-    k["Problem"]["Type"] = "Evaluation/Direct/Basic";
-    k["Problem"]["Objective"] = "Minimize";
-    k["Problem"]["Objective Function"] = &evaluate;
-
-    k["Solver"]["Type"] = "Optimizer/CMAES";
-    k["Solver"]["Population Size"] = 32;
-    k["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
-    k["Solver"]["Termination Criteria"]["Max Generations"] = 100;
-
-    k["Variables"][0]["Name"] = "theta";
-    k["Variables"][0]["Lower Bound"] = -2 * M_PI;
-    k["Variables"][0]["Upper Bound"] = +4 * M_PI;
-
-    k["Variables"][1]["Name"] = "phi";
-    k["Variables"][1]["Lower Bound"] =   - M_PI;
-    k["Variables"][1]["Upper Bound"] = 2 * M_PI;
-
-    k["Console Output"]["Frequency"] = 0;
-    k["Results Output"]["Frequency"] = 0;
-    k["Results Output"]["Active"] = false;
-    
-    k["Random Seed"] = 424242;
-    
-    k.runSingle();
-
-    return paramsToNormal(k["Solver"]["Internal"]["Best Ever Variables"]);
+    return paramsToNormal(e["Solver"]["Internal"]["Best Ever Variables"]);
 }
 
 
@@ -128,36 +128,36 @@ Quaternion findBestPath(const std::vector<real3>& A)
 {
     AGlobal = A;
 
+    auto e = korali::Experiment();
+    e["Problem"]["Type"] = "Evaluation/Direct/Basic";
+    e["Problem"]["Objective"] = "Minimize";
+    e["Problem"]["Objective Function"] = &evaluatePath;
+
+    e["Solver"]["Type"] = "Optimizer/CMAES";
+    e["Solver"]["Population Size"] = 32;
+    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
+    e["Solver"]["Termination Criteria"]["Max Generations"] = 10000;
+
+    e["Variables"][0]["Name"] = "theta";
+    e["Variables"][0]["Lower Bound"] = -2 * M_PI;
+    e["Variables"][0]["Upper Bound"] = +4 * M_PI;
+
+    e["Variables"][1]["Name"] = "phi";
+    e["Variables"][1]["Lower Bound"] =   - M_PI;
+    e["Variables"][1]["Upper Bound"] = 2 * M_PI;
+
+    e["Variables"][2]["Name"] = "psi";
+    e["Variables"][2]["Lower Bound"] =   - M_PI;
+    e["Variables"][2]["Upper Bound"] = 3 * M_PI;
+
+    e["Console"]["Frequency"] = 0;
+    e["Results"]["Frequency"] = 0;
+    e["Console"]["Verbosity"] = "Silent";
+
+    e["Random Seed"] = 424242;
+
     auto k = korali::Engine();
+    k.run(e);
 
-    k["Problem"]["Type"] = "Evaluation/Direct/Basic";
-    k["Problem"]["Objective"] = "Minimize";
-    k["Problem"]["Objective Function"] = &evaluatePath;
-
-    k["Solver"]["Type"] = "Optimizer/CMAES";
-    k["Solver"]["Population Size"] = 32;
-    k["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
-    k["Solver"]["Termination Criteria"]["Max Generations"] = 10000;
-
-    k["Variables"][0]["Name"] = "theta";
-    k["Variables"][0]["Lower Bound"] = -2 * M_PI;
-    k["Variables"][0]["Upper Bound"] = +4 * M_PI;
-
-    k["Variables"][1]["Name"] = "phi";
-    k["Variables"][1]["Lower Bound"] =   - M_PI;
-    k["Variables"][1]["Upper Bound"] = 2 * M_PI;
-
-    k["Variables"][2]["Name"] = "psi";
-    k["Variables"][2]["Lower Bound"] =   - M_PI;
-    k["Variables"][2]["Upper Bound"] = 3 * M_PI;
-
-    k["Console Output"]["Frequency"] = 100;
-    k["Results Output"]["Frequency"] = 0;
-    // k["Results Output"]["Active"] = false;
-
-    k["Random Seed"] = 424242;
-    
-    k.runSingle();
-
-    return paramsToQuaternion(k["Solver"]["Internal"]["Best Ever Variables"]);
+    return paramsToQuaternion(e["Solver"]["Internal"]["Best Ever Variables"]);
 }
