@@ -45,11 +45,18 @@ app_analytic_control: app_analytic_control.o $(analytic_control_objects)
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
 
+
+
 app_rl.o: app_rl.cpp rl/environment.h rl/magnetic_field_from_action.h
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
 
-app_rl: app_rl.o $(analytic_control_objects)
-	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES) $(LD_KORALI)
+#app_rl: app_rl.o $(analytic_control_objects)
+#	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES) $(LD_KORALI)
+
+app_rl: app_rl.o
+	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
+
+
 
 .PHONY: all clean
 clean:; rm -rf $(EXECS) *.o
