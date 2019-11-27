@@ -205,7 +205,7 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
     bool isTraining {true};
     long simId {0};
 
-    std::ofstream fileCompareInfos("CompareInfos.txt");
+    // std::ofstream fileCompareInfos("CompareInfos.txt");
 
     while (isTraining)
     {
@@ -214,9 +214,9 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
         env.reset(simId, comm->getPRNG());
         comm->sendInitState(env.getState());
 
-        const std::string ACfname = generateACfname(simId);
-        const real timeAC = simulateOptimalPath(fieldMagnitude, env.getBodies(), extractPositions(env.getBodies()),
-                                                U, ACfname, dumpEvery);
+        // const std::string ACfname = generateACfname(simId);
+        // const real timeAC = simulateOptimalPath(fieldMagnitude, env.getBodies(), extractPositions(env.getBodies()),
+        //                                         U, ACfname, dumpEvery);
 
         while (status == Status::Running) // simulation loop
         {
@@ -237,16 +237,16 @@ inline void appMain(smarties::Communicator *const comm, int argc, char **argv)
             else
             {
                 comm->sendTermState(state, reward);
-                dumpComparisonInfos(fileCompareInfos, simId, timeAC, env.getSimulationTime(), env.getBodies());
-                fileCompareInfos.flush();
-                std::cout << "Done with sim " << simId << std::endl;
+                // dumpComparisonInfos(fileCompareInfos, simId, timeAC, env.getSimulationTime(), env.getBodies());
+                // fileCompareInfos.flush();
+                // std::cout << "Done with sim " << simId << std::endl;
             }
         }
 
         ++simId;
     }
 
-    fileCompareInfos.close();
+    // fileCompareInfos.close();
 }
 
 int main(int argc, char **argv)
