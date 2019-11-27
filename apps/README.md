@@ -29,3 +29,7 @@ This is the method used used in `app_analytic_control`.
 ## app_rl
 
 Use smarties to find optimal policy for the problem stated in `app_analytic_control`.
+
+## app_rl_comp
+
+Use smarties to find optimal policy for the problem stated in `app_analytic_control` and compare to the `app_analytic_control` results for the same setup.

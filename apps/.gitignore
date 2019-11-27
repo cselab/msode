@@ -4,3 +4,4 @@ app_forward
 app_orient
 app_analytic_control
 app_rl
+app_rl_comp

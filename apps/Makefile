@@ -16,7 +16,7 @@ LD_SMARTIES  = -L${SMARTIES_ROOT}/lib -lsmarties
 
 LDFLAGS += -L$(CORE_DIR) -lmsode
 
-EXECS = app_rotating app_forward app_forward_curve app_analytic_control app_orient app_rl
+EXECS = app_rotating app_forward app_forward_curve app_analytic_control app_orient app_rl app_rl_comp
 
 all: $(EXECS)
 
@@ -47,16 +47,19 @@ app_analytic_control: app_analytic_control.o $(analytic_control_objects)
 
 
 
-
 app_rl.o: app_rl.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h
-	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
-
-#app_rl: app_rl.o $(analytic_control_objects)
-#	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES) $(LD_KORALI)
+	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
 
 app_rl: app_rl.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
 
+
+
+app_rl_comp.o: app_rl_comp.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h
+	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
+
+app_rl_comp: app_rl_comp.o $(analytic_control_objects)
+	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES) $(LD_KORALI)
 
 
 .PHONY: all clean
