@@ -16,7 +16,13 @@ LD_SMARTIES  = -L${SMARTIES_ROOT}/lib -lsmarties
 
 LDFLAGS += -L$(CORE_DIR) -lmsode
 
-EXECS = app_rotating app_forward app_forward_curve app_analytic_control app_orient app_rl app_rl_comp
+EXECS = app_rotating \
+	app_forward \
+	app_forward_curve \
+	app_analytic_control \
+	app_orient \
+	app_rl \
+	app_rl_comp
 
 all: $(EXECS)
 
@@ -28,9 +34,14 @@ app_orient:        app_orient.o;        $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_forward:       app_forward.o;       $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_forward_curve: app_forward_curve.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-analytic_control_objects = analytic_control/helpers.o analytic_control/optimal_path.o analytic_control/apply_strategy.o 
+analytic_control_objects = analytic_control/helpers.o \
+			   analytic_control/optimal_path.o \
+			   analytic_control/apply_strategy.o
 
-app_analytic_control.o: app_analytic_control.cpp analytic_control/helpers.h analytic_control/optimal_path.h
+analytic_control_headers = analytic_control/helpers.h \
+			   analytic_control/optimal_path.h
+
+app_analytic_control.o: app_analytic_control.cpp $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
 
 analytic_control/helpers.o: analytic_control/helpers.cpp analytic_control/helpers.h
@@ -47,7 +58,11 @@ app_analytic_control: app_analytic_control.o $(analytic_control_objects)
 
 
 
-app_rl.o: app_rl.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h
+rl_headers = rl/helpers.h \
+             rl/environment.h \
+             rl/magnetic_field_from_action.h
+
+app_rl.o: app_rl.cpp $(rl_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
 
 app_rl: app_rl.o
@@ -55,7 +70,7 @@ app_rl: app_rl.o
 
 
 
-app_rl_comp.o: app_rl_comp.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h
+app_rl_comp.o: app_rl_comp.cpp $(rl_headers) $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
 
 app_rl_comp: app_rl_comp.o $(analytic_control_objects)
