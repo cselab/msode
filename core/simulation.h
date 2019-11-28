@@ -64,7 +64,11 @@ struct MagneticField
                        0.0_r};
 
         constexpr real3 originalDirection {0.0_r, 0.0_r, 1.0_r};
-        const auto q = Quaternion::createFromVectors(originalDirection, rotatingDirection(t));
+        const real3 currentDirection = rotatingDirection(t);
+
+        MSODE_Ensure(length(currentDirection) > 0.0_r, "Rotating direction must be different than 0");
+        
+        const auto q = Quaternion::createFromVectors(originalDirection, currentDirection);
         
         return q.rotate(B);
     }
