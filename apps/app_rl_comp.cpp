@@ -2,7 +2,7 @@
 #include "analytic_control/optimal_path.h"
 #include "analytic_control/apply_strategy.h"
 
-
+#include <type_traits>
 
 static inline std::string generateACfname(long simId)
 {
@@ -51,21 +51,21 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
     const analytic_control::MatrixReal U = V.inverse();
     
-    setActionDims  (env, comm);
-    setActionBounds(env, comm);
+    setActionDims  (env.get(), comm);
+    setActionBounds(env.get(), comm);
     setStateBounds(bodies, spaceInfos, comm);
     
     bool isTraining {true};
     long simId {0};
 
-    using Status = typename decltype(env)::Status;
+    using Status = typename std::remove_pointer<decltype(env.get())>::type::Status;
     
     while (isTraining)
     {
         auto status {Status::Running};
 
-        env.reset(simId, comm->getPRNG());
-        comm->sendInitState(env.getState());
+        env->reset(simId, comm->getPRNG());
+        comm->sendInitState(env->getState());
         
         while (status == Status::Running) // simulation loop
         {
@@ -74,10 +74,10 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
             if (comm->terminateTraining())
                 return;
 
-            status = env.advance(action);
+            status = env->advance(action);
 
-            const auto& state  = env.getState();
-            const auto  reward = env.getReward();
+            const auto& state  = env->getState();
+            const auto  reward = env->getReward();
 
             if (status == Status::Running)
             {
@@ -87,9 +87,9 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
             {
                 comm->sendTermState(state, reward);
 
-                const auto bodies = env.getBodies();
-                const real tAC =  simulateOptimalPath(magneticFieldMagnitude, bodies, extractPositions(bodies), U, generateACfname(simId), dumpEvery);
-                const real tRL = env.getSimulationTime();
+                const auto bodies = env->getBodies();
+                const real tAC =  analytic_control::simulateOptimalPath(magneticFieldMagnitude, bodies, extractPositions(bodies), U, generateACfname(simId), dumpEvery);
+                const real tRL = env->getSimulationTime();
                 dumpComparisonInfos(std::cout, simId, tAC, tRL, bodies);
             }
         }

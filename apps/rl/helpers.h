@@ -7,6 +7,8 @@
 #include <file_parser.h>
 #include <smarties.h>
 
+#include <memory>
+
 struct EnvSpace
 {
     EnvSpace(real L) :
@@ -79,19 +81,19 @@ static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
 }
 
 template<typename Env>
-static void setActionDims(const Env& env, smarties::Communicator *const comm)
+static void setActionDims(const Env *env, smarties::Communicator *const comm)
 {
-    const int nControlVars = env.numActions();
-    const int nStateVars   = env.getState().size();
+    const int nControlVars = env->numActions();
+    const int nStateVars   = env->getState().size();
     comm->setStateActionDims(nStateVars, nControlVars);
 }
 
 template<typename Env>
-static void setActionBounds(const Env& env, smarties::Communicator *const comm)
+static void setActionBounds(const Env *env, smarties::Communicator *const comm)
 {
     const bool bounded = true;
     std::vector<double> lo, hi;
-    std::tie(lo, hi) = env.getActionBounds();
+    std::tie(lo, hi) = env->getActionBounds();
     comm->setActionScales(hi, lo, bounded);
 }
 
@@ -164,7 +166,5 @@ static auto createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpa
     // using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
     // MagnFieldActionType magnFieldAction(maxOmega);
 
-    MSodeEnvironment<MagnFieldActionType> env(params, bodies, targetPositions, magnFieldAction);
-
-    return env;
+    return std::make_unique<MSodeEnvironment<MagnFieldActionType>>(params, bodies, targetPositions, magnFieldAction);
 }

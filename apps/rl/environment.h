@@ -96,6 +96,12 @@ public:
         setDistances();
     }
 
+    MSodeEnvironment(const MSodeEnvironment&) = delete;
+    MSodeEnvironment& operator=(const MSodeEnvironment&) = delete;
+
+    MSodeEnvironment(MSodeEnvironment&&) = delete;
+    MSodeEnvironment& operator=(MSodeEnvironment&&) = delete;
+
     int numActions() const {return magnFieldState.numActions();}
     auto getActionBounds() const {return magnFieldState.getActionBounds();}
 

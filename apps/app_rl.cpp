@@ -1,5 +1,7 @@
 #include "rl/helpers.h"
 
+#include <type_traits>
+
 inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*argv*/)
 {
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
@@ -12,21 +14,21 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     
     auto env = createEnvironment(bodies, spaceInfos, magneticFieldMagnitude);
     
-    setActionDims  (env, comm);
-    setActionBounds(env, comm);
+    setActionDims  (env.get(), comm);
+    setActionBounds(env.get(), comm);
     setStateBounds(bodies, spaceInfos, comm);
     
     bool isTraining {true};
     long simId {0};
 
-    using Status = typename decltype(env)::Status;
+    using Status = typename std::remove_pointer<decltype(env.get())>::type::Status;
     
     while (isTraining)
     {
         auto status {Status::Running};
 
-        env.reset(simId, comm->getPRNG());
-        comm->sendInitState(env.getState());
+        env->reset(simId, comm->getPRNG());
+        comm->sendInitState(env->getState());
 
         while (status == Status::Running) // simulation loop
         {
@@ -35,10 +37,10 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
             if (comm->terminateTraining())
                 return;
 
-            status = env.advance(action);
+            status = env->advance(action);
 
-            const auto& state  = env.getState();
-            const auto  reward = env.getReward();
+            const auto& state  = env->getState();
+            const auto  reward = env->getReward();
 
             if (status == Status::Running)
                 comm->sendState(state, reward);
