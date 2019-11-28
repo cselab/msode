@@ -251,6 +251,7 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
             {
                 real3 dr = bodies[i].r - targets[i];
                 dr -= dot(n, dr) * n;
+                MSODE_Ensure(dot(dr, n) < 1e-5_r, "dr is not othogonal to n");
                 const real l = length(dr);
                 if (l > minDist) return i;
             }
@@ -309,9 +310,10 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
     real getOmega(real) const override  {return omega;}
     real3 getAxis(real) const override  {return axis;}
 
-private:
 
+private:
     const MSodeEnvironment<MagnFieldFromActionFromLocalFrame> *env {nullptr};
+protected:
     real omega {0._r};
     real3 axis {1._r, 0._r, 0._r};
 };
@@ -352,12 +354,6 @@ struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionFromLocalFrame
         axis = normalized(axis);
     }
 
-    real getOmega(real) const override  {return omega;}
-    real3 getAxis(real) const override  {return axis;}
-
 private:
-
     const MSodeEnvironment<MagnFieldFromActionFromLocalPlane> *env {nullptr};
-    real omega {0._r};
-    real3 axis {1._r, 0._r, 0._r};
 };
