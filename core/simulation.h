@@ -42,10 +42,10 @@ struct RigidBody
 
 struct MagneticField
 {
-    MagneticField(real magnitude, std::function<real(real)> omega, std::function<real3(real)> rotatingDirection) :
-        magnitude(magnitude),
-        omega(omega),
-        rotatingDirection(rotatingDirection)
+    MagneticField(real magnitude_, std::function<real(real)> omega_, std::function<real3(real)> rotatingDirection_) :
+        magnitude(magnitude_),
+        omega(omega_),
+        rotatingDirection(rotatingDirection_)
     {}
 
     void advance(real t, real dt)

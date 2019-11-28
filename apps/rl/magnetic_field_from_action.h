@@ -15,8 +15,8 @@ constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
 
 struct MagnFieldFromActionBase
 {
-    MagnFieldFromActionBase(real maxOmega) :
-        maxOmega(maxOmega)
+    MagnFieldFromActionBase(real maxOmega_) :
+        maxOmega(maxOmega_)
     {}
 
     virtual int numActions() const = 0;
@@ -36,14 +36,14 @@ protected:
 
 struct MagnFieldFromActionChange : MagnFieldFromActionBase
 {
-    MagnFieldFromActionChange(real maxOmega, real actionDt) :
-        MagnFieldFromActionBase(maxOmega),
-        actionDt(actionDt)
+    MagnFieldFromActionChange(real maxOmega_, real actionDt_) :
+        MagnFieldFromActionBase(maxOmega_),
+        actionDt(actionDt_)
     {}
 
     MagnFieldFromActionChange(const MagnFieldFromActionChange&) = default;
 
-    void attach(const MSodeEnvironment<MagnFieldFromActionChange> *env) {this->env = env;}
+    void attach(const MSodeEnvironment<MagnFieldFromActionChange> *env_) {env = env_;}
 
     int numActions() const override {return 4;}
 
@@ -118,13 +118,13 @@ private:
 
 struct MagnFieldFromActionDirect : MagnFieldFromActionBase
 {
-    MagnFieldFromActionDirect(real maxOmega) :
-        MagnFieldFromActionBase(maxOmega)
+    MagnFieldFromActionDirect(real maxOmega_) :
+        MagnFieldFromActionBase(maxOmega_)
     {}
 
     MagnFieldFromActionDirect(const MagnFieldFromActionDirect&) = default;
 
-    void attach(const MSodeEnvironment<MagnFieldFromActionDirect> *env) {this->env = env;}
+    void attach(const MSodeEnvironment<MagnFieldFromActionDirect> *env_) {env = env_;}
 
     int numActions() const override {return 4;}
 
@@ -161,13 +161,13 @@ private:
 
 struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
 {
-    MagnFieldFromActionFromTargets(real maxOmega) :
-        MagnFieldFromActionBase(maxOmega)
+    MagnFieldFromActionFromTargets(real maxOmega_) :
+        MagnFieldFromActionBase(maxOmega_)
     {}
 
     MagnFieldFromActionFromTargets(const MagnFieldFromActionFromTargets&) = default;
 
-    void attach(const MSodeEnvironment<MagnFieldFromActionFromTargets> *env) {this->env = env;}
+    void attach(const MSodeEnvironment<MagnFieldFromActionFromTargets> *env_) {env = env_;}
     
     int numActions() const override {return 1 + env->getBodies().size();}
 
@@ -220,13 +220,13 @@ private:
 
 struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
 {
-    MagnFieldFromActionFromLocalFrame(real maxOmega) :
-        MagnFieldFromActionBase(maxOmega)
+    MagnFieldFromActionFromLocalFrame(real maxOmega_) :
+        MagnFieldFromActionBase(maxOmega_)
     {}
 
     MagnFieldFromActionFromLocalFrame(const MagnFieldFromActionFromLocalFrame&) = default;
 
-    void attach(const MSodeEnvironment<MagnFieldFromActionFromLocalFrame> *env) {this->env = env;}
+    void attach(const MSodeEnvironment<MagnFieldFromActionFromLocalFrame> *env_) {env = env_;}
     
     int numActions() const override {return 1+3;}
 
@@ -243,15 +243,15 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
         const auto& bodies  = env->getBodies();
         const auto& targets = env->getTargetPositions();
 
-        auto selectId = [&bodies, &targets](int start, real3 n = real3{0.0_r, 0.0_r, 0.0_r}) -> int
+        auto selectId = [&bodies, &targets](int start/*, real3 n = real3{0.0_r, 0.0_r, 0.0_r}*/) -> int
         {
             constexpr real minDist = 1e-1_r;
 
             for (size_t i = start; i < bodies.size(); ++i)
             {
                 real3 dr = bodies[i].r - targets[i];
-                dr -= dot(n, dr) * n;
-                MSODE_Ensure(dot(dr, n) < 1e-5_r, "dr is not othogonal to n");
+                // dr -= dot(n, dr) * n;
+                // MSODE_Ensure(dot(dr, n) < 1e-5_r, "dr is not othogonal to n");
                 const real l = length(dr);
                 if (l > minDist) return i;
             }
@@ -265,7 +265,8 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
         
         const real3 n1 = normalized(bodies[i1].r - targets[i1]);
 
-        const int i2 = selectId(i1 + 1, n1);
+        //const int i2 = selectId(i1 + 1, n1);
+        const int i2 = selectId(i1 + 1);
         real3 n2;
         
         if (i2 == NotFound)
@@ -321,13 +322,13 @@ protected:
 
 struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionFromLocalFrame
 {
-    MagnFieldFromActionFromLocalPlane(real maxOmega) :
-        MagnFieldFromActionFromLocalFrame(maxOmega)
+    MagnFieldFromActionFromLocalPlane(real maxOmega_) :
+        MagnFieldFromActionFromLocalFrame(maxOmega_)
     {}
 
     MagnFieldFromActionFromLocalPlane(const MagnFieldFromActionFromLocalPlane&) = default;
 
-    void attach(const MSodeEnvironment<MagnFieldFromActionFromLocalPlane> *env) {this->env = env;}
+    void attach(const MSodeEnvironment<MagnFieldFromActionFromLocalPlane> *env_) {env = env_;}
     
     int numActions() const override {return 1+2;}
 

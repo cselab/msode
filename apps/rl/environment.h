@@ -40,12 +40,12 @@ struct RewardParams
 
 struct Params
 {
-    Params(TimeParams time, RewardParams reward, real fieldMagnitude, real distanceThreshold, Box initBox) :
-        time(time),
-        reward(reward),
-        fieldMagnitude(fieldMagnitude),
-        distanceThreshold(distanceThreshold),
-        initBox(initBox)
+    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, Box initBox_) :
+        time(time_),
+        reward(reward_),
+        fieldMagnitude(fieldMagnitude_),
+        distanceThreshold(distanceThreshold_),
+        initBox(initBox_)
     {}
 
     const TimeParams time;
@@ -61,19 +61,19 @@ class MSodeEnvironment
 public:
     enum class Status {Running, MaxTimeEllapsed, Success};
     
-    MSodeEnvironment(const Params& params,
+    MSodeEnvironment(const Params& params_,
                      const std::vector<RigidBody>& initialRBs,
-                     const std::vector<real3>& targetPositions,
-                     const MagnFieldFromAction& magnFieldStateFromAction) :
-        nstepsPerAction(params.time.nstepsPerAction),
-        dt(params.time.dt),
-        tmax(params.time.tmax),
-        distanceThreshold(params.distanceThreshold),
-        initBox(params.initBox),
-        rewardParams(params.reward),
-        magnFieldState(magnFieldStateFromAction),
-        targetPositions(targetPositions),
-        dumpEvery(params.time.dumpEvery)
+                     const std::vector<real3>& targetPositions_,
+                     const MagnFieldFromAction& magnFieldStateFromAction_) :
+        nstepsPerAction(params_.time.nstepsPerAction),
+        dt(params_.time.dt),
+        tmax(params_.time.tmax),
+        distanceThreshold(params_.distanceThreshold),
+        initBox(params_.initBox),
+        rewardParams(params_.reward),
+        magnFieldState(magnFieldStateFromAction_),
+        targetPositions(targetPositions_),
+        dumpEvery(params_.time.dumpEvery)
     {
         MSODE_Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
@@ -90,7 +90,7 @@ public:
             return normalized(axis);
         };
     
-        MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
+        MagneticField field{params_.fieldMagnitude, omegaFunction, rotatingDirection};
 
         sim = std::make_unique<Simulation>(initialRBs, field);
         setDistances();

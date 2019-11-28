@@ -11,10 +11,10 @@
 
 struct EnvSpace
 {
-    EnvSpace(real L) :
-        L(L),
-        domain{{-L, -L, -L},
-               {+L, +L, +L}}
+    EnvSpace(real L_) :
+        L(L_),
+        domain{{-L_, -L_, -L_},
+               {+L_, +L_, +L_}}
     {}
 
     const real L;

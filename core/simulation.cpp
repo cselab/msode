@@ -35,10 +35,10 @@ void Simulation::reset(const std::vector<RigidBody>& initialRBs, const MagneticF
     magneticField = initialMF;
 }
 
-void Simulation::activateDump(const std::string& fname, long dumpEvery)
+void Simulation::activateDump(const std::string& fname, long dumpEvery_)
 {
-    MSODE_Expect(dumpEvery > 0, "expect positive dumpEvery");
-    this->dumpEvery = dumpEvery;
+    MSODE_Expect(dumpEvery_ > 0, "expect positive dumpEvery");
+    this->dumpEvery = dumpEvery_;
 
     if (file.is_open())
         file.close();

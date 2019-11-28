@@ -1,7 +1,11 @@
 #include "optimal_path.h"
 #include "helpers.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <korali.hpp>
+#pragma GCC diagnostic pop
 
 namespace analytic_control
 {

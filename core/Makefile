@@ -1,5 +1,7 @@
 include ../config.mk
 
+CXXFLAGS += -Wextra -Wshadow -Werror
+
 all: libmsode.a
 
 file_parser.o: file_parser.cpp file_parser.h log.h simulation.h types.h quaternion.h math.h

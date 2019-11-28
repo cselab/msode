@@ -87,10 +87,10 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
             {
                 comm->sendTermState(state, reward);
 
-                const auto bodies = env->getBodies();
-                const real tAC =  analytic_control::simulateOptimalPath(magneticFieldMagnitude, bodies, extractPositions(bodies), U, generateACfname(simId), dumpEvery);
+                const auto envBodies = env->getBodies();
+                const real tAC =  analytic_control::simulateOptimalPath(magneticFieldMagnitude, envBodies, extractPositions(envBodies), U, generateACfname(simId), dumpEvery);
                 const real tRL = env->getSimulationTime();
-                dumpComparisonInfos(std::cout, simId, tAC, tRL, bodies);
+                dumpComparisonInfos(std::cout, simId, tAC, tRL, envBodies);
             }
         }
 

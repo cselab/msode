@@ -182,12 +182,12 @@ struct Quaternion
     real z {0.0_r};
 
 private:
-    Quaternion(real w, real x, real y, real z) :
-        w(w), x(x), y(y), z(z)
+    Quaternion(real w_, real x_, real y_, real z_) :
+        w(w_), x(x_), y(y_), z(z_)
     {}
 
-    Quaternion(real w, real3 u) :
-        w(w), x(u.x), y(u.y), z(u.z)
+    Quaternion(real w_, real3 u) :
+        w(w_), x(u.x), y(u.y), z(u.z)
     {}
     
     // https://stackoverflow.com/a/11741520/11630848

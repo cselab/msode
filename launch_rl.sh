@@ -13,4 +13,5 @@ cd $rundir
 
 smarties.py .. \
 	    --nThreads 8 \
-	    --nEnvironments 1
+	    --nEnvironments 1 \
+	    --restart .
