@@ -53,7 +53,7 @@ struct MagnFieldFromActionChange : MagnFieldFromActionBase
                 {maxOmega, 1.0, 1.0, 1.0}};
     }
 
-    std::tuple<real3, real3, real3> getFrameReference() const {return {ex, ey, ez};}
+    std::tuple<real3, real3, real3> getFrameReference() const override {return {ex, ey, ez};}
     
     void setAction(const std::vector<double>& action) override
     {
@@ -236,33 +236,35 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
                 {maxOmega, +1.0, +1.0, +1.0}};
     }
 
-    std::tuple<real3, real3, real3> getFrameReference() const
+    std::tuple<real3, real3, real3> getFrameReference() const override
     {
         constexpr int NotFound = -1;
         
         const auto& bodies  = env->getBodies();
         const auto& targets = env->getTargetPositions();
 
-        auto selectId = [&bodies, &targets](int start) -> int
+        auto selectId = [&bodies, &targets](int start, real3 n = real3{0.0_r, 0.0_r, 0.0_r}) -> int
         {
             constexpr real minDist = 1e-1_r;
 
             for (size_t i = start; i < bodies.size(); ++i)
             {
-                const real l = length(bodies[i].r - targets[i]);
+                real3 dr = bodies[i].r - targets[i];
+                dr -= dot(n, dr) * n;
+                const real l = length(dr);
                 if (l > minDist) return i;
             }
             return NotFound;
         };
         
         const int i1 = selectId(0);
-        const int i2 = selectId(i1 + 1);
 
         if (i1 == NotFound)
             return {ex, ey, ez};
         
         const real3 n1 = normalized(bodies[i1].r - targets[i1]);
 
+        const int i2 = selectId(i1 + 1, n1);
         real3 n2;
         
         if (i2 == NotFound)
@@ -271,12 +273,19 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
         }
         else
         {
-            real3 n2 = normalized(bodies[i2].r - targets[i2]);
+            n2 = normalized(bodies[i2].r - targets[i2]);
             n2 -= dot(n1, n2) * n1;
             n2 = normalized(n2);
         }
+
+        const real3 n3 = cross(n1, n2);
+
+        MSODE_Ensure(dot(n1, n2) < 1e-5_r,
+                     "n1 and n2 are not orthogonal");
+        MSODE_Ensure(std::abs(length(n3) - 1.0_r) < 1e-5_r,
+                     "Bad normalization");
         
-        return {n1, n2, cross(n1, n2)};
+        return {n1, n2, n3};
     }
     
     void setAction(const std::vector<double>& action) override
@@ -308,10 +317,10 @@ private:
 };
 
 
-struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionBase
+struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionFromLocalFrame
 {
     MagnFieldFromActionFromLocalPlane(real maxOmega) :
-        MagnFieldFromActionBase(maxOmega)
+        MagnFieldFromActionFromLocalFrame(maxOmega)
     {}
 
     MagnFieldFromActionFromLocalPlane(const MagnFieldFromActionFromLocalPlane&) = default;
@@ -324,49 +333,6 @@ struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionBase
     {
         return {{0.0, -1.0, -1.0},
                 {maxOmega, +1.0, +1.0}};
-    }
-
-    std::tuple<real3, real3, real3> getFrameReference() const
-    {
-        constexpr int NotFound = -1;
-        
-        const auto& bodies  = env->getBodies();
-        const auto& targets = env->getTargetPositions();
-
-        auto selectId = [&bodies, &targets](int start) -> int
-        {
-            constexpr real minDist = 1e-1_r;
-
-            for (size_t i = start; i < bodies.size(); ++i)
-            {
-                const real l = length(bodies[i].r - targets[i]);
-                if (l > minDist) return i;
-            }
-            return NotFound;
-        };
-        
-        const int i1 = selectId(0);
-        const int i2 = selectId(i1 + 1);
-
-        if (i1 == NotFound)
-            return {ex, ey, ez};
-        
-        const real3 n1 = normalized(bodies[i1].r - targets[i1]);
-
-        real3 n2;
-        
-        if (i2 == NotFound)
-        {
-            n2 = normalized(anyOrthogonal(n1));
-        }
-        else
-        {
-            real3 n2 = normalized(bodies[i2].r - targets[i2]);
-            n2 -= dot(n1, n2) * n1;
-            n2 = normalized(n2);
-        }
-        
-        return {n1, n2, cross(n1, n2)};
     }
     
     void setAction(const std::vector<double>& action) override
