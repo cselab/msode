@@ -4,13 +4,13 @@ APPS_DIR=apps
 all: apps
 
 libmsode.a:
-	@make -C $(CORE_DIR) $@
+	@$(MAKE) -C $(CORE_DIR) $@
 
 apps: libmsode.a
-	@make -C $(APPS_DIR) all
+	@$(MAKE) -C $(APPS_DIR) all
 
 clean:
-	make -C $(CORE_DIR) clean
-	make -C $(APPS_DIR) clean
+	$(MAKE) -C $(CORE_DIR) clean
+	$(MAKE) -C $(APPS_DIR) clean
 
 .PHONY: all clean apps
