@@ -83,6 +83,7 @@ real3 findBestPlane(const std::vector<real3>& A)
     e["Console"]["Frequency"] = 0;
     e["Results"]["Frequency"] = 0;
     e["Console"]["Verbosity"] = "Silent";
+    e["Results"]["Enabled"] = false;
     
     e["Random Seed"] = 424242;
 
@@ -156,6 +157,7 @@ Quaternion findBestPath(const std::vector<real3>& A)
     e["Console"]["Frequency"] = 0;
     e["Results"]["Frequency"] = 0;
     e["Console"]["Verbosity"] = "Silent";
+    e["Results"]["Enabled"] = false;
 
     e["Random Seed"] = 424242;
 
