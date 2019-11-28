@@ -80,6 +80,16 @@ static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
     return wmax;
 }
 
+static real computeMinOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBody>& bodies)
+{
+    real wmin {std::numeric_limits<real>::max()};
+
+    for (const auto& body : bodies)
+        wmin = std::min(wmin, body.stepOutFrequency(fieldMagnitude));
+
+    return wmin;
+}
+
 template<typename Env>
 static void setActionDims(const Env *env, smarties::Communicator *const comm)
 {
@@ -124,6 +134,7 @@ static auto createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpa
     // parameters
     
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+    const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     const real dt             = 1.0 / (maxOmega * 20); // s
     const real maxDistance = computeMaxDistance(space.domain, space.target);
     const real distanceThreshold = 2.0_r; // body_length
@@ -155,16 +166,16 @@ static auto createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpa
     const std::vector<real3> targetPositions(nbodies, space.target);
 
     // using MagnFieldActionType = MagnFieldFromActionDirect;
-    // MagnFieldActionType magnFieldAction(maxOmega);
+    // MagnFieldActionType magnFieldAction(minOmega, maxOmega);
 
     // using MagnFieldActionType = MagnFieldFromActionFromTargets;
     // MagnFieldActionType magnFieldAction(maxOmega);
 
     using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
-    MagnFieldActionType magnFieldAction(maxOmega);
+    MagnFieldActionType magnFieldAction(minOmega, maxOmega);
 
     // using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
-    // MagnFieldActionType magnFieldAction(maxOmega);
+    // MagnFieldActionType magnFieldAction(minOmega, maxOmega);
 
     return std::make_unique<MSodeEnvironment<MagnFieldActionType>>(params, bodies, targetPositions, magnFieldAction);
 }

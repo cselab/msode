@@ -15,7 +15,8 @@ constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
 
 struct MagnFieldFromActionBase
 {
-    MagnFieldFromActionBase(real maxOmega_) :
+    MagnFieldFromActionBase(real minOmega_, real maxOmega_) :
+        minOmega(minOmega_),
         maxOmega(maxOmega_)
     {}
 
@@ -30,14 +31,15 @@ struct MagnFieldFromActionBase
     virtual real3 getAxis(real t) const = 0;
 
 protected:
+    const real minOmega;
     const real maxOmega;
 };
 
 
 struct MagnFieldFromActionChange : MagnFieldFromActionBase
 {
-    MagnFieldFromActionChange(real maxOmega_, real actionDt_) :
-        MagnFieldFromActionBase(maxOmega_),
+    MagnFieldFromActionChange(real minOmega_, real maxOmega_, real actionDt_) :
+        MagnFieldFromActionBase(minOmega_, maxOmega_),
         actionDt(actionDt_)
     {}
 
@@ -49,8 +51,8 @@ struct MagnFieldFromActionChange : MagnFieldFromActionBase
 
     std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
     {
-        return {{0.0, -1.0, -1.0, -1.0},
-                {maxOmega, 1.0, 1.0, 1.0}};
+        return {{minOmega, -1.0, -1.0, -1.0},
+                {maxOmega,  1.0,  1.0,  1.0}};
     }
 
     std::tuple<real3, real3, real3> getFrameReference() const override {return {ex, ey, ez};}
@@ -72,7 +74,7 @@ struct MagnFieldFromActionChange : MagnFieldFromActionBase
         lastActionTime = t;
 
         // constraints
-        lastOmega = std::max(lastOmega, 0._r);
+        lastOmega = std::max(lastOmega, minOmega);
         lastOmega = std::min(lastOmega, maxOmega);
         lastAxis = normalized(lastAxis);
     }
@@ -118,8 +120,8 @@ private:
 
 struct MagnFieldFromActionDirect : MagnFieldFromActionBase
 {
-    MagnFieldFromActionDirect(real maxOmega_) :
-        MagnFieldFromActionBase(maxOmega_)
+    MagnFieldFromActionDirect(real minOmega_, real maxOmega_) :
+        MagnFieldFromActionBase(minOmega_, maxOmega_)
     {}
 
     MagnFieldFromActionDirect(const MagnFieldFromActionDirect&) = default;
@@ -130,8 +132,8 @@ struct MagnFieldFromActionDirect : MagnFieldFromActionBase
 
     std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
     {
-        return {{0.0, -1.0, -1.0, -1.0},
-                {maxOmega, 1.0, 1.0, 1.0}};
+        return {{minOmega, -1.0, -1.0, -1.0},
+                {maxOmega,  1.0,  1.0,  1.0}};
     }
     
     void setAction(const std::vector<double>& action) override
@@ -139,7 +141,7 @@ struct MagnFieldFromActionDirect : MagnFieldFromActionBase
         MSODE_Expect(static_cast<int>(action.size()) == 4, "expect action of size 4");
         constexpr real tolerance = 1e-6_r;
     
-        omega = std::min(maxOmega, std::max(0._r, static_cast<real>(action[0])));
+        omega = std::min(maxOmega, std::max(minOmega, static_cast<real>(action[0])));
         axis.x = action[1];
         axis.y = action[2];
         axis.z = action[3];
@@ -162,7 +164,7 @@ private:
 struct MagnFieldFromActionFromTargets : MagnFieldFromActionBase
 {
     MagnFieldFromActionFromTargets(real maxOmega_) :
-        MagnFieldFromActionBase(maxOmega_)
+        MagnFieldFromActionBase(0.0, maxOmega_)
     {}
 
     MagnFieldFromActionFromTargets(const MagnFieldFromActionFromTargets&) = default;
@@ -220,8 +222,8 @@ private:
 
 struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
 {
-    MagnFieldFromActionFromLocalFrame(real maxOmega_) :
-        MagnFieldFromActionBase(maxOmega_)
+    MagnFieldFromActionFromLocalFrame(real minOmega_, real maxOmega_) :
+        MagnFieldFromActionBase(minOmega_, maxOmega_)
     {}
 
     MagnFieldFromActionFromLocalFrame(const MagnFieldFromActionFromLocalFrame&) = default;
@@ -232,7 +234,7 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
 
     std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
     {
-        return {{0.0, -1.0, -1.0, -1.0},
+        return {{minOmega, -1.0, -1.0, -1.0},
                 {maxOmega, +1.0, +1.0, +1.0}};
     }
 
@@ -299,7 +301,7 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
                        static_cast<real>(action[2]),
                        static_cast<real>(action[3])};
         
-        omega = std::min(+maxOmega, std::max(0.0_r, static_cast<real>(action[0])));
+        omega = std::min(maxOmega, std::max(minOmega, static_cast<real>(action[0])));
 
         real3 n1, n2, n3;
         std::tie(n1, n2, n3) = getFrameReference();
@@ -322,8 +324,8 @@ protected:
 
 struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionFromLocalFrame
 {
-    MagnFieldFromActionFromLocalPlane(real maxOmega_) :
-        MagnFieldFromActionFromLocalFrame(maxOmega_)
+    MagnFieldFromActionFromLocalPlane(real minOmega_, real maxOmega_) :
+        MagnFieldFromActionFromLocalFrame(minOmega_, maxOmega_)
     {}
 
     MagnFieldFromActionFromLocalPlane(const MagnFieldFromActionFromLocalPlane&) = default;
@@ -334,7 +336,7 @@ struct MagnFieldFromActionFromLocalPlane : MagnFieldFromActionFromLocalFrame
 
     std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override
     {
-        return {{0.0, -1.0, -1.0},
+        return {{minOmega, -1.0, -1.0},
                 {maxOmega, +1.0, +1.0}};
     }
     
