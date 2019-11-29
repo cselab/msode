@@ -131,7 +131,6 @@ static void evaluatePath(korali::Sample& k)
     k["Evaluation"] = computeTime(AGlobal, q);
 }
 
-
 Quaternion findBestPath(const std::vector<real3>& A)
 {
     AGlobal = A;
@@ -161,12 +160,18 @@ Quaternion findBestPath(const std::vector<real3>& A)
     e["Console"]["Frequency"] = 0;
     e["Results"]["Frequency"] = 0;
     e["Console"]["Verbosity"] = "Silent";
-    e["Results"]["Enabled"] = false;
+    // e["Results"]["Enabled"] = false;
 
     e["Random Seed"] = 424242;
 
     auto k = korali::Engine();
     k.run(e);
+
+    // std::vector<double> vv = e["Solver"]["Internal"]["Best Ever Variables"];
+
+    // std::cout << "size " << vv.size() << std::endl;
+    // for (size_t i = 0; i < vv.size(); ++i)
+    //     std::cout << e["Variables"][i]["Name"] << " = " << vv[i] << std::endl;
 
     return paramsToQuaternion(e["Solver"]["Internal"]["Best Ever Variables"]);
 }
