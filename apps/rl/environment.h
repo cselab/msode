@@ -35,7 +35,7 @@ struct TimeParams
 struct RewardParams
 {
     real timeCoeff;
-    real beta, K; // termination reward
+    real terminationBonus;
 };
 
 struct Params
@@ -196,11 +196,11 @@ public:
         
             r += square(previousDistance[i]) - square(distance);
             previousDistance[i] = distance;
-
-            if (status == Status::Success)
-                r += rewardParams.K * std::exp(-distance*distance * rewardParams.beta);
         }
         r -= rewardParams.timeCoeff * dt * nstepsPerAction;
+
+        if (status == Status::Success)
+            r += rewardParams.terminationBonus;
 
         return r;
     }
