@@ -247,13 +247,11 @@ struct MagnFieldFromActionFromLocalFrame : MagnFieldFromActionBase
 
         auto selectId = [&bodies, &targets](int start/*, real3 n = real3{0.0_r, 0.0_r, 0.0_r}*/) -> int
         {
-            constexpr real minDist = 1e-1_r;
+            constexpr real minDist = 5e-1_r;
 
             for (size_t i = start; i < bodies.size(); ++i)
             {
-                real3 dr = bodies[i].r - targets[i];
-                // dr -= dot(n, dr) * n;
-                // MSODE_Ensure(dot(dr, n) < 1e-5_r, "dr is not othogonal to n");
+                const real3 dr = bodies[i].r - targets[i];
                 const real l = length(dr);
                 if (l > minDist) return i;
             }
