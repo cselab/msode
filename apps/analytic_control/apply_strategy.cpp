@@ -123,7 +123,8 @@ real simulateOptimalPath(real magneticFieldMagnitude,
     const real dt = 1.0_r / (omegaMax * 20);
     const long nsteps = static_cast<long>(tTot/dt);
 
-    sim.activateDump(fname, dumpEvery);
+    if (dumpEvery > 0)
+        sim.activateDump(fname, dumpEvery);
 
     sim.run(nsteps, dt);
 
