@@ -139,7 +139,7 @@ static auto createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpa
     const real maxDistance = computeMaxDistance(space.domain, space.target);
     const real distanceThreshold = 2.0_r; // body_length
 
-    const real terminationBonus = 10.0_r * maxDistance * nbodies;
+    const real terminationBonus = maxDistance * maxDistance * nbodies;
     
     const real timeCoeffReward = 0.1_r * nbodies * space.L * computeMinForwardVelocity(fieldMagnitude, bodies);
     const real tmax            = 10.0_r  * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
