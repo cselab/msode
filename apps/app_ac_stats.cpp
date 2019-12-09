@@ -39,9 +39,8 @@ int main(int argc, char **argv)
     for (int sample = 0; sample < nsamples; ++sample)
     {
         const long seed = 242 * sample + 13;
-        constexpr int dumpEvery = 0;
         auto initialPositions = analytic_control::generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
-        const real t = analytic_control::simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U, "no_dump", dumpEvery);
+        const real t = analytic_control::computeRequiredTime(magneticFieldMagnitude, bodies, initialPositions, U);
         tSum += t;
 
         for (auto r : initialPositions)

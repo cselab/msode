@@ -130,4 +130,39 @@ real simulateOptimalPath(real magneticFieldMagnitude,
 
     return tTot;
 }
+
+
+msode::real computeRequiredTime(msode::real magneticFieldMagnitude,
+                                const std::vector<msode::RigidBody>& bodies,
+                                const std::vector<msode::real3>& initialPositions,
+                                const MatrixReal& U)
+{
+    const auto A = computeA(U, initialPositions);
+    const Quaternion q = findBestPath(A);
+
+    const std::vector<real> omegas = computeStepOutFrequencies(magneticFieldMagnitude, bodies);
+
+    const real3 e1 {1.0_r, 0.0_r, 0.0_r};
+    const real3 e2 {0.0_r, 1.0_r, 0.0_r};
+    const real3 e3 {0.0_r, 0.0_r, 1.0_r};
+
+    const real3 dir1 = q.rotate(e1);
+    const real3 dir2 = q.rotate(e2);
+    const real3 dir3 = q.rotate(e3);
+
+    const real t1 = computeTime(A, dir1);
+    const real t2 = computeTime(A, dir2);
+    const real t3 = computeTime(A, dir3);
+
+    const real omegaPerpMin = computeMinOmega(2, bodies, magneticFieldMagnitude);
+    constexpr real secureFactor = 5.0_r;
+    const real tReorient = secureFactor * 2.0_r * M_PI / omegaPerpMin;
+
+    const real scan1 = tReorient + t1;
+    const real scan2 = scan1 + tReorient + t2;
+    const real tTot = scan2 + tReorient + t3;
+
+    return tTot;
+}
+
 } // namespace analytic_control
