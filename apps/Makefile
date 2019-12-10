@@ -23,7 +23,8 @@ EXECS = app_rotating \
 	app_ac_stats \
 	app_orient \
 	app_rl \
-	app_rl_comp
+	app_rl_comp \
+	app_forward_separability
 
 all: $(EXECS)
 
@@ -34,6 +35,8 @@ app_rotating:      app_rotating.o;      $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_orient:        app_orient.o;        $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_forward:       app_forward.o;       $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_forward_curve: app_forward_curve.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+app_forward_separability: app_forward_separability.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 analytic_control_objects = analytic_control/helpers.o \
 			   analytic_control/optimal_path.o \
