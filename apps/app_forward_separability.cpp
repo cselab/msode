@@ -36,7 +36,7 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
 
     const RigidBody b {q, r, magnMoment, P};;
     
-    MSODE_Ensure(std::abs(stepOutFrequency(magneticFieldMagnitude, 0) - omegaC) < 1e-6_r,
+    MSODE_Ensure(std::abs(b.stepOutFrequency(magneticFieldMagnitude, 0) - omegaC) < 1e-6_r,
                  "wrong step out frequency");
     
     return b;
