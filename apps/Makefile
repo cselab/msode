@@ -36,8 +36,6 @@ app_orient:        app_orient.o;        $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_forward:       app_forward.o;       $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_forward_curve: app_forward_curve.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-app_forward_separability: app_forward_separability.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-
 analytic_control_objects = analytic_control/helpers.o \
 			   analytic_control/optimal_path.o \
 			   analytic_control/apply_strategy.o
@@ -52,6 +50,9 @@ app_analytic_control.o: app_analytic_control.cpp $(analytic_control_headers)
 app_ac_stats.o: app_ac_stats.cpp $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
 
+app_forward_separability.o: app_forward_separability.cpp $(analytic_control_headers)
+	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
+
 analytic_control/helpers.o: analytic_control/helpers.cpp analytic_control/helpers.h
 	$(CXX) $(CXXFLAGS) $(CXX_EIGEN) -c $< -o $@
 
@@ -61,6 +62,9 @@ analytic_control/optimal_path.o: analytic_control/optimal_path.cpp analytic_cont
 analytic_control/apply_strategy.o: analytic_control/apply_strategy.cpp analytic_control/apply_strategy.h analytic_control/optimal_path.h analytic_control/helpers.h
 	$(CXX) $(CXXFLAGS) $(CXX_EIGEN) -c $< -o $@
 
+
+app_forward_separability: app_forward_separability.o $(analytic_control_objects)
+	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
 app_analytic_control: app_analytic_control.o $(analytic_control_objects)
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)

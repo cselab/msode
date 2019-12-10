@@ -1,5 +1,6 @@
-#include "simulation.h"
-#include "factory.h"
+#include "analytic_control/helpers.h"
+
+#include <simulation.h>
 
 #include <iostream>
 
@@ -21,9 +22,9 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
     P.A[1] = 0.0_r;
     P.A[2] = 0.0_r;
 
-    P.B[1] = Bxx;
-    P.B[0] = 0.0_r;
-    P.B[0] = 0.0_r;
+    P.B[0] = Bxx;
+    P.B[1] = 0.0_r;
+    P.B[2] = 0.0_r;
 
     P.C[0] = Cxx;
     P.C[1] = Cyy;
@@ -34,7 +35,7 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
     const auto q = Quaternion::createFromComponents(1.0_r, 0.0_r, 0.0_r, 0.0_r);
     const real3 r {0.0_r, 0.0_r, 0.0_r};
 
-    const RigidBody b {q, r, magnMoment, P};;
+    const RigidBody b {q, r, magnMoment, P};
     
     MSODE_Ensure(std::abs(b.stepOutFrequency(magneticFieldMagnitude, 0) - omegaC) < 1e-6_r,
                  "wrong step out frequency");
@@ -55,13 +56,19 @@ int main(int argc, char **argv)
     const real maxOmega = std::stod(argv[2]);
 
     const real domega = maxOmega / (nbodies + 1);
+
+    std::vector<msode::RigidBody> bodies;
     
     for (int i = 0; i < nbodies; ++i)
     {
         const real omegaC = domega * (i+1);
         const auto b = createRigidBody(Vmax, omegaC);
-        std::cout << b << std::endl;
+        bodies.push_back(b);
     }
+
+    const auto V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
+
+    std::cout << V << std::endl;
     
     return 0;
 }
