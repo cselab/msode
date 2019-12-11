@@ -1,5 +1,5 @@
 #include "analytic_control/helpers.h"
-#include "analytic_control/apply_strategy.h"
+#include "analytic_control/optimal_path.h"
 
 #include <simulation.h>
 
@@ -56,9 +56,12 @@ real computeSeparability(const analytic_control::MatrixReal& V)
     {
         real Si = 0.0_r;
         for (int j = 0; j < N; ++j)
+        {
+            if (j == i) continue;
             Si += V(i,j) / V(i,i);
+        }
 
-        Si /= N;
+        Si /= (N - 1);
         S += Si;
     }
     S /= N;
@@ -69,17 +72,19 @@ static real computeMeanTime(const analytic_control::MatrixReal& V, const std::ve
 {
     const analytic_control::MatrixReal U = V.inverse();
 
-    const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
-    const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};
-
+    const real3 boxLo {-50.0_r, 0.0_r, 0.0_r};
+    const real3 boxHi {+50.0_r, 0.0_r, 0.0_r};
+    const real3 direction {1.0_r, 0.0_r, 0.0_r};
+    
     real tSum = 0.0_r;
-    const int nsamples = 100;
+    const int nsamples = 500;
 
     for (int sample = 0; sample < nsamples; ++sample)
     {
         const long seed = 242 * sample + 13;
         auto initialPositions = analytic_control::generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
-        const real t = analytic_control::computeRequiredTime(magneticFieldMagnitude, bodies, initialPositions, U);
+        const auto A = analytic_control::computeA(U, initialPositions);
+        const real t = analytic_control::computeTime(A, direction);
         tSum += t;
     }
     
@@ -122,6 +127,7 @@ int main(int argc, char **argv)
         const real T = computeMeanTime(V, bodies);
 
         printf("%g %g\n", S, T);
+        fflush(stdout);
     }
     
     return 0;
