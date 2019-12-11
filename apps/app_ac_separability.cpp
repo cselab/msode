@@ -68,31 +68,47 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
 //     return S;
 // }
 
+// real computeSeparability(const analytic_control::MatrixReal& V)
+// {
+//     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
+    
+//     auto eigenValues = analytic_control::computeEigenValues(V);
+
+//     real minL = std::numeric_limits<real>::max();
+//     real maxL = std::numeric_limits<real>::lowest();
+
+//     for (auto l : eigenValues)
+//     {
+//         minL = std::min(minL, std::abs(l));
+//         maxL = std::max(maxL, std::abs(l));
+//     }
+    
+//     const real S = maxL / minL;
+//     return S;
+// }
+
 real computeSeparability(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
-    
-    auto eigenValues = analytic_control::computeEigenValues(V);
 
-    real minL = std::numeric_limits<real>::max();
-    real maxL = std::numeric_limits<real>::lowest();
-
-    for (auto l : eigenValues)
+    auto norm = [](const analytic_control::MatrixReal& A)
     {
-        minL = std::min(minL, std::abs(l));
-        maxL = std::max(maxL, std::abs(l));
-    }
-    
-    const real S = maxL / minL;
-    return S;
+        real a = 0.0_r;
+        for (int i = 0; i < A.rows(); ++i)
+            for (int j = 0; j < A.cols(); ++j)
+                a += A(i,j) * A(i,j);
+        return std::sqrt(a);
+    };
+    return norm(V) * norm(V.inverse());
 }
 
 static real computeMeanTime(const analytic_control::MatrixReal& V, const std::vector<msode::RigidBody>& bodies)
 {
     const analytic_control::MatrixReal U = V.inverse();
 
-    const real3 boxLo {-50.0_r, 0.0_r, 0.0_r};
-    const real3 boxHi {+50.0_r, 0.0_r, 0.0_r};
+    const real L = 50.0_r;
+    const real3 boxLo {-0.5_r * L, 0.0_r, 0.0_r};
+    const real3 boxHi {+0.5_r * L, 0.0_r, 0.0_r};
     const real3 direction {1.0_r, 0.0_r, 0.0_r};
     
     real tSum = 0.0_r;
