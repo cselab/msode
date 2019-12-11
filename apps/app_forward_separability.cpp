@@ -43,6 +43,26 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
     return b;
 }
 
+real computeSeparability(const analytic_control::MatrixReal& V)
+{
+    MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
+    
+    real S = 0.0_r;
+    const int N = V.cols();
+
+    for (int i = 0; i < N; ++i)
+    {
+        real Si = 0.0_r;
+        for (int j = 0; j < N; ++j)
+            Si += V(i,j) / V(i,i);
+
+        Si /= N;
+        S += Si;
+    }
+    S /= N;
+    return S;
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 3)
@@ -69,6 +89,6 @@ int main(int argc, char **argv)
     const auto V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
 
     std::cout << V << std::endl;
-    
+    std::cout << "S = " << computeSeparability(V) << std::endl;
     return 0;
 }
