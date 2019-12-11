@@ -45,26 +45,45 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
     return b;
 }
 
+// real computeSeparability(const analytic_control::MatrixReal& V)
+// {
+//     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
+    
+//     real S = 0.0_r;
+//     const int N = V.cols();
+
+//     for (int i = 0; i < N; ++i)
+//     {
+//         real Si = 0.0_r;
+//         for (int j = 0; j < N; ++j)
+//         {
+//             if (j == i) continue;
+//             Si += V(i,j) / V(i,i);
+//         }
+
+//         Si /= (N - 1);
+//         S += Si;
+//     }
+//     S /= N;
+//     return S;
+// }
+
 real computeSeparability(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
     
-    real S = 0.0_r;
-    const int N = V.cols();
+    auto eigenValues = analytic_control::computeEigenValues(V);
 
-    for (int i = 0; i < N; ++i)
+    real minL = std::numeric_limits<real>::max();
+    real maxL = std::numeric_limits<real>::lowest();
+
+    for (auto l : eigenValues)
     {
-        real Si = 0.0_r;
-        for (int j = 0; j < N; ++j)
-        {
-            if (j == i) continue;
-            Si += V(i,j) / V(i,i);
-        }
-
-        Si /= (N - 1);
-        S += Si;
+        minL = std::min(minL, std::abs(l));
+        maxL = std::max(maxL, std::abs(l));
     }
-    S /= N;
+    
+    const real S = maxL / minL;
     return S;
 }
 

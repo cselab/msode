@@ -15,4 +15,6 @@ std::vector<msode::real> computeStepOutFrequencies(msode::real magneticFieldMagn
 std::vector<msode::real3> generateRandomPositions(int n, msode::real3 boxLo, msode::real3 boxHi, long seed = 42);
 MatrixReal createVelocityMatrix(msode::real magneticFieldMagnitude, const std::vector<msode::RigidBody>& bodies);
 
+std::vector<msode::real> computeEigenValues(const MatrixReal& A);
+
 } // namespace analytic_control

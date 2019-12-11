@@ -1,5 +1,7 @@
 #include "helpers.h"
 
+#include <Eigen/Eigenvalues>
+
 #include <random>
 
 using namespace msode;
@@ -100,6 +102,18 @@ MatrixReal createVelocityMatrix(real magneticFieldMagnitude, const std::vector<R
         }
     }
     return V;
+}
+
+
+std::vector<real> computeEigenValues(const MatrixReal& A)
+{
+    std::vector<real> ev;
+    Eigen::EigenSolver<analytic_control::MatrixReal> es(A);
+    const auto eigenValues = es.eigenvalues();
+
+    for (auto l : eigenValues)
+        ev.push_back(l.real());
+    return ev;
 }
 
 } // namespace analytic_control
