@@ -1,9 +1,9 @@
 app_rotating
 app_forward_curve
 app_forward
-app_forward_separability
 app_orient
 app_analytic_control
 app_ac_stats
+app_ac_separability
 app_rl
 app_rl_comp

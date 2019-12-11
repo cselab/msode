@@ -21,10 +21,10 @@ EXECS = app_rotating \
 	app_forward_curve \
 	app_analytic_control \
 	app_ac_stats \
+	app_ac_separability \
 	app_orient \
 	app_rl \
-	app_rl_comp \
-	app_forward_separability
+	app_rl_comp
 
 all: $(EXECS)
 
@@ -50,7 +50,7 @@ app_analytic_control.o: app_analytic_control.cpp $(analytic_control_headers)
 app_ac_stats.o: app_ac_stats.cpp $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
 
-app_forward_separability.o: app_forward_separability.cpp $(analytic_control_headers)
+app_ac_separability.o: app_ac_separability.cpp $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
 
 analytic_control/helpers.o: analytic_control/helpers.cpp analytic_control/helpers.h
@@ -63,14 +63,15 @@ analytic_control/apply_strategy.o: analytic_control/apply_strategy.cpp analytic_
 	$(CXX) $(CXXFLAGS) $(CXX_EIGEN) -c $< -o $@
 
 
-app_forward_separability: app_forward_separability.o $(analytic_control_objects)
-	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
-
 app_analytic_control: app_analytic_control.o $(analytic_control_objects)
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
 app_ac_stats: app_ac_stats.o $(analytic_control_objects)
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
+
+app_ac_separability: app_ac_separability.o $(analytic_control_objects)
+	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
+
 
 rl_headers = rl/helpers.h \
              rl/environment.h \
