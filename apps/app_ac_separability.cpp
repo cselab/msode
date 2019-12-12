@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <random>
+#include <omp.h>
 
 using namespace msode;
 
@@ -141,33 +142,38 @@ int main(int argc, char **argv)
     const real minOmega = 1e-6_r;
     const int nsSamples = atoi(argv[3]);
 
-    const long seed = 2323232323;
-    std::mt19937 gen(seed);
-    std::uniform_real_distribution<real> dist(minOmega, maxOmega);
+    const long seed0 = 2323232323;
+    const long seed1 = 17;
 
     std::vector<real> seps(nsSamples), times(nsSamples);
 
-    #pragma omp parallel for
-    for (int sSample = 0; sSample < nsSamples; ++sSample)
+    #pragma omp parallel
     {
-        std::vector<msode::RigidBody> bodies;
-    
-        for (int i = 0; i < nbodies; ++i)
+        std::mt19937 gen(seed0 * omp_get_thread_num() + seed1);
+        std::uniform_real_distribution<real> dist(minOmega, maxOmega);
+        
+        #pragma omp for
+        for (int sSample = 0; sSample < nsSamples; ++sSample)
         {
-            const real omegaC = dist(gen);
-            const auto b = createRigidBody(Vmax, omegaC);
-            bodies.push_back(b);
+            std::vector<msode::RigidBody> bodies;
+    
+            for (int i = 0; i < nbodies; ++i)
+            {
+                const real omegaC = dist(gen);
+                const auto b = createRigidBody(Vmax, omegaC);
+                bodies.push_back(b);
+            }
+
+            const auto V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
+
+            const real S = computeSeparability(V);
+            const real T = computeMeanTime(V, bodies);
+
+            times[sSample] = T;
+            seps [sSample] = S;
         }
-
-        const auto V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
-
-        const real S = computeSeparability(V);
-        const real T = computeMeanTime(V, bodies);
-
-        times[sSample] = T;
-        seps [sSample] = S;
     }
-
+    
     for (size_t i = 0; i < times.size(); ++i)
         printf("%g %g\n", seps[i], times[i]);
     
