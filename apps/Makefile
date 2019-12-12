@@ -51,7 +51,7 @@ app_ac_stats.o: app_ac_stats.cpp $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
 
 app_ac_separability.o: app_ac_separability.cpp $(analytic_control_headers)
-	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -fopenmp -c $< -o $@
 
 analytic_control/helpers.o: analytic_control/helpers.cpp analytic_control/helpers.h
 	$(CXX) $(CXXFLAGS) $(CXX_EIGEN) -c $< -o $@
@@ -70,7 +70,7 @@ app_ac_stats: app_ac_stats.o $(analytic_control_objects)
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
 app_ac_separability: app_ac_separability.o $(analytic_control_objects)
-	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
+	$(LD) $(CXXFLAGS) -fopenmp -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
 
 rl_headers = rl/helpers.h \

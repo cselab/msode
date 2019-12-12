@@ -145,6 +145,9 @@ int main(int argc, char **argv)
     std::mt19937 gen(seed);
     std::uniform_real_distribution<real> dist(minOmega, maxOmega);
 
+    std::vector<real> seps(nsSamples), times(nsSamples);
+
+    #pragma omp parallel for
     for (int sSample = 0; sSample < nsSamples; ++sSample)
     {
         std::vector<msode::RigidBody> bodies;
@@ -161,9 +164,12 @@ int main(int argc, char **argv)
         const real S = computeSeparability(V);
         const real T = computeMeanTime(V, bodies);
 
-        printf("%g %g\n", S, T);
-        fflush(stdout);
+        times[sSample] = T;
+        seps [sSample] = S;
     }
+
+    for (size_t i = 0; i < times.size(); ++i)
+        printf("%g %g\n", seps[i], times[i]);
     
     return 0;
 }
