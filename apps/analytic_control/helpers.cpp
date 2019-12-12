@@ -47,9 +47,9 @@ static inline real meanVelocity(real3 r0, real3 r1, real T)
 
 static inline real computeMeanVelocity(RigidBody body, real magneticFieldMagnitude, real omega)
 {
-    constexpr real tEnd = 5000.0_r;
-    constexpr real dt {1e-3_r};
-    constexpr long nsteps = tEnd / dt;
+    constexpr real tEnd = 200.0_r;
+    const real dt {1e-2_r / omega};
+    const long nsteps = tEnd / dt;
 
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
     body.r = rStart;
