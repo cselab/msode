@@ -1,10 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
 base="sep"
 nsamples=1000
 
+ae () { awk 'BEGIN {printf "%g", '"$@"'}'; }
+
 for N in `seq 2 10`; do
-    echo "starting N = $N"
-    ./app_ac_separability $N 50.0 $nsamples > ${base}_N_${N}.txt
+    omegaMax=`ae "$N * 25.0"`
+    echo "starting N = $N with wmax = $omegaMax"
+    ./app_ac_separability $N $omegaMax $nsamples > ${base}_N_${N}.txt
     echo done
 done
