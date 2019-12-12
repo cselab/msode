@@ -46,49 +46,49 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
     return b;
 }
 
-// real computeSeparability(const analytic_control::MatrixReal& V)
-// {
-//     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
-    
-//     real S = 0.0_r;
-//     const int N = V.cols();
-
-//     for (int i = 0; i < N; ++i)
-//     {
-//         real Si = 0.0_r;
-//         for (int j = 0; j < N; ++j)
-//         {
-//             if (j == i) continue;
-//             Si += V(i,j) / V(i,i);
-//         }
-
-//         Si /= (N - 1);
-//         S += Si;
-//     }
-//     S /= N;
-//     return S;
-// }
-
-// real computeSeparability(const analytic_control::MatrixReal& V)
-// {
-//     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
-    
-//     auto eigenValues = analytic_control::computeEigenValues(V);
-
-//     real minL = std::numeric_limits<real>::max();
-//     real maxL = std::numeric_limits<real>::lowest();
-
-//     for (auto l : eigenValues)
-//     {
-//         minL = std::min(minL, std::abs(l));
-//         maxL = std::max(maxL, std::abs(l));
-//     }
-    
-//     const real S = maxL / minL;
-//     return S;
-// }
-
 real computeSeparability(const analytic_control::MatrixReal& V)
+{
+    MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
+    
+    real S = 0.0_r;
+    const int N = V.cols();
+
+    for (int i = 0; i < N; ++i)
+    {
+        real Si = 0.0_r;
+        for (int j = 0; j < N; ++j)
+        {
+            if (j == i) continue;
+            Si += V(i,j) / V(i,i);
+        }
+
+        Si /= (N - 1);
+        S += Si;
+    }
+    S /= N;
+    return S;
+}
+
+real computeLambdaRatio(const analytic_control::MatrixReal& V)
+{
+    MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
+    
+    auto eigenValues = analytic_control::computeEigenValues(V);
+
+    real minL = std::numeric_limits<real>::max();
+    real maxL = std::numeric_limits<real>::lowest();
+
+    for (auto l : eigenValues)
+    {
+        minL = std::min(minL, std::abs(l));
+        maxL = std::max(maxL, std::abs(l));
+    }
+    
+    const real S = maxL / minL;
+    return S;
+}
+
+real computeConditionNumber(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
 
@@ -113,7 +113,7 @@ static real computeMeanTime(const analytic_control::MatrixReal& V, const std::ve
     const real3 direction {1.0_r, 0.0_r, 0.0_r};
     
     real tSum = 0.0_r;
-    const int nsamples = 500;
+    const int nsamples = 50000;
 
     for (int sample = 0; sample < nsamples; ++sample)
     {
@@ -145,7 +145,7 @@ int main(int argc, char **argv)
     const long seed0 = 2323232323;
     const long seed1 = 17;
 
-    std::vector<real> seps(nsSamples), times(nsSamples);
+    std::vector<real> seps(nsSamples), lratios(nsSamples), kappas(nsSamples), times(nsSamples);
 
     #pragma omp parallel
     {
@@ -167,15 +167,19 @@ int main(int argc, char **argv)
             const auto V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
 
             const real S = computeSeparability(V);
+            const real l = computeLambdaRatio(V);
+            const real k = computeConditionNumber(V);
             const real T = computeMeanTime(V, bodies);
 
-            times[sSample] = T;
-            seps [sSample] = S;
+            times  [sSample] = T;
+            seps   [sSample] = S;
+            lratios[sSample] = l;
+            kappas [sSample] = k;
         }
     }
     
     for (size_t i = 0; i < times.size(); ++i)
-        printf("%g %g\n", seps[i], times[i]);
+        printf("%g %g %g %g\n", seps[i], lratios[i], kappas[i], times[i]);
     
     return 0;
 }
