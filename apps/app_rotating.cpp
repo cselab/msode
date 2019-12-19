@@ -38,7 +38,7 @@ int main(int argc, char **argv)
     const real dt {0.001_r};
     const long nsteps = tEnd / dt;
 
-    simulation.activateDump("out.txt", tDump / dt);
+    simulation.activateDump("out.dat", tDump / dt);
     simulation.run(nsteps, dt);
     simulation.run(nsteps, dt);
     

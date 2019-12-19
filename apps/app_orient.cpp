@@ -126,7 +126,7 @@ int main(int argc, char **argv)
     const real dt    = 1.0_r / (500.0_r * omegaC);
     const long nsteps = tEnd / dt;
 
-    simulation.activateDump("out.txt", tDump / dt);
+    simulation.activateDump("out.dat", tDump / dt);
     simulation.run(nsteps, dt);
     
     return 0;

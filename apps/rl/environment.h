@@ -120,7 +120,7 @@ public:
 
         std::ostringstream ss;
         ss << std::setw(6) << std::setfill('0') << simId;
-        const std::string outputFileName = "trajectories_" + ss.str() + ".txt";
+        const std::string outputFileName = "trajectories_" + ss.str() + ".dat";
 
         sim->reset(bodies, field);
         sim->activateDump(outputFileName, dumpEvery);

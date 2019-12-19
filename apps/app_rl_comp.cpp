@@ -8,7 +8,7 @@ static inline std::string generateACfname(long simId)
 {
     std::ostringstream ss;
     ss << std::setw(6) << std::setfill('0') << simId;
-    return "ac_trajectories_" + ss.str() + ".txt";
+    return "ac_trajectories_" + ss.str() + ".dat";
 }
 
 
