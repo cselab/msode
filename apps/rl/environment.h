@@ -116,8 +116,8 @@ public:
     
         for (auto& b : bodies)
         {
-            b.r = generateUniformBox(gen, initBox.lo, initBox.hi);
-            b.q = randomOrientation(gen);
+            b.r = generateUniformPositionBox(gen, initBox.lo, initBox.hi);
+            b.q = generateUniformQuaternion(gen);
         }
 
         std::ostringstream ss;
@@ -214,25 +214,6 @@ public:
 
 private:
     
-    // http://planning.cs.uiuc.edu/node198.html
-    static inline Quaternion randomOrientation(std::mt19937& gen)
-    {
-        std::uniform_real_distribution<real> uniform(0.0_r, 1.0_r);
-        const auto u1 = uniform(gen);
-        const auto u2 = uniform(gen);
-        const auto u3 = uniform(gen);
-
-        constexpr real twoPi = 2 * M_PI;
-    
-        const real w = std::sqrt(1.0_r - u1) * std::sin(twoPi * u2);
-        const real x = std::sqrt(1.0_r - u1) * std::cos(twoPi * u2);
-        const real y = std::sqrt(u1) * std::sin(twoPi * u3);
-        const real z = std::sqrt(u1) * std::cos(twoPi * u3);
-    
-        return Quaternion::createFromComponents(w, x, y, z);
-    }
-
-
     void setDistances()
     {
         const auto& bodies = sim->getBodies();
