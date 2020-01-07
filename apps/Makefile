@@ -72,15 +72,19 @@ app_ac_stats: app_ac_stats.o $(analytic_control_objects)
 app_ac_separability: app_ac_separability.o $(analytic_control_objects)
 	$(LD) $(CXXFLAGS) -fopenmp -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
+rl_objects = rl/helpers.o
 
 rl_headers = rl/helpers.h \
              rl/environment.h \
              rl/magnetic_field_from_action.h
 
+rl/helpers.o: rl/helpers.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h
+	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
+
 app_rl.o: app_rl.cpp $(rl_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
 
-app_rl: app_rl.o
+app_rl: app_rl.o $(rl_objects)
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
 
 
@@ -88,7 +92,7 @@ app_rl: app_rl.o
 app_rl_comp.o: app_rl_comp.cpp $(rl_headers) $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
 
-app_rl_comp: app_rl_comp.o $(analytic_control_objects)
+app_rl_comp: app_rl_comp.o $(rl_objects) $(analytic_control_objects)
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES) $(LD_KORALI)
 
 
