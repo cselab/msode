@@ -76,7 +76,8 @@ rl_objects = rl/helpers.o
 
 rl_headers = rl/helpers.h \
              rl/environment.h \
-             rl/magnetic_field_from_action.h
+             rl/magnetic_field_from_action.h \
+	     utils.h
 
 rl/helpers.o: rl/helpers.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
@@ -84,7 +85,7 @@ rl/helpers.o: rl/helpers.cpp rl/helpers.h rl/environment.h rl/magnetic_field_fro
 app_rl.o: app_rl.cpp $(rl_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
 
-app_rl: app_rl.o $(rl_objects)
+app_rl: app_rl.o $(rl_objects) utils.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
 
 
@@ -92,7 +93,7 @@ app_rl: app_rl.o $(rl_objects)
 app_rl_comp.o: app_rl_comp.cpp $(rl_headers) $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
 
-app_rl_comp: app_rl_comp.o $(rl_objects) $(analytic_control_objects)
+app_rl_comp: app_rl_comp.o $(rl_objects) $(analytic_control_objects) utils.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES) $(LD_KORALI)
 
 

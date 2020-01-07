@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../utils.h"
+
 #include <simulation.h>
 
 #include <iomanip>
@@ -114,7 +116,7 @@ public:
     
         for (auto& b : bodies)
         {
-            b.r = randomPosition(initBox.lo, initBox.hi, gen);
+            b.r = generateUniformBox(gen, initBox.lo, initBox.hi);
             b.q = randomOrientation(gen);
         }
 
@@ -211,15 +213,7 @@ public:
     real getSimulationTime() const {return sim->getCurrentTime();}
 
 private:
-    static inline real3 randomPosition(real3 lo, real3 hi, std::mt19937& gen)
-    {
-        std::uniform_real_distribution<real> uniformx(lo.x, hi.x);
-        std::uniform_real_distribution<real> uniformy(lo.y, hi.y);
-        std::uniform_real_distribution<real> uniformz(lo.z, hi.z);
     
-        return {uniformx(gen), uniformy(gen), uniformz(gen)};
-    }
-
     // http://planning.cs.uiuc.edu/node198.html
     static inline Quaternion randomOrientation(std::mt19937& gen)
     {
