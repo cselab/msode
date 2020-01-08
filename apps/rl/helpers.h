@@ -36,4 +36,4 @@ using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
 // using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
 
 std::unique_ptr<MSodeEnvironment<MagnFieldActionType>>
-createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude);
+createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold = 2.0_r);

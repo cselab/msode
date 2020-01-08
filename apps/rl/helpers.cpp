@@ -82,7 +82,7 @@ void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceI
 
 
 std::unique_ptr<MSodeEnvironment<MagnFieldActionType>>
-createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude)
+createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold)
 {
     const int nbodies = bodies.size();
     
@@ -92,7 +92,6 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
     const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     const real dt             = 1.0 / (maxOmega * 20); // s
     const real maxDistance = space->computeMaxDistanceToTarget();
-    const real distanceThreshold = 2.0_r; // body_length
 
     const real terminationBonus = maxDistance * maxDistance * nbodies;
     
