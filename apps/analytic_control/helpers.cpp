@@ -41,25 +41,9 @@ std::vector<real> computeStepOutFrequencies(real magneticFieldMagnitude, const s
     return omegas;
 }
 
-static inline real computeForwardVelocity(const RigidBody& body, real magneticFieldMagnitude, real omega)
-{
-    const real omegaC = body.stepOutFrequency(magneticFieldMagnitude);
-
-    if (omega <= omegaC)
-    {
-        const real Bxx = body.propulsion.B[0];
-        const real Cxx = body.propulsion.C[0];
-        return Bxx / Cxx * omega;
-    }
-    else
-    {
-        constexpr real tEnd = 200.0_r;
-        return computeMeanVelocityODE(body, magneticFieldMagnitude, omega, tEnd);
-    }
-}
-
 MatrixReal createVelocityMatrix(real magneticFieldMagnitude, const std::vector<RigidBody>& bodies)
 {
+    constexpr long nIntegration = 10000;
     const size_t n = bodies.size();
     const auto omegas = computeStepOutFrequencies(magneticFieldMagnitude, bodies);
     
@@ -71,7 +55,7 @@ MatrixReal createVelocityMatrix(real magneticFieldMagnitude, const std::vector<R
         for (size_t j = 0; j < n; ++j)
         {
             const real omega = omegas[j];
-            V(i, j) = computeForwardVelocity(body, magneticFieldMagnitude, omega);
+            V(i, j) = computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, nIntegration);
         }
     }
     return V;
