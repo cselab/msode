@@ -9,8 +9,8 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
     const real magneticFieldMagnitude = 1.0_r;
 
-    const real L = 50.0_r; // in body lengths units
-    const EnvSpaceBox spaceInfos(L);
+    const real R = 50.0_r; // domain radius, in body lengths units
+    const EnvSpaceBall spaceInfos(R);
     
     auto env = createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude);
     
