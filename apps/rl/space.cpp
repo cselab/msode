@@ -27,9 +27,12 @@ real EnvSpaceBox::computeMaxDistanceToTarget() const
     return d;
 }
 
-real3 EnvSpaceBox::generatePosition(std::mt19937& gen)
+std::vector<real3> EnvSpaceBox::generatePositions(std::mt19937& gen, int n)
 {
-    return generateUniformPositionBox(gen, domain.lo, domain.hi);
+    std::vector<real3> positions(n);
+    for (auto& p : positions)
+        p = generateUniformPositionBox(gen, domain.lo, domain.hi); 
+    return positions;
 }
 
 
@@ -49,9 +52,12 @@ real3 EnvSpaceBall::getHighestPosition() const {return {+R, +R, +R};}
 
 real EnvSpaceBall::computeMaxDistanceToTarget() const {return R;}
 
-real3 EnvSpaceBall::generatePosition(std::mt19937& gen)
+std::vector<real3> EnvSpaceBall::generatePositions(std::mt19937& gen, int n)
 {
-    return generateUniformPositionBall(gen, R);
+    std::vector<real3> positions(n);
+    for (auto& p : positions)
+        p = generateUniformPositionBall(gen, R);
+    return positions;
 }
 
 
@@ -68,26 +74,38 @@ std::unique_ptr<EnvSpace> EnvSpaceBallCuriculumMC::clone() const
     return std::make_unique<EnvSpaceBallCuriculumMC>(*this);
 }
 
-real3 EnvSpaceBallCuriculumMC::generatePosition(std::mt19937& gen)
+static inline real3 generateOnePositionMC(std::mt19937& gen, real3 r0, real radius, real sigma)
 {
-    if (!initialized)
-    {
-        previousPosition = generateUniformPositionBall(gen, targetR);
-        initialized = true;
-    }
-
     bool accepted {false};
     real3 r;
-    std::normal_distribution<real> distr {0.0_r, sigmaRandomWalk};
+    std::normal_distribution<real> distr {0.0_r, sigma};
 
     while (!accepted)
     {
         const real3 step {distr(gen), distr(gen), distr(gen)};
-        r = previousPosition + step;
+        r = r0 + step;
 
-        if (dot(r,r) <= R*R)
+        if (dot(r,r) <= radius * radius)
             accepted = true;
     }
-    previousPosition = r;    
     return r;
+}
+
+std::vector<real3> EnvSpaceBallCuriculumMC::generatePositions(std::mt19937& gen, int n)
+{
+    std::vector<real3> positions(n);
+    
+    if (!initialized)
+    {
+        previousPositions.resize(n);
+        for (auto& p : previousPositions)
+            p = generateUniformPositionBall(gen, targetR);
+        initialized = true;
+    }
+
+    for (int i = 0; i < n; ++i)
+        positions[i] = generateOnePositionMC(gen, previousPositions[i], R, sigmaRandomWalk);
+        
+    previousPositions = positions;
+    return positions;
 }

@@ -101,11 +101,13 @@ public:
         auto bodies = sim->getBodies();
 
         field.phase = 0.0_r;
-    
-        for (auto& b : bodies)
+
+        const auto positions = space->generatePositions(gen, bodies.size());
+
+        for (size_t i = 0; i < bodies.size(); ++i)
         {
-            b.r = space->generatePosition(gen);
-            b.q = generateUniformQuaternion(gen);
+            bodies[i].r = positions[i];
+            bodies[i].q = generateUniformQuaternion(gen);
         }
 
         std::ostringstream ss;
