@@ -1,6 +1,6 @@
 #include "environment.h"
 
-EnvSpaceBox::EnvSpaceBox(real L_):
+EnvSpaceBox::EnvSpaceBox(real L_) :
     domain{{-L_, -L_, -L_},
            {+L_, +L_, +L_}}
 {}
@@ -22,4 +22,23 @@ real EnvSpaceBox::computeMaxDistanceToTarget() const
 real3 EnvSpaceBox::generatePosition(std::mt19937& gen) const
 {
     return generateUniformPositionBox(gen, domain.lo, domain.hi);
+}
+
+
+
+
+EnvSpaceBall::EnvSpaceBall(real R_) :
+    R(R_)
+{}
+
+std::unique_ptr<EnvSpace> EnvSpaceBall::clone() const {return std::make_unique<EnvSpaceBall>(*this);}
+
+real3 EnvSpaceBall::getLowestPosition()  const {return {-R, -R, -R};}
+real3 EnvSpaceBall::getHighestPosition() const {return {+R, +R, +R};}
+
+real EnvSpaceBall::computeMaxDistanceToTarget() const {return R;}
+
+real3 EnvSpaceBall::generatePosition(std::mt19937& gen) const
+{
+    return generateUniformPositionBall(gen, R);
 }

@@ -61,6 +61,23 @@ private:
     const Box domain;
 };
 
+class EnvSpaceBall : public EnvSpace
+{
+public:
+    EnvSpaceBall(real R_);
+
+    std::unique_ptr<EnvSpace> clone() const override;
+    
+    real3 getLowestPosition()  const override;
+    real3 getHighestPosition() const override;
+    real computeMaxDistanceToTarget() const override;
+
+    real3 generatePosition(std::mt19937& gen) const override;
+
+private:
+    const real R;
+};
+
 struct TimeParams
 {
     real dt, tmax;
