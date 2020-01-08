@@ -24,7 +24,8 @@ EXECS = app_rotating \
 	app_ac_separability \
 	app_orient \
 	app_rl \
-	app_rl_comp
+	app_rl_comp \
+	app_rl_curriculum
 
 all: $(EXECS)
 
@@ -88,6 +89,12 @@ app_rl.o: app_rl.cpp $(rl_headers)
 app_rl: app_rl.o $(rl_objects) utils.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
 
+
+app_rl_curriculum.o: app_rl_curriculum.cpp $(rl_headers)
+	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
+
+app_rl_curriculum: app_rl_curriculum.o $(rl_objects) utils.o
+	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
 
 
 app_rl_comp.o: app_rl_comp.cpp $(rl_headers) $(analytic_control_headers)
