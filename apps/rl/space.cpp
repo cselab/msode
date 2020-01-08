@@ -1,5 +1,5 @@
 #include "space.h"
-#include "../utils.h"
+#include "../utils/rnd.h"
 
 #include <msode/math.h>
 

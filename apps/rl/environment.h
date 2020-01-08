@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils.h"
+#include "../utils/rnd.h"
 #include "space.h"
 
 #include <msode/simulation.h>

@@ -80,33 +80,33 @@ rl_headers = rl/helpers.h \
              rl/environment.h \
              rl/magnetic_field_from_action.h \
 	     rl/space.h \
-	     utils.h
+	     utils/rnd.h
 
-rl/helpers.o: rl/helpers.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h  utils.h
+rl/helpers.o: rl/helpers.cpp rl/helpers.h rl/environment.h rl/magnetic_field_from_action.h utils/rnd.h
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
 
-rl/space.o: rl/space.cpp rl/space.h utils.h
+rl/space.o: rl/space.cpp rl/space.h utils/rnd.h
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
 
 
 app_rl.o: app_rl.cpp $(rl_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
 
-app_rl: app_rl.o $(rl_objects) utils.o
+app_rl: app_rl.o $(rl_objects) utils/rnd.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
 
 
 app_rl_curriculum.o: app_rl_curriculum.cpp $(rl_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) -c $< -o $@
 
-app_rl_curriculum: app_rl_curriculum.o $(rl_objects) utils.o
+app_rl_curriculum: app_rl_curriculum.o $(rl_objects) utils/rnd.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES)
 
 
 app_rl_comp.o: app_rl_comp.cpp $(rl_headers) $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
 
-app_rl_comp: app_rl_comp.o $(rl_objects) $(analytic_control_objects) utils.o
+app_rl_comp: app_rl_comp.o $(rl_objects) $(analytic_control_objects) utils/rnd.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES) $(LD_KORALI)
 
 
