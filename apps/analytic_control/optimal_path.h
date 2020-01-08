@@ -2,7 +2,7 @@
 
 #include "helpers.h"
 
-#include <quaternion.h>
+#include <msode/quaternion.h>
 
 namespace analytic_control
 {

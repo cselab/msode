@@ -1,7 +1,7 @@
 #include "analytic_control/helpers.h"
 #include "analytic_control/optimal_path.h"
 
-#include <simulation.h>
+#include <msode/simulation.h>
 
 #include <iostream>
 #include <random>

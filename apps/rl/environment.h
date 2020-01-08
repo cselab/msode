@@ -3,7 +3,7 @@
 #include "../utils.h"
 #include "space.h"
 
-#include <simulation.h>
+#include <msode/simulation.h>
 
 #include <iomanip>
 #include <memory>

@@ -1,4 +1,4 @@
-CORE_DIR=core
+CORE_DIR=src/msode
 APPS_DIR=apps
 
 all: apps

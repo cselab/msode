@@ -3,8 +3,8 @@
 #include "environment.h"
 #include "magnetic_field_from_action.h"
 
-#include <factory.h>
-#include <file_parser.h>
+#include <msode/factory.h>
+#include <msode/file_parser.h>
 #include <smarties.h>
 
 #include <memory>
