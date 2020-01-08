@@ -35,7 +35,9 @@ all: $(EXECS)
 app_rotating:      app_rotating.o;      $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_orient:        app_orient.o;        $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 app_forward:       app_forward.o;       $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
-app_forward_curve: app_forward_curve.o; $(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+app_forward_curve: app_forward_curve.o utils/mean_vel.o
+	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 analytic_control_objects = analytic_control/helpers.o \
 			   analytic_control/optimal_path.o \
@@ -54,7 +56,7 @@ app_ac_stats.o: app_ac_stats.cpp $(analytic_control_headers)
 app_ac_separability.o: app_ac_separability.cpp $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_KORALI) $(CXX_EIGEN) -fopenmp -c $< -o $@
 
-analytic_control/helpers.o: analytic_control/helpers.cpp analytic_control/helpers.h
+analytic_control/helpers.o: analytic_control/helpers.cpp analytic_control/helpers.h utils/mean_vel.h
 	$(CXX) $(CXXFLAGS) $(CXX_EIGEN) -c $< -o $@
 
 analytic_control/optimal_path.o: analytic_control/optimal_path.cpp analytic_control/optimal_path.h analytic_control/helpers.h
@@ -64,13 +66,13 @@ analytic_control/apply_strategy.o: analytic_control/apply_strategy.cpp analytic_
 	$(CXX) $(CXXFLAGS) $(CXX_EIGEN) -c $< -o $@
 
 
-app_analytic_control: app_analytic_control.o $(analytic_control_objects)
+app_analytic_control: app_analytic_control.o $(analytic_control_objects)  utils/mean_vel.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
-app_ac_stats: app_ac_stats.o $(analytic_control_objects)
+app_ac_stats: app_ac_stats.o $(analytic_control_objects)  utils/mean_vel.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
-app_ac_separability: app_ac_separability.o $(analytic_control_objects)
+app_ac_separability: app_ac_separability.o $(analytic_control_objects)  utils/mean_vel.o
 	$(LD) $(CXXFLAGS) -fopenmp -o $@ $^ $(LDFLAGS) $(LD_KORALI)
 
 rl_objects = rl/helpers.o \
@@ -106,7 +108,7 @@ app_rl_curriculum: app_rl_curriculum.o $(rl_objects) utils/rnd.o
 app_rl_comp.o: app_rl_comp.cpp $(rl_headers) $(analytic_control_headers)
 	$(CXX) $(CXXFLAGS) $(CXX_SMARTIES) $(CXX_EIGEN) -c $< -o $@
 
-app_rl_comp: app_rl_comp.o $(rl_objects) $(analytic_control_objects) utils/rnd.o
+app_rl_comp: app_rl_comp.o $(rl_objects) $(analytic_control_objects) utils/rnd.o utils/mean_vel.o
 	$(LD) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) $(LD_SMARTIES) $(LD_KORALI)
 
 

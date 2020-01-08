@@ -1,4 +1,5 @@
 #include "helpers.h"
+#include "../utils/mean_vel.h"
 
 #include <Eigen/Eigenvalues>
 
@@ -40,35 +41,6 @@ std::vector<real> computeStepOutFrequencies(real magneticFieldMagnitude, const s
     return omegas;
 }
 
-static inline real meanVelocity(real3 r0, real3 r1, real T)
-{
-    return length(r0-r1)/T;
-}
-
-static inline real computeMeanVelocity(RigidBody body, real magneticFieldMagnitude, real omega)
-{
-    constexpr real tEnd = 200.0_r;
-    const real dt {1e-2_r / omega};
-    const long nsteps = tEnd / dt;
-
-    constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
-    body.r = rStart;
-        
-    auto omegaField        = [omega](real) {return omega;};
-    auto rotatingDirection = []     (real) {return real3{1.0_r, 0.0_r, 0.0_r};};
-
-    MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
-    const std::vector<RigidBody> rigidBodies {body};
-    Simulation simulation {rigidBodies, magneticField};
-
-    simulation.run(nsteps, dt);
-
-    const real3 rEnd = simulation.getBodies()[0].r;
-
-    return meanVelocity(rStart, rEnd, tEnd);
-}
-
-
 static inline real computeForwardVelocity(const RigidBody& body, real magneticFieldMagnitude, real omega)
 {
     const real omegaC = body.stepOutFrequency(magneticFieldMagnitude);
@@ -81,7 +53,8 @@ static inline real computeForwardVelocity(const RigidBody& body, real magneticFi
     }
     else
     {
-        return computeMeanVelocity(body, magneticFieldMagnitude, omega);
+        constexpr real tEnd = 200.0_r;
+        return computeMeanVelocityODE(body, magneticFieldMagnitude, omega, tEnd);
     }
 }
 

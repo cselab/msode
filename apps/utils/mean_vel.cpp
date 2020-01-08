@@ -1,10 +1,39 @@
 #include "mean_vel.h"
 
+using namespace msode; 
+
+static inline real meanVelocity(real3 r0, real3 r1, real T)
+{
+    return length(r0-r1)/T;
+}
+
+real computeMeanVelocityODE(RigidBody body, real magneticFieldMagnitude, real omega, real tEnd)
+{
+    const real dt {1e-2_r / omega};
+    const long nsteps = tEnd / dt;
+
+    constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
+    body.r = rStart;
+        
+    auto omegaField        = [omega](real) {return omega;};
+    auto rotatingDirection = []     (real) {return real3{1.0_r, 0.0_r, 0.0_r};};
+
+    MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
+    const std::vector<RigidBody> rigidBodies {body};
+    Simulation simulation {rigidBodies, magneticField};
+
+    simulation.run(nsteps, dt);
+
+    const real3 rEnd = simulation.getBodies()[0].r;
+
+    return meanVelocity(rStart, rEnd, tEnd);
+}
+
 template <class Function>
 static real integrateTrapez(Function f, real a, real b, long n)
 {
-    Expect(a < b, "a must be lower than b");
-    Expect(N > 2, "need more than two points");
+    MSODE_Expect(a < b, "a must be lower than b");
+    MSODE_Expect(N > 2, "need more than two points");
     
     const real h = (b-a) / n;
     real integral {0.0_r};
@@ -24,7 +53,7 @@ real computeMeanVelocityAnalytical(RigidBody body, real magneticFieldMagnitude, 
     const real Bxx = body.propulsion.B[0];
     const real Cxx = body.propulsion.C[0];
     const real wc = magneticFieldMagnitude * m * Cxx;
-    const real prefactor = Bxx / Cxx
+    const real prefactor = Bxx / Cxx;
 
     if (omega <= wc)
     {
