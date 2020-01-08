@@ -1,7 +1,6 @@
 #include "environment.h"
 
 EnvSpaceBox::EnvSpaceBox(real L_):
-    L(L_),
     domain{{-L_, -L_, -L_},
            {+L_, +L_, +L_}}
 {}

@@ -58,7 +58,6 @@ private:
         }
     };
 
-    const real L;
     const Box domain;
 };
 
