@@ -1,4 +1,4 @@
-include ../config.mk
+include ../../config.mk
 
 CXXFLAGS += -Wextra -Wshadow -Werror
 

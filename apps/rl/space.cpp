@@ -1,7 +1,7 @@
 #include "space.h"
 #include "../utils.h"
 
-#include <simulation.h>
+#include <msode/math.h>
 
 using namespace msode;
 

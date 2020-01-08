@@ -1,9 +1,9 @@
 include ../config.mk
 
-CORE_DIR  = ../core
+MSODE_DIR  = ../src/
 EIGEN_DIR = ../extern/eigen-git-mirror
 
-CXXFLAGS += -I$(CORE_DIR)
+CXXFLAGS += -I$(MSODE_DIR)
 CXXFLAGS += -Wpedantic -Wextra -Wshadow -Werror
 
 CXX_EIGEN = -I$(EIGEN_DIR)
@@ -14,7 +14,7 @@ LD_KORALI  = `python3 -m korali.cxx --libs`
 CXX_SMARTIES = -I${SMARTIES_ROOT}/include
 LD_SMARTIES  = -L${SMARTIES_ROOT}/lib -lsmarties
 
-LDFLAGS += -L$(CORE_DIR) -lmsode
+LDFLAGS += -L$(MSODE_DIR)/msode -lmsode
 
 EXECS = app_rotating \
 	app_forward \
