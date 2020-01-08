@@ -20,7 +20,7 @@ public:
     virtual real3 getHighestPosition() const = 0;
     virtual real computeMaxDistanceToTarget() const = 0;
 
-    virtual real3 generatePosition(std::mt19937& gen) const = 0;
+    virtual real3 generatePosition(std::mt19937& gen) = 0;
 
 public:
     const real3 target {0.0_r, 0.0_r, 0.0_r};
@@ -37,9 +37,9 @@ public:
     real3 getHighestPosition() const override;
     real computeMaxDistanceToTarget() const override;
 
-    real3 generatePosition(std::mt19937& gen) const override;
+    real3 generatePosition(std::mt19937& gen) override;
 
-private:
+protected:
     struct Box
     {
         real3 lo, hi;
@@ -70,8 +70,25 @@ public:
     real3 getHighestPosition() const override;
     real computeMaxDistanceToTarget() const override;
 
-    real3 generatePosition(std::mt19937& gen) const override;
+    real3 generatePosition(std::mt19937& gen) override;
 
-private:
+protected:
     const real R;
+};
+
+class EnvSpaceBallCuriculumMC : public EnvSpaceBall
+{
+public:
+    EnvSpaceBallCuriculumMC(real R_, real targetR_, real sigmaRandomWalk_);
+
+    std::unique_ptr<EnvSpace> clone() const override;
+    
+    real3 generatePosition(std::mt19937& gen) override;
+
+protected:
+    const real targetR;
+    const real sigmaRandomWalk;
+    
+    bool initialized {false};
+    real3 previousPosition;
 };
