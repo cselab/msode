@@ -56,17 +56,17 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     const real magneticFieldMagnitude = 1.0_r;
 
     const real L = 50.0_r; // in body lengths units
-    const EnvSpace spaceInfos(L);
+    EnvSpaceBox spaceInfos(L);
     const int dumpEvery = 1000;
 
-    auto env = createEnvironment(bodies, spaceInfos, magneticFieldMagnitude);
+    auto env = createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude);
 
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
     const analytic_control::MatrixReal U = V.inverse();
     
     setActionDims  (env.get(), comm);
     setActionBounds(env.get(), comm);
-    setStateBounds(bodies, spaceInfos, comm);
+    setStateBounds(bodies, &spaceInfos, comm);
     
     bool isTraining {true};
     long simId {0};

@@ -10,13 +10,13 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     const real magneticFieldMagnitude = 1.0_r;
 
     const real L = 50.0_r; // in body lengths units
-    const EnvSpace spaceInfos(L);
+    const EnvSpaceBox spaceInfos(L);
     
-    auto env = createEnvironment(bodies, spaceInfos, magneticFieldMagnitude);
+    auto env = createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude);
     
     setActionDims  (env.get(), comm);
     setActionBounds(env.get(), comm);
-    setStateBounds(bodies, spaceInfos, comm);
+    setStateBounds(bodies, &spaceInfos, comm);
     
     bool isTraining {true};
     long simId {0};

@@ -1,5 +1,6 @@
 #include "helpers.h"
 
+
 std::vector<RigidBody> createBodies(const std::string& fileNameList)
 {
     std::vector<RigidBody> bodies;
@@ -9,15 +10,6 @@ std::vector<RigidBody> createBodies(const std::string& fileNameList)
         bodies.push_back(Factory::readRigidBodyConfig(entry.second));
 
     return bodies;
-}
-
-real computeMaxDistance(Box src, real3 dst)
-{
-    auto distFromDst = [dst] (real3 r) {return length(r-dst);};
-    real d{0.0_r};
-    for (auto r : src.getCorners())
-        d = std::max(d, distFromDst(r));
-    return d;
 }
 
 static real computeMinForwardVelocity(real fieldMagnitude, const std::vector<RigidBody>& bodies)
@@ -68,15 +60,15 @@ static real computeMinOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
     return wmin;
 }
 
-void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace& spaceInfos, smarties::Communicator *const comm)
+void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceInfos, smarties::Communicator *const comm)
 {
     std::vector<double> lo, hi;
-    real3 minr {spaceInfos.target}, maxr {spaceInfos.target};
+    real3 minr {spaceInfos->target}, maxr {spaceInfos->target};
     auto min3 = [](real3 a, real3 b) {return real3{std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)};};
     auto max3 = [](real3 a, real3 b) {return real3{std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)};};
 
-    minr = min3(minr, spaceInfos.domain.lo);
-    maxr = max3(maxr, spaceInfos.domain.hi);
+    minr = min3(minr, spaceInfos->getLowestPosition());
+    maxr = max3(maxr, spaceInfos->getHighestPosition());
 
     for (size_t i = 0; i < bodies.size(); ++i)
     {
@@ -90,7 +82,7 @@ void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace& spaceI
 
 
 std::unique_ptr<MSodeEnvironment<MagnFieldActionType>>
-createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace& space, real fieldMagnitude)
+createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude)
 {
     const int nbodies = bodies.size();
     
@@ -99,12 +91,12 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace& space, r
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     const real dt             = 1.0 / (maxOmega * 20); // s
-    const real maxDistance = computeMaxDistance(space.domain, space.target);
+    const real maxDistance = space->computeMaxDistanceToTarget();
     const real distanceThreshold = 2.0_r; // body_length
 
     const real terminationBonus = maxDistance * maxDistance * nbodies;
     
-    const real timeCoeffReward = 0.1_r * nbodies * space.L * computeMinForwardVelocity(fieldMagnitude, bodies);
+    const real timeCoeffReward = 0.1_r * nbodies * maxDistance * computeMinForwardVelocity(fieldMagnitude, bodies);
     const real tmax            = 10.0_r  * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
     const real dtAction        = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
@@ -114,7 +106,7 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace& space, r
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
     const RewardParams rewardParams {timeCoeffReward, terminationBonus};
 
-    const Params params {timeParams, rewardParams, fieldMagnitude, distanceThreshold, space.domain};
+    auto params = std::make_unique<Params>(timeParams, rewardParams, fieldMagnitude, distanceThreshold, space->clone());
 
     fprintf(stderr,
             "----------------------------------------------------------\n"
@@ -125,13 +117,13 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace& space, r
             tmax, nstepsPerAction, maxOmega,
             fieldMagnitude, timeCoeffReward);
     
-    const std::vector<real3> targetPositions(nbodies, space.target);
+    const std::vector<real3> targetPositions(nbodies, space->target);
 
     // MagnFieldActionType magnFieldAction(minOmega, maxOmega);
     // MagnFieldActionType magnFieldAction(maxOmega);
     MagnFieldActionType magnFieldAction(minOmega, maxOmega);
     // MagnFieldActionType magnFieldAction(minOmega, maxOmega);
 
-    return std::make_unique<MSodeEnvironment<MagnFieldActionType>>(params, bodies, targetPositions, magnFieldAction);
+    return std::make_unique<MSodeEnvironment<MagnFieldActionType>>(std::move(params), bodies, targetPositions, magnFieldAction);
 }
 

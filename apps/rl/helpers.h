@@ -9,21 +9,7 @@
 
 #include <memory>
 
-struct EnvSpace
-{
-    EnvSpace(real L_) :
-        L(L_),
-        domain{{-L_, -L_, -L_},
-               {+L_, +L_, +L_}}
-    {}
-
-    const real L;
-    const Box domain;
-    const real3 target {0.0_r, 0.0_r, 0.0_r};
-};
-
 std::vector<RigidBody> createBodies(const std::string& fileNameList);
-real computeMaxDistance(Box src, real3 dst);
 
 template<typename Env>
 static void setActionDims(const Env *env, smarties::Communicator *const comm)
@@ -42,7 +28,7 @@ static void setActionBounds(const Env *env, smarties::Communicator *const comm)
     comm->setActionScales(hi, lo, bounded);
 }
 
-void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace& spaceInfos, smarties::Communicator *const comm);
+void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceInfos, smarties::Communicator *const comm);
 
 // using MagnFieldActionType = MagnFieldFromActionDirect;
 // using MagnFieldActionType = MagnFieldFromActionFromTargets;
@@ -50,4 +36,4 @@ using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
 // using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
 
 std::unique_ptr<MSodeEnvironment<MagnFieldActionType>>
-createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace& space, real fieldMagnitude);
+createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude);

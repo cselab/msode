@@ -27,6 +27,40 @@ struct Box
     }
 };
 
+class EnvSpace
+{
+public:
+    EnvSpace() = default;
+
+    virtual std::unique_ptr<EnvSpace> clone() const = 0;
+    
+    virtual real3 getLowestPosition()  const = 0;
+    virtual real3 getHighestPosition() const = 0;
+    virtual real computeMaxDistanceToTarget() const = 0;
+
+    virtual real3 generatePosition(std::mt19937& gen) const = 0;
+
+public:
+    const real3 target {0.0_r, 0.0_r, 0.0_r};
+};
+
+class EnvSpaceBox : public EnvSpace
+{
+public:
+    EnvSpaceBox(real L_);
+
+    std::unique_ptr<EnvSpace> clone() const override;
+    
+    real3 getLowestPosition()  const override;
+    real3 getHighestPosition() const override;
+    real computeMaxDistanceToTarget() const override;
+
+    real3 generatePosition(std::mt19937& gen) const override;
+    
+    const real L;
+    const Box domain;
+};
+
 struct TimeParams
 {
     real dt, tmax;
@@ -42,19 +76,22 @@ struct RewardParams
 
 struct Params
 {
-    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, Box initBox_) :
+    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, std::unique_ptr<EnvSpace>&& space_) :
         time(time_),
         reward(reward_),
         fieldMagnitude(fieldMagnitude_),
         distanceThreshold(distanceThreshold_),
-        initBox(initBox_)
+        space(std::move(space_))
     {}
+
+    Params(const Params&) = delete;
+    Params(Params&&) = default;
 
     const TimeParams time;
     const RewardParams reward;
     const real fieldMagnitude;
     const real distanceThreshold;
-    const Box initBox;
+    std::unique_ptr<EnvSpace> space;
 };
 
 template<class MagnFieldFromAction>
@@ -63,19 +100,19 @@ class MSodeEnvironment
 public:
     enum class Status {Running, MaxTimeEllapsed, Success};
     
-    MSodeEnvironment(const Params& params_,
+    MSodeEnvironment(std::unique_ptr<Params>&& params_,
                      const std::vector<RigidBody>& initialRBs,
                      const std::vector<real3>& targetPositions_,
                      const MagnFieldFromAction& magnFieldStateFromAction_) :
-        nstepsPerAction(params_.time.nstepsPerAction),
-        dt(params_.time.dt),
-        tmax(params_.time.tmax),
-        distanceThreshold(params_.distanceThreshold),
-        initBox(params_.initBox),
-        rewardParams(params_.reward),
+        nstepsPerAction(params_->time.nstepsPerAction),
+        dt(params_->time.dt),
+        tmax(params_->time.tmax),
+        distanceThreshold(params_->distanceThreshold),
+        space(std::move(params_->space)),
+        rewardParams(params_->reward),
         magnFieldState(magnFieldStateFromAction_),
         targetPositions(targetPositions_),
-        dumpEvery(params_.time.dumpEvery)
+        dumpEvery(params_->time.dumpEvery)
     {
         MSODE_Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
@@ -92,7 +129,7 @@ public:
             return normalized(axis);
         };
     
-        MagneticField field{params_.fieldMagnitude, omegaFunction, rotatingDirection};
+        MagneticField field{params_->fieldMagnitude, omegaFunction, rotatingDirection};
 
         sim = std::make_unique<Simulation>(initialRBs, field);
         setDistances();
@@ -116,7 +153,7 @@ public:
     
         for (auto& b : bodies)
         {
-            b.r = generateUniformPositionBox(gen, initBox.lo, initBox.hi);
+            b.r = space->generatePosition(gen);
             b.q = generateUniformQuaternion(gen);
         }
 
@@ -258,7 +295,7 @@ private:
     const real dt;
     const real tmax;
     const real distanceThreshold;
-    const Box initBox;
+    std::unique_ptr<EnvSpace> space;
     const RewardParams rewardParams;
     
     MagnFieldFromAction magnFieldState;
