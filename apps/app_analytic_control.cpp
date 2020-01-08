@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     // std::cout << U << std::endl;
 
     const long seed = 42424242;
-    auto initialPositions = analytic_control::generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
+    auto initialPositions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
     const real tTot = analytic_control::simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U, "ac_trajectories.dat", 1000);
 
     std::cout << "Took " << tTot << " time units to bring to target" << std::endl;

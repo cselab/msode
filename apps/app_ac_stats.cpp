@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     for (int sample = 0; sample < nsamples; ++sample)
     {
         const long seed = 242 * sample + 13;
-        auto initialPositions = analytic_control::generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
+        auto initialPositions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
         const real t = analytic_control::computeRequiredTime(magneticFieldMagnitude, bodies, initialPositions, U);
         tSum += t;
 

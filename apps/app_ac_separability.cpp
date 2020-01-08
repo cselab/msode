@@ -118,7 +118,7 @@ static real computeMeanTime(const analytic_control::MatrixReal& V, const std::ve
     for (int sample = 0; sample < nsamples; ++sample)
     {
         const long seed = 242 * sample + 13;
-        auto initialPositions = analytic_control::generateRandomPositions(bodies.size(), boxLo, boxHi, seed);
+        auto initialPositions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
         const auto A = analytic_control::computeA(U, initialPositions);
         const real t = analytic_control::computeTime(A, direction);
         tSum += t;

@@ -9,7 +9,7 @@ using namespace msode;
 namespace analytic_control
 {
 
-std::vector<real3> generateRandomPositions(int n, real3 boxLo, real3 boxHi, long seed)
+std::vector<real3> generateRandomPositionsBox(int n, real3 boxLo, real3 boxHi, long seed)
 {
     std::vector<real3> positions;
     positions.reserve(n);
