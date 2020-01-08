@@ -11,22 +11,6 @@
 
 using namespace msode;
 
-struct Box
-{
-    real3 lo, hi;
-    std::array<real3, 8> getCorners() const
-    {
-        return {real3 {lo.x, lo.y, lo.z},
-                real3 {lo.x, lo.y, hi.z},
-                real3 {lo.x, hi.y, lo.z},
-                real3 {lo.x, hi.y, hi.z},
-                real3 {hi.x, lo.y, lo.z},
-                real3 {hi.x, lo.y, hi.z},
-                real3 {hi.x, hi.y, lo.z},
-                real3 {hi.x, hi.y, hi.z}};
-    }
-};
-
 class EnvSpace
 {
 public:
@@ -56,7 +40,24 @@ public:
     real computeMaxDistanceToTarget() const override;
 
     real3 generatePosition(std::mt19937& gen) const override;
-    
+
+private:
+    struct Box
+    {
+        real3 lo, hi;
+        std::array<real3, 8> getCorners() const
+        {
+            return {real3 {lo.x, lo.y, lo.z},
+                    real3 {lo.x, lo.y, hi.z},
+                    real3 {lo.x, hi.y, lo.z},
+                    real3 {lo.x, hi.y, hi.z},
+                    real3 {hi.x, lo.y, lo.z},
+                    real3 {hi.x, lo.y, hi.z},
+                    real3 {hi.x, hi.y, lo.z},
+                    real3 {hi.x, hi.y, hi.z}};
+        }
+    };
+
     const real L;
     const Box domain;
 };
