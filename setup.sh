@@ -8,7 +8,8 @@ MSODE_ROOT=${SMARTIES_ROOT}/../msode
 
 # copy executable:
 #exec=$MSODE_ROOT/apps/app_rl
-exec=$MSODE_ROOT/apps/app_rl_comp
+#exec=$MSODE_ROOT/apps/app_rl_comp
+exec=$MSODE_ROOT/apps/app_rl_curriculum
 
 cp $exec $RUNDIR/exec
 
