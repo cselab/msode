@@ -1,7 +1,5 @@
 include( FindPackageHandleStandardArgs )
 
-# Checks an environment variable; note that the first check
-# does not require the usual CMake $-sign.
 if ( DEFINED ENV{SMARTIES_ROOT} )
   set( SMARTIES_ROOT "$ENV{SMARTIES_ROOT}" )
 endif()
@@ -36,9 +34,12 @@ if (SMARTIES_FOUND)
     SMARTIES_LIBRARY
     SMARTIES_INCLUDE_DIR
     SMARTIES_DIR
-  )
-else ()
-  set(SMARTIES_DIR "" CACHE STRING
-    "An optional hint to a directory for finding `smarties`"
-  )
+    )
+
+  add_library(smarties SHARED IMPORTED)
+
+  set_target_properties(smarties PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES "${SMARTIES_INCLUDE_DIRS}"
+    IMPORTED_LOCATION              "${SMARTIES_LIBRARIES}/libsmarties.so"
+    )
 endif()
