@@ -1,4 +1,4 @@
-msode_rl
+build
 *.o
 *.a
 __pycache__
