@@ -1,10 +1,10 @@
 include ../config.mk
 
-CORE_DIR=../core
+CORE_DIR=../src
 CATCH_DIR = ../extern/Catch2
 
 CXXFLAGS += -I$(CORE_DIR)
-CXXFLAGS += -I$(CATCH_DIR)/single_include/catch2
+CXXFLAGS += -I$(CATCH_DIR)/single_include/
 
 LDFLAGS += -L$(CORE_DIR) -lmsode
 
