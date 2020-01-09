@@ -1,4 +1,5 @@
 set(LIB_NAME_MSODE libmsode)
+set(MSODE_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/../")
 
 set(MSODE_SOURCES
   factory.cpp
@@ -7,3 +8,4 @@ set(MSODE_SOURCES
 
 add_library(${LIB_NAME_MSODE} STATIC ${MSODE_SOURCES})
 target_compile_features(${LIB_NAME_MSODE} PUBLIC cxx_std_14)
+target_include_directories(${LIB_NAME_MSODE} PUBLIC ${MSODE_INCLUDES})
