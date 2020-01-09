@@ -6,7 +6,7 @@ CATCH_DIR = ../extern/Catch2
 CXXFLAGS += -I$(CORE_DIR)
 CXXFLAGS += -I$(CATCH_DIR)/single_include/
 
-LDFLAGS += -L$(CORE_DIR) -lmsode
+LDFLAGS += -L$(CORE_DIR)/msode -lmsode
 
 EXECS = test_quaternions
 
