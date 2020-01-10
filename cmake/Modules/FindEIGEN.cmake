@@ -13,7 +13,6 @@ find_path(
     ${EIGEN_ROOT}
 )
 
-#set(EIGEN_INCLUDE_DIR ${EIGEN_ROOT})
 
 find_package_handle_standard_args(
   EIGEN DEFAULT_MSG
@@ -29,7 +28,7 @@ if (EIGEN_FOUND)
 
   add_library(eigen INTERFACE IMPORTED)
 
-  set_target_properties(smarties PROPERTIES
+  set_target_properties(eigen PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${EIGEN_INCLUDE_DIRS}"
     )
 endif()

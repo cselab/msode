@@ -4,6 +4,11 @@ set(SRC_FILES
   optimal_path.cpp
   )
 
-add_library(lib_analytic_control SHARED ${SRC_FILES})
-#target_link_libraries(lib_analytic_control PUBLIC EIGEN)
-#target_link_libraries(lib_analytic_control PUBLIC )
+set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/extern/eigen-git-mirror")
+find_package(EIGEN    REQUIRED)
+find_package(KORALI   REQUIRED)
+
+add_library(analytic_control STATIC ${SRC_FILES})
+target_link_libraries(analytic_control PUBLIC ${LIB_NAME_MSODE})
+target_link_libraries(analytic_control PUBLIC eigen)
+target_link_libraries(analytic_control PUBLIC korali)

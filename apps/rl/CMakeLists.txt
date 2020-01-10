@@ -3,6 +3,8 @@ set(SRC_FILES
   space.cpp
   )
 
+find_package(SMARTIES REQUIRED)
+
 # Get all propreties that cmake supports
 execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
 
