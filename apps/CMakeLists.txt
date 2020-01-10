@@ -10,7 +10,10 @@ set(APP_FILES
   app_rl_curriculum.cpp
   app_rotating.cpp)
 
+set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/extern/eigen-git-mirror")
+
 find_package(SMARTIES REQUIRED)
+find_package(EIGEN    REQUIRED)
 
 add_subdirectory(utils)
 add_subdirectory(rl)
