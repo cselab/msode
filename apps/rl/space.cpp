@@ -5,19 +5,18 @@
 
 using namespace msode;
 
-std::vector<real3> EnvSpace::generateNewPositionsIfFlag(std::mt19937& gen, int n, bool generateNew)
+const std::vector<real3>& EnvSpace::generateNewPositionsIfFlag(std::mt19937& gen, int n, bool generateNew)
 {
     if (generateNew)
     {
-        this->generateNewPositions(gen, n);
+        savedPositions = this->generateNewPositions(gen, n);
         savedPositionsInitialized = true;
-        return savedPositions;
     }
     else
     {
         MSODE_Ensure(savedPositionsInitialized, "can not return non initialized saved positions");
-        return savedPositions;
     }
+    return savedPositions;
 }
 
 EnvSpaceBox::EnvSpaceBox(real L_) :

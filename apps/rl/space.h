@@ -20,7 +20,7 @@ public:
     virtual real3 getHighestPosition() const = 0;
     virtual real computeMaxDistanceToTarget() const = 0;
 
-    std::vector<real3> generateNewPositionsIfFlag(std::mt19937& gen, int n, bool generateNew);
+    const std::vector<real3>& generateNewPositionsIfFlag(std::mt19937& gen, int n, bool generateNew);
     virtual std::vector<real3> generateNewPositions(std::mt19937& gen, int n) = 0;
 
 public:
