@@ -95,14 +95,14 @@ public:
     int numActions() const {return magnFieldState.numActions();}
     auto getActionBounds() const {return magnFieldState.getActionBounds();}
 
-    void reset(long simId, std::mt19937& gen)
+    void reset(long simId, std::mt19937& gen, bool usePreviousIC = false)
     {
         auto field  = sim->getField();
         auto bodies = sim->getBodies();
 
         field.phase = 0.0_r;
 
-        const auto positions = space->generateNewPositions(gen, bodies.size());
+        const auto positions = space->generateNewPositionsIfFlag(gen, bodies.size(), !usePreviousIC);
 
         for (size_t i = 0; i < bodies.size(); ++i)
         {
