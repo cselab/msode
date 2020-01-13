@@ -5,8 +5,7 @@ set(SRC_FILES
   )
 
 set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/extern/eigen-git-mirror")
-find_package(EIGEN    REQUIRED)
-find_package(KORALI   REQUIRED)
+find_package(EIGEN REQUIRED)
 
 add_library(analytic_control STATIC ${SRC_FILES})
 target_link_libraries(analytic_control PUBLIC ${LIB_NAME_MSODE})
