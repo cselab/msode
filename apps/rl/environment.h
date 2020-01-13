@@ -102,7 +102,7 @@ public:
 
         field.phase = 0.0_r;
 
-        const auto positions = space->generatePositions(gen, bodies.size());
+        const auto positions = space->generateNewPositions(gen, bodies.size());
 
         for (size_t i = 0; i < bodies.size(); ++i)
         {

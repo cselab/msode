@@ -20,10 +20,14 @@ public:
     virtual real3 getHighestPosition() const = 0;
     virtual real computeMaxDistanceToTarget() const = 0;
 
-    virtual std::vector<real3> generatePositions(std::mt19937& gen, int n) = 0;
+    std::vector<real3> generateNewPositionsIfFlags(std::mt19937& gen, int n, bool generateNew);
+    virtual std::vector<real3> generateNewPositions(std::mt19937& gen, int n) = 0;
 
 public:
     const real3 target {0.0_r, 0.0_r, 0.0_r};
+private:
+    bool savedPositionsInitialized {false};
+    std::vector<real3> savedPositions;
 };
 
 class EnvSpaceBox : public EnvSpace
@@ -37,7 +41,7 @@ public:
     real3 getHighestPosition() const override;
     real computeMaxDistanceToTarget() const override;
 
-    std::vector<real3> generatePositions(std::mt19937& gen, int n) override;
+    std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
     struct Box
@@ -70,7 +74,7 @@ public:
     real3 getHighestPosition() const override;
     real computeMaxDistanceToTarget() const override;
 
-    std::vector<real3> generatePositions(std::mt19937& gen, int n) override;
+    std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
     const real R;
@@ -83,7 +87,7 @@ public:
 
     std::unique_ptr<EnvSpace> clone() const override;
     
-    std::vector<real3> generatePositions(std::mt19937& gen, int n) override;
+    std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
     const real targetR;

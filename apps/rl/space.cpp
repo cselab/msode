@@ -5,6 +5,21 @@
 
 using namespace msode;
 
+std::vector<real3> EnvSpace::generateNewPositionsIfFlags(std::mt19937& gen, int n, bool generateNew)
+{
+    if (generateNew)
+    {
+        this->generateNewPositions(gen, n);
+        savedPositionsInitialized = true;
+        return savedPositions;
+    }
+    else
+    {
+        MSODE_Ensure(savedPositionsInitialized, "can not return non initialized saved positions");
+        return savedPositions;
+    }
+}
+
 EnvSpaceBox::EnvSpaceBox(real L_) :
     domain{{-L_, -L_, -L_},
            {+L_, +L_, +L_}}
@@ -27,7 +42,7 @@ real EnvSpaceBox::computeMaxDistanceToTarget() const
     return d;
 }
 
-std::vector<real3> EnvSpaceBox::generatePositions(std::mt19937& gen, int n)
+std::vector<real3> EnvSpaceBox::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)
@@ -52,7 +67,7 @@ real3 EnvSpaceBall::getHighestPosition() const {return {+R, +R, +R};}
 
 real EnvSpaceBall::computeMaxDistanceToTarget() const {return R;}
 
-std::vector<real3> EnvSpaceBall::generatePositions(std::mt19937& gen, int n)
+std::vector<real3> EnvSpaceBall::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)
@@ -91,7 +106,7 @@ static inline real3 generateOnePositionMC(std::mt19937& gen, real3 r0, real radi
     return r;
 }
 
-std::vector<real3> EnvSpaceBallCuriculumMC::generatePositions(std::mt19937& gen, int n)
+std::vector<real3> EnvSpaceBallCuriculumMC::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     
