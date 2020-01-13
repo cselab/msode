@@ -96,8 +96,8 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
     const real terminationBonus = maxDistance * maxDistance * nbodies;
     
     const real timeCoeffReward = 0.1_r  * nbodies * maxDistance * computeMinForwardVelocity(fieldMagnitude, bodies);
-    const real tmax            = 10.0_r * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
-    const real dtAction        = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
+    const real tmax            = 50.0_r * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
+    const real dtAction        = 20.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
 
     const long dumpEvery {1000}; // TODO

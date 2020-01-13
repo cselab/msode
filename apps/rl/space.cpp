@@ -5,7 +5,7 @@
 
 using namespace msode;
 
-std::vector<real3> EnvSpace::generateNewPositionsIfFlags(std::mt19937& gen, int n, bool generateNew)
+std::vector<real3> EnvSpace::generateNewPositionsIfFlag(std::mt19937& gen, int n, bool generateNew)
 {
     if (generateNew)
     {
