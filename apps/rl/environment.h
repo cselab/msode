@@ -7,10 +7,8 @@
 
 #include <msode/simulation.h>
 
-#include <iomanip>
 #include <memory>
 #include <random>
-#include <sstream>
 
 using namespace msode;
 

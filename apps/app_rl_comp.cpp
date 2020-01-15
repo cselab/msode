@@ -4,6 +4,8 @@
 
 #include <type_traits>
 
+#include <iomanip>
+
 static inline std::string generateACfname(long simId)
 {
     std::ostringstream ss;
