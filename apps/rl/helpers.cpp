@@ -102,11 +102,14 @@ static Params createParams(const std::vector<RigidBody>& bodies, real maxDistanc
     fprintf(stderr,
             "----------------------------------------------------------\n"
             "tmax %g ; steps %ld ; max omega %g\n"
-            "fieldMagnitude %g\n"
-            "timeCoeffReward %g\n"
+            "fieldMagnitude   %g\n"
+            "timeCoeffReward  %g\n"
+            "dt               %g\n"
+            "dt action        %g\n"
             "----------------------------------------------------------\n",
             tmax, nstepsPerAction, maxOmega,
-            fieldMagnitude, timeCoeffReward);
+            fieldMagnitude, timeCoeffReward,
+            dt, dtAction);
 
     const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold);
     return params;
