@@ -27,7 +27,7 @@ struct RewardParams
 
 struct Params
 {
-    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, std::unique_ptr<EnvSpace>&& space_);
+    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_);
 
     Params(const Params&) = delete;
     Params(Params&&) = default;
@@ -36,7 +36,6 @@ struct Params
     const RewardParams reward;
     const real fieldMagnitude;
     const real distanceThreshold;
-    std::unique_ptr<EnvSpace> space;
 };
 
 class MSodeEnvironment
@@ -45,6 +44,7 @@ public:
     enum class Status {Running, MaxTimeEllapsed, Success};
     
     MSodeEnvironment(std::unique_ptr<Params>&& params_,
+                     std::unique_ptr<EnvSpace>&& space_,
                      const std::vector<RigidBody>& initialRBs,
                      const std::vector<real3>& targetPositions_,
                      std::unique_ptr<MagnFieldFromActionBase>&& magnFieldStateFromAction_);

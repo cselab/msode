@@ -4,16 +4,16 @@
 #include <sstream>
 
 
-Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, std::unique_ptr<EnvSpace>&& space_) :
+Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_) :
     time(time_),
     reward(reward_),
     fieldMagnitude(fieldMagnitude_),
-    distanceThreshold(distanceThreshold_),
-    space(std::move(space_))
+    distanceThreshold(distanceThreshold_)
 {}
 
 
 MSodeEnvironment::MSodeEnvironment(std::unique_ptr<Params>&& params_,
+                                   std::unique_ptr<EnvSpace>&& space_,
                                    const std::vector<RigidBody>& initialRBs,
                                    const std::vector<real3>& targetPositions_,
                                    std::unique_ptr<MagnFieldFromActionBase>&& magnFieldStateFromAction_) :
@@ -21,7 +21,7 @@ MSodeEnvironment::MSodeEnvironment(std::unique_ptr<Params>&& params_,
     dt(params_->time.dt),
     tmax(params_->time.tmax),
     distanceThreshold(params_->distanceThreshold),
-    space(std::move(params_->space)),
+    space(std::move(space_)),
     rewardParams(params_->reward),
     magnFieldState(std::move(magnFieldStateFromAction_)),
     targetPositions(targetPositions_),
