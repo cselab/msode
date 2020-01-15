@@ -52,8 +52,8 @@ std::vector<real3> EnvSpaceBox::generateNewPositions(std::mt19937& gen, int n)
 
 
 
-EnvSpaceBall::EnvSpaceBall(real Radius_) :
-    Radius(Radius_)
+EnvSpaceBall::EnvSpaceBall(real radius_) :
+    radius(radius_)
 {}
 
 std::unique_ptr<EnvSpace> EnvSpaceBall::clone() const
@@ -61,23 +61,23 @@ std::unique_ptr<EnvSpace> EnvSpaceBall::clone() const
     return std::make_unique<EnvSpaceBall>(*this);
 }
 
-real3 EnvSpaceBall::getLowestPosition()  const {return {-Radius, -Radius, -Radius};}
-real3 EnvSpaceBall::getHighestPosition() const {return {+Radius, +Radius, +Radius};}
+real3 EnvSpaceBall::getLowestPosition()  const {return {-radius, -radius, -radius};}
+real3 EnvSpaceBall::getHighestPosition() const {return {+radius, +radius, +radius};}
 
-real EnvSpaceBall::computeMaxDistanceToTarget() const {return Radius;}
+real EnvSpaceBall::computeMaxDistanceToTarget() const {return radius;}
 
 std::vector<real3> EnvSpaceBall::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)
-        p = generateUniformPositionBall(gen, Radius);
+        p = generateUniformPositionBall(gen, radius);
     return positions;
 }
 
 
 
-EnvSpaceBallCuriculumStateRW::EnvSpaceBallCuriculumStateRW(real Radius_, real targetRadius_, real sigmaRandomWalk_) :
-    EnvSpaceBall(Radius_),
+EnvSpaceBallCuriculumStateRW::EnvSpaceBallCuriculumStateRW(real radius_, real targetRadius_, real sigmaRandomWalk_) :
+    EnvSpaceBall(radius_),
     targetRadius(targetRadius_),
     sigmaRandomWalk(sigmaRandomWalk_)
 {}
@@ -118,7 +118,7 @@ std::vector<real3> EnvSpaceBallCuriculumStateRW::generateNewPositions(std::mt199
     }
 
     for (int i = 0; i < n; ++i)
-        positions[i] = generateOnePositionMC(gen, previousPositions[i], Radius, sigmaRandomWalk);
+        positions[i] = generateOnePositionMC(gen, previousPositions[i], radius, sigmaRandomWalk);
         
     previousPositions = positions;
     return positions;
