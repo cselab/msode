@@ -4,6 +4,17 @@ microswimmer ODE solver
 
 ## compilation
 
+### with cmake
+
+
+	mkdir buils
+	cd build
+	cmake ..
+	make -j <njobs>
+
+
+### with Makefile (deprecated)
+
 In release mode:
 
 	make apps
