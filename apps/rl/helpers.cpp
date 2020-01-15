@@ -80,7 +80,6 @@ void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceI
     comm->setStateScales(hi, lo);
 }
 
-
 std::unique_ptr<MSodeEnvironment>
 createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold)
 {
@@ -105,7 +104,7 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
     const RewardParams rewardParams {timeCoeffReward, terminationBonus};
 
-    auto params = std::make_unique<Params>(timeParams, rewardParams, fieldMagnitude, distanceThreshold);
+    const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold);
 
     fprintf(stderr,
             "----------------------------------------------------------\n"
@@ -123,7 +122,7 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
     using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
     // using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
 
-    return std::make_unique<MSodeEnvironment>(std::move(params), space->clone(), bodies, targetPositions,
+    return std::make_unique<MSodeEnvironment>(params, space->clone(), bodies, targetPositions,
                                               std::make_unique<MagnFieldActionType>(minOmega, maxOmega));
 }
 

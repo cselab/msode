@@ -12,20 +12,20 @@ Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, rea
 {}
 
 
-MSodeEnvironment::MSodeEnvironment(std::unique_ptr<Params>&& params_,
+MSodeEnvironment::MSodeEnvironment(const Params& params_,
                                    std::unique_ptr<EnvSpace>&& space_,
                                    const std::vector<RigidBody>& initialRBs,
                                    const std::vector<real3>& targetPositions_,
                                    std::unique_ptr<MagnFieldFromActionBase>&& magnFieldStateFromAction_) :
-    nstepsPerAction(params_->time.nstepsPerAction),
-    dt(params_->time.dt),
-    tmax(params_->time.tmax),
-    distanceThreshold(params_->distanceThreshold),
+    nstepsPerAction(params_.time.nstepsPerAction),
+    dt(params_.time.dt),
+    tmax(params_.time.tmax),
+    distanceThreshold(params_.distanceThreshold),
     space(std::move(space_)),
-    rewardParams(params_->reward),
+    rewardParams(params_.reward),
     magnFieldState(std::move(magnFieldStateFromAction_)),
     targetPositions(targetPositions_),
-    dumpEvery(params_->time.dumpEvery)
+    dumpEvery(params_.time.dumpEvery)
 {
     MSODE_Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
@@ -42,7 +42,7 @@ MSodeEnvironment::MSodeEnvironment(std::unique_ptr<Params>&& params_,
         return normalized(axis);
     };
     
-    MagneticField field{params_->fieldMagnitude, omegaFunction, rotatingDirection};
+    MagneticField field{params_.fieldMagnitude, omegaFunction, rotatingDirection};
 
     sim = std::make_unique<Simulation>(initialRBs, field);
     setDistances();

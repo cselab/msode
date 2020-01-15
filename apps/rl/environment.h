@@ -40,7 +40,7 @@ class MSodeEnvironment
 public:
     enum class Status {Running, MaxTimeEllapsed, Success};
     
-    MSodeEnvironment(std::unique_ptr<Params>&& params_,
+    MSodeEnvironment(const Params& params_,
                      std::unique_ptr<EnvSpace>&& space_,
                      const std::vector<RigidBody>& initialRBs,
                      const std::vector<real3>& targetPositions_,
