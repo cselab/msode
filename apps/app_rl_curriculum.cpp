@@ -25,14 +25,15 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
     using Status = typename std::remove_pointer<decltype(env.get())>::type::Status;
 
-    Status prevStatus {Status::Running};
+    // Status prevStatus {Status::Running};
     
     while (isTraining)
     {
         Status status {Status::Running};
 
-        const bool usePreviousIC = (prevStatus == Status::MaxTimeEllapsed);
-        env->reset(simId, comm->getPRNG(), usePreviousIC);
+        //const bool usePreviousIC = (prevStatus == Status::MaxTimeEllapsed);
+        //env->reset(simId, comm->getPRNG(), usePreviousIC);
+        env->reset(simId, comm->getPRNG());
         comm->sendInitState(env->getState());
 
         while (status == Status::Running) // simulation loop
@@ -53,7 +54,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
                 comm->sendTermState(state, reward);
         }
 
-        prevStatus = status;
+        // prevStatus = status;
         ++simId;
     }
 }
