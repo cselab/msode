@@ -79,7 +79,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     {
         auto status {Status::Running};
 
-        env->reset(simId, comm->getPRNG());
+        env->reset(comm->getPRNG(), simId);
         comm->sendInitState(env->getState());
 
         const real initDistance = computeMinDistance(env->getBodies());

@@ -59,7 +59,7 @@ ActionBounds MSodeEnvironment::getActionBounds() const
     return magnFieldState->getActionBounds();
 }
 
-void MSodeEnvironment::reset(long simId, std::mt19937& gen, bool usePreviousIC)
+void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool usePreviousIC)
 {
     auto field  = sim->getField();
     auto bodies = sim->getBodies();
@@ -74,12 +74,15 @@ void MSodeEnvironment::reset(long simId, std::mt19937& gen, bool usePreviousIC)
         bodies[i].q = generateUniformQuaternion(gen);
     }
 
-    std::ostringstream ss;
-    ss << std::setw(6) << std::setfill('0') << simId;
-    const std::string outputFileName = "trajectories_" + ss.str() + ".dat";
-
     sim->reset(bodies, field);
-    sim->activateDump(outputFileName, dumpEvery);
+
+    if (simId != NO_DUMP)
+    {
+        std::ostringstream ss;
+        ss << std::setw(6) << std::setfill('0') << simId;
+        const std::string outputFileName = "trajectories_" + ss.str() + ".dat";
+        sim->activateDump(outputFileName, dumpEvery);
+    }
     setDistances();
 }
 

@@ -39,6 +39,7 @@ class MSodeEnvironment
 {
 public:
     enum class Status {Running, MaxTimeEllapsed, Success};
+    enum {NO_DUMP = -1};
     
     MSodeEnvironment(const Params& params_,
                      std::unique_ptr<EnvSpace>&& space_,
@@ -55,7 +56,7 @@ public:
     int numActions() const;
     ActionBounds getActionBounds() const;
 
-    void reset(long simId, std::mt19937& gen, bool usePreviousIC = false);
+    void reset(std::mt19937& gen, long simId = NO_DUMP, bool usePreviousIC = false);
 
     Status advance(const std::vector<double>& action);
 

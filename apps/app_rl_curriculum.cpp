@@ -33,7 +33,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
         //const bool usePreviousIC = (prevStatus == Status::MaxTimeEllapsed);
         //env->reset(simId, comm->getPRNG(), usePreviousIC);
-        env->reset(simId, comm->getPRNG());
+        env->reset(comm->getPRNG(), simId);
         comm->sendInitState(env->getState());
 
         while (status == Status::Running) // simulation loop
