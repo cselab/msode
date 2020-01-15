@@ -26,7 +26,7 @@ int MagnFieldFromActionChange::numActions() const
     return 4;
 }
 
-std::tuple<std::vector<double>, std::vector<double>> MagnFieldFromActionChange::getActionBounds() const
+ActionBounds MagnFieldFromActionChange::getActionBounds() const
 {
     return {{minOmega, -1.0, -1.0, -1.0},
             {maxOmega,  1.0,  1.0,  1.0}};
@@ -96,7 +96,7 @@ int MagnFieldFromActionDirect::numActions() const
     return 4;
 }
 
-std::tuple<std::vector<double>, std::vector<double>> MagnFieldFromActionDirect::getActionBounds() const
+ActionBounds MagnFieldFromActionDirect::getActionBounds() const
 {
     return {{minOmega, -1.0, -1.0, -1.0},
             {maxOmega,  1.0,  1.0,  1.0}};
@@ -122,7 +122,7 @@ MagnFieldFromActionFromTargets::MagnFieldFromActionFromTargets(real maxOmega_) :
 
 int MagnFieldFromActionFromTargets::numActions() const {return 1 + env->getBodies().size();}
 
-std::tuple<std::vector<double>, std::vector<double>> MagnFieldFromActionFromTargets::getActionBounds() const
+ActionBounds MagnFieldFromActionFromTargets::getActionBounds() const
 {
     std::vector<double> lo{-maxOmega}, hi{+maxOmega};
 
@@ -169,7 +169,7 @@ MagnFieldFromActionFromLocalFrame::MagnFieldFromActionFromLocalFrame(real minOme
 
 int MagnFieldFromActionFromLocalFrame::numActions() const {return 1+3;}
 
-std::tuple<std::vector<double>, std::vector<double>> MagnFieldFromActionFromLocalFrame::getActionBounds() const
+ActionBounds MagnFieldFromActionFromLocalFrame::getActionBounds() const
 {
     return {{minOmega, -1.0, -1.0, -1.0},
             {maxOmega, +1.0, +1.0, +1.0}};
@@ -251,7 +251,7 @@ MagnFieldFromActionFromLocalPlane::MagnFieldFromActionFromLocalPlane(real minOme
 
 int MagnFieldFromActionFromLocalPlane::numActions() const {return 1+2;}
 
-std::tuple<std::vector<double>, std::vector<double>> MagnFieldFromActionFromLocalPlane::getActionBounds() const
+ActionBounds MagnFieldFromActionFromLocalPlane::getActionBounds() const
 {
     return {{minOmega, -1.0, -1.0},
             {maxOmega, +1.0, +1.0}};

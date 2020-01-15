@@ -13,6 +13,8 @@ using msode::real;
 using msode::real3;
 using namespace msode::literals;
 
+using ActionBounds = std::tuple<std::vector<double>, std::vector<double>>;
+
 class MagnFieldFromActionBase
 {
 public:
@@ -21,7 +23,7 @@ public:
     void attach(const MSodeEnvironment *env_);
     virtual int numActions() const = 0;
 
-    virtual std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const = 0;
+    virtual ActionBounds getActionBounds() const = 0;
     virtual std::tuple<real3, real3, real3> getFrameReference() const = 0;
     virtual void setAction(const std::vector<double>& action) = 0;
     virtual void advance(real) {}
@@ -45,7 +47,7 @@ public:
 
     int numActions() const override;
 
-    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override;
+    ActionBounds getActionBounds() const override;
     std::tuple<real3, real3, real3> getFrameReference() const override;
     
     void setAction(const std::vector<double>& action) override;
@@ -78,7 +80,7 @@ public:
 
     int numActions() const override;
 
-    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override;
+    ActionBounds getActionBounds() const override;
     void setAction(const std::vector<double>& action) override;
     real getOmega(real) const override  {return omega;}
     real3 getAxis(real) const override  {return axis;}
@@ -97,7 +99,7 @@ public:
 
     int numActions() const override;
 
-    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override;
+    ActionBounds getActionBounds() const override;
     std::tuple<real3, real3, real3> getFrameReference() const;
     
     void setAction(const std::vector<double>& action) override;
@@ -119,7 +121,7 @@ public:
     MagnFieldFromActionFromLocalFrame(const MagnFieldFromActionFromLocalFrame&) = default;
 
     int numActions() const override;
-    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override;
+    ActionBounds getActionBounds() const override;
     std::tuple<real3, real3, real3> getFrameReference() const override;
     
     void setAction(const std::vector<double>& action) override;
@@ -141,6 +143,6 @@ public:
 
     int numActions() const override;
 
-    std::tuple<std::vector<double>, std::vector<double>> getActionBounds() const override;
+    ActionBounds getActionBounds() const override;
     void setAction(const std::vector<double>& action) override;
 };
