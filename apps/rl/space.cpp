@@ -143,8 +143,6 @@ std::unique_ptr<EnvSpace> EnvSpaceBallCuriculumActionRW::clone() const
     
 std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19937& gen, int n)
 {
-    std::vector<real3> positions(n);
-    
     if (!initialized)
     {
         previousPositions.resize(n);
@@ -153,9 +151,13 @@ std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19
         initialized = true;
     }
 
-    for (int i = 0; i < n; ++i)
-        positions[i] = generateOnePositionMC(gen, previousPositions[i], radius, sigmaRandomWalk);
+    environment->reset(gen);
+    environment->setPositions(previousPositions);
 
+    const auto action = generateAction(gen);
+    environment->advance(action);
+
+    const auto positions = environment->getPositions();
     previousPositions = positions;
     return positions;
 }
