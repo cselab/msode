@@ -113,4 +113,4 @@ app_rl_comp: app_rl_comp.o $(rl_objects) $(analytic_control_objects) utils/rnd.o
 
 
 .PHONY: all clean
-clean:; rm -rf $(EXECS) *.o $(analytic_control_objects)
+clean:; rm -rf $(EXECS) *.o $(analytic_control_objects) $(rl_objects) utils/*.o
