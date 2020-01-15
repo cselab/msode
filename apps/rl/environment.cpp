@@ -28,15 +28,15 @@ MSodeEnvironment::MSodeEnvironment(std::unique_ptr<Params>&& params_,
     magnFieldState->attach(this);
         
     auto omegaFunction = [this](real t)
-                         {
-                             return magnFieldState->getOmega(t);
-                         };
+    {
+        return magnFieldState->getOmega(t);
+    };
 
     auto rotatingDirection = [this](real t) -> real3
-                             {
-                                 const real3 axis = magnFieldState->getAxis(t);
-                                 return normalized(axis);
-                             };
+    {
+        const real3 axis = magnFieldState->getAxis(t);
+        return normalized(axis);
+    };
     
     MagneticField field{params_->fieldMagnitude, omegaFunction, rotatingDirection};
 
