@@ -14,5 +14,5 @@ target_link_libraries(analytic_control PUBLIC PkgConfig::korali)
 target_link_libraries(analytic_control PUBLIC utils)
 
 target_compile_features(analytic_control PUBLIC cxx_std_14)
-set(cxx_private_flags -O3 -Wextra -Wshadow -Werror)
+set(cxx_private_flags -O3 -Wall -Wextra -Wshadow -Werror)
 target_compile_options(analytic_control PRIVATE ${cxx_private_flags})
