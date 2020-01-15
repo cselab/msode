@@ -80,12 +80,9 @@ void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceI
     comm->setStateScales(hi, lo);
 }
 
-std::unique_ptr<MSodeEnvironment>
-createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold)
+static Params createParams(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold)
 {
     const int nbodies = bodies.size();
-    
-    // parameters
     
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
@@ -104,8 +101,6 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
     const RewardParams rewardParams {timeCoeffReward, terminationBonus};
 
-    const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold);
-
     fprintf(stderr,
             "----------------------------------------------------------\n"
             "tmax %g ; steps %ld ; max omega %g\n"
@@ -114,15 +109,24 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
             "----------------------------------------------------------\n",
             tmax, nstepsPerAction, maxOmega,
             fieldMagnitude, timeCoeffReward);
-    
+
+    const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold);
+    return params;
+}
+
+std::unique_ptr<MSodeEnvironment>
+createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold)
+{
+    const int nbodies = bodies.size();
+    const Params params = createParams(bodies, space, fieldMagnitude, distanceThreshold);
+
     const std::vector<real3> targetPositions(nbodies, space->target);
 
-    // using MagnFieldActionType = MagnFieldFromActionDirect;
-    // using MagnFieldActionType = MagnFieldFromActionFromTargets;
     using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
-    // using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
+    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+    const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
+    auto fieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);
 
-    return std::make_unique<MSodeEnvironment>(params, space->clone(), bodies, targetPositions,
-                                              std::make_unique<MagnFieldActionType>(minOmega, maxOmega));
+    return std::make_unique<MSodeEnvironment>(params, space->clone(), bodies, targetPositions, std::move(fieldAction));
 }
 
