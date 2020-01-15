@@ -29,9 +29,6 @@ struct Params
 {
     Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_);
 
-    Params(const Params&) = delete;
-    Params(Params&&) = default;
-
     const TimeParams time;
     const RewardParams reward;
     const real fieldMagnitude;
