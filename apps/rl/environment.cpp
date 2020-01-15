@@ -67,12 +67,10 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool usePreviousIC)
     field.phase = 0.0_r;
 
     const auto positions = space->generateNewPositionsIfFlag(gen, bodies.size(), !usePreviousIC);
-
-    for (size_t i = 0; i < bodies.size(); ++i)
-    {
-        bodies[i].r = positions[i];
-        bodies[i].q = generateUniformQuaternion(gen);
-    }
+    setPositions(positions);
+    
+    for (auto& b : bodies)
+        b.q = generateUniformQuaternion(gen);
 
     sim->reset(bodies, field);
 
@@ -86,6 +84,13 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool usePreviousIC)
     setDistances();
 }
 
+void MSodeEnvironment::setPositions(const std::vector<real3>& positions)
+{
+    auto bodies = sim->getBodies();
+        
+    for (size_t i = 0; i < bodies.size(); ++i)
+        bodies[i].r = positions[i];
+}
 
 MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& action)
 {

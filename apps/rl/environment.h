@@ -57,6 +57,7 @@ public:
     ActionBounds getActionBounds() const;
 
     void reset(std::mt19937& gen, long simId = NO_DUMP, bool usePreviousIC = false);
+    void setPositions(const std::vector<real3>& positions);
 
     Status advance(const std::vector<double>& action);
 
