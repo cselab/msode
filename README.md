@@ -4,6 +4,12 @@ microswimmer ODE solver
 
 ## compilation
 
+### requirements
+
+- korali https://github.com/cselab/korali
+- smarties https://github.com/cselab/smarties
+
+
 ### with cmake
 
 
