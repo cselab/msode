@@ -17,13 +17,14 @@ MSodeEnvironment::MSodeEnvironment(const Params& params_,
                                    const std::vector<RigidBody>& initialRBs,
                                    const std::vector<real3>& targetPositions_,
                                    std::unique_ptr<MagnFieldFromActionBase>&& magnFieldStateFromAction_) :
+    magnFieldState(std::move(magnFieldStateFromAction_)),
+    fieldMagnitude(params_.fieldMagnitude),
     nstepsPerAction(params_.time.nstepsPerAction),
     dt(params_.time.dt),
     tmax(params_.time.tmax),
     distanceThreshold(params_.distanceThreshold),
     space(std::move(space_)),
     rewardParams(params_.reward),
-    magnFieldState(std::move(magnFieldStateFromAction_)),
     targetPositions(targetPositions_),
     dumpEvery(params_.time.dumpEvery)
 {

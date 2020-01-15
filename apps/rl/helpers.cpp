@@ -80,14 +80,12 @@ void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceI
     comm->setStateScales(hi, lo);
 }
 
-static Params createParams(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold)
+static Params createParams(const std::vector<RigidBody>& bodies, real maxDistance, real fieldMagnitude, real distanceThreshold)
 {
     const int nbodies = bodies.size();
     
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
-    const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     const real dt             = 1.0 / (maxOmega * 20); // s
-    const real maxDistance = space->computeMaxDistanceToTarget();
 
     const real terminationBonus = maxDistance * maxDistance * nbodies;
     
@@ -118,7 +116,7 @@ std::unique_ptr<MSodeEnvironment>
 createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold)
 {
     const int nbodies = bodies.size();
-    const Params params = createParams(bodies, space, fieldMagnitude, distanceThreshold);
+    const Params params = createParams(bodies, space->computeMaxDistanceToTarget(), fieldMagnitude, distanceThreshold);
 
     const std::vector<real3> targetPositions(nbodies, space->target);
 
@@ -128,5 +126,29 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
     auto fieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);
 
     return std::make_unique<MSodeEnvironment>(params, space->clone(), bodies, targetPositions, std::move(fieldAction));
+}
+
+
+std::unique_ptr<MSodeEnvironment>
+createEnvironmentCurriculum(const std::vector<RigidBody>& bodies, real fieldMagnitude, real distanceThreshold, real radius, real sigmaRandomWalk)
+{
+    const int nbodies = bodies.size();
+    const Params params = createParams(bodies, radius, fieldMagnitude, distanceThreshold);
+
+    // used by the "pre environment" used to advance the sampled actions
+    EnvSpaceBall preEnvSpace(distanceThreshold);
+    const std::vector<real3> targetPositions(nbodies, preEnvSpace.target);
+
+    using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
+    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+    const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
+    auto preFieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);
+
+    auto preEnvironment = std::make_unique<MSodeEnvironment>(params, preEnvSpace.clone(), bodies, targetPositions, std::move(preFieldAction));
+
+    auto space = std::make_unique<EnvSpaceBallCuriculumActionRW>(std::move(preEnvironment), radius, distanceThreshold, sigmaRandomWalk);
+
+    auto fieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);
+    return std::make_unique<MSodeEnvironment>(params, std::move(space), bodies, targetPositions, std::move(fieldAction));
 }
 

@@ -1,4 +1,5 @@
 #include "space.h"
+#include "environment.h"
 #include "../utils/rnd.h"
 
 #include <msode/math.h>
@@ -126,10 +127,12 @@ std::vector<real3> EnvSpaceBallCuriculumStateRW::generateNewPositions(std::mt199
 
 
 
-EnvSpaceBallCuriculumActionRW::EnvSpaceBallCuriculumActionRW(real radius_, real targetRadius_, real sigmaRandomWalk_) :
+EnvSpaceBallCuriculumActionRW::EnvSpaceBallCuriculumActionRW(std::unique_ptr<MSodeEnvironment>&& environment_,
+                                                             real radius_, real targetRadius_, real sigmaRandomWalk_) :
     EnvSpaceBall(radius_),
     targetRadius(targetRadius_),
-    sigmaRandomWalk(sigmaRandomWalk_)
+    sigmaRandomWalk(sigmaRandomWalk_),
+    environment(std::move(environment_))
 {}
 
 std::unique_ptr<EnvSpace> EnvSpaceBallCuriculumActionRW::clone() const
@@ -155,4 +158,34 @@ std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19
 
     previousPositions = positions;
     return positions;
+}
+
+std::vector<double> EnvSpaceBallCuriculumActionRW::generateAction(std::mt19937& gen) const
+{
+    std::vector<double> actions;
+    auto state = environment->magnFieldState.get();
+
+    if (dynamic_cast<MagnFieldFromActionFromLocalFrame*>(state))
+    {
+        actions.resize(4);
+        const auto& bodies = environment->getBodies();
+
+        std::uniform_int_distribution<int> bodyIdDistr (0, bodies.size()-1);
+        
+        const int i = bodyIdDistr(gen);
+        const real omega = bodies[i].stepOutFrequency(environment->fieldMagnitude);
+
+        std::normal_distribution<real> omegaDistr (omega, sigmaRandomWalk);
+        std::uniform_real_distribution<real> udistr (-1.0_r, 1.0_r);
+
+        actions[0] = omegaDistr(gen);
+        actions[1] = udistr(gen);
+        actions[2] = udistr(gen);
+        actions[3] = udistr(gen);
+    }
+    else
+    {
+        msode_die("Not implemented with field from action other than MagnFieldFromActionFromLocalFrame\n");
+    }
+    return actions;
 }

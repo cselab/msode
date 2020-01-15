@@ -75,7 +75,9 @@ private:
 
 public:
     std::unique_ptr<Simulation> sim;
-
+    std::unique_ptr<MagnFieldFromActionBase> magnFieldState;
+    const real fieldMagnitude;
+    
 private:
     const long nstepsPerAction;
     const real dt;
@@ -83,8 +85,6 @@ private:
     const real distanceThreshold;
     std::unique_ptr<EnvSpace> space;
     const RewardParams rewardParams;
-
-    std::unique_ptr<MagnFieldFromActionBase> magnFieldState;
 
     std::vector<real3> targetPositions;
     mutable std::vector<real> previousDistance;
