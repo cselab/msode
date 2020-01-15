@@ -58,6 +58,7 @@ public:
 
     void reset(std::mt19937& gen, long simId = NO_DUMP, bool usePreviousIC = false);
     void setPositions(const std::vector<real3>& positions);
+    std::vector<real3> getPositions() const;
 
     Status advance(const std::vector<double>& action);
 

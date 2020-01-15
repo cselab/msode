@@ -92,6 +92,16 @@ void MSodeEnvironment::setPositions(const std::vector<real3>& positions)
         bodies[i].r = positions[i];
 }
 
+std::vector<real3> MSodeEnvironment::getPositions() const
+{
+    std::vector<real3> positions;
+    auto bodies = sim->getBodies();
+        
+    for (auto b : bodies)
+        positions.push_back(b.r);
+    return positions;
+}
+
 MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& action)
 {
     magnFieldState->advance(sim->getCurrentTime());
