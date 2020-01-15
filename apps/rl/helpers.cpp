@@ -136,15 +136,15 @@ createEnvironmentCurriculum(const std::vector<RigidBody>& bodies, real fieldMagn
     const Params params = createParams(bodies, radius, fieldMagnitude, distanceThreshold);
 
     // used by the "pre environment" used to advance the sampled actions
-    EnvSpaceBall preEnvSpace(distanceThreshold);
-    const std::vector<real3> targetPositions(nbodies, preEnvSpace.target);
+    auto preEnvSpace = std::make_unique<EnvSpaceBall>(distanceThreshold);
+    const std::vector<real3> targetPositions(nbodies, preEnvSpace->target);
 
     using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     auto preFieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);
 
-    auto preEnvironment = std::make_unique<MSodeEnvironment>(params, preEnvSpace.clone(), bodies, targetPositions, std::move(preFieldAction));
+    auto preEnvironment = std::make_unique<MSodeEnvironment>(params, std::move(preEnvSpace), bodies, targetPositions, std::move(preFieldAction));
 
     auto space = std::make_unique<EnvSpaceBallCuriculumActionRW>(std::move(preEnvironment), radius, distanceThreshold, sigmaRandomWalk);
 

@@ -32,3 +32,6 @@ void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceI
 
 std::unique_ptr<MSodeEnvironment>
 createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold = 2.0_r);
+
+std::unique_ptr<MSodeEnvironment>
+createEnvironmentCurriculum(const std::vector<RigidBody>& bodies, real fieldMagnitude, real distanceThreshold, real radius, real sigmaRandomWalk);
