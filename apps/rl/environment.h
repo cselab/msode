@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../utils/rnd.h"
+#include "magnetic_field_from_action.h"
+
 #include "space.h"
 
 #include <msode/simulation.h>
@@ -27,13 +29,7 @@ struct RewardParams
 
 struct Params
 {
-    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, std::unique_ptr<EnvSpace>&& space_) :
-        time(time_),
-        reward(reward_),
-        fieldMagnitude(fieldMagnitude_),
-        distanceThreshold(distanceThreshold_),
-        space(std::move(space_))
-    {}
+    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, std::unique_ptr<EnvSpace>&& space_);
 
     Params(const Params&) = delete;
     Params(Params&&) = default;
@@ -45,7 +41,6 @@ struct Params
     std::unique_ptr<EnvSpace> space;
 };
 
-template<class MagnFieldFromAction>
 class MSodeEnvironment
 {
 public:
@@ -54,29 +49,29 @@ public:
     MSodeEnvironment(std::unique_ptr<Params>&& params_,
                      const std::vector<RigidBody>& initialRBs,
                      const std::vector<real3>& targetPositions_,
-                     const MagnFieldFromAction& magnFieldStateFromAction_) :
+                     std::unique_ptr<MagnFieldFromActionBase>&& magnFieldStateFromAction_) :
         nstepsPerAction(params_->time.nstepsPerAction),
         dt(params_->time.dt),
         tmax(params_->time.tmax),
         distanceThreshold(params_->distanceThreshold),
         space(std::move(params_->space)),
         rewardParams(params_->reward),
-        magnFieldState(magnFieldStateFromAction_),
+        magnFieldState(std::move(magnFieldStateFromAction_)),
         targetPositions(targetPositions_),
         dumpEvery(params_->time.dumpEvery)
     {
         MSODE_Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
 
-        magnFieldState.attach(this);
+        magnFieldState->attach(this);
         
         auto omegaFunction = [this](real t)
         {
-            return magnFieldState.getOmega(t);
+            return magnFieldState->getOmega(t);
         };
 
         auto rotatingDirection = [this](real t) -> real3
         {
-            const real3 axis = magnFieldState.getAxis(t);
+            const real3 axis = magnFieldState->getAxis(t);
             return normalized(axis);
         };
     
@@ -92,8 +87,8 @@ public:
     MSodeEnvironment(MSodeEnvironment&&) = delete;
     MSodeEnvironment& operator=(MSodeEnvironment&&) = delete;
 
-    int numActions() const {return magnFieldState.numActions();}
-    auto getActionBounds() const {return magnFieldState.getActionBounds();}
+    int numActions() const {return magnFieldState->numActions();}
+    auto getActionBounds() const {return magnFieldState->getActionBounds();}
 
     void reset(long simId, std::mt19937& gen, bool usePreviousIC = false)
     {
@@ -122,8 +117,8 @@ public:
 
     Status advance(const std::vector<double>& action)
     {
-        magnFieldState.advance(sim->getCurrentTime());
-        magnFieldState.setAction(action);
+        magnFieldState->advance(sim->getCurrentTime());
+        magnFieldState->setAction(action);
 
         for (long step = 0; step < nstepsPerAction; ++step)
         {
@@ -140,7 +135,7 @@ public:
     const std::vector<double>& getState() const
     {
         real3 n1, n2, n3;
-        std::tie(n1, n2, n3) = magnFieldState.getFrameReference();
+        std::tie(n1, n2, n3) = magnFieldState->getFrameReference();
 
         const RotMatrix rot = [n1,n2,n3]()
         {
@@ -250,8 +245,8 @@ private:
     const real distanceThreshold;
     std::unique_ptr<EnvSpace> space;
     const RewardParams rewardParams;
-    
-    MagnFieldFromAction magnFieldState;
+
+    std::unique_ptr<MagnFieldFromActionBase> magnFieldState;
 
     std::vector<real3> targetPositions;
     mutable std::vector<real> previousDistance;

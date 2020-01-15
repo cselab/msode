@@ -81,7 +81,7 @@ void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceI
 }
 
 
-std::unique_ptr<MSodeEnvironment<MagnFieldActionType>>
+std::unique_ptr<MSodeEnvironment>
 createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold)
 {
     const int nbodies = bodies.size();
@@ -118,11 +118,11 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
     
     const std::vector<real3> targetPositions(nbodies, space->target);
 
-    // MagnFieldActionType magnFieldAction(minOmega, maxOmega);
-    // MagnFieldActionType magnFieldAction(maxOmega);
-    MagnFieldActionType magnFieldAction(minOmega, maxOmega);
-    // MagnFieldActionType magnFieldAction(minOmega, maxOmega);
+    // using MagnFieldActionType = MagnFieldFromActionDirect;
+    // using MagnFieldActionType = MagnFieldFromActionFromTargets;
+    using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
+    // using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
 
-    return std::make_unique<MSodeEnvironment<MagnFieldActionType>>(std::move(params), bodies, targetPositions, magnFieldAction);
+    return std::make_unique<MSodeEnvironment>(std::move(params), bodies, targetPositions, std::make_unique<MagnFieldActionType>(minOmega, maxOmega));
 }
 

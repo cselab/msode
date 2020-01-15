@@ -1,5 +1,7 @@
 set(SRC_FILES
+  environment.cpp
   helpers.cpp
+  magnetic_field_from_action.cpp
   space.cpp
   )
 

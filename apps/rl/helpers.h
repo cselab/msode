@@ -30,10 +30,5 @@ static void setActionBounds(const Env *env, smarties::Communicator *const comm)
 
 void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceInfos, smarties::Communicator *const comm);
 
-// using MagnFieldActionType = MagnFieldFromActionDirect;
-// using MagnFieldActionType = MagnFieldFromActionFromTargets;
-using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
-// using MagnFieldActionType = MagnFieldFromActionFromLocalPlane;
-
-std::unique_ptr<MSodeEnvironment<MagnFieldActionType>>
+std::unique_ptr<MSodeEnvironment>
 createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold = 2.0_r);
