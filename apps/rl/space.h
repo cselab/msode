@@ -80,10 +80,10 @@ protected:
     const real R;
 };
 
-class EnvSpaceBallCuriculumMC : public EnvSpaceBall
+class EnvSpaceBallCuriculumStateRW : public EnvSpaceBall
 {
 public:
-    EnvSpaceBallCuriculumMC(real R_, real targetR_, real sigmaRandomWalk_);
+    EnvSpaceBallCuriculumStateRW(real R_, real targetR_, real sigmaRandomWalk_);
 
     std::unique_ptr<EnvSpace> clone() const override;
     
@@ -96,3 +96,4 @@ protected:
     bool initialized {false};
     std::vector<real3> previousPositions;
 };
+
