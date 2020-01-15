@@ -66,7 +66,7 @@ protected:
 class EnvSpaceBall : public EnvSpace
 {
 public:
-    EnvSpaceBall(real R_);
+    EnvSpaceBall(real Radius_);
 
     std::unique_ptr<EnvSpace> clone() const override;
     
@@ -77,23 +77,22 @@ public:
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
-    const real R;
+    const real Radius;
 };
 
 class EnvSpaceBallCuriculumStateRW : public EnvSpaceBall
 {
 public:
-    EnvSpaceBallCuriculumStateRW(real R_, real targetR_, real sigmaRandomWalk_);
+    EnvSpaceBallCuriculumStateRW(real R_, real targetRadius_, real sigmaRandomWalk_);
 
     std::unique_ptr<EnvSpace> clone() const override;
     
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
-    const real targetR;
+    const real targetRadius;
     const real sigmaRandomWalk;
     
     bool initialized {false};
     std::vector<real3> previousPositions;
 };
-

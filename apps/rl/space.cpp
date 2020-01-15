@@ -52,8 +52,8 @@ std::vector<real3> EnvSpaceBox::generateNewPositions(std::mt19937& gen, int n)
 
 
 
-EnvSpaceBall::EnvSpaceBall(real R_) :
-    R(R_)
+EnvSpaceBall::EnvSpaceBall(real Radius_) :
+    Radius(Radius_)
 {}
 
 std::unique_ptr<EnvSpace> EnvSpaceBall::clone() const
@@ -61,24 +61,24 @@ std::unique_ptr<EnvSpace> EnvSpaceBall::clone() const
     return std::make_unique<EnvSpaceBall>(*this);
 }
 
-real3 EnvSpaceBall::getLowestPosition()  const {return {-R, -R, -R};}
-real3 EnvSpaceBall::getHighestPosition() const {return {+R, +R, +R};}
+real3 EnvSpaceBall::getLowestPosition()  const {return {-Radius, -Radius, -Radius};}
+real3 EnvSpaceBall::getHighestPosition() const {return {+Radius, +Radius, +Radius};}
 
-real EnvSpaceBall::computeMaxDistanceToTarget() const {return R;}
+real EnvSpaceBall::computeMaxDistanceToTarget() const {return Radius;}
 
 std::vector<real3> EnvSpaceBall::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)
-        p = generateUniformPositionBall(gen, R);
+        p = generateUniformPositionBall(gen, Radius);
     return positions;
 }
 
 
 
-EnvSpaceBallCuriculumStateRW::EnvSpaceBallCuriculumStateRW(real R_, real targetR_, real sigmaRandomWalk_) :
-    EnvSpaceBall(R_),
-    targetR(targetR_),
+EnvSpaceBallCuriculumStateRW::EnvSpaceBallCuriculumStateRW(real Radius_, real targetRadius_, real sigmaRandomWalk_) :
+    EnvSpaceBall(Radius_),
+    targetRadius(targetRadius_),
     sigmaRandomWalk(sigmaRandomWalk_)
 {}
 
@@ -113,12 +113,12 @@ std::vector<real3> EnvSpaceBallCuriculumStateRW::generateNewPositions(std::mt199
     {
         previousPositions.resize(n);
         for (auto& p : previousPositions)
-            p = generateUniformPositionBall(gen, targetR);
+            p = generateUniformPositionBall(gen, targetRadius);
         initialized = true;
     }
 
     for (int i = 0; i < n; ++i)
-        positions[i] = generateOnePositionMC(gen, previousPositions[i], R, sigmaRandomWalk);
+        positions[i] = generateOnePositionMC(gen, previousPositions[i], Radius, sigmaRandomWalk);
         
     previousPositions = positions;
     return positions;
