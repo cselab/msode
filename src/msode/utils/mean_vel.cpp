@@ -36,7 +36,7 @@ real computeMeanVelocityAnalytical(RigidBody body, real magneticFieldMagnitude, 
     const real Bxx = body.propulsion.B[0];
     const real Cxx = body.propulsion.C[0];
     const real wc = magneticFieldMagnitude * m * Cxx;
-
+    
     if (omega <= wc)
     {
         const real prefactor = Bxx / Cxx;
@@ -56,6 +56,7 @@ real computeMeanVelocityAnalytical(RigidBody body, real magneticFieldMagnitude, 
             return std::sin(theta);
         };
 
-        return 2.0_r * integrateTrapez(integrand, 0.0_r, period, nIntegration) / period;
+        const real prefactor = Bxx / period;
+        return prefactor * integrateTrapez(integrand, 0.0_r, period, nIntegration);
     }
 }
