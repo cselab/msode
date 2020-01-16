@@ -15,6 +15,11 @@ using RotMatrix = std::array<std::array<real, 3>, 3>;
 
 struct Quaternion
 {
+    static inline Quaternion createIdentity()
+    {
+        return {1.0_r, 0.0_r, 0.0_r, 0.0_r};
+    }
+    
     static inline Quaternion createFromComponents(real w, real x, real y, real z)
     {
         return {w, x, y, z};
