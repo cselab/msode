@@ -9,6 +9,7 @@ list( APPEND CMAKE_MODULE_PATH
 )
 
 project(msode LANGUAGES CXX VERSION 0.1.0)
+enable_testing()
 
 set(LIB_NAME_MSODE msode)
 
@@ -17,9 +18,6 @@ set(msode_definitions "")
 if (BUILD_WITH_CONTRACTS)
   set(msode_definitions "$msode_definitions;-DMSODE_FAIL_ON_CONTRACT")
 endif()
-
-enable_testing()
-add_subdirectory("extern/Catch2/")
 
 add_subdirectory(src)
 add_subdirectory(units)
