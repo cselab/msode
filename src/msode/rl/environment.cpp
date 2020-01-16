@@ -70,7 +70,7 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool usePreviousIC)
     setPositions(positions);
     
     for (auto& b : bodies)
-        b.q = generateUniformQuaternion(gen);
+        b.q = utils::generateUniformQuaternion(gen);
 
     sim->reset(bodies, field);
 

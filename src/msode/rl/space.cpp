@@ -46,7 +46,7 @@ std::vector<real3> EnvSpaceBox::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)
-        p = generateUniformPositionBox(gen, domain.lo, domain.hi); 
+        p = utils::generateUniformPositionBox(gen, domain.lo, domain.hi); 
     return positions;
 }
 
@@ -71,7 +71,7 @@ std::vector<real3> EnvSpaceBall::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)
-        p = generateUniformPositionBall(gen, radius);
+        p = utils::generateUniformPositionBall(gen, radius);
     return positions;
 }
 
@@ -114,7 +114,7 @@ std::vector<real3> EnvSpaceBallCuriculumStateRW::generateNewPositions(std::mt199
     {
         previousPositions.resize(n);
         for (auto& p : previousPositions)
-            p = generateUniformPositionBall(gen, targetRadius);
+            p = utils::generateUniformPositionBall(gen, targetRadius);
         initialized = true;
     }
 
@@ -158,7 +158,7 @@ std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19
     {
         previousPositions.resize(n);
         for (auto& p : previousPositions)
-            p = generateUniformPositionBall(gen, targetRadius);
+            p = utils::generateUniformPositionBall(gen, targetRadius);
         initialized = true;
     }
 

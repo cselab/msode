@@ -1,6 +1,7 @@
 #include "rnd.h"
 
-using namespace msode;
+namespace msode {
+namespace utils {
 
 static inline real sq(real x) {return x*x;}
 
@@ -48,3 +49,6 @@ Quaternion generateUniformQuaternion(std::mt19937& gen)
 
     return Quaternion::createFromComponents(w, x, y, z);
 }
+
+} // namespace utils
+} // namespace msode
