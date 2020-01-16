@@ -1,6 +1,6 @@
 #pragma once
 
-#include <msode/types.h>
+#include <msode/core/types.h>
 
 #include <memory>
 #include <random>

@@ -2,7 +2,7 @@
 #include "environment.h"
 #include "../utils/rnd.h"
 
-#include <msode/math.h>
+#include <msode/core/math.h>
 
 using namespace msode;
 

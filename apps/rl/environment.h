@@ -5,7 +5,7 @@
 
 #include "space.h"
 
-#include <msode/simulation.h>
+#include <msode/core/simulation.h>
 
 #include <memory>
 #include <random>

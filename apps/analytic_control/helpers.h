@@ -1,7 +1,7 @@
 #pragma once
 
-#include <msode/simulation.h>
-#include <msode/factory.h>
+#include <msode/core/simulation.h>
+#include <msode/core/factory.h>
 
 #include <Eigen/LU>
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <msode/log.h>
-#include <msode/math.h>
-#include <msode/types.h>
+#include <msode/core/log.h>
+#include <msode/core/math.h>
+#include <msode/core/types.h>
 
 #include <tuple>
 #include <vector>

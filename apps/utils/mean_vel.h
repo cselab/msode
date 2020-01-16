@@ -1,6 +1,6 @@
 #pragma once
 
-#include <msode/simulation.h>
+#include <msode/core/simulation.h>
 
 using msode::RigidBody;
 using msode::real;

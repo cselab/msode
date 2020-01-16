@@ -2,7 +2,7 @@
 
 #include <random>
 
-#include <msode/quaternion.h>
+#include <msode/core/quaternion.h>
 
 using namespace msode::literals;
 

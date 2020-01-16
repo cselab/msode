@@ -1,5 +1,5 @@
-#include <msode/simulation.h>
-#include <msode/factory.h>
+#include <msode/core/simulation.h>
+#include <msode/core/factory.h>
 
 int main(int argc, char **argv)
 {

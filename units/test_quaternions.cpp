@@ -1,4 +1,4 @@
-#include <msode/quaternion.h>
+#include <msode/core/quaternion.h>
 
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
