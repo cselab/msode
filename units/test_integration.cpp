@@ -22,3 +22,14 @@ TEST_CASE( "Quadratic polynomial", "[numerical integral]" )
     REQUIRE(Itrap == Approx(Iexact));
 }
 
+TEST_CASE( "Non linear function", "[numerical integral]" )
+{
+    const real a = -1.0_r;
+    const real b =  5.0_r;
+    auto f = [](real x) {return x * std::exp(x) * std::cos(x);};
+    auto fIndefinitIntegral = [](real x) {return 0.5_r * std::exp(x) * ((x - 1.0_r) * std::sin(x) + x * std::cos(x));};
+    const real Iexact = fIndefinitIntegral(b) - fIndefinitIntegral(a);
+    const real Itrap  = integrateTrapez(f, a, b, 10000);
+    REQUIRE(Itrap == Approx(Iexact));
+}
+
