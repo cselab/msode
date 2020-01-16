@@ -18,13 +18,13 @@ add_executable(app_forward_curve app_forward_curve.cpp)
 target_link_libraries(app_forward_curve utils)
 
 add_executable(app_rl app_rl.cpp)
-target_link_libraries(app_rl rl utils)
+target_link_libraries(app_rl rl)
 
 add_executable(app_rl_comp app_rl_comp.cpp)
-target_link_libraries(app_rl_comp rl utils analytic_control)
+target_link_libraries(app_rl_comp rl analytic_control)
 
 add_executable(app_rl_curriculum app_rl_curriculum.cpp)
-target_link_libraries(app_rl_curriculum msode rl utils)
+target_link_libraries(app_rl_curriculum msode rl)
 
 add_executable(app_rotating app_rotating.cpp)
 target_link_libraries(app_rotating msode)
