@@ -56,7 +56,7 @@ real computeMeanVelocityAnalytical(RigidBody body, real magneticFieldMagnitude, 
             return std::sin(theta);
         };
 
-        const real prefactor = Bxx / period;
+        const real prefactor = m * magneticFieldMagnitude * Bxx / period;
         return prefactor * integrateTrapez(integrand, 0.0_r, period, nIntegration);
     }
 }
