@@ -93,6 +93,8 @@ public:
     void run(long nsteps, real dt);
 
     const std::vector<RigidBody>& getBodies() const {return rigidBodies;}
+    std::vector<RigidBody>& getBodies() {return rigidBodies;}
+    
     const MagneticField& getField() const {return magneticField;}
     real getCurrentTime() const {return currentTime;}
     

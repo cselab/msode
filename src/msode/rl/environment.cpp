@@ -63,16 +63,18 @@ ActionBounds MSodeEnvironment::getActionBounds() const
 
 void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool usePreviousIC)
 {
-    auto field  = sim->getField();
-    auto bodies = sim->getBodies();
+    MagneticField          field  = sim->getField();
+    std::vector<RigidBody> bodies = sim->getBodies();
 
     field.phase = 0.0_r;
 
     const auto positions = space->generateNewPositionsIfFlag(gen, bodies.size(), !usePreviousIC);
-    setPositions(positions);
-    
-    for (auto& b : bodies)
-        b.q = utils::generateUniformQuaternion(gen);
+
+    for (size_t i = 0; i < bodies.size(); ++i)
+    {
+        bodies[i].r = positions[i];
+        bodies[i].q = utils::generateUniformQuaternion(gen);
+    }
 
     sim->reset(bodies, field);
 
@@ -88,7 +90,7 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool usePreviousIC)
 
 void MSodeEnvironment::setPositions(const std::vector<real3>& positions)
 {
-    auto bodies = sim->getBodies();
+    auto& bodies = sim->getBodies();
         
     for (size_t i = 0; i < bodies.size(); ++i)
         bodies[i].r = positions[i];

@@ -58,7 +58,7 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     Params params(tParams, rParams, magneticFieldMagnitude, distanceThreshold);
 
     auto envSpace = std::make_unique<EnvSpaceBall>(domainRadius);
-    std::vector<RigidBody> initialBodies {body};
+    std::vector<RigidBody> initialBodies = {body};
     std::vector<real3> targetPositions(initialBodies.size(), envSpace->target);
     auto actionField = std::make_unique<MagnFieldFromActionDirect>(0.0_r, 2.0_r * omegaC);
 
