@@ -1,6 +1,5 @@
-#include "analytic_control/helpers.h"
-#include "analytic_control/optimal_path.h"
-
+#include <msode/analytic_control/helpers.h>
+#include <msode/analytic_control/optimal_path.h>
 #include <msode/core/simulation.h>
 
 #include <iostream>

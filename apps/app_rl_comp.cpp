@@ -1,6 +1,6 @@
 #include "rl/helpers.h"
-#include "analytic_control/optimal_path.h"
-#include "analytic_control/apply_strategy.h"
+#include <msode/analytic_control/optimal_path.h>
+#include <msode/analytic_control/apply_strategy.h>
 
 #include <type_traits>
 
