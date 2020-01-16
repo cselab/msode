@@ -1,5 +1,3 @@
-set(MSODE_INCLUDES "${CMAKE_CURRENT_SOURCE_DIR}/../../")
-
 set(MSODE_SOURCES
   factory.cpp
   file_parser.cpp
