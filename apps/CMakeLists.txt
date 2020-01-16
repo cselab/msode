@@ -1,7 +1,6 @@
 include(FindPkgConfig)
 pkg_check_modules(korali REQUIRED IMPORTED_TARGET korali)
 
-add_subdirectory(utils)
 add_subdirectory(analytic_control)
 add_subdirectory(rl)
 

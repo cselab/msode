@@ -1,7 +1,6 @@
 #include <msode/core/simulation.h>
 #include <msode/core/factory.h>
-
-#include "utils/mean_vel.h"
+#include <msode/utils/mean_vel.h>
 
 #include <iostream>
 

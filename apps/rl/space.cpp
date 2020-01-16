@@ -1,8 +1,8 @@
 #include "space.h"
 #include "environment.h"
-#include "../utils/rnd.h"
 
 #include <msode/core/math.h>
+#include <msode/utils/rnd.h>
 
 using namespace msode;
 

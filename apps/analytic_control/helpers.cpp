@@ -1,8 +1,8 @@
 #include "helpers.h"
-#include "../utils/mean_vel.h"
+
+#include <msode/utils/mean_vel.h>
 
 #include <Eigen/Eigenvalues>
-
 #include <random>
 
 using namespace msode;

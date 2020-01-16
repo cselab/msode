@@ -1,11 +1,10 @@
 #pragma once
 
-#include "../utils/rnd.h"
 #include "magnetic_field_from_action.h"
-
 #include "space.h"
 
 #include <msode/core/simulation.h>
+#include <msode/utils/rnd.h>
 
 #include <memory>
 #include <random>
