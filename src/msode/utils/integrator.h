@@ -13,7 +13,7 @@ static real integrateTrapez(Function f, real a, real b, long n)
 
     using namespace msode::literals;
     
-    const real h = (b-a) / n;
+    const real h = (b-a) / (n-1);
     real integral {0.0_r};
 
     for (long i = 1; i < n-1; ++i)
@@ -21,6 +21,6 @@ static real integrateTrapez(Function f, real a, real b, long n)
         const real x = a + i * h;
         integral += f(x);
     }
-    integral = f(a) + 0.5_r * integral + f(b);
+    integral += 0.5_r * (f(a) + f(b));
     return h * integral;
 }
