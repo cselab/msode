@@ -41,8 +41,8 @@ static void compareODEvsIntegral(real coeffLo, real coeffHi, long numTests = 10)
     const auto body = generateRandomBody(gen);
     const real omegaC = body.stepOutFrequency(magneticFieldMagnitude);
 
-    constexpr real tEndODE = 2000.0_r;
-    constexpr long nIntegrationSteps = 10000;
+    constexpr real tEndODE = 500.0_r;
+    constexpr long nIntegrationSteps = 1000;
 
     std::uniform_real_distribution<real> omegaDistr(coeffLo, coeffHi * omegaC);
 
