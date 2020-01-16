@@ -16,5 +16,7 @@ build_and_create_test(test_file_parser.cpp "gtest;${LIB_NAME_MSODE}")
 build_and_create_test(test_forward.cpp     "gtest;${LIB_NAME_MSODE};utils")
 build_and_create_test(test_quaternions.cpp "gtest;${LIB_NAME_MSODE}")
 
+build_and_create_test(test_rl_space.cpp "gtest;rl")
+
 build_and_create_test(test_utils_integration.cpp "gtest;utils")
 build_and_create_test(test_utils_rnd.cpp         "gtest;utils")
