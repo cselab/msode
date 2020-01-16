@@ -104,6 +104,11 @@ ActionBounds MagnFieldFromActionDirect::getActionBounds() const
     return {{minOmega, -1.0, -1.0, -1.0},
             {maxOmega,  1.0,  1.0,  1.0}};
 }
+
+std::tuple<real3, real3, real3> MagnFieldFromActionDirect::getFrameReference() const
+{
+    return {ex, ey, ez};
+}
     
 void MagnFieldFromActionDirect::setAction(const std::vector<double>& action) 
 {
