@@ -1,12 +1,8 @@
-set(TEST_FILES
-  test_quaternions.cpp
-  test_forward.cpp)
+add_executable(test_quaternions test_quaternions.cpp)
+target_link_libraries(test_quaternions   Catch2::Catch2 ${LIB_NAME_MSODE})
+add_test(NAME test_quaternions COMMAND test_quaternions)
 
-foreach(FILE ${TEST_FILES})
-    string(REGEX REPLACE "[./]" "_" NAME ${FILE})
-    add_executable(${NAME} ${FILE})
-    target_link_libraries(${NAME} ${LIB_NAME_MSODE})
-    target_link_libraries(${NAME} Catch2::Catch2)
-    add_test(NAME ${NAME} COMMAND ${NAME})
-endforeach(FILE ${TEST_FILES})
+add_executable(test_forward test_forward.cpp)
+target_link_libraries(test_forward  Catch2::Catch2 ${LIB_NAME_MSODE} utils analytic_control)
+add_test(NAME test_forward COMMAND test_forward)
 
