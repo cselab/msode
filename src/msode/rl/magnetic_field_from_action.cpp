@@ -185,7 +185,7 @@ std::tuple<real3, real3, real3> MagnFieldFromActionFromLocalFrame::getFrameRefer
     const auto& bodies  = env->getBodies();
     const auto& targets = env->getTargetPositions();
 
-    auto selectId = [&bodies, &targets](int start/*, real3 n = real3{0.0_r, 0.0_r, 0.0_r}*/) -> int
+    auto selectId = [&bodies, &targets](int start) -> int
     {
         constexpr real minDist = 5e-1_r;
         
@@ -205,7 +205,6 @@ std::tuple<real3, real3, real3> MagnFieldFromActionFromLocalFrame::getFrameRefer
         
     const real3 n1 = normalized(bodies[i1].r - targets[i1]);
 
-    //const int i2 = selectId(i1 + 1, n1);
     const int i2 = selectId(i1 + 1);
     real3 n2;
         
