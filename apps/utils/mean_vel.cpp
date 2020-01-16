@@ -33,7 +33,7 @@ template <class Function>
 static real integrateTrapez(Function f, real a, real b, long n)
 {
     MSODE_Expect(a < b, "a must be lower than b");
-    MSODE_Expect(N > 2, "need more than two points");
+    MSODE_Expect(n > 2, "need more than two points");
     
     const real h = (b-a) / n;
     real integral {0.0_r};
