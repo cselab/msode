@@ -1,4 +1,6 @@
-set(TEST_FILES test_quaternions.cpp)
+set(TEST_FILES
+  test_quaternions.cpp
+  test_forward.cpp)
 
 foreach(FILE ${TEST_FILES})
     string(REGEX REPLACE "[./]" "_" NAME ${FILE})
