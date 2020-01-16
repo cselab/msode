@@ -175,11 +175,6 @@ std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19
         
         positions = environment->getPositions();
     } while(!isCorrectSample(positions, targetRadius, radius));
-
-    auto r = positions[0];
-    auto rp = previousPositions[0];
-    printf("%.6g %.6g %.6g     %.6g %.6g %.6g\n",
-           r.x, r.y, r.z, rp.x, rp.y, rp.z);
     
     previousPositions = positions;
     return positions;
