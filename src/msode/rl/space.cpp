@@ -4,7 +4,8 @@
 #include <msode/core/math.h>
 #include <msode/utils/rnd.h>
 
-using namespace msode;
+namespace msode {
+namespace rl {
 
 const std::vector<real3>& EnvSpace::generateNewPositionsIfFlag(std::mt19937& gen, int n, bool generateNew)
 {
@@ -212,3 +213,6 @@ std::vector<double> EnvSpaceBallCuriculumActionRW::generateAction(std::mt19937& 
     }
     return actions;
 }
+
+} // namespace rl
+} // namespace msode

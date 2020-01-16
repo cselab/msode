@@ -1,5 +1,7 @@
 #include "helpers.h"
 
+namespace msode {
+namespace rl {
 
 std::vector<RigidBody> createBodies(const std::string& fileNameList)
 {
@@ -155,3 +157,5 @@ createEnvironmentCurriculum(const std::vector<RigidBody>& bodies, real fieldMagn
     return std::make_unique<MSodeEnvironment>(params, std::move(space), bodies, targetPositions, std::move(fieldAction));
 }
 
+} // namespace rl
+} // namespace msode

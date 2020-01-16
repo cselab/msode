@@ -2,6 +2,9 @@
 
 #include "environment.h"
 
+namespace msode {
+namespace rl {
+
 constexpr real3 ex {1.0_r, 0.0_r, 0.0_r};
 constexpr real3 ey {0.0_r, 1.0_r, 0.0_r};
 constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
@@ -273,3 +276,6 @@ void MagnFieldFromActionFromLocalPlane::setAction(const std::vector<double>& act
     axis = ax * n1 + ay * n2;
     axis = normalized(axis);
 }
+
+} // namespace rl
+} // namespace msode

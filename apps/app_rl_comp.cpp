@@ -6,13 +6,14 @@
 
 #include <iomanip>
 
+using namespace msode;
+
 static inline std::string generateACfname(long simId)
 {
     std::ostringstream ss;
     ss << std::setw(6) << std::setfill('0') << simId;
     return "ac_trajectories_" + ss.str() + ".dat";
 }
-
 
 static inline std::vector<real3> extractPositions(const std::vector<RigidBody>& bodies)
 {
@@ -53,22 +54,22 @@ static inline void dumpComparisonInfos(std::ostream& stream, int simId, real tim
 inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*argv*/)
 {
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
-    const auto bodies = createBodies("../config/swimmers_list.cfg");
+    const auto bodies = rl::createBodies("../config/swimmers_list.cfg");
 
     const real magneticFieldMagnitude = 1.0_r;
 
     const real L = 50.0_r; // in body lengths units
-    EnvSpaceBox spaceInfos(L);
+    rl::EnvSpaceBox spaceInfos(L);
     const int dumpEvery = 1000;
 
-    auto env = createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude);
+    auto env = rl::createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude);
 
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
     const analytic_control::MatrixReal U = V.inverse();
     
-    setActionDims  (env.get(), comm);
-    setActionBounds(env.get(), comm);
-    setStateBounds(bodies, &spaceInfos, comm);
+    rl::setActionDims  (env.get(), comm);
+    rl::setActionBounds(env.get(), comm);
+    rl::setStateBounds(bodies, &spaceInfos, comm);
     
     bool isTraining {true};
     long simId {0};

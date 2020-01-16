@@ -7,11 +7,10 @@
 #include <tuple>
 #include <vector>
 
-class MSodeEnvironment;
+namespace msode {
+namespace rl {
 
-using msode::real;
-using msode::real3;
-using namespace msode::literals;
+class MSodeEnvironment;
 
 using ActionBounds = std::tuple<std::vector<double>, std::vector<double>>;
 
@@ -146,3 +145,6 @@ public:
     ActionBounds getActionBounds() const override;
     void setAction(const std::vector<double>& action) override;
 };
+
+} // namespace rl
+} // namespace msode

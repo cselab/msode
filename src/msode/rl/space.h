@@ -5,9 +5,8 @@
 #include <memory>
 #include <random>
 
-using msode::real;
-using msode::real3;
-using namespace msode::literals;
+namespace msode {
+namespace rl {
 
 class EnvSpace
 {
@@ -122,3 +121,6 @@ protected:
     // shared because too lazy to write clone with unique_ptr
     std::shared_ptr<MSodeEnvironment> environment;
 };
+
+} // namespace rl
+} // namespace msode

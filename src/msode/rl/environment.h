@@ -9,7 +9,8 @@
 #include <memory>
 #include <random>
 
-using namespace msode;
+namespace msode {
+namespace rl {
 
 struct TimeParams
 {
@@ -94,3 +95,6 @@ private:
 
     const long dumpEvery;
 };
+
+} // namespace rl
+} // namespace msode

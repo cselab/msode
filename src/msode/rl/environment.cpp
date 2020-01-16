@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <sstream>
 
+namespace msode {
+namespace rl {
 
 Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_) :
     time(time_),
@@ -229,3 +231,6 @@ MSodeEnvironment::Status MSodeEnvironment::getCurrentStatus() const
         
     return Status::Running;
 }
+
+} // namespace rl
+} // namespace msode

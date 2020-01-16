@@ -4,22 +4,24 @@
 
 inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*argv*/)
 {
+    using namespace msode;
+    
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
-    const auto bodies = createBodies("../config/swimmers_list.cfg");
+    const auto bodies = msode::rl::createBodies("../config/swimmers_list.cfg");
 
     const real magneticFieldMagnitude = 1.0_r;
 
     const real distanceThreshold = 0.1_r;
     const real R = 50.0_r; // domain radius, in body lengths units
     const real sigmaRW = 0.5_r;
-    const EnvSpaceBallCuriculumStateRW spaceInfos(R, distanceThreshold, sigmaRW);
+    const rl::EnvSpaceBallCuriculumStateRW spaceInfos(R, distanceThreshold, sigmaRW);
     
     // auto env = createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude, distanceThreshold);
-    auto env = createEnvironmentCurriculum(bodies, magneticFieldMagnitude, distanceThreshold, R, sigmaRW);
+    auto env = rl::createEnvironmentCurriculum(bodies, magneticFieldMagnitude, distanceThreshold, R, sigmaRW);
     
-    setActionDims  (env.get(), comm);
-    setActionBounds(env.get(), comm);
-    setStateBounds(bodies, &spaceInfos, comm);
+    rl::setActionDims  (env.get(), comm);
+    rl::setActionBounds(env.get(), comm);
+    rl::setStateBounds(bodies, &spaceInfos, comm);
     
     bool isTraining {true};
     long simId {0};

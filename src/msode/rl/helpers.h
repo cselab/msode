@@ -9,6 +9,9 @@
 
 #include <memory>
 
+namespace msode {
+namespace rl {
+
 std::vector<RigidBody> createBodies(const std::string& fileNameList);
 
 template<typename Env>
@@ -35,3 +38,6 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
 
 std::unique_ptr<MSodeEnvironment>
 createEnvironmentCurriculum(const std::vector<RigidBody>& bodies, real fieldMagnitude, real distanceThreshold, real radius, real sigmaRandomWalk);
+
+} // namespace rl
+} // namespace msode
