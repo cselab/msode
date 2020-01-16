@@ -14,6 +14,21 @@ std::vector<RigidBody> createBodies(const std::string& fileNameList)
     return bodies;
 }
 
+void setActionDims(const MSodeEnvironment *env, smarties::Communicator *const comm)
+{
+    const int nControlVars = env->numActions();
+    const int nStateVars   = env->getState().size();
+    comm->setStateActionDims(nStateVars, nControlVars);
+}
+
+void setActionBounds(const MSodeEnvironment *env, smarties::Communicator *const comm)
+{
+    const bool bounded = true;
+    std::vector<double> lo, hi;
+    std::tie(lo, hi) = env->getActionBounds();
+    comm->setActionScales(hi, lo, bounded);
+}
+
 static real computeMinForwardVelocity(real fieldMagnitude, const std::vector<RigidBody>& bodies)
 {
     real v = 1e9_r;
