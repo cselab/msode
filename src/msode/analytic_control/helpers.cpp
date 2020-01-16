@@ -5,10 +5,8 @@
 #include <Eigen/Eigenvalues>
 #include <random>
 
-using namespace msode;
-
-namespace analytic_control
-{
+namespace msode {
+namespace analytic_control {
 
 std::vector<real3> generateRandomPositionsBox(int n, real3 boxLo, real3 boxHi, long seed)
 {
@@ -74,3 +72,4 @@ std::vector<real> computeEigenValues(const MatrixReal& A)
 }
 
 } // namespace analytic_control
+} // namespace msode

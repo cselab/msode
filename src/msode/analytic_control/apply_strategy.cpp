@@ -6,10 +6,8 @@
 #include <algorithm>
 #include <limits>
 
-namespace analytic_control
-{
-
-using namespace msode;
+namespace msode {
+namespace analytic_control {
 
 static inline std::vector<real> computeBetas(const std::vector<real3>& initialPositions,
                                              const MatrixReal& U, real3 dir)
@@ -132,10 +130,10 @@ real simulateOptimalPath(real magneticFieldMagnitude,
 }
 
 
-msode::real computeRequiredTime(msode::real magneticFieldMagnitude,
-                                const std::vector<msode::RigidBody>& bodies,
-                                const std::vector<msode::real3>& initialPositions,
-                                const MatrixReal& U)
+real computeRequiredTime(real magneticFieldMagnitude,
+                         const std::vector<RigidBody>& bodies,
+                         const std::vector<real3>& initialPositions,
+                         const MatrixReal& U)
 {
     const auto A = computeA(U, initialPositions);
     const Quaternion q = findBestPath(A);
@@ -166,3 +164,4 @@ msode::real computeRequiredTime(msode::real magneticFieldMagnitude,
 }
 
 } // namespace analytic_control
+} // namespace msode

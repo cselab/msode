@@ -5,16 +5,17 @@
 
 #include <Eigen/LU>
 
-namespace analytic_control
-{
+namespace msode {
+namespace analytic_control {
 
-using MatrixReal = Eigen::Matrix<msode::real, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
-using ArrayReal  = Eigen::Array <msode::real, Eigen::Dynamic, 1>;
+using MatrixReal = Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>;
+using ArrayReal  = Eigen::Array <real, Eigen::Dynamic, 1>;
 
-std::vector<msode::real> computeStepOutFrequencies(msode::real magneticFieldMagnitude, const std::vector<msode::RigidBody>& bodies);
-std::vector<msode::real3> generateRandomPositionsBox(int n, msode::real3 boxLo, msode::real3 boxHi, long seed = 42);
-MatrixReal createVelocityMatrix(msode::real magneticFieldMagnitude, const std::vector<msode::RigidBody>& bodies);
+std::vector<real> computeStepOutFrequencies(real magneticFieldMagnitude, const std::vector<RigidBody>& bodies);
+std::vector<real3> generateRandomPositionsBox(int n, real3 boxLo, real3 boxHi, long seed = 42);
+MatrixReal createVelocityMatrix(real magneticFieldMagnitude, const std::vector<RigidBody>& bodies);
 
-std::vector<msode::real> computeEigenValues(const MatrixReal& A);
+std::vector<real> computeEigenValues(const MatrixReal& A);
 
 } // namespace analytic_control
+} // namespace msode

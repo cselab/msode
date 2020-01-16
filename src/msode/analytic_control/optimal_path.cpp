@@ -7,13 +7,11 @@
 #include <korali.hpp>
 #pragma GCC diagnostic pop
 
-namespace analytic_control
-{
+namespace msode {
+namespace analytic_control {
 
 // because korali passes functions through json... (WTF!?)
 // need to use global variables
-
-using namespace msode;
 
 std::vector<real3> AGlobal;
 
@@ -177,3 +175,4 @@ Quaternion findBestPath(const std::vector<real3>& A)
 }
 
 } // namespace analytic_control
+} // namespace msode
