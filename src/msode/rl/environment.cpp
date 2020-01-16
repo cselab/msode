@@ -127,12 +127,12 @@ const std::vector<double>& MSodeEnvironment::getState() const
     std::tie(n1, n2, n3) = magnFieldState->getFrameReference();
 
     const RotMatrix rot = [n1,n2,n3]()
-                          {
-                              const std::array<real, 3> n1_ {n1.x, n1.y, n1.z};
-                              const std::array<real, 3> n2_ {n2.x, n2.y, n2.z};
-                              const std::array<real, 3> n3_ {n3.x, n3.y, n3.z};
-                              return RotMatrix{n1_, n2_, n3_};
-                          }();
+    {
+        const std::array<real, 3> n1_ {n1.x, n1.y, n1.z};
+        const std::array<real, 3> n2_ {n2.x, n2.y, n2.z};
+        const std::array<real, 3> n3_ {n3.x, n3.y, n3.z};
+        return RotMatrix{n1_, n2_, n3_};
+    }();
 
     const auto qRot = Quaternion::createFromMatrix(rot);
         
