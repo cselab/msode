@@ -90,7 +90,7 @@ std::unique_ptr<EnvSpace> EnvSpaceBallCuriculumStateRW::clone() const
     return std::make_unique<EnvSpaceBallCuriculumStateRW>(*this);
 }
 
-static inline real3 generateOnePositionMC(std::mt19937& gen, real3 r0, real radius, real sigma)
+static inline real3 generateOnePositionMC(std::mt19937& gen, real3 r0, real radius, real targetRadius, real sigma)
 {
     bool accepted {false};
     real3 r;
@@ -101,7 +101,8 @@ static inline real3 generateOnePositionMC(std::mt19937& gen, real3 r0, real radi
         const real3 step {distr(gen), distr(gen), distr(gen)};
         r = r0 + step;
 
-        if (dot(r,r) <= radius * radius)
+        if (dot(r,r) <= radius * radius &&
+            dot(r,r) > targetRadius * targetRadius)
             accepted = true;
     }
     return r;
@@ -120,7 +121,7 @@ std::vector<real3> EnvSpaceBallCuriculumStateRW::generateNewPositions(std::mt199
     }
 
     for (int i = 0; i < n; ++i)
-        positions[i] = generateOnePositionMC(gen, previousPositions[i], radius, sigmaRandomWalk);
+        positions[i] = generateOnePositionMC(gen, previousPositions[i], radius, targetRadius, sigmaRandomWalk);
         
     previousPositions = positions;
     return positions;

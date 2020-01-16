@@ -59,7 +59,7 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_samples_are_inside )
     std::mt19937 gen(4242);
     const real R {25.0_r};
     const real targetRadius {2.0_r};
-    const real sigmaRW = targetRadius * 0.1_r;
+    const real sigmaRW = targetRadius * 0.5_r;
 
     const int nPos = 16;
     const long nSamples = 1000;
@@ -72,7 +72,7 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_samples_are_inside )
 
         for (auto r : positions)
         {
-            // ASSERT_GE(dot(r,r), targetRadius*targetRadius);
+            ASSERT_GE(dot(r,r), targetRadius*targetRadius);
             ASSERT_LE(dot(r,r), R*R);
         }
     }
