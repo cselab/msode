@@ -1,7 +1,8 @@
 #include "mean_vel.h"
 #include "integrator.h"
 
-using namespace msode; 
+namespace msode {
+namespace utils {
 
 static inline real meanVelocity(real3 r0, real3 r1, real T)
 {
@@ -60,3 +61,6 @@ real computeMeanVelocityAnalytical(RigidBody body, real magneticFieldMagnitude, 
         return prefactor * integrateTrapez(integrand, 0.0_r, period, nIntegration);
     }
 }
+
+} // namespace utils
+} // namespace msode

@@ -55,7 +55,7 @@ MatrixReal createVelocityMatrix(real magneticFieldMagnitude, const std::vector<R
         for (size_t j = 0; j < n; ++j)
         {
             const real omega = omegas[j];
-            V(i, j) = computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, nIntegration);
+            V(i, j) = utils::computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, nIntegration);
         }
     }
     return V;

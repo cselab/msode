@@ -3,7 +3,8 @@
 #include <msode/core/log.h>
 #include <msode/core/types.h>
 
-using msode::real;
+namespace msode {
+namespace utils {
 
 template <class Function>
 static real integrateTrapez(Function f, real a, real b, long n)
@@ -24,3 +25,6 @@ static real integrateTrapez(Function f, real a, real b, long n)
     integral += 0.5_r * (f(a) + f(b));
     return h * integral;
 }
+
+} // namespace utils
+} // namespace msode

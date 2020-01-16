@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     {
         const real omega = i * dOmega;
         //const real v = computeMeanVelocityODE(body, magneticFieldMagnitude, omega, 200.0_r);
-        const real v = computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, 10000);
+        const real v = utils::computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, 10000);
         std::cout << omega << " " << v << std::endl;
     }
     

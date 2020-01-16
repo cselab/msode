@@ -4,10 +4,9 @@
 
 #include <msode/core/quaternion.h>
 
-namespace msode
-{
-namespace utils
-{
+namespace msode {
+namespace utils {
+
 using namespace msode::literals;
 
 msode::real3 generateUniformPositionBox(std::mt19937& gen, msode::real3 lo, msode::real3 hi);

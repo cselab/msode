@@ -48,8 +48,8 @@ static void compareODEvsIntegral(real coeffLo, real coeffHi, long numTests = 10)
     {
         const real omega = omegaDistr(gen);
 
-        const real vODE = computeMeanVelocityODE       (body, magneticFieldMagnitude, omega, tEndODE);
-        const real vInt = computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, nIntegrationSteps);
+        const real vODE = utils::computeMeanVelocityODE       (body, magneticFieldMagnitude, omega, tEndODE);
+        const real vInt = utils::computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, nIntegrationSteps);
 
         ASSERT_NEAR(vODE, vInt, 0.01_r);
     }
