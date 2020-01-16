@@ -140,7 +140,18 @@ std::unique_ptr<EnvSpace> EnvSpaceBallCuriculumActionRW::clone() const
     return std::make_unique<EnvSpaceBallCuriculumActionRW>(*this);
 }
 
-    
+
+static inline bool isCorrectSample(const std::vector<real3>& positions, real Rmin, real Rmax)
+{
+    for (auto p : positions)
+    {
+        const auto r = length(p);
+        if (r < Rmin || r > Rmax)
+            return false;
+    }
+    return true;
+}
+
 std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19937& gen, int n)
 {
     if (!initialized)
@@ -151,13 +162,23 @@ std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19
         initialized = true;
     }
 
-    environment->reset(gen);
-    environment->setPositions(previousPositions);
+    std::vector<real3> positions;
 
-    const auto action = generateAction(gen);
-    environment->advance(action);
+    do {
+        environment->reset(gen);
+        environment->setPositions(previousPositions);
+        
+        const auto action = generateAction(gen);
+        environment->advance(action);
+        
+        positions = environment->getPositions();
+    } while(!isCorrectSample(positions, targetRadius, radius));
 
-    const auto positions = environment->getPositions();
+    auto r = positions[0];
+    auto rp = previousPositions[0];
+    printf("%.6g %.6g %.6g     %.6g %.6g %.6g\n",
+           r.x, r.y, r.z, rp.x, rp.y, rp.z);
+    
     previousPositions = positions;
     return positions;
 }
