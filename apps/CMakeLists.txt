@@ -1,5 +1,3 @@
-add_subdirectory(rl)
-
 find_package(OpenMP)
 
 if(OpenMP_CXX_FOUND)
