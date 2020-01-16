@@ -10,29 +10,25 @@ microswimmer ODE solver
 - smarties https://github.com/cselab/smarties
 
 
-### with cmake
-
+### debug mode (default)
 
 	mkdir buils
 	cd build
 	cmake ..
 	make -j <njobs>
 
+### release mode (no contracts)
 
-### with Makefile (deprecated)
+	mkdir buils
+	cd build
+	cmake -DBUILD_WITH_CONTRACTS=ON ..
+	make -j <njobs>
 
-In release mode:
-
-	make apps
-
-In debug mode:
-
-	debug=1 make apps
 
 ## usage
 
 See `./app` help messages.
-Configuration files for swimmers examples can be found in the `config/`directory.
+Configuration files for swimmers examples can be found in the `data/*config/`directories.
 
 ## Non Dimensionalization
 
@@ -57,11 +53,6 @@ trajectories: length in body length, time in seconds
 
 ## Reinforcement Learning
 
-Compile the application:
-
-	make apps
-
-This will create `apps/ap_rl`, used in `setup.sh`.
 See [smarties](https://github.com/cselab/smarties) for usage.
 
 
