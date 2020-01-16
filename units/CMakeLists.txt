@@ -4,6 +4,10 @@ option(BUILD_GMOCK OFF)
 
 add_subdirectory("extern/googletest")
 
+add_executable(test_file_parser test_file_parser.cpp)
+target_link_libraries(test_file_parser gtest ${LIB_NAME_MSODE})
+add_test(NAME test_file_parser COMMAND test_file_parser)
+
 add_executable(test_forward test_forward.cpp)
 target_link_libraries(test_forward gtest ${LIB_NAME_MSODE} utils analytic_control)
 add_test(NAME test_forward COMMAND test_forward)
