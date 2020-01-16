@@ -1,9 +1,7 @@
 #include <msode/core/simulation.h>
 #include <msode/utils/mean_vel.h>
 
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
-
+#include <gtest/gtest.h>
 #include <random>
 
 using namespace msode;
@@ -53,17 +51,22 @@ static void compareODEvsIntegral(real coeffLo, real coeffHi, long numTests = 10)
         const real vODE = computeMeanVelocityODE       (body, magneticFieldMagnitude, omega, tEndODE);
         const real vInt = computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, nIntegrationSteps);
 
-        REQUIRE(vODE == Approx(vInt).epsilon(0.01_r));
+        ASSERT_NEAR(vODE, vInt, 0.01_r);
     }
 }
 
-TEST_CASE( "Compare ODE vs integral, linear", "[mean velocity]" )
+GTEST_TEST( MEAN_VELOCITY, ODE_vs_integral_linear )
 {
     compareODEvsIntegral(0.5_r, 0.9_r);
 }
 
-TEST_CASE( "Compare ODE vs integral, non linear", "[mean velocity]" )
+GTEST_TEST( MEAN_VELOCITY, ODE_vs_integral_non_linear )
 {
     compareODEvsIntegral(1.2_r, 3.0_r);
 }
 
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

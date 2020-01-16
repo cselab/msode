@@ -1,8 +1,6 @@
 #include <msode/core/quaternion.h>
 
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
-
+#include <gtest/gtest.h>
 #include <random>
 
 using namespace msode;
@@ -13,19 +11,19 @@ constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
 
 static inline void requireEquals(real3 a, real3 b, real eps = 1e-6_r)
 {
-    REQUIRE(a.x == Approx(b.x).margin(eps));
-    REQUIRE(a.y == Approx(b.y).margin(eps));
-    REQUIRE(b.z == Approx(b.z).margin(eps));
+    ASSERT_NEAR(a.x, b.x, eps);
+    ASSERT_NEAR(a.y, b.y, eps);
+    ASSERT_NEAR(a.z, b.z, eps);
 }
 
-TEST_CASE( "Identity rotation", "[rotation]" )
+GTEST_TEST( ROTATION, identity )
 {
     auto q = Quaternion::createFromComponents(1, 0, 0, 0);
     auto v = q.rotate(ex);
     requireEquals(v, ex); 
 }
 
-TEST_CASE( "Rotations around axis", "[rotation]" )
+GTEST_TEST( ROTATION, around_axis )
 {
     {
         const auto q = Quaternion::createFromRotation(M_PI, ey);
@@ -34,7 +32,7 @@ TEST_CASE( "Rotations around axis", "[rotation]" )
         requireEquals(v, {-1.0_r, 0.0_r, 0.0_r}); 
     }
     {
-        const auto q = Quaternion::createFromRotation(M_PI/2.0_r, ey);
+        const auto q = Quaternion::createFromRotation(-0.5_r * M_PI, ey);
         const auto v = q.rotate(ex);
         
         requireEquals(v, ez);
@@ -52,7 +50,7 @@ static inline real3 makeRandomUnitVector(std::mt19937& gen)
              std::cos(phi)};
 }
 
-TEST_CASE( "Construct from random vectors", "[construction]" )
+GTEST_TEST( CONSTRUCTION, from_random_vectors )
 {
     const unsigned long seed = 424242;
     const int numTries = 50;
@@ -68,7 +66,7 @@ TEST_CASE( "Construct from random vectors", "[construction]" )
     }
 }
 
-TEST_CASE( "Construct from aligned vectors", "[construction]" )
+GTEST_TEST( CONSTRUCTION, from_aligned_vectors )
 {
     {
         const real3 u = ex;
@@ -113,7 +111,7 @@ static inline Quaternion generateRandomQuaternion(std::mt19937& gen)
     return Quaternion::createFromVectors(u,v);
 }
 
-TEST_CASE( "Construct random rotation matrix", "[rotation matrix]" )
+GTEST_TEST( CONSTRUCTION, from_random_rotation_matrix )
 {
     const unsigned long seed = 424242;
     const int numTries = 50;
@@ -134,7 +132,7 @@ static inline RotMatrix generateRandomRotMatrix(std::mt19937& gen)
 }
 
 
-TEST_CASE( "Construct from rotation matrix", "[construction]" )
+GTEST_TEST( CONSTRUCTION, from_rotation_matrix )
 {
     // identity
     {
@@ -165,3 +163,8 @@ TEST_CASE( "Construct from rotation matrix", "[construction]" )
     }
 }
 
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
