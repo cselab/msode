@@ -5,6 +5,7 @@
 
 using namespace msode;
 
+constexpr int nbins       = 100;
 constexpr real chiSq_99_5 = 123.23;
 
 GTEST_TEST( chiSquareTest, uniform)
@@ -12,7 +13,6 @@ GTEST_TEST( chiSquareTest, uniform)
     const real a = 0.0_r;
     const real b = 2.0_r;
 
-    constexpr int nbins = 100;
     const real h = (b - a) / nbins;
     std::vector<int> counts(nbins, 0);
 
@@ -81,7 +81,6 @@ GTEST_TEST( rnd, ball_samples_are_uniform )
     const real R {5.0_r};
 
     constexpr long nSamples = 100000;
-    constexpr int nbins = 100;
 
     const real h = R / nbins;
     std::vector<int> radialHist(nbins, 0);
@@ -137,7 +136,6 @@ GTEST_TEST( rnd, shell_samples_are_uniform )
     const real R2 {6.0_r};
 
     constexpr long nSamples = 100000;
-    constexpr int nbins = 100;
 
     const real h = (R2 - R1) / nbins;
     std::vector<int> radialHist(nbins, 0);
