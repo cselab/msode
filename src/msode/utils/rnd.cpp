@@ -16,20 +16,7 @@ real3 generateUniformPositionBox(std::mt19937& gen, real3 lo, real3 hi)
 
 real3 generateUniformPositionBall(std::mt19937& gen, real radius)
 {
-    std::uniform_real_distribution<real> unif(-radius, radius);
-    bool accepted = false;
-
-    real3 r;
-    while (not accepted)
-    {
-        r.x = unif(gen);
-        r.y = unif(gen);
-        r.z = unif(gen);
-
-        if (sq(r.x) + sq(r.y) + sq(r.z) < sq(radius))
-            accepted = true;
-    }
-    return r;
+    return generateUniformPositionShell(gen, 0.0_r, radius);
 }
 
 static inline real3 uniformUnitSphere(std::mt19937& gen)
