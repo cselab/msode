@@ -1,6 +1,7 @@
 #! /bin/bash
 
 set -eu
+res_dir="results"
 
 src=$1; shift
 name=$1; shift
@@ -13,15 +14,17 @@ fi
 
 echo "launching $nevals evaluation "
 
-rundir=eval_$name
+srcdir=`pwd`
+rundir=$res_dir/training_$name
 
 mkdir -p $rundir
 cp $src/agent*raw $rundir/
 cd $rundir
 
 . mir.load
+export MSODE_ROOT=$srcdir/../../
 
-smarties.py .. \
+smarties.py $srcdir \
 	    --nEvalSeqs $nevals \
 	    --nThreads 8 \
 	    --nEnvironments 1
