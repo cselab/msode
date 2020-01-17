@@ -40,6 +40,22 @@ GTEST_TEST( rnd, ball )
     }
 }
 
+GTEST_TEST( rnd, shell )
+{
+    std::mt19937 gen(4242);
+    const real R1 {2.0_r};
+    const real R2 {6.0_r};
+
+    const long nSamples = 1000;
+
+    for (int i = 0; i < nSamples; ++i)
+    {
+        const auto r = utils::generateUniformPositionShell(gen, R1, R2);
+        ASSERT_GE(dot(r,r), R1*R1);
+        ASSERT_LE(dot(r,r), R2*R2);
+    }
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
