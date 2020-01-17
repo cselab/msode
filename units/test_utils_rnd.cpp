@@ -1,5 +1,4 @@
 #include <msode/utils/rnd.h>
-#include <chiSquare/chiSquare.h>
 
 #include <gtest/gtest.h>
 #include <cmath>
@@ -11,11 +10,11 @@ GTEST_TEST( chiSquareTest, uniform)
     const real a = 0.0_r;
     const real b = 2.0_r;
 
-    constexpr int nbins = 10;
+    constexpr int nbins = 3;
     const real h = (b - a) / nbins;
     std::vector<int> counts(nbins, 0);
 
-    const long nsamples = 10000;
+    const long nsamples = 100000;
     std::mt19937 gen(4242);
     std::uniform_real_distribution<real> uniform(a, b);
     
@@ -29,27 +28,16 @@ GTEST_TEST( chiSquareTest, uniform)
     real D = 0.0_r;
     for (int i = 0; i < nbins; ++i)
     {
-        const int oi = counts[i];
-        const int ei = nsamples  / real(nbins);
+        const real oi = counts[i];
+        const real ei = nsamples  / real(nbins);
 
         const auto di = oi - ei;
-        D += static_cast<real>(di*di) / static_cast<real>(ei);
+        D += di*di / ei;
     }
-    D /= nbins;
     
-    const real alpha = 0.05;
+    constexpr real chiSq_99_5 = 123.23;
 
-    // FILE *f = fopen("tmp.dat", "w");
-    // for (int i = 0; i < 100; ++i)
-    // {
-    //     real x = i * 0.5;
-    //     real y = chiSquare::chiSquare(100, x);
-    //     fprintf(f, "%g %g\n", x, y);
-    // }
-    // fclose(f);
-
-    //printf("%g %g\n", D, chiSquare::chiSquare(nbins-1, D));
-    ASSERT_GE(chiSquare::chiSquare(nbins-1, D), 1.0_r-alpha);
+    ASSERT_LE( D, chiSq_99_5 );
 }
 
 GTEST_TEST( rnd, box )
