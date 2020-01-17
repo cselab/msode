@@ -5,6 +5,100 @@
 
 using namespace msode;
 
+// https://www.codeproject.com/Articles/432194/How-to-Calculate-the-Chi-Squared-P-Value
+static inline real incompleteGamma(real s, real z)
+{
+    if (z < 0.0_r)
+	return 0.0_r;
+
+    const real sc = std::pow(z, s) * std::exp(-z) / s;
+
+    real sum = 1.0_r;
+    real nom = 1.0_r;
+    real denom = 1.0_r;
+
+    constexpr int niters = 200;
+    
+    for (int i = 0; i < niters; ++i)
+    {
+	nom *= z;
+	s += 1.0_r;
+	denom *= s;
+	sum += (nom / denom);
+    }
+ 
+    return sum * sc;
+}
+
+static inline real chisqr(int Dof, real Cv)
+{
+    if (Cv < 0 || Dof < 1)
+        return 0.0_r;
+
+    const real k = ((real) Dof) * 0.5_r;
+    const real x = Cv * 0.5_r;
+
+    if (Dof == 2)
+	return std::exp(-x);
+ 
+    real PValue = incompleteGamma(k, x);
+
+    if (std::isnan(PValue) || std::isinf(PValue))
+    {
+        return 1e-14_r;
+    } 
+
+    PValue /= std::tgamma(k);
+	
+    return (1.0_r - PValue);
+}
+
+GTEST_TEST( chiSquareTest, uniform)
+{
+    const real a = 0.0_r;
+    const real b = 2.0_r;
+
+    constexpr int nbins = 10;
+    const real h = (b - a) / nbins;
+    std::vector<int> counts(nbins, 0);
+
+    const long nsamples = 10000;
+    std::mt19937 gen(4242);
+    std::uniform_real_distribution<real> uniform(a, b);
+    
+    for (long i = 0; i < nsamples; ++i)
+    {
+        const auto s = uniform(gen);
+        const int id = (s - a) / h;
+        ++ counts[id];
+    }
+
+    real D = 0.0_r;
+    for (int i = 0; i < nbins; ++i)
+    {
+        const int oi = counts[i];
+        const int ei = nsamples  / real(nbins);
+
+        const auto di = oi - ei;
+        D += static_cast<real>(di*di) / static_cast<real>(ei);
+    }
+    D /= nbins;
+    
+    const real alpha = 0.05;
+
+    // FILE *f = fopen("tmp.dat", "w");
+    // for (int i = 0; i < 100; ++i)
+    // {
+    //     real x = i * 0.5;
+    //     real y = chisqr(100, x);
+    //     fprintf(f, "%g %g\n", x, y);
+    // }
+    // fclose(f);
+
+    //printf("%g %g\n", D, chisqr(nbins-1, D));
+    ASSERT_GE(chisqr(nbins-1, D), 1.0_r-alpha);
+}
+
 GTEST_TEST( rnd, box )
 {
     std::mt19937 gen(4242);
