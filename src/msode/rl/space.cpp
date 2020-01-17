@@ -146,13 +146,17 @@ std::unique_ptr<EnvSpace> EnvSpaceBallCuriculumActionRW::clone() const
 
 static inline bool isCorrectSample(const std::vector<real3>& positions, real Rmin, real Rmax)
 {
+    bool allPositionsInsideRmin {true};
+    
     for (auto p : positions)
     {
         const auto r = length(p);
-        if (r < Rmin || r > Rmax)
+        if (r > Rmax)
             return false;
+        if (r > Rmin)
+            allPositionsInsideRmin = false;
     }
-    return true;
+    return ! allPositionsInsideRmin;
 }
 
 std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19937& gen, int n)
