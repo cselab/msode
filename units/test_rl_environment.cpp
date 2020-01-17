@@ -66,7 +66,7 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
                                               targetPositions, std::move(actionField));
 }
 
-GTEST_TEST( RL_ENVIRONMENT, reward_increases_near_target )
+GTEST_TEST( RL_ENVIRONMENT, reward_positive_towards_target )
 {
     std::mt19937 gen(4242);
 
@@ -75,14 +75,21 @@ GTEST_TEST( RL_ENVIRONMENT, reward_increases_near_target )
     auto computeAction = [](const MSodeEnvironment *env) -> std::vector<double>
     {
         const RigidBody body = env->getBodies()[0];
-        const real omega = body.stepOutFrequency(magneticFieldMagnitude);
-        printf("%g %g %g\n", body.r.x, body.r.y, body.r.z);
+        const real omega = 0.8_r * body.stepOutFrequency(magneticFieldMagnitude);
+        //printf("%g %g %g\n", body.r.x, body.r.y, body.r.z);
         const real3 r = normalized(body.r);
-        return {omega, -r.x, -r.y, -r.z};
+        return {omega, r.x, r.y, r.z};
     };
 
     env->reset(gen);
     env->advance(computeAction(env.get()));
+    
+    for (int i = 0; i < 10; ++i)
+    {
+        env->advance(computeAction(env.get()));
+        const auto reward = env->getReward();
+        ASSERT_GE(reward, 0.0_r);
+    }
 }
 
 
