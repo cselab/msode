@@ -5,12 +5,14 @@
 
 using namespace msode;
 
+constexpr real chiSq_99_5 = 123.23;
+
 GTEST_TEST( chiSquareTest, uniform)
 {
     const real a = 0.0_r;
     const real b = 2.0_r;
 
-    constexpr int nbins = 3;
+    constexpr int nbins = 100;
     const real h = (b - a) / nbins;
     std::vector<int> counts(nbins, 0);
 
@@ -35,12 +37,10 @@ GTEST_TEST( chiSquareTest, uniform)
         D += di*di / ei;
     }
     
-    constexpr real chiSq_99_5 = 123.23;
-
     ASSERT_LE( D, chiSq_99_5 );
 }
 
-GTEST_TEST( rnd, box )
+GTEST_TEST( rnd, samples_are_in_box )
 {
     std::mt19937 gen(4242);
     const real3 lo {-1.0_r, 2.0_r, -3.0_r};
@@ -61,7 +61,7 @@ GTEST_TEST( rnd, box )
     }
 }
 
-GTEST_TEST( rnd, ball )
+GTEST_TEST( rnd, samples_are_in_ball )
 {
     std::mt19937 gen(4242);
     const real R {5.0_r};
@@ -75,7 +75,46 @@ GTEST_TEST( rnd, ball )
     }
 }
 
-GTEST_TEST( rnd, shell )
+GTEST_TEST( rnd, ball_samples_are_uniform )
+{
+    std::mt19937 gen(4242);
+    const real R {5.0_r};
+
+    constexpr long nSamples = 100000;
+    constexpr int nbins = 100;
+
+    const real h = R / nbins;
+    std::vector<int> radialHist(nbins, 0);
+
+    for (int i = 0; i < nSamples; ++i)
+    {
+        const real3 x = utils::generateUniformPositionBall(gen, R);
+        const real r = length(x);
+
+        const int id = r / h;
+        ++radialHist[id];
+    }
+
+    real D {0.0_r};
+    const real totVolume = 4.0_r * M_PI / 3.0_r * R*R*R;
+    
+    for (int i = 0; i < nbins; ++i)
+    {
+        const real r0 = i * h;
+        const real r1 = r0 + h;
+
+        const real volumei = 4.0_r * M_PI / 3.0_r * (r1*r1*r1 - r0*r0*r0);
+
+        const real ei = nSamples * volumei / totVolume;
+        const real oi = radialHist[i];
+        const real di = ei - oi;
+        D += di * di / ei;
+    }
+
+    ASSERT_LE( D, chiSq_99_5 );
+}
+
+GTEST_TEST( rnd, samples_are_in_shell )
 {
     std::mt19937 gen(4242);
     const real R1 {2.0_r};
@@ -89,6 +128,46 @@ GTEST_TEST( rnd, shell )
         ASSERT_GE(dot(r,r), R1*R1);
         ASSERT_LE(dot(r,r), R2*R2);
     }
+}
+
+GTEST_TEST( rnd, shell_samples_are_uniform )
+{
+    std::mt19937 gen(4242);
+    const real R1 {2.0_r};
+    const real R2 {6.0_r};
+
+    constexpr long nSamples = 100000;
+    constexpr int nbins = 100;
+
+    const real h = (R2 - R1) / nbins;
+    std::vector<int> radialHist(nbins, 0);
+
+    for (int i = 0; i < nSamples; ++i)
+    {
+        const real3 x = utils::generateUniformPositionShell(gen, R1, R2);
+        const real r = length(x);
+
+        const int id = (r - R1) / h;
+        ++radialHist[id];
+    }
+
+    real D {0.0_r};
+    const real totVolume = 4.0_r * M_PI / 3.0_r * (R2*R2*R2 - R1*R1*R1);
+    
+    for (int i = 0; i < nbins; ++i)
+    {
+        const real r0 = R1 + i * h;
+        const real r1 = r0 + h;
+
+        const real volumei = 4.0_r * M_PI / 3.0_r * (r1*r1*r1 - r0*r0*r0);
+
+        const real ei = nSamples * volumei / totVolume;
+        const real oi = radialHist[i];
+        const real di = ei - oi;
+        D += di * di / ei;
+    }
+
+    ASSERT_LE( D, chiSq_99_5 );
 }
 
 int main(int argc, char **argv)
