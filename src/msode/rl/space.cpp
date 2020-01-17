@@ -114,9 +114,10 @@ std::vector<real3> EnvSpaceBallCuriculumStateRW::generateNewPositions(std::mt199
     
     if (!initialized)
     {
+        constexpr real eps = 0.01_r;
         previousPositions.resize(n);
         for (auto& p : previousPositions)
-            p = utils::generateUniformPositionBall(gen, targetRadius);
+            p = utils::generateUniformPositionShell(gen, targetRadius, targetRadius * (1.0_r + eps));
         initialized = true;
     }
 
@@ -158,9 +159,10 @@ std::vector<real3> EnvSpaceBallCuriculumActionRW::generateNewPositions(std::mt19
 {
     if (!initialized)
     {
+        constexpr real eps = 0.01_r;
         previousPositions.resize(n);
         for (auto& p : previousPositions)
-            p = utils::generateUniformPositionBall(gen, targetRadius);
+            p = utils::generateUniformPositionShell(gen, targetRadius, targetRadius * (1.0_r + eps));
         initialized = true;
     }
 
