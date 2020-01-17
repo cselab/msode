@@ -1,57 +1,10 @@
 #include <msode/utils/rnd.h>
+#include <chiSquare/chiSquare.h>
 
 #include <gtest/gtest.h>
 #include <cmath>
 
 using namespace msode;
-
-// https://www.codeproject.com/Articles/432194/How-to-Calculate-the-Chi-Squared-P-Value
-static inline real incompleteGamma(real s, real z)
-{
-    if (z < 0.0_r)
-	return 0.0_r;
-
-    const real sc = std::pow(z, s) * std::exp(-z) / s;
-
-    real sum = 1.0_r;
-    real nom = 1.0_r;
-    real denom = 1.0_r;
-
-    constexpr int niters = 200;
-    
-    for (int i = 0; i < niters; ++i)
-    {
-	nom *= z;
-	s += 1.0_r;
-	denom *= s;
-	sum += (nom / denom);
-    }
- 
-    return sum * sc;
-}
-
-static inline real chisqr(int Dof, real Cv)
-{
-    if (Cv < 0 || Dof < 1)
-        return 0.0_r;
-
-    const real k = ((real) Dof) * 0.5_r;
-    const real x = Cv * 0.5_r;
-
-    if (Dof == 2)
-	return std::exp(-x);
- 
-    real PValue = incompleteGamma(k, x);
-
-    if (std::isnan(PValue) || std::isinf(PValue))
-    {
-        return 1e-14_r;
-    } 
-
-    PValue /= std::tgamma(k);
-	
-    return (1.0_r - PValue);
-}
 
 GTEST_TEST( chiSquareTest, uniform)
 {
@@ -90,13 +43,13 @@ GTEST_TEST( chiSquareTest, uniform)
     // for (int i = 0; i < 100; ++i)
     // {
     //     real x = i * 0.5;
-    //     real y = chisqr(100, x);
+    //     real y = chiSquare::chiSquare(100, x);
     //     fprintf(f, "%g %g\n", x, y);
     // }
     // fclose(f);
 
-    //printf("%g %g\n", D, chisqr(nbins-1, D));
-    ASSERT_GE(chisqr(nbins-1, D), 1.0_r-alpha);
+    //printf("%g %g\n", D, chiSquare::chiSquare(nbins-1, D));
+    ASSERT_GE(chiSquare::chiSquare(nbins-1, D), 1.0_r-alpha);
 }
 
 GTEST_TEST( rnd, box )
