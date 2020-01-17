@@ -17,7 +17,7 @@ struct Quaternion
 {
     static inline Quaternion createIdentity()
     {
-        return {1.0_r, 0.0_r, 0.0_r, 0.0_r};
+        return {0.0_r, 1.0_r, 0.0_r, 0.0_r};
     }
     
     static inline Quaternion createFromComponents(real w, real x, real y, real z)

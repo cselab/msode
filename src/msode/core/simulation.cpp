@@ -80,7 +80,7 @@ void Simulation::advance(real dt)
         rigidBody.v     = qInv.rotate(rigidBody.v    );
         rigidBody.omega = qInv.rotate(rigidBody.omega);
         
-        const auto _omega = Quaternion::createFromComponents(0.0_r, rigidBody.omega);
+        const auto _omega = Quaternion::createPureVector(rigidBody.omega);
         const auto dq_dt = 0.5_r * q * _omega;
         
         rigidBody.r += dt * rigidBody.v;
