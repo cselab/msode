@@ -32,6 +32,20 @@ real3 generateUniformPositionBall(std::mt19937& gen, real radius)
     return r;
 }
 
+static inline real3 uniformUnitSphere(std::mt19937& gen)
+{
+    std::normal_distribution<real> normal(0.0_r, 1.0_r);
+    const real3 r {normal(gen), normal(gen), normal(gen)};
+    return normalized(r);
+}
+
+real3 generateUniformPositionShell(std::mt19937& gen, real r1, real r2)
+{
+    std::uniform_real_distribution<real> uniform(r1*r1*r1, r2*r2*r2);
+    const real3 r = uniformUnitSphere(gen);
+    return std::pow(uniform(gen), 1.0_r / 3.0_r) * r;
+}
+
 // http://planning.cs.uiuc.edu/node198.html
 Quaternion generateUniformQuaternion(std::mt19937& gen)
 {
