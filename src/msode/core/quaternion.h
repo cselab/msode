@@ -30,6 +30,16 @@ struct Quaternion
         return {w, v};
     }
 
+    static inline Quaternion createPureScalar(real w)
+    {
+        return {w, 0.0_r, 0.0_r, 0.0_r};
+    }
+
+    static inline Quaternion createPureVector(real3 v)
+    {
+        return {0.0_r, v};
+    }
+
     static inline Quaternion createFromRotation(real angle, real3 axis)
     {
         const real alpha = 0.5_r * angle;
