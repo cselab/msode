@@ -20,4 +20,5 @@ build_and_create_test(test_rl_space.cpp       "gtest;rl")
 build_and_create_test(test_rl_environment.cpp "gtest;rl")
 
 build_and_create_test(test_utils_integration.cpp "gtest;utils")
+build_and_create_test(test_utils_ODE_solver.cpp  "gtest;utils")
 build_and_create_test(test_utils_rnd.cpp         "gtest;utils")
