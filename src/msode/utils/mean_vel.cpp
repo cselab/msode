@@ -11,7 +11,7 @@ static inline real meanVelocity(real3 r0, real3 r1, real T)
 
 real computeMeanVelocityODE(RigidBody body, real magneticFieldMagnitude, real omega, real tEnd)
 {
-    const real dt {1e-2_r / omega};
+    const real dt {3e-2_r / omega};
     const long nsteps = tEnd / dt;
 
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
@@ -24,7 +24,7 @@ real computeMeanVelocityODE(RigidBody body, real magneticFieldMagnitude, real om
     const std::vector<RigidBody> rigidBodies {body};
     Simulation simulation {rigidBodies, magneticField};
 
-    simulation.runForwardEuler(nsteps, dt);
+    simulation.runRK4(nsteps, dt);
 
     const real3 rEnd = simulation.getBodies()[0].r;
 
