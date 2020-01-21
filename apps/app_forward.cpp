@@ -25,7 +25,7 @@ static void runAndDump(RigidBody body, real omega, const std::string& out, int d
     Simulation simulation {rigidBodies, magneticField};
 
     simulation.activateDump(out, dumpEvery);
-    simulation.run(nsteps, dt);
+    simulation.runForwardEuler(nsteps, dt);
 }
 
 int main(int argc, char **argv)

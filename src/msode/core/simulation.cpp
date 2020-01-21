@@ -47,22 +47,40 @@ void Simulation::activateDump(const std::string& fname, long dumpEvery_)
     MSODE_Ensure(file.is_open(), "could not open file for writing");
 }
 
-void Simulation::run(long nsteps, real dt)
+void Simulation::runForwardEuler(long nsteps, real dt)
 {
     MSODE_Expect(nsteps > 0, "expect positive number of steps");
     MSODE_Expect(dt > 0._r, "expect positive time step");
     
     for (long step = 0; step < nsteps; ++step)
-        advance(dt);
+        advanceForwardEuler(dt);
 }
 
-void Simulation::advance(real dt)
+void Simulation::runRK4(long nsteps, real dt)
+{
+    MSODE_Expect(nsteps > 0, "expect positive number of steps");
+    MSODE_Expect(dt > 0._r, "expect positive time step");
+    
+    for (long step = 0; step < nsteps; ++step)
+        advanceRK4(dt);
+}
+
+void Simulation::advanceForwardEuler(real dt)
 {
     if (file.is_open() && currentTimeStep % dumpEvery == 0)
         dump();
 
-    advanceForwardEuler(dt);
-    //advanceRK4(dt);
+    stepForwardEuler(dt);
+    
+    ++currentTimeStep;
+}
+
+void Simulation::advanceRK4(real dt)
+{
+    if (file.is_open() && currentTimeStep % dumpEvery == 0)
+        dump();
+
+    stepRK4(dt);
 
     ++currentTimeStep;
 }
@@ -91,7 +109,7 @@ computeDerivatives(const RigidBody& b, real3 B)
     return {v, omega, dq_dt};
 }
 
-void Simulation::advanceForwardEuler(real dt)
+void Simulation::stepForwardEuler(real dt)
 {
     const real3 B = magneticField(currentTime);
     
@@ -110,7 +128,7 @@ void Simulation::advanceForwardEuler(real dt)
     currentTime += dt;
 }
 
-void Simulation::advanceRK4(real dt)
+void Simulation::stepRK4(real dt)
 {
     const real dt_half = 0.5_r * dt;
 

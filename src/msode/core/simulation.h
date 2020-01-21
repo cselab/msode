@@ -82,6 +82,8 @@ class Simulation
 {
 public:
 
+    enum class ODEScheme {ForwardEuler, RK4};
+
     Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
     ~Simulation() = default;
 
@@ -90,7 +92,9 @@ public:
 
     void reset(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
     void activateDump(const std::string& fname, long dumpEvery);
-    void run(long nsteps, real dt);
+
+    void runForwardEuler(long nsteps, real dt);
+    void runRK4(long nsteps, real dt);
 
     const std::vector<RigidBody>& getBodies() const {return rigidBodies;}
     std::vector<RigidBody>& getBodies() {return rigidBodies;}
@@ -98,12 +102,13 @@ public:
     const MagneticField& getField() const {return magneticField;}
     real getCurrentTime() const {return currentTime;}
     
-    void advance(real dt);
+    void advanceForwardEuler(real dt);
+    void advanceRK4(real dt);
     void dump();
 
 private:
-    void advanceForwardEuler(real dt);
-    void advanceRK4(real dt);
+    void stepForwardEuler(real dt);
+    void stepRK4(real dt);
     
 private:
     real currentTime {0.0_r};

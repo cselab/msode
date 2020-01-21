@@ -39,8 +39,7 @@ int main(int argc, char **argv)
     const long nsteps = tEnd / dt;
 
     simulation.activateDump("out.dat", tDump / dt);
-    simulation.run(nsteps, dt);
-    simulation.run(nsteps, dt);
+    simulation.runForwardEuler(nsteps, dt);
     
     return 0;
 }

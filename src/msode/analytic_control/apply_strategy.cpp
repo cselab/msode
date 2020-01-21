@@ -124,7 +124,7 @@ real simulateOptimalPath(real magneticFieldMagnitude,
     if (dumpEvery > 0)
         sim.activateDump(fname, dumpEvery);
 
-    sim.run(nsteps, dt);
+    sim.runForwardEuler(nsteps, dt);
 
     return tTot;
 }

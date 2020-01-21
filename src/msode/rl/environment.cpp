@@ -113,7 +113,7 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
 
     for (long step = 0; step < nstepsPerAction; ++step)
     {
-        sim->advance(dt);
+        sim->advanceForwardEuler(dt);
 
         auto status = getCurrentStatus();
         if (status != Status::Running)

@@ -24,7 +24,7 @@ real computeMeanVelocityODE(RigidBody body, real magneticFieldMagnitude, real om
     const std::vector<RigidBody> rigidBodies {body};
     Simulation simulation {rigidBodies, magneticField};
 
-    simulation.run(nsteps, dt);
+    simulation.runForwardEuler(nsteps, dt);
 
     const real3 rEnd = simulation.getBodies()[0].r;
 
