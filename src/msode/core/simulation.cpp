@@ -149,26 +149,24 @@ void Simulation::stepRK4(real dt)
         RigidBody bWork = rigidBody;
         std::tie(v1, bWork.omega, dq_dt1) = computeDerivatives(bWork, B0);
 
-        bWork.r += dt_half * v1;
-        bWork.q += dt_half * dq_dt1;
+        bWork.r = rigidBody.r + dt_half * v1;
+        bWork.q = rigidBody.q + dt_half * dq_dt1;
         bWork.q = bWork.q.normalized();
         bWork.v = v1;
 
         // compute k2 = f(y0 + dt/2 * k1, t + dt/2)
         std::tie(v2, bWork.omega, dq_dt2) = computeDerivatives(bWork, Bh);
 
-        bWork = rigidBody;
-        bWork.r += dt_half * v2;
-        bWork.q += dt_half * dq_dt2;
+        bWork.r = rigidBody.r + dt_half * v2;
+        bWork.q = rigidBody.q + dt_half * dq_dt2;
         bWork.q = bWork.q.normalized();
         bWork.v = v2;
 
         // compute k3 = f(y0 + dt/2 * k2, t + dt/2)
         std::tie(v3, bWork.omega, dq_dt3) = computeDerivatives(bWork, Bh);
 
-        bWork = rigidBody;
-        bWork.r += dt * v3;
-        bWork.q += dt * dq_dt3;
+        bWork.r = rigidBody.r + dt * v3;
+        bWork.q = rigidBody.q + dt * dq_dt3;
         bWork.q = bWork.q.normalized();
         bWork.v = v3;
 
