@@ -60,38 +60,91 @@ void Simulation::advance(real dt)
 {
     if (file.is_open() && currentTimeStep % dumpEvery == 0)
         dump();
-    
-    magneticField.advance(currentTime, dt);
+
+    advanceForwardEuler(dt);
+
+    ++currentTimeStep;
+}
+
+static inline std::tuple<real3, real3, Quaternion>
+computeDerivatives(const RigidBody& b, real3 B)
+{
+    const Quaternion q = b.q;
+    const Quaternion qInv = q.conjugate();
+        
+    const real3 m      = qInv.rotate(b.magnMoment);
+    const real3 torque = cross(m, B);
+    constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
+
+    real3 v, omega;
+    std::tie(v, omega) = computeVelocities(b.propulsion,
+                                           q.rotate(force),
+                                           q.rotate(torque));
+
+    v     = qInv.rotate(v    );
+    omega = qInv.rotate(omega);
+        
+    const auto _omega = Quaternion::createPureVector(omega);
+    const auto dq_dt = 0.5_r * q * _omega;
+
+    return {v, omega, dq_dt};
+}
+
+void Simulation::advanceForwardEuler(real dt)
+{
     const real3 B = magneticField(currentTime);
     
     for (auto& rigidBody : rigidBodies)
     {
-        Quaternion q = rigidBody.q;
-        const Quaternion qInv = q.conjugate();
-        
-        const real3 m      = qInv.rotate(rigidBody.magnMoment);
-        const real3 torque = cross(m, B);
-        constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
-        
-        std::tie(rigidBody.v, rigidBody.omega) = computeVelocities(rigidBody.propulsion,
-                                                                   q.rotate(force),
-                                                                   q.rotate(torque));
-
-        rigidBody.v     = qInv.rotate(rigidBody.v    );
-        rigidBody.omega = qInv.rotate(rigidBody.omega);
-        
-        const auto _omega = Quaternion::createPureVector(rigidBody.omega);
-        const auto dq_dt = 0.5_r * q * _omega;
+        Quaternion dq_dt = Quaternion::createPureScalar(0.0_r);
+        std::tie(rigidBody.v, rigidBody.omega, dq_dt) = computeDerivatives(rigidBody, B);
         
         rigidBody.r += dt * rigidBody.v;
-        q += dt * dq_dt;
+        rigidBody.q += dt * dq_dt;
         
-        rigidBody.q = q.normalized();
+        rigidBody.q = rigidBody.q.normalized();
     }
-    
+
+    magneticField.advance(currentTime, dt);
     currentTime += dt;
-    ++currentTimeStep;
 }
+
+// void Simulation::advanceRK4(real dt)
+// {
+//     const real dt_half = 0.5_r * dt;
+
+//     const real3 B0 = magneticField(currentTime);
+//     magneticField.advance(currentTime, dt_half);
+//     const real3 B_half = magneticField(currentTime+dt_half);
+//     magneticField.advance(currentTime, dt_half);
+    
+//     for (auto& rigidBody : rigidBodies)
+//     {
+//         Quaternion q = rigidBody.q;
+//         const Quaternion qInv = q.conjugate();
+        
+//         const real3 m      = qInv.rotate(rigidBody.magnMoment);
+//         const real3 torque = cross(m, B);
+//         constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
+        
+//         std::tie(rigidBody.v, rigidBody.omega) = computeVelocities(rigidBody.propulsion,
+//                                                                    q.rotate(force),
+//                                                                    q.rotate(torque));
+
+//         rigidBody.v     = qInv.rotate(rigidBody.v    );
+//         rigidBody.omega = qInv.rotate(rigidBody.omega);
+        
+//         const auto omega = Quaternion::createPureVector(rigidBody.omega);
+//         const auto dq_dt = 0.5_r * q * omega;
+        
+//         rigidBody.r += dt * rigidBody.v;
+//         q += dt * dq_dt;
+        
+//         rigidBody.q = q.normalized();
+//     }
+    
+//     currentTime += dt;
+// }
 
 void Simulation::dump()
 {
