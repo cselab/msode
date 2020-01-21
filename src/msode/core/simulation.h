@@ -103,7 +103,7 @@ public:
 
 private:
     void advanceForwardEuler(real dt);
-    // void advanceRK4(real dt);
+    void advanceRK4(real dt);
     
 private:
     real currentTime {0.0_r};
