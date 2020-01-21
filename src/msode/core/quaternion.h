@@ -90,7 +90,7 @@ struct Quaternion
         return {from, to};
     }
     
-    
+    Quaternion() = default; // create an UNINITIALIZED quaternion
     Quaternion(const Quaternion& q) = default;
     Quaternion& operator=(const Quaternion& q) = default;
     
@@ -191,10 +191,8 @@ struct Quaternion
         return stream << q.realPart() << " " << q.vectorPart();
     }
     
-    real w {0.0_r}; // real part
-    real x {0.0_r}; // vector part
-    real y {0.0_r};
-    real z {0.0_r};
+    real w;       // real part
+    real x, y, z; // vector part
 
 private:
     Quaternion(real w_, real x_, real y_, real z_) :
