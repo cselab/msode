@@ -45,7 +45,7 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
     return b;
 }
 
-real computeSeparability(const analytic_control::MatrixReal& V)
+static real computeSeparability(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
     
@@ -68,7 +68,7 @@ real computeSeparability(const analytic_control::MatrixReal& V)
     return S;
 }
 
-real computeLambdaRatio(const analytic_control::MatrixReal& V)
+static real computeLambdaRatio(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
     
@@ -87,7 +87,7 @@ real computeLambdaRatio(const analytic_control::MatrixReal& V)
     return S;
 }
 
-real computeConditionNumber(const analytic_control::MatrixReal& V)
+static real computeConditionNumber(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
 
