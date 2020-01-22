@@ -72,7 +72,7 @@ static real computeLambdaRatio(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
     
-    auto eigenValues = analytic_control::computeEigenValues(V);
+    const auto eigenValues = analytic_control::computeEigenValues(V);
 
     real minL = std::numeric_limits<real>::max();
     real maxL = std::numeric_limits<real>::lowest();
@@ -87,28 +87,28 @@ static real computeLambdaRatio(const analytic_control::MatrixReal& V)
     return S;
 }
 
+static inline real norm2(const analytic_control::MatrixReal& A)
+{
+    real a = 0.0_r;
+    for (int i = 0; i < A.rows(); ++i)
+        for (int j = 0; j < A.cols(); ++j)
+            a += A(i,j) * A(i,j);
+    return std::sqrt(a);
+}
+
 static real computeConditionNumber(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
-
-    auto norm = [](const analytic_control::MatrixReal& A)
-    {
-        real a = 0.0_r;
-        for (int i = 0; i < A.rows(); ++i)
-            for (int j = 0; j < A.cols(); ++j)
-                a += A(i,j) * A(i,j);
-        return std::sqrt(a);
-    };
-    return norm(V) * norm(V.inverse());
+    return norm2(V) * norm2(V.inverse());
 }
 
-static real computeMeanTime(const analytic_control::MatrixReal& V, const std::vector<msode::RigidBody>& bodies)
+static real computeMeanTimeFromRandomIC(const analytic_control::MatrixReal& V, const std::vector<msode::RigidBody>& bodies)
 {
     const analytic_control::MatrixReal U = V.inverse();
 
-    const real L = 50.0_r;
-    const real3 boxLo {-0.5_r * L, 0.0_r, 0.0_r};
-    const real3 boxHi {+0.5_r * L, 0.0_r, 0.0_r};
+    const real L {50.0_r};
+    const real3 boxLo {- 0.5_r * L, 0.0_r, 0.0_r};
+    const real3 boxHi {+ 0.5_r * L, 0.0_r, 0.0_r};
     const real3 direction {1.0_r, 0.0_r, 0.0_r};
     
     real tSum = 0.0_r;
@@ -117,7 +117,7 @@ static real computeMeanTime(const analytic_control::MatrixReal& V, const std::ve
     for (int sample = 0; sample < nsamples; ++sample)
     {
         const long seed = 242 * sample + 13;
-        auto initialPositions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
+        const auto initialPositions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
         const auto A = analytic_control::computeA(U, initialPositions);
         const real t = analytic_control::computeTime(A, direction);
         tSum += t;
@@ -126,6 +126,37 @@ static real computeMeanTime(const analytic_control::MatrixReal& V, const std::ve
     const real tMean = tSum / nsamples;
     return tMean;
 }
+
+static real computeMeanTimeFromTestIC(const analytic_control::MatrixReal& V, const std::vector<msode::RigidBody>& bodies)
+{
+    const analytic_control::MatrixReal U = V.inverse();
+    const int n = bodies.size();
+    MSODE_Ensure(n < 8*sizeof(int), "must use less than 32 bodies");
+
+    const real L {50.0_r};
+    const real3 direction {1.0_r, 0.0_r, 0.0_r};
+    
+    real tSum = 0.0_r;
+    
+    const int nsamples = 1<<n;
+    std::vector<real3> initialPositions(n);
+
+    for (int sample = 0; sample < nsamples; ++sample)
+    {
+        for (int i = 0; i < n; ++i)
+        {
+            const int isRight = ( sample & (1<<i) ) >> i;
+            initialPositions[i] = isRight ? real3 {L, 0.0_r, 0.0_r} : real3 {-L, 0.0_r, 0.0_r};
+        }
+        const auto A = analytic_control::computeA(U, initialPositions);
+        const real t = analytic_control::computeTime(A, direction);
+        tSum += t;
+    }
+    
+    const real tMean = tSum / nsamples;
+    return tMean;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -168,7 +199,7 @@ int main(int argc, char **argv)
             const real S = computeSeparability(V);
             const real l = computeLambdaRatio(V);
             const real k = computeConditionNumber(V);
-            const real T = computeMeanTime(V, bodies);
+            const real T = computeMeanTimeFromTestIC(V, bodies);
 
             times  [sSample] = T;
             seps   [sSample] = S;
