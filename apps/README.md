@@ -11,6 +11,12 @@ ABF in a field rotating with frequency `omega` in the yz plane.
 ABF in a field rotating with frequencies `omega` in the yz plane.
 report mean velocity along the x axis for many omegas.
 
+## app_convex_hull
+
+reports forward velocities for `N` given swimmers; 
+output are "velocity vectors" which can be processed to obtained the convex hull of that cloud 
+this allows to choose a velocity matrix with optimal omegas
+
 ## app_rotating
 
 ABF in a rotating field with direction changing direction over time (describes a circle).
