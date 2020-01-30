@@ -17,6 +17,9 @@ target_link_libraries(app_forward msode)
 add_executable(app_forward_curve app_forward_curve.cpp)
 target_link_libraries(app_forward_curve utils)
 
+add_executable(app_convex_hull app_convex_hull.cpp)
+target_link_libraries(app_convex_hull utils)
+
 add_executable(app_rl app_rl.cpp)
 target_link_libraries(app_rl rl)
 
