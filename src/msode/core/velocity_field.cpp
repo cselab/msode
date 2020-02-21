@@ -60,7 +60,7 @@ void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 d
     f << "DATASET STRUCTURED_POINTS\n"
       << "DIMENSIONS " << dimensions.x << ' ' << dimensions.y << ' ' << dimensions.z << '\n'
       << "ORIGIN " << start.x << ' ' << start.y << ' ' << start.z << '\n'
-      << "SPACING " << size.x << ' ' << size.y << ' ' << size.z << '\n';
+      << "SPACING " << h.x << ' ' << h.y << ' ' << h.z << '\n';
 
     f << "POINT_DATA " << numElements << "\n"
       << "VECTORS velocity float\n";
