@@ -8,6 +8,7 @@ namespace msode
 using real = double;
 
 struct real3 {real x, y, z;};
+struct int3 {int x, y, z;};
 
 constexpr inline real3 make_real3(real a)
 {
