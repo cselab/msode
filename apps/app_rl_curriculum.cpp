@@ -16,8 +16,8 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     const real sigmaRW = 0.5_r;
     const rl::EnvSpaceBallCuriculumStateRW spaceInfos(R, distanceThreshold, sigmaRW);
     
-    // auto env = createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude, distanceThreshold);
-    auto env = rl::createEnvironmentCurriculum(bodies, magneticFieldMagnitude, distanceThreshold, R, sigmaRW);
+    // auto env = rl::createEnvironmentCurriculumActionSpace(bodies, magneticFieldMagnitude, distanceThreshold, R, sigmaRW);
+    auto env = rl::createEnvironmentCurriculumStateSpace(bodies, magneticFieldMagnitude, distanceThreshold, R, sigmaRW);
     
     rl::setActionDims  (env.get(), comm);
     rl::setActionBounds(env.get(), comm);

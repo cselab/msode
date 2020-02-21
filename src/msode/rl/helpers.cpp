@@ -151,7 +151,24 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
 
 
 std::unique_ptr<MSodeEnvironment>
-createEnvironmentCurriculum(const std::vector<RigidBody>& bodies, real fieldMagnitude, real distanceThreshold, real radius, real sigmaRandomWalk)
+createEnvironmentCurriculumStateSpace(const std::vector<RigidBody>& bodies, real fieldMagnitude, real distanceThreshold, real radius, real sigmaRandomWalk)
+{
+    const int nbodies = bodies.size();
+    const Params params = createParams(bodies, radius, fieldMagnitude, distanceThreshold);
+
+    auto space = std::make_unique<EnvSpaceBallCuriculumStateRW>(radius, distanceThreshold, sigmaRandomWalk);
+    
+    using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
+    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
+    const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
+    const std::vector<real3> targetPositions(nbodies, space->target);
+    
+    auto fieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);
+    return std::make_unique<MSodeEnvironment>(params, std::move(space), bodies, targetPositions, std::move(fieldAction));
+}
+
+std::unique_ptr<MSodeEnvironment>
+createEnvironmentCurriculumActionSpace(const std::vector<RigidBody>& bodies, real fieldMagnitude, real distanceThreshold, real radius, real sigmaRandomWalk)
 {
     const int nbodies = bodies.size();
     const Params params = createParams(bodies, radius, fieldMagnitude, distanceThreshold);
