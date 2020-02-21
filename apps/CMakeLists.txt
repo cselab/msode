@@ -11,6 +11,9 @@ target_link_libraries(app_ac_stats msode analytic_control)
 add_executable(app_analytic_control app_analytic_control.cpp)
 target_link_libraries(app_analytic_control msode analytic_control)
 
+add_executable(app_dump_velocity_field app_dump_velocity_field.cpp)
+target_link_libraries(app_dump_velocity_field msode)
+
 add_executable(app_forward app_forward.cpp)
 target_link_libraries(app_forward msode)
   
