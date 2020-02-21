@@ -17,9 +17,9 @@ using ActionBounds = std::tuple<std::vector<double>, std::vector<double>>;
 class MagnFieldFromActionBase
 {
 public:
-    MagnFieldFromActionBase(real minOmega_, real maxOmega_);
+    MagnFieldFromActionBase(real minOmega, real maxOmega);
     
-    void attach(const MSodeEnvironment *env_);
+    void attach(const MSodeEnvironment *env);
     virtual int numActions() const = 0;
 
     virtual ActionBounds getActionBounds() const = 0;
@@ -31,17 +31,17 @@ public:
     virtual real3 getAxis(real t) const = 0;
 
 protected:
-    const real minOmega;
-    const real maxOmega;
+    const real minOmega_;
+    const real maxOmega_;
 
-    const MSodeEnvironment *env {nullptr};
+    const MSodeEnvironment *env_ {nullptr};
 };
 
 
 class MagnFieldFromActionChange : public MagnFieldFromActionBase
 {
 public:
-    MagnFieldFromActionChange(real minOmega_, real maxOmega_, real actionDt_);
+    MagnFieldFromActionChange(real minOmega, real maxOmega, real actionDt);
     MagnFieldFromActionChange(const MagnFieldFromActionChange&) = default;
 
     int numActions() const override;
@@ -57,24 +57,24 @@ public:
     real3 getAxis(real t) const override;
     
 private:
-    const real actionDt;
+    const real actionDt_;
     
-    real lastOmega {0._r};
-    real3 lastAxis {1._r, 0._r, 0._r};
-    real lastActionTime {0._r};
+    real lastOmega_ {0._r};
+    real3 lastAxis_ {1._r, 0._r, 0._r};
+    real lastActionTime_ {0._r};
     
-    real dOmega {0._r};
-    real3 dAxis {0._r, 0._r, 0._r};
+    real dOmega_ {0._r};
+    real3 dAxis_ {0._r, 0._r, 0._r};
 
-    real omegaActionChange(real t) const;
-    real3 axisActionChange(real t) const;
+    real _omegaActionChange(real t) const;
+    real3 _axisActionChange(real t) const;
 };
 
 
 class MagnFieldFromActionDirect : public MagnFieldFromActionBase
 {
 public:
-    MagnFieldFromActionDirect(real minOmega_, real maxOmega_);
+    MagnFieldFromActionDirect(real minOmega, real maxOmega);
     MagnFieldFromActionDirect(const MagnFieldFromActionDirect&) = default;
 
     int numActions() const override;
@@ -83,19 +83,18 @@ public:
     std::tuple<real3, real3, real3> getFrameReference() const override;
     
     void setAction(const std::vector<double>& action) override;
-    real getOmega(real) const override  {return omega;}
-    real3 getAxis(real) const override  {return axis;}
+    real getOmega(real) const override  {return omega_;}
+    real3 getAxis(real) const override  {return axis_;}
 
 private:
-
-    real omega {0._r};
-    real3 axis {1._r, 0._r, 0._r};
+    real omega_ {0._r};
+    real3 axis_ {1._r, 0._r, 0._r};
 };
 
 class MagnFieldFromActionFromTargets : public MagnFieldFromActionBase
 {
 public:
-    MagnFieldFromActionFromTargets(real maxOmega_);
+    MagnFieldFromActionFromTargets(real maxOmega);
     MagnFieldFromActionFromTargets(const MagnFieldFromActionFromTargets&) = default;
 
     int numActions() const override;
@@ -105,20 +104,19 @@ public:
     
     void setAction(const std::vector<double>& action) override;
 
-    real getOmega(real) const override  {return omega;}
-    real3 getAxis(real) const override  {return axis;}
+    real getOmega(real) const override  {return omega_;}
+    real3 getAxis(real) const override  {return axis_;}
 
 private:
-
-    real omega {0._r};
-    real3 axis {1._r, 0._r, 0._r};
+    real omega_ {0._r};
+    real3 axis_ {1._r, 0._r, 0._r};
 };
 
 
 class MagnFieldFromActionFromLocalFrame : public MagnFieldFromActionBase
 {
 public:
-    MagnFieldFromActionFromLocalFrame(real minOmega_, real maxOmega_);
+    MagnFieldFromActionFromLocalFrame(real minOmega, real maxOmega);
     MagnFieldFromActionFromLocalFrame(const MagnFieldFromActionFromLocalFrame&) = default;
 
     int numActions() const override;
@@ -127,12 +125,12 @@ public:
     
     void setAction(const std::vector<double>& action) override;
 
-    real getOmega(real) const override  {return omega;}
-    real3 getAxis(real) const override  {return axis;}
+    real getOmega(real) const override  {return omega_;}
+    real3 getAxis(real) const override  {return axis_;}
 
 protected:
-    real omega {0._r};
-    real3 axis {1._r, 0._r, 0._r};
+    real omega_ {0._r};
+    real3 axis_ {1._r, 0._r, 0._r};
 };
 
 
