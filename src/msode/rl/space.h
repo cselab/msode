@@ -24,9 +24,10 @@ public:
 
 public:
     const real3 target {0.0_r, 0.0_r, 0.0_r};
+
 private:
-    bool savedPositionsInitialized {false};
-    std::vector<real3> savedPositions;
+    bool savedPositionsInitialized_ {false};
+    std::vector<real3> savedPositions_;
 };
 
 class EnvSpaceBox : public EnvSpace
@@ -42,7 +43,7 @@ public:
 
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
-protected:
+private:
     struct Box
     {
         real3 lo, hi;
@@ -59,13 +60,13 @@ protected:
         }
     };
 
-    const Box domain;
+    const Box domain_;
 };
 
 class EnvSpaceBall : public EnvSpace
 {
 public:
-    EnvSpaceBall(real radius_);
+    EnvSpaceBall(real radius);
 
     std::unique_ptr<EnvSpace> clone() const override;
     
@@ -76,24 +77,24 @@ public:
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
-    const real radius;
+    const real radius_;
 };
 
 class EnvSpaceBallCuriculumStateRW : public EnvSpaceBall
 {
 public:
-    EnvSpaceBallCuriculumStateRW(real radius_, real targetRadius_, real sigmaRandomWalk_);
+    EnvSpaceBallCuriculumStateRW(real radius, real targetRadius, real sigmaRandomWalk);
 
     std::unique_ptr<EnvSpace> clone() const override;
     
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
-    const real targetRadius;
-    const real sigmaRandomWalk;
+    const real targetRadius_;
+    const real sigmaRandomWalk_;
     
-    bool initialized {false};
-    std::vector<real3> previousPositions;
+    bool initialized_ {false};
+    std::vector<real3> previousPositions_;
 };
 
 class MSodeEnvironment;
@@ -101,25 +102,25 @@ class MSodeEnvironment;
 class EnvSpaceBallCuriculumActionRW : public EnvSpaceBall
 {
 public:
-    EnvSpaceBallCuriculumActionRW(std::unique_ptr<MSodeEnvironment>&& environment_,
-                                  real radius_, real targetRadius_, real sigmaRandomWalk_);
+    EnvSpaceBallCuriculumActionRW(std::unique_ptr<MSodeEnvironment>&& environment,
+                                  real radius, real targetRadius, real sigmaRandomWalk);
 
     std::unique_ptr<EnvSpace> clone() const override;
     
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
-    std::vector<double> generateAction(std::mt19937& gen) const;
+    std::vector<double> _generateAction(std::mt19937& gen) const;
     
 protected:
-    const real targetRadius;
-    const real sigmaRandomWalk;
+    const real targetRadius_;
+    const real sigmaRandomWalk_;
     
-    bool initialized {false};
-    std::vector<real3> previousPositions;
+    bool initialized_ {false};
+    std::vector<real3> previousPositions_;
 
     // shared because too lazy to write clone with unique_ptr
-    std::shared_ptr<MSodeEnvironment> environment;
+    std::shared_ptr<MSodeEnvironment> environment_;
 };
 
 } // namespace rl
