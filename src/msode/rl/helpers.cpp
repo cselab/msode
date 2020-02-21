@@ -140,7 +140,8 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
 
     const std::vector<real3> targetPositions(nbodies, space->target);
 
-    using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
+    // using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
+    using MagnFieldActionType = MagnFieldFromActionDirect;
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     auto fieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);
