@@ -8,8 +8,8 @@ namespace msode
 
 Simulation::Simulation(const std::vector<RigidBody>& initialRBs,
                        const MagneticField& initialMF) :
-    rigidBodies(initialRBs),
-    magneticField(initialMF)
+    rigidBodies_(initialRBs),
+    magneticField_(initialMF)
 {}
 
 static inline real3 operator*(const PropulsionMatrix::SubMatrix& A, const real3& v)
@@ -29,22 +29,22 @@ static inline std::tuple<real3, real3> computeVelocities(const PropulsionMatrix&
 
 void Simulation::reset(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF)
 {
-    currentTimeStep = 0;
-    currentTime     = 0._r;
-    rigidBodies = initialRBs;
-    magneticField = initialMF;
+    currentTimeStep_ = 0;
+    currentTime_     = 0._r;
+    rigidBodies_ = initialRBs;
+    magneticField_ = initialMF;
 }
 
-void Simulation::activateDump(const std::string& fname, long dumpEvery_)
+void Simulation::activateDump(const std::string& fname, long dumpEvery)
 {
-    MSODE_Expect(dumpEvery_ > 0, "expect positive dumpEvery");
-    this->dumpEvery = dumpEvery_;
+    MSODE_Expect(dumpEvery > 0, "expect positive dumpEvery");
+    dumpEvery_ = dumpEvery;
 
-    if (file.is_open())
-        file.close();
+    if (file_.is_open())
+        file_.close();
 
-    file.open(fname);
-    MSODE_Ensure(file.is_open(), "could not open file for writing");
+    file_.open(fname);
+    MSODE_Ensure(file_.is_open(), "could not open file for writing");
 }
 
 void Simulation::runForwardEuler(long nsteps, real dt)
@@ -67,22 +67,22 @@ void Simulation::runRK4(long nsteps, real dt)
 
 void Simulation::advanceForwardEuler(real dt)
 {
-    if (file.is_open() && currentTimeStep % dumpEvery == 0)
+    if (file_.is_open() && currentTimeStep_ % dumpEvery_ == 0)
         dump();
 
     stepForwardEuler(dt);
     
-    ++currentTimeStep;
+    ++currentTimeStep_;
 }
 
 void Simulation::advanceRK4(real dt)
 {
-    if (file.is_open() && currentTimeStep % dumpEvery == 0)
+    if (file_.is_open() && currentTimeStep_ % dumpEvery_ == 0)
         dump();
 
     stepRK4(dt);
 
-    ++currentTimeStep;
+    ++currentTimeStep_;
 }
 
 static inline std::tuple<real3, real3, Quaternion>
@@ -111,9 +111,9 @@ computeDerivatives(const RigidBody& b, real3 B)
 
 void Simulation::stepForwardEuler(real dt)
 {
-    const real3 B = magneticField(currentTime);
+    const real3 B = magneticField_(currentTime_);
     
-    for (auto& rigidBody : rigidBodies)
+    for (auto& rigidBody : rigidBodies_)
     {
         Quaternion dq_dt;
         std::tie(rigidBody.v, rigidBody.omega, dq_dt) = computeDerivatives(rigidBody, B);
@@ -124,23 +124,23 @@ void Simulation::stepForwardEuler(real dt)
         rigidBody.q = rigidBody.q.normalized();
     }
 
-    magneticField.advance(currentTime, dt);
-    currentTime += dt;
+    magneticField_.advance(currentTime_, dt);
+    currentTime_ += dt;
 }
 
 void Simulation::stepRK4(real dt)
 {
     const real dt_half = 0.5_r * dt;
 
-    const real3 B0 = magneticField(currentTime);
-    magneticField.advance(currentTime, dt_half);
+    const real3 B0 = magneticField_(currentTime_);
+    magneticField_.advance(currentTime_, dt_half);
 
-    const real3 Bh = magneticField(currentTime+dt_half); // B half
-    magneticField.advance(currentTime, dt_half);
+    const real3 Bh = magneticField_(currentTime_ + dt_half); // B half
+    magneticField_.advance(currentTime_, dt_half);
 
-    const real3 B1 = magneticField(currentTime+dt);
+    const real3 B1 = magneticField_(currentTime_ + dt);
     
-    for (auto& rigidBody : rigidBodies)
+    for (auto& rigidBody : rigidBodies_)
     {
         Quaternion dq_dt1, dq_dt2, dq_dt3, dq_dt4;
         real3 v1, v2, v3, v4;
@@ -184,20 +184,20 @@ void Simulation::stepRK4(real dt)
         rigidBody.v = v4;
     }
     
-    currentTime += dt;
+    currentTime_ += dt;
 }
 
 void Simulation::dump()
 {
-    const real omega = magneticField.omega(currentTime);
-    const real3 dir  = magneticField.rotatingDirection(currentTime);
+    const real omega = magneticField_.omega(currentTime_);
+    const real3 dir  = magneticField_.rotatingDirection(currentTime_);
     
-    file << currentTime << " " << omega << " "  << dir.x << " "  << dir.y << " "  << dir.z;
+    file_ << currentTime_ << " " << omega << " "  << dir.x << " "  << dir.y << " "  << dir.z;
 
-    for (const auto& rigidBody : rigidBodies)
-        file << " " << rigidBody;
+    for (const auto& rigidBody : rigidBodies_)
+        file_ << " " << rigidBody;
 
-    file << "\n";
+    file_ << "\n";
 }
 
 std::ostream& operator<<(std::ostream& stream, const RigidBody& b)

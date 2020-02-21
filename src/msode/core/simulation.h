@@ -96,11 +96,11 @@ public:
     void runForwardEuler(long nsteps, real dt);
     void runRK4(long nsteps, real dt);
 
-    const std::vector<RigidBody>& getBodies() const {return rigidBodies;}
-    std::vector<RigidBody>& getBodies() {return rigidBodies;}
+    const std::vector<RigidBody>& getBodies() const {return rigidBodies_;}
+    std::vector<RigidBody>& getBodies() {return rigidBodies_;}
     
-    const MagneticField& getField() const {return magneticField;}
-    real getCurrentTime() const {return currentTime;}
+    const MagneticField& getField() const {return magneticField_;}
+    real getCurrentTime() const {return currentTime_;}
     
     void advanceForwardEuler(real dt);
     void advanceRK4(real dt);
@@ -111,13 +111,13 @@ private:
     void stepRK4(real dt);
     
 private:
-    real currentTime {0.0_r};
-    long currentTimeStep {0};
-    std::vector<RigidBody> rigidBodies;
-    MagneticField magneticField;
+    real currentTime_ {0.0_r};
+    long currentTimeStep_ {0};
+    std::vector<RigidBody> rigidBodies_;
+    MagneticField magneticField_;
 
-    long dumpEvery {0};
-    std::ofstream file {};
+    long dumpEvery_ {0};
+    std::ofstream file_ {};
 };
 
 

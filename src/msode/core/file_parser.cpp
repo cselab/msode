@@ -28,16 +28,16 @@ static auto readFile(const std::string& fname)
 
 
 FileParser::FileParser(const std::string& filename) :
-    data(readFile(filename))
+    data_(readFile(filename))
 {}
 
 
 std::string FileParser::getStr(const std::string& key) const
 {
-    auto it = data.find(key);
-    if (it != data.end())
+    auto it = data_.find(key);
+    if (it != data_.end())
         return it->second;
-    MSODE_Ensure(it != data.end(), "could not find key");
+    MSODE_Ensure(it != data_.end(), "could not find key");
     return std::string();
 }
 
