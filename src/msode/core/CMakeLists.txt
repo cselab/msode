@@ -1,7 +1,8 @@
 set(MSODE_SOURCES
   factory.cpp
   file_parser.cpp
-  simulation.cpp)
+  simulation.cpp
+  velocity_field.cpp)
 
 add_library(${LIB_NAME_MSODE} STATIC ${MSODE_SOURCES})
 target_compile_features(${LIB_NAME_MSODE} PUBLIC cxx_std_14)
