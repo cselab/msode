@@ -14,26 +14,26 @@ Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, rea
 {}
 
 
-MSodeEnvironment::MSodeEnvironment(const Params& params_,
-                                   std::unique_ptr<EnvSpace>&& space_,
+MSodeEnvironment::MSodeEnvironment(const Params& params,
+                                   std::unique_ptr<EnvSpace>&& space,
                                    const std::vector<RigidBody>& initialRBs,
-                                   const std::vector<real3>& targetPositions_,
-                                   std::unique_ptr<MagnFieldFromActionBase>&& magnFieldStateFromAction_) :
-    magnFieldState(std::move(magnFieldStateFromAction_)),
-    fieldMagnitude(params_.fieldMagnitude),
-    nstepsPerAction(params_.time.nstepsPerAction),
-    dt(params_.time.dt),
-    tmax(params_.time.tmax),
-    distanceThreshold(params_.distanceThreshold),
-    space(std::move(space_)),
-    rewardParams(params_.reward),
-    targetPositions(targetPositions_),
-    dumpEvery(params_.time.dumpEvery)
+                                   const std::vector<real3>& targetPositions,
+                                   std::unique_ptr<MagnFieldFromActionBase>&& magnFieldStateFromAction) :
+    magnFieldState(std::move(magnFieldStateFromAction)),
+    fieldMagnitude(params.fieldMagnitude),
+    nstepsPerAction_(params.time.nstepsPerAction),
+    dt_(params.time.dt),
+    tmax_(params.time.tmax),
+    distanceThreshold_(params.distanceThreshold),
+    space_(std::move(space)),
+    rewardParams_(params.reward),
+    targetPositions_(targetPositions),
+    dumpEvery_(params.time.dumpEvery)
 {
-    MSODE_Expect(initialRBs.size() == targetPositions.size(), "must give one target per body");
+    MSODE_Expect(initialRBs.size() == targetPositions_.size(), "must give one target per body");
 
     magnFieldState->attach(this);
-        
+
     auto omegaFunction = [this](real t)
     {
         return magnFieldState->getOmega(t);
@@ -45,7 +45,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params_,
         return normalized(axis);
     };
     
-    MagneticField field{params_.fieldMagnitude, omegaFunction, rotatingDirection};
+    MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
     sim = std::make_unique<Simulation>(initialRBs, field);
     setDistances();
@@ -68,7 +68,7 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool usePreviousIC)
 
     field.phase = 0.0_r;
 
-    const auto positions = space->generateNewPositionsIfFlag(gen, bodies.size(), !usePreviousIC);
+    const auto positions = space_->generateNewPositionsIfFlag(gen, bodies.size(), !usePreviousIC);
 
     for (size_t i = 0; i < bodies.size(); ++i)
     {
@@ -83,7 +83,7 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool usePreviousIC)
         std::ostringstream ss;
         ss << std::setw(6) << std::setfill('0') << simId;
         const std::string outputFileName = "trajectories_" + ss.str() + ".dat";
-        sim->activateDump(outputFileName, dumpEvery);
+        sim->activateDump(outputFileName, dumpEvery_);
     }
     setDistances();
 }
@@ -111,9 +111,9 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
     magnFieldState->advance(sim->getCurrentTime());
     magnFieldState->setAction(action);
 
-    for (long step = 0; step < nstepsPerAction; ++step)
+    for (long step = 0; step < nstepsPerAction_; ++step)
     {
-        sim->advanceForwardEuler(dt);
+        sim->advanceForwardEuler(dt_);
 
         auto status = getCurrentStatus();
         if (status != Status::Running)
@@ -138,25 +138,25 @@ const std::vector<double>& MSodeEnvironment::getState() const
 
     const auto qRot = Quaternion::createFromMatrix(rot);
         
-    cachedState.resize(0);
+    cachedState_.resize(0);
     
     const auto& bodies = sim->getBodies();
 
     for (size_t i = 0; i < bodies.size(); ++i)
     {
-        const real3 dr = bodies[i].r - targetPositions[i];
-        cachedState.push_back(dot(dr, n1));
-        cachedState.push_back(dot(dr, n2));
-        cachedState.push_back(dot(dr, n3));
+        const real3 dr = bodies[i].r - targetPositions_[i];
+        cachedState_.push_back(dot(dr, n1));
+        cachedState_.push_back(dot(dr, n2));
+        cachedState_.push_back(dot(dr, n3));
 
         const auto q = bodies[i].q * qRot;
-        cachedState.push_back(q.w);
-        cachedState.push_back(q.x);
-        cachedState.push_back(q.y);
-        cachedState.push_back(q.z);
+        cachedState_.push_back(q.w);
+        cachedState_.push_back(q.x);
+        cachedState_.push_back(q.y);
+        cachedState_.push_back(q.z);
     }
 
-    return cachedState;
+    return cachedState_;
 }
 
 double MSodeEnvironment::getReward() const
@@ -169,16 +169,16 @@ double MSodeEnvironment::getReward() const
     
     for (size_t i = 0; i < bodies.size(); ++i)
     {
-        const real3 dr = bodies[i].r - targetPositions[i];
+        const real3 dr = bodies[i].r - targetPositions_[i];
         const real distance = length(dr);
         
-        r += square(previousDistance[i]) - square(distance);
-        previousDistance[i] = distance;
+        r += square(previousDistance_[i]) - square(distance);
+        previousDistance_[i] = distance;
     }
-    r -= rewardParams.timeCoeff * dt * nstepsPerAction;
+    r -= rewardParams_.timeCoeff * dt_ * nstepsPerAction_;
 
     if (status == Status::Success)
-        r += rewardParams.terminationBonus;
+        r += rewardParams_.terminationBonus;
 
     return r;
 }
@@ -190,7 +190,7 @@ const std::vector<RigidBody>& MSodeEnvironment::getBodies() const
 
 const std::vector<real3>& MSodeEnvironment::getTargetPositions() const
 {
-    return targetPositions;
+    return targetPositions_;
 }
 
 real MSodeEnvironment::getSimulationTime() const
@@ -201,12 +201,12 @@ real MSodeEnvironment::getSimulationTime() const
 void MSodeEnvironment::setDistances()
 {
     const auto& bodies = sim->getBodies();
-    previousDistance.resize(bodies.size());
+    previousDistance_.resize(bodies.size());
     
     for (size_t i = 0; i < bodies.size(); ++i)
     {
-        const real3 dr = bodies[i].r - targetPositions[i];
-        previousDistance[i] = length(dr);
+        const real3 dr = bodies[i].r - targetPositions_[i];
+        previousDistance_[i] = length(dr);
     }
 }
 
@@ -217,15 +217,15 @@ bool MSodeEnvironment::bodiesWithinDistanceToTargets() const
     
     for (size_t i = 0; i < bodies.size(); ++i)
     {
-        const real distance = length(bodies[i].r - targetPositions[i]);
+        const real distance = length(bodies[i].r - targetPositions_[i]);
         maxDistance = std::max(maxDistance, distance);
     }
-    return maxDistance < distanceThreshold;
+    return maxDistance < distanceThreshold_;
 }
 
 MSodeEnvironment::Status MSodeEnvironment::getCurrentStatus() const
 {
-    if (sim->getCurrentTime() > tmax)
+    if (sim->getCurrentTime() > tmax_)
         return Status::MaxTimeEllapsed;
         
     if (bodiesWithinDistanceToTargets())

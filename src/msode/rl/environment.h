@@ -82,18 +82,18 @@ public:
     const real fieldMagnitude;
     
 private:
-    const long nstepsPerAction;
-    const real dt;
-    const real tmax;
-    const real distanceThreshold;
-    std::unique_ptr<EnvSpace> space;
-    const RewardParams rewardParams;
+    const long nstepsPerAction_;
+    const real dt_;
+    const real tmax_;
+    const real distanceThreshold_;
+    std::unique_ptr<EnvSpace> space_;
+    const RewardParams rewardParams_;
 
-    std::vector<real3> targetPositions;
-    mutable std::vector<real> previousDistance;
-    mutable std::vector<real> cachedState;
+    std::vector<real3> targetPositions_;
+    mutable std::vector<real> previousDistance_;
+    mutable std::vector<real> cachedState_;
 
-    const long dumpEvery;
+    const long dumpEvery_;
 };
 
 } // namespace rl
