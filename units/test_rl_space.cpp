@@ -1,5 +1,5 @@
 #include <msode/core/math.h>
-#include <msode/rl/space.h>
+#include <msode/rl/space/factory.h>
 
 #include <gtest/gtest.h>
 #include <cmath>

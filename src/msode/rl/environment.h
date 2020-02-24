@@ -1,7 +1,7 @@
 #pragma once
 
 #include "magnetic_field_from_action.h"
-#include "space.h"
+#include "space/factory.h"
 
 #include <msode/core/simulation.h>
 #include <msode/utils/rnd.h>

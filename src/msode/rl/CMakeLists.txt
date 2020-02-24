@@ -2,7 +2,11 @@ set(SRC_FILES
   environment.cpp
   helpers.cpp
   magnetic_field_from_action.cpp
-  space.cpp
+  space/interface.cpp
+  space/ball.cpp
+  space/ball_curriculum_state.cpp
+  space/ball_curriculum_action.cpp
+  space/box.cpp
   )
 
 find_package(SMARTIES REQUIRED)
