@@ -22,6 +22,7 @@
 namespace msode
 {
 
+// FIXME use variadic argument correctlly
 template <class... Args>
 static inline void die(const char *file, int line, const std::string& pattern, Args... args)
 {
