@@ -1,6 +1,6 @@
 #pragma once
 
-#include "magnetic_field_from_action.h"
+#include "field_from_action/factory.h"
 #include "space/factory.h"
 
 #include <msode/core/simulation.h>
