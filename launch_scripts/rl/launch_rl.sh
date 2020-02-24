@@ -14,7 +14,11 @@ cd $rundir
 . mir.load
 export MSODE_ROOT=$srcdir/../../
 
-smarties.py $srcdir \
+#settings="NAF.json"
+#settings="DPG.json"
+settings="default.json"
+
+smarties.py $srcdir $settings \
 	    --nThreads 8 \
 	    --nEnvironments 1 \
 	    --nTrainSteps 20000000 \
