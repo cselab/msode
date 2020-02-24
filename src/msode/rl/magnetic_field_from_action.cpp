@@ -252,34 +252,5 @@ void FieldFromActionFromLocalFrame::setAction(const std::vector<double>& action)
     axis_ = normalized(axis_);
 }
 
-FieldFromActionFromLocalPlane::FieldFromActionFromLocalPlane(real minOmega, real maxOmega) :
-    FieldFromActionFromLocalFrame(minOmega, maxOmega)
-{}
-
-int FieldFromActionFromLocalPlane::numActions() const {return 1+2;}
-
-ActionBounds FieldFromActionFromLocalPlane::getActionBounds() const
-{
-    return {{minOmega_, -1.0, -1.0},
-            {maxOmega_, +1.0, +1.0}};
-}
-    
-void FieldFromActionFromLocalPlane::setAction(const std::vector<double>& action)
-{
-    MSODE_Expect(static_cast<int>(action.size()) == numActions(),
-                 std::string("expect action of size ") + std::to_string(numActions()));
-
-    const real ax = static_cast<real>(action[1]);
-    const real ay = static_cast<real>(action[2]);
-        
-    omega_ = std::min(+maxOmega_, std::max(0.0_r, static_cast<real>(action[0])));
-
-    real3 n1, n2, n3;
-    std::tie(n1, n2, n3) = getFrameReference();
-
-    axis_ = ax * n1 + ay * n2;
-    axis_ = normalized(axis_);
-}
-
 } // namespace rl
 } // namespace msode

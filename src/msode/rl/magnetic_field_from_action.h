@@ -133,18 +133,5 @@ protected:
     real3 axis_ {1._r, 0._r, 0._r};
 };
 
-
-class FieldFromActionFromLocalPlane : public FieldFromActionFromLocalFrame
-{
-public:
-    FieldFromActionFromLocalPlane(real minOmega_, real maxOmega_);
-    FieldFromActionFromLocalPlane(const FieldFromActionFromLocalPlane&) = default;
-
-    int numActions() const override;
-
-    ActionBounds getActionBounds() const override;
-    void setAction(const std::vector<double>& action) override;
-};
-
 } // namespace rl
 } // namespace msode
