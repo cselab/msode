@@ -68,7 +68,7 @@ std::vector<double> EnvSpaceBallCuriculumActionRW::_generateAction(std::mt19937&
     std::vector<double> actions;
     auto state = environment_->magnFieldState.get();
 
-    if (dynamic_cast<MagnFieldFromActionFromLocalFrame*>(state))
+    if (dynamic_cast<FieldFromActionFromLocalFrame*>(state))
     {
         actions.resize(4);
         const auto& bodies = environment_->getBodies();
@@ -88,7 +88,7 @@ std::vector<double> EnvSpaceBallCuriculumActionRW::_generateAction(std::mt19937&
     }
     else
     {
-        msode_die("Not implemented with field from action other than MagnFieldFromActionFromLocalFrame\n");
+        msode_die("Not implemented with field from action other than FieldFromActionFromLocalFrame\n");
     }
     return actions;
 }

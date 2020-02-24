@@ -9,38 +9,38 @@ constexpr real3 ex {1.0_r, 0.0_r, 0.0_r};
 constexpr real3 ey {0.0_r, 1.0_r, 0.0_r};
 constexpr real3 ez {0.0_r, 0.0_r, 1.0_r};
 
-MagnFieldFromActionBase::MagnFieldFromActionBase(real minOmega, real maxOmega) :
+FieldFromAction::FieldFromAction(real minOmega, real maxOmega) :
     minOmega_(minOmega),
     maxOmega_(maxOmega)
 {}
 
-void MagnFieldFromActionBase::attach(const MSodeEnvironment *env)
+void FieldFromAction::attach(const MSodeEnvironment *env)
 {
     env_ = env;
 }
 
-MagnFieldFromActionChange::MagnFieldFromActionChange(real minOmega, real maxOmega, real actionDt) :
-    MagnFieldFromActionBase(minOmega, maxOmega),
+FieldFromActionChange::FieldFromActionChange(real minOmega, real maxOmega, real actionDt) :
+    FieldFromAction(minOmega, maxOmega),
     actionDt_(actionDt)
 {}
 
-int MagnFieldFromActionChange::numActions() const
+int FieldFromActionChange::numActions() const
 {
     return 4;
 }
 
-ActionBounds MagnFieldFromActionChange::getActionBounds() const
+ActionBounds FieldFromActionChange::getActionBounds() const
 {
     return {{minOmega_, -1.0, -1.0, -1.0},
             {maxOmega_,  1.0,  1.0,  1.0}};
 }
 
-std::tuple<real3, real3, real3> MagnFieldFromActionChange::getFrameReference() const
+std::tuple<real3, real3, real3> FieldFromActionChange::getFrameReference() const
 {
     return {ex, ey, ez};
 }
 
-void MagnFieldFromActionChange::setAction(const std::vector<double>& action)
+void FieldFromActionChange::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == 4, "expect action of size 4");
     dOmega_ = action[0];
@@ -49,7 +49,7 @@ void MagnFieldFromActionChange::setAction(const std::vector<double>& action)
     dAxis_.z = action[3];
 }
 
-void MagnFieldFromActionChange::advance(real t) 
+void FieldFromActionChange::advance(real t) 
 {
     // advance
     lastOmega_ += _omegaActionChange(t);
@@ -62,12 +62,12 @@ void MagnFieldFromActionChange::advance(real t)
     lastAxis_ = normalized(lastAxis_);
 }
 
-real MagnFieldFromActionChange::getOmega(real t) const
+real FieldFromActionChange::getOmega(real t) const
 {
     return lastOmega_ + _omegaActionChange(t);
 }
 
-real3 MagnFieldFromActionChange::getAxis(real t) const
+real3 FieldFromActionChange::getAxis(real t) const
 {
     return lastAxis_ + _axisActionChange(t);
 }
@@ -75,13 +75,13 @@ real3 MagnFieldFromActionChange::getAxis(real t) const
 static inline real transitionSmoothKernel(real x) { return x * x * (3.0_r - 2.0_r * x); }
 static inline real transitionLinearKernel(real x) { return x; }
 
-real MagnFieldFromActionChange::_omegaActionChange(real t) const
+real FieldFromActionChange::_omegaActionChange(real t) const
 {
     const real tau = (t - lastActionTime_) / actionDt_;
     return transitionLinearKernel(tau) * dOmega_;
 }
 
-real3 MagnFieldFromActionChange::_axisActionChange(real t) const
+real3 FieldFromActionChange::_axisActionChange(real t) const
 {
     const real tau = (t - lastActionTime_) / actionDt_;
     return transitionSmoothKernel(tau) * dAxis_;
@@ -90,27 +90,27 @@ real3 MagnFieldFromActionChange::_axisActionChange(real t) const
 
 
 
-MagnFieldFromActionDirect::MagnFieldFromActionDirect(real minOmega, real maxOmega) :
-    MagnFieldFromActionBase(minOmega, maxOmega)
+FieldFromActionDirect::FieldFromActionDirect(real minOmega, real maxOmega) :
+    FieldFromAction(minOmega, maxOmega)
 {}
 
-int MagnFieldFromActionDirect::numActions() const
+int FieldFromActionDirect::numActions() const
 {
     return 4;
 }
 
-ActionBounds MagnFieldFromActionDirect::getActionBounds() const
+ActionBounds FieldFromActionDirect::getActionBounds() const
 {
     return {{minOmega_, -1.0, -1.0, -1.0},
             {maxOmega_,  1.0,  1.0,  1.0}};
 }
 
-std::tuple<real3, real3, real3> MagnFieldFromActionDirect::getFrameReference() const
+std::tuple<real3, real3, real3> FieldFromActionDirect::getFrameReference() const
 {
     return {ex, ey, ez};
 }
     
-void MagnFieldFromActionDirect::setAction(const std::vector<double>& action) 
+void FieldFromActionDirect::setAction(const std::vector<double>& action) 
 {
     MSODE_Expect(static_cast<int>(action.size()) == 4, "expect action of size 4");
     constexpr real tolerance = 1e-6_r;
@@ -124,13 +124,13 @@ void MagnFieldFromActionDirect::setAction(const std::vector<double>& action)
     axis_ = normalized(axis_);
 }
 
-MagnFieldFromActionFromTargets::MagnFieldFromActionFromTargets(real maxOmega) :
-    MagnFieldFromActionBase(0.0, maxOmega)
+FieldFromActionFromTargets::FieldFromActionFromTargets(real maxOmega) :
+    FieldFromAction(0.0, maxOmega)
 {}
 
-int MagnFieldFromActionFromTargets::numActions() const {return 1 + env_->getBodies().size();}
+int FieldFromActionFromTargets::numActions() const {return 1 + env_->getBodies().size();}
 
-ActionBounds MagnFieldFromActionFromTargets::getActionBounds() const
+ActionBounds FieldFromActionFromTargets::getActionBounds() const
 {
     std::vector<double> lo{-maxOmega_}, hi{+maxOmega_};
 
@@ -143,12 +143,12 @@ ActionBounds MagnFieldFromActionFromTargets::getActionBounds() const
     return {std::move(lo), std::move(hi)};
 }
 
-std::tuple<real3, real3, real3> MagnFieldFromActionFromTargets::getFrameReference() const
+std::tuple<real3, real3, real3> FieldFromActionFromTargets::getFrameReference() const
 {
     return {ex, ey, ez};
 }
     
-void MagnFieldFromActionFromTargets::setAction(const std::vector<double>& action)
+void FieldFromActionFromTargets::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == numActions(),
                  std::string("expect action of size ") + std::to_string(numActions()));
@@ -171,19 +171,19 @@ void MagnFieldFromActionFromTargets::setAction(const std::vector<double>& action
 
 
 
-MagnFieldFromActionFromLocalFrame::MagnFieldFromActionFromLocalFrame(real minOmega, real maxOmega) :
-    MagnFieldFromActionBase(minOmega, maxOmega)
+FieldFromActionFromLocalFrame::FieldFromActionFromLocalFrame(real minOmega, real maxOmega) :
+    FieldFromAction(minOmega, maxOmega)
 {}
 
-int MagnFieldFromActionFromLocalFrame::numActions() const {return 1+3;}
+int FieldFromActionFromLocalFrame::numActions() const {return 1+3;}
 
-ActionBounds MagnFieldFromActionFromLocalFrame::getActionBounds() const
+ActionBounds FieldFromActionFromLocalFrame::getActionBounds() const
 {
     return {{minOmega_, -1.0, -1.0, -1.0},
             {maxOmega_, +1.0, +1.0, +1.0}};
 }
 
-std::tuple<real3, real3, real3> MagnFieldFromActionFromLocalFrame::getFrameReference() const
+std::tuple<real3, real3, real3> FieldFromActionFromLocalFrame::getFrameReference() const
 {
     constexpr int NotFound = -1;
         
@@ -234,7 +234,7 @@ std::tuple<real3, real3, real3> MagnFieldFromActionFromLocalFrame::getFrameRefer
     return {n1, n2, n3};
 }
     
-void MagnFieldFromActionFromLocalFrame::setAction(const std::vector<double>& action)
+void FieldFromActionFromLocalFrame::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == numActions(),
                  std::string("expect action of size ") + std::to_string(numActions()));
@@ -252,19 +252,19 @@ void MagnFieldFromActionFromLocalFrame::setAction(const std::vector<double>& act
     axis_ = normalized(axis_);
 }
 
-MagnFieldFromActionFromLocalPlane::MagnFieldFromActionFromLocalPlane(real minOmega, real maxOmega) :
-    MagnFieldFromActionFromLocalFrame(minOmega, maxOmega)
+FieldFromActionFromLocalPlane::FieldFromActionFromLocalPlane(real minOmega, real maxOmega) :
+    FieldFromActionFromLocalFrame(minOmega, maxOmega)
 {}
 
-int MagnFieldFromActionFromLocalPlane::numActions() const {return 1+2;}
+int FieldFromActionFromLocalPlane::numActions() const {return 1+2;}
 
-ActionBounds MagnFieldFromActionFromLocalPlane::getActionBounds() const
+ActionBounds FieldFromActionFromLocalPlane::getActionBounds() const
 {
     return {{minOmega_, -1.0, -1.0},
             {maxOmega_, +1.0, +1.0}};
 }
     
-void MagnFieldFromActionFromLocalPlane::setAction(const std::vector<double>& action)
+void FieldFromActionFromLocalPlane::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == numActions(),
                  std::string("expect action of size ") + std::to_string(numActions()));

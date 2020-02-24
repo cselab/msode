@@ -14,10 +14,10 @@ class MSodeEnvironment;
 
 using ActionBounds = std::tuple<std::vector<double>, std::vector<double>>;
 
-class MagnFieldFromActionBase
+class FieldFromAction
 {
 public:
-    MagnFieldFromActionBase(real minOmega, real maxOmega);
+    FieldFromAction(real minOmega, real maxOmega);
     
     void attach(const MSodeEnvironment *env);
     virtual int numActions() const = 0;
@@ -38,11 +38,11 @@ protected:
 };
 
 
-class MagnFieldFromActionChange : public MagnFieldFromActionBase
+class FieldFromActionChange : public FieldFromAction
 {
 public:
-    MagnFieldFromActionChange(real minOmega, real maxOmega, real actionDt);
-    MagnFieldFromActionChange(const MagnFieldFromActionChange&) = default;
+    FieldFromActionChange(real minOmega, real maxOmega, real actionDt);
+    FieldFromActionChange(const FieldFromActionChange&) = default;
 
     int numActions() const override;
 
@@ -71,11 +71,11 @@ private:
 };
 
 
-class MagnFieldFromActionDirect : public MagnFieldFromActionBase
+class FieldFromActionDirect : public FieldFromAction
 {
 public:
-    MagnFieldFromActionDirect(real minOmega, real maxOmega);
-    MagnFieldFromActionDirect(const MagnFieldFromActionDirect&) = default;
+    FieldFromActionDirect(real minOmega, real maxOmega);
+    FieldFromActionDirect(const FieldFromActionDirect&) = default;
 
     int numActions() const override;
 
@@ -91,11 +91,11 @@ private:
     real3 axis_ {1._r, 0._r, 0._r};
 };
 
-class MagnFieldFromActionFromTargets : public MagnFieldFromActionBase
+class FieldFromActionFromTargets : public FieldFromAction
 {
 public:
-    MagnFieldFromActionFromTargets(real maxOmega);
-    MagnFieldFromActionFromTargets(const MagnFieldFromActionFromTargets&) = default;
+    FieldFromActionFromTargets(real maxOmega);
+    FieldFromActionFromTargets(const FieldFromActionFromTargets&) = default;
 
     int numActions() const override;
 
@@ -113,11 +113,11 @@ private:
 };
 
 
-class MagnFieldFromActionFromLocalFrame : public MagnFieldFromActionBase
+class FieldFromActionFromLocalFrame : public FieldFromAction
 {
 public:
-    MagnFieldFromActionFromLocalFrame(real minOmega, real maxOmega);
-    MagnFieldFromActionFromLocalFrame(const MagnFieldFromActionFromLocalFrame&) = default;
+    FieldFromActionFromLocalFrame(real minOmega, real maxOmega);
+    FieldFromActionFromLocalFrame(const FieldFromActionFromLocalFrame&) = default;
 
     int numActions() const override;
     ActionBounds getActionBounds() const override;
@@ -134,11 +134,11 @@ protected:
 };
 
 
-class MagnFieldFromActionFromLocalPlane : public MagnFieldFromActionFromLocalFrame
+class FieldFromActionFromLocalPlane : public FieldFromActionFromLocalFrame
 {
 public:
-    MagnFieldFromActionFromLocalPlane(real minOmega_, real maxOmega_);
-    MagnFieldFromActionFromLocalPlane(const MagnFieldFromActionFromLocalPlane&) = default;
+    FieldFromActionFromLocalPlane(real minOmega_, real maxOmega_);
+    FieldFromActionFromLocalPlane(const FieldFromActionFromLocalPlane&) = default;
 
     int numActions() const override;
 

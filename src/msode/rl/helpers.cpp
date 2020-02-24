@@ -140,8 +140,8 @@ createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, r
 
     const std::vector<real3> targetPositions(nbodies, space->target);
 
-    // using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
-    using MagnFieldActionType = MagnFieldFromActionDirect;
+    // using MagnFieldActionType = FieldFromActionFromLocalFrame;
+    using MagnFieldActionType = FieldFromActionDirect;
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     auto fieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);
@@ -158,7 +158,7 @@ createEnvironmentCurriculumStateSpace(const std::vector<RigidBody>& bodies, real
 
     auto space = std::make_unique<EnvSpaceBallCuriculumStateRW>(radius, distanceThreshold, sigmaRandomWalk);
     
-    using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
+    using MagnFieldActionType = FieldFromActionFromLocalFrame;
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     const std::vector<real3> targetPositions(nbodies, space->target);
@@ -177,7 +177,7 @@ createEnvironmentCurriculumActionSpace(const std::vector<RigidBody>& bodies, rea
     auto preEnvSpace = std::make_unique<EnvSpaceBall>(distanceThreshold);
     const std::vector<real3> targetPositions(nbodies, preEnvSpace->target);
 
-    using MagnFieldActionType = MagnFieldFromActionFromLocalFrame;
+    using MagnFieldActionType = FieldFromActionFromLocalFrame;
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real minOmega = 0.5_r * computeMinOmegaNoSlip(fieldMagnitude, bodies);
     auto preFieldAction = std::make_unique<MagnFieldActionType>(minOmega, maxOmega);

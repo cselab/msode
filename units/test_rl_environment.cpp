@@ -60,7 +60,7 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     auto envSpace = std::make_unique<EnvSpaceBall>(domainRadius);
     std::vector<RigidBody> initialBodies = {body};
     std::vector<real3> targetPositions(initialBodies.size(), envSpace->target);
-    auto actionField = std::make_unique<MagnFieldFromActionDirect>(0.0_r, 2.0_r * omegaC);
+    auto actionField = std::make_unique<FieldFromActionDirect>(0.0_r, 2.0_r * omegaC);
 
     return std::make_unique<MSodeEnvironment>(params, std::move(envSpace), initialBodies,
                                               targetPositions, std::move(actionField));

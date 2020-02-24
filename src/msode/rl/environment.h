@@ -45,7 +45,7 @@ public:
                      std::unique_ptr<EnvSpace>&& space_,
                      const std::vector<RigidBody>& initialRBs,
                      const std::vector<real3>& targetPositions_,
-                     std::unique_ptr<MagnFieldFromActionBase>&& magnFieldStateFromAction_);
+                     std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction_);
     
     MSodeEnvironment(const MSodeEnvironment&) = delete;
     MSodeEnvironment& operator=(const MSodeEnvironment&) = delete;
@@ -78,7 +78,7 @@ private:
 
 public:
     std::unique_ptr<Simulation> sim;
-    std::unique_ptr<MagnFieldFromActionBase> magnFieldState;
+    std::unique_ptr<FieldFromAction> magnFieldState;
     const real fieldMagnitude;
     
 private:
