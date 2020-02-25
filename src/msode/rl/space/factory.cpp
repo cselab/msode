@@ -5,6 +5,8 @@
 #include "ball_curriculum_action.h"
 #include "box.h"
 
+#include <msode/rl/factory.h>
+
 namespace msode {
 namespace rl {
 
@@ -30,7 +32,11 @@ std::unique_ptr<EnvSpace> createEnvSpace(const Config& config)
     }
     else if (type == "BallCuriculumAction")
     {
-        msode_die("Not implemented yet '%s'", type.c_str());
+        auto environment = createEnvironment(config.at("environment"));
+        es = std::make_unique<EnvSpaceBallCuriculumActionRW>(std::move(environment),
+                                                             config.at("radius").get<real>(),
+                                                             config.at("targetRadius").get<real>(),
+                                                             config.at("sigma").get<real>());
     }
     else
     {
