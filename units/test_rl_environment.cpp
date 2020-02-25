@@ -1,4 +1,5 @@
 #include <msode/rl/environment.h>
+#include <msode/rl/factory.h>
 #include <msode/rl/space/factory.h>
 #include <msode/rl/field_from_action/factory.h>
 
@@ -90,6 +91,43 @@ GTEST_TEST( RL_ENVIRONMENT, reward_positive_towards_target )
         const auto reward = env->getReward();
         ASSERT_GE(reward, 0.0_r);
     }
+}
+
+GTEST_TEST( RL_ENVIRONMENT, factory )
+{
+    const Config config = json::parse(R"(
+    {
+    "bodies" : [
+        {
+            "moment" : [0.0, 10.000000, 0.0],
+            "quaternion" : [0.0, 1.0, 0.0, 0.0],
+            "position" : [0.0, 0.0, 0.0],
+            "propulsion" : {
+                "A" : [0.246391, 0.200475, 0.199631],
+                "B" : [0.100000, 0.000000, 0.000000],
+                "C" : [6.983636, 1.153988, 1.218122]
+            }
+        }
+    ],
+    "space" : {
+        "__type" : "Ball",
+        "radius" : 50.0
+    },
+    "fieldAction" : {
+        "__type" : "Direct", 
+        "minOmega" : 0.0,
+        "maxOmega" : 120.0
+    },
+    "fieldMagnitude" : 1.0,
+    "targetRadius"   : 2.0
+    }
+    )");
+
+    auto env = createEnvironment(config);
+
+    auto space = env->getEnvSpace();
+
+    ASSERT_NE(dynamic_cast<const EnvSpaceBall*>(space), nullptr);
 }
 
 
