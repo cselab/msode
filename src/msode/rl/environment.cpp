@@ -192,6 +192,11 @@ const std::vector<real3>& MSodeEnvironment::getTargetPositions() const
     return targetPositions_;
 }
 
+const EnvSpace* MSodeEnvironment::getEnvSpace() const
+{
+    return space_.get();
+}
+
 real MSodeEnvironment::getSimulationTime() const
 {
     return sim->getCurrentTime();

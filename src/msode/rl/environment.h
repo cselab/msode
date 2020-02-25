@@ -66,6 +66,7 @@ public:
 
     const std::vector<RigidBody>& getBodies() const;
     const std::vector<real3>& getTargetPositions() const;
+    const EnvSpace* getEnvSpace() const;
 
     real getSimulationTime() const;
 

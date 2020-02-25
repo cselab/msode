@@ -19,7 +19,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     
     rl::setActionDims  (env.get(), comm);
     rl::setActionBounds(env.get(), comm);
-    rl::setStateBounds(bodies, &spaceInfos, comm);
+    rl::setStateBounds (env.get(), comm);
     
     bool isTraining {true};
     long simId {0};

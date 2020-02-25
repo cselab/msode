@@ -14,9 +14,9 @@ namespace rl {
 
 std::vector<RigidBody> createBodies(const std::string& fileNameList);
 
-void setActionDims(const MSodeEnvironment *env, smarties::Communicator *const comm);
+void setActionDims  (const MSodeEnvironment *env, smarties::Communicator *const comm);
 void setActionBounds(const MSodeEnvironment *env, smarties::Communicator *const comm);
-void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceInfos, smarties::Communicator *const comm);
+void setStateBounds (const MSodeEnvironment *env, smarties::Communicator *const comm);
 
 std::unique_ptr<MSodeEnvironment>
 createEnvironment(const std::vector<RigidBody>& bodies, const EnvSpace *space, real fieldMagnitude, real distanceThreshold = 2.0_r);

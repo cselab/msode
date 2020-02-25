@@ -80,17 +80,26 @@ static real computeMinOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
     return wmin;
 }
 
-void setStateBounds(const std::vector<RigidBody>& bodies, const EnvSpace *spaceInfos, smarties::Communicator *const comm)
+static real3 min3(real3 a, real3 b)
 {
+    return real3{std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)};
+}
+
+static real3 max3(real3 a, real3 b)
+{
+    return real3{std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)};
+}
+
+
+void setStateBounds(const MSodeEnvironment *env, smarties::Communicator *const comm)
+{
+    const EnvSpace *space = env->getEnvSpace();
     std::vector<double> lo, hi;
-    real3 minr {spaceInfos->target}, maxr {spaceInfos->target};
-    auto min3 = [](real3 a, real3 b) {return real3{std::min(a.x, b.x), std::min(a.y, b.y), std::min(a.z, b.z)};};
-    auto max3 = [](real3 a, real3 b) {return real3{std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)};};
 
-    minr = min3(minr, spaceInfos->getLowestPosition());
-    maxr = max3(maxr, spaceInfos->getHighestPosition());
+    const real3 minr = min3(space->target, space->getLowestPosition());
+    const real3 maxr = max3(space->target, space->getHighestPosition());
 
-    for (size_t i = 0; i < bodies.size(); ++i)
+    for (size_t i = 0; i < env->getBodies().size(); ++i)
     {
         // quaternions, positions
         lo.insert(lo.end(), {-1.0_r, -1.0_r, -1.0_r, -1.0_r, minr.x, minr.y, minr.z});
