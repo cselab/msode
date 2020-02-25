@@ -1,4 +1,4 @@
-#include <msode/core/velocity_field/factory.h>
+#include <msode/core/velocity_field/taylor_green_vortex.h>
 #include <msode/core/math.h>
 
 #include <iostream>

@@ -1,4 +1,5 @@
 set(MSODE_SOURCES
+  config.cpp
   factory.cpp
   file_parser.cpp
   log.cpp
@@ -16,3 +17,5 @@ target_include_directories(${LIB_NAME_MSODE} PUBLIC ${MSODE_INCLUDES})
 set(cxx_private_flags -O3 -Wall -Wextra -Wshadow -Werror)
 target_compile_options(${LIB_NAME_MSODE} PRIVATE ${cxx_private_flags})
 target_compile_definitions(${LIB_NAME_MSODE} PUBLIC ${msode_definitions})
+
+target_link_libraries(${LIB_NAME_MSODE} PUBLIC nlohmann_json::nlohmann_json)

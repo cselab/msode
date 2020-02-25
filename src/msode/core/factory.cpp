@@ -29,5 +29,16 @@ RigidBody readRigidBodyConfig(const std::string& fname)
 
     return {q, r, m, propulsion};
 }
+
+
+RigidBody readRigidBodyFromConfig(const Config& config)
+{
+    const PropulsionMatrix propulsion = config.at("propulsion").get<PropulsionMatrix>();
+    const Quaternion q = config.at("quaternion").get<Quaternion>();
+    const real3 r = config.at("position").get<real3>();
+    const real3 m = config.at("moment").get<real3>();
+
+    return {q, r, m, propulsion};
+}
 } // namespace Factory
 } // namespace msode
