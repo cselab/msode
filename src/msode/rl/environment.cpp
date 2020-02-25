@@ -17,7 +17,6 @@ Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, rea
 MSodeEnvironment::MSodeEnvironment(const Params& params,
                                    std::unique_ptr<EnvSpace>&& space,
                                    const std::vector<RigidBody>& initialRBs,
-                                   const std::vector<real3>& targetPositions,
                                    std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction) :
     magnFieldState(std::move(magnFieldStateFromAction)),
     fieldMagnitude(params.fieldMagnitude),
@@ -27,7 +26,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
     distanceThreshold_(params.distanceThreshold),
     space_(std::move(space)),
     rewardParams_(params.reward),
-    targetPositions_(targetPositions),
+    targetPositions_(initialRBs.size(), space_->target),
     dumpEvery_(params.time.dumpEvery)
 {
     MSODE_Expect(initialRBs.size() == targetPositions_.size(), "must give one target per body");

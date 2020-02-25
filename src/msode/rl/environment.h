@@ -44,7 +44,6 @@ public:
     MSodeEnvironment(const Params& params,
                      std::unique_ptr<EnvSpace>&& space,
                      const std::vector<RigidBody>& initialRBs,
-                     const std::vector<real3>& targetPositions,
                      std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction);
     
     MSodeEnvironment(const MSodeEnvironment&) = delete;
