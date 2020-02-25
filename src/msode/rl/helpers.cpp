@@ -105,7 +105,7 @@ static Params createParams(const std::vector<RigidBody>& bodies, real maxDistanc
     const int nbodies = bodies.size();
     
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
-    const real dt             = 1.0 / (maxOmega * 20); // s
+    const real dt       = 1.0 / (maxOmega * 20);
 
     const real terminationBonus = maxDistance * maxDistance * nbodies;
     

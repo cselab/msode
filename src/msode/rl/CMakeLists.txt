@@ -1,5 +1,6 @@
 set(SRC_FILES
   environment.cpp
+  factory.cpp
   field_from_action/interface.cpp
   field_from_action/weighted_targets.cpp
   field_from_action/action_change.cpp
