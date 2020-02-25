@@ -57,7 +57,7 @@ static inline real3 paramsToNormal(const std::vector<double>& params)
 static void evaluate(korali::Sample& k)
 {
     const real3 normal = paramsToNormal(k["Parameters"]);
-    k["Evaluation"] = computeTime(AGlobal, normal);
+    k["F(x)"] = -computeTime(AGlobal, normal); // we minimize the time -> maximize -T
 }
 
 real3 findBestPlane(const std::vector<real3>& A)
@@ -65,11 +65,10 @@ real3 findBestPlane(const std::vector<real3>& A)
     AGlobal = A;
 
     auto e = korali::Experiment();
-    e["Problem"]["Type"] = "Evaluation/Direct/Basic";
-    e["Problem"]["Objective"] = "Minimize";
+    e["Problem"]["Type"] = "Optimization/Stochastic";
     e["Problem"]["Objective Function"] = &evaluate;
 
-    e["Solver"]["Type"] = "Optimizer/CMAES";
+    e["Solver"]["Type"] = "CMAES";
     e["Solver"]["Population Size"] = 32;
     e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
     e["Solver"]["Termination Criteria"]["Max Generations"] = 100;
@@ -82,17 +81,16 @@ real3 findBestPlane(const std::vector<real3>& A)
     e["Variables"][1]["Lower Bound"] =   - M_PI;
     e["Variables"][1]["Upper Bound"] = 2 * M_PI;
 
-    e["Console"]["Frequency"] = 0;
+    e["Console Output"]["Frequency"] = 0;
+    e["Console Output"]["Verbosity"] = "Silent";
     e["Results"]["Frequency"] = 0;
-    e["Console"]["Verbosity"] = "Silent";
-    e["Results"]["Enabled"] = false;
     
     e["Random Seed"] = 424242;
 
     auto k = korali::Engine();
     k.run(e);
 
-    return paramsToNormal(e["Solver"]["Internal"]["Best Ever Variables"]);
+    return paramsToNormal(e["Solver"]["Best Ever Variables"]);
 }
 
 
@@ -126,7 +124,7 @@ static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
 static void evaluatePath(korali::Sample& k)
 {
     const auto q = paramsToQuaternion(k["Parameters"]);
-    k["Evaluation"] = computeTime(AGlobal, q);
+    k["F(x)"] = -computeTime(AGlobal, q); // maximize -T
 }
 
 Quaternion findBestPath(const std::vector<real3>& A)
@@ -134,11 +132,10 @@ Quaternion findBestPath(const std::vector<real3>& A)
     AGlobal = A;
 
     auto e = korali::Experiment();
-    e["Problem"]["Type"] = "Evaluation/Direct/Basic";
-    e["Problem"]["Objective"] = "Minimize";
+    e["Problem"]["Type"] = "Optimization/Stochastic";
     e["Problem"]["Objective Function"] = &evaluatePath;
 
-    e["Solver"]["Type"] = "Optimizer/CMAES";
+    e["Solver"]["Type"] = "CMAES";
     e["Solver"]["Population Size"] = 32;
     e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
     e["Solver"]["Termination Criteria"]["Max Generations"] = 10000;
@@ -155,23 +152,16 @@ Quaternion findBestPath(const std::vector<real3>& A)
     e["Variables"][2]["Lower Bound"] =   - M_PI;
     e["Variables"][2]["Upper Bound"] = 3 * M_PI;
 
-    e["Console"]["Frequency"] = 0;
+    e["Console Output"]["Frequency"] = 0;
+    e["Console Output"]["Verbosity"] = "Silent";
     e["Results"]["Frequency"] = 0;
-    e["Console"]["Verbosity"] = "Silent";
-    // e["Results"]["Enabled"] = false;
 
     e["Random Seed"] = 424242;
 
     auto k = korali::Engine();
     k.run(e);
 
-    // std::vector<double> vv = e["Solver"]["Internal"]["Best Ever Variables"];
-
-    // std::cout << "size " << vv.size() << std::endl;
-    // for (size_t i = 0; i < vv.size(); ++i)
-    //     std::cout << e["Variables"][i]["Name"] << " = " << vv[i] << std::endl;
-
-    return paramsToQuaternion(e["Solver"]["Internal"]["Best Ever Variables"]);
+    return paramsToQuaternion(e["Solver"]["Best Ever Variables"]);
 }
 
 } // namespace analytic_control
