@@ -11,7 +11,7 @@ int main(int argc, char **argv)
         std::string(argv[1]) == "-h" ||
         std::string(argv[1]) == "--help")
     {
-        fprintf(stderr, "usage : %s <swimmer0.cfg> <swimmer1.cfg>... \n\n", argv[0]);
+        fprintf(stderr, "usage : %s <swimmer0.json> <swimmer1.json>... \n\n", argv[0]);
         return 1;
     }
 

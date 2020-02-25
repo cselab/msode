@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 {
     if (argc != 5)
     {
-        fprintf(stderr, "usage : %s <swimmer.cfg> <omega> <fps> <trajectory_file> \n\n", argv[0]);
+        fprintf(stderr, "usage : %s <swimmer.json> <omega> <fps> <trajectory_file> \n\n", argv[0]);
         return 1;
     }
 

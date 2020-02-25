@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 {
     if (argc != 4)
     {
-        fprintf(stderr, "usage : %s <swimmer.cfg> <omega_max> <nomega> \n\n", argv[0]);
+        fprintf(stderr, "usage : %s <swimmer.json> <omega_max> <nomega> \n\n", argv[0]);
         return 1;
     }
 
