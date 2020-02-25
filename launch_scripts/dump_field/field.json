@@ -1,0 +1,5 @@
+{
+    "__type" : "FieldTaylorGreenVortex",
+    "magnitude" : [5.0, 5.0, -10.0],
+    "invPeriod" : [0.6283185307, 0.6283185307, 0.6283185307]
+}
