@@ -11,6 +11,7 @@ function(build_and_create_test src_file libs)
   add_test(NAME ${name} COMMAND ${name})  
 endfunction(build_and_create_test)
 
+build_and_create_test(test_config.cpp      "gtest;${LIB_NAME_MSODE}")
 build_and_create_test(test_factory.cpp     "gtest;${LIB_NAME_MSODE}")
 build_and_create_test(test_file_parser.cpp "gtest;${LIB_NAME_MSODE}")
 build_and_create_test(test_forward.cpp     "gtest;${LIB_NAME_MSODE};utils")
