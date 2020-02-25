@@ -1,4 +1,5 @@
 #include <msode/rl/helpers.h>
+#include <msode/rl/space/factory.h>
 
 #include <type_traits>
 

@@ -1,4 +1,6 @@
 #include <msode/rl/environment.h>
+#include <msode/rl/space/factory.h>
+#include <msode/rl/field_from_action/factory.h>
 
 #include <gtest/gtest.h>
 #include <memory>

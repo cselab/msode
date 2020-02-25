@@ -1,7 +1,7 @@
 #pragma once
 
-#include "field_from_action/factory.h"
-#include "space/factory.h"
+#include "field_from_action/interface.h"
+#include "space/interface.h"
 
 #include <msode/core/simulation.h>
 #include <msode/utils/rnd.h>
@@ -41,11 +41,11 @@ public:
     enum class Status {Running, MaxTimeEllapsed, Success};
     enum {NO_DUMP = -1};
     
-    MSodeEnvironment(const Params& params_,
-                     std::unique_ptr<EnvSpace>&& space_,
+    MSodeEnvironment(const Params& params,
+                     std::unique_ptr<EnvSpace>&& space,
                      const std::vector<RigidBody>& initialRBs,
-                     const std::vector<real3>& targetPositions_,
-                     std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction_);
+                     const std::vector<real3>& targetPositions,
+                     std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction);
     
     MSodeEnvironment(const MSodeEnvironment&) = delete;
     MSodeEnvironment& operator=(const MSodeEnvironment&) = delete;

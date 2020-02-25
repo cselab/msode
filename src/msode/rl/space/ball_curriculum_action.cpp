@@ -4,6 +4,8 @@
 #include <msode/rl/environment.h>
 #include <msode/utils/rnd.h>
 
+#include <msode/rl/field_from_action/local_frame.h>
+
 namespace msode {
 namespace rl {
 
