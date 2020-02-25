@@ -5,7 +5,7 @@
 namespace msode
 {
 
-void die(const char *file, int line, const char* pattern, ...)
+void die__(const char *file, int line, const char* pattern, ...)
 {
     fprintf(stderr, "[msode] an error occured on %s:%d:\n", file, line);
 

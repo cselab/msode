@@ -7,7 +7,7 @@
 
 namespace msode
 {
-void die [[gnu::format(printf, 3, 4)]] 
+void die__ [[gnu::format(printf, 3, 4)]] 
 (const char *file, int line, const char* pattern, ...);
 } // namespace msode
 
@@ -26,4 +26,4 @@ void die [[gnu::format(printf, 3, 4)]]
 #define MSODE_Expect(val, msg) MSODE_CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Expect : " + msg)
 #define MSODE_Ensure(val, msg) MSODE_CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Ensure : " + msg)
 
-#define msode_die(pattern, ...) msode::die(__FILE__, __LINE__, pattern, ##__VA_ARGS__)
+#define msode_die(pattern, ...) msode::die__(__FILE__, __LINE__, pattern, ##__VA_ARGS__)
