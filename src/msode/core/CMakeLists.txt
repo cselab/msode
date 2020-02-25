@@ -5,6 +5,7 @@ set(MSODE_SOURCES
   log.cpp
   simulation.cpp
   velocity_field/interface.cpp
+  velocity_field/factory.cpp
   velocity_field/none.cpp
   velocity_field/constant.cpp
   velocity_field/taylor_green_vortex.cpp

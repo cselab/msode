@@ -1,29 +1,35 @@
-#include <msode/core/velocity_field/taylor_green_vortex.h>
+#include <msode/core/velocity_field/factory.h>
 #include <msode/core/math.h>
 
-#include <iostream>
+#include <fstream>
 
 using namespace msode;
 
 int main(int argc, char **argv)
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        fprintf(stderr, "usage : %s <filename.vtk> \n\n", argv[0]);
+        fprintf(stderr, "usage : %s <config.json> <filename.vtk> \n\n", argv[0]);
         return 1;
     }
 
-    const std::string fileName (argv[1]);
+    const std::string configName (argv[1]);
+    const std::string outputName (argv[2]);
+
+    std::ifstream confFile(configName);
+
+    if (!confFile.is_open())
+        msode_die("Could not read config file %s", configName.c_str());
+    
+    const Config config = json::parse(confFile);
+    
+    auto field = createVelocityField(config);
+    
     const real time = 0.0_r;
     const real3 L {5.0_r, 5.0_r, 5.0_r};
     const real3 start = -0.5_r * L;
     
-    const real3 magnitude {L.x, L.y, -2.0_r * L.z};
-    const real3 invPeriod {M_PI / L.x, M_PI / L.y, M_PI / L.z};
-    
-    VelocityFieldTaylorGreenVortex field(magnitude, invPeriod);
-
-    field.dumpToVtkUniformGrid(fileName, {32, 32, 32}, start, L, time);
+    field->dumpToVtkUniformGrid(outputName, {32, 32, 32}, start, L, time);
     
     return 0;
 }
