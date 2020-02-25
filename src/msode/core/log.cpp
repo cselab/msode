@@ -13,7 +13,8 @@ void die(const char *file, int line, const char* pattern, ...)
     va_start(args, pattern);
     vfprintf(stderr, pattern, args);
     va_end(args);
-    
+
+    fprintf(stderr, "\n\n");
     exit(1);
 }
 
