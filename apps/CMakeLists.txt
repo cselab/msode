@@ -29,8 +29,5 @@ target_link_libraries(app_rl rl)
 add_executable(app_rl_comp app_rl_comp.cpp)
 target_link_libraries(app_rl_comp rl analytic_control)
 
-add_executable(app_rl_curriculum app_rl_curriculum.cpp)
-target_link_libraries(app_rl_curriculum msode rl)
-
 add_executable(app_rotating app_rotating.cpp)
 target_link_libraries(app_rotating msode)

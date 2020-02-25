@@ -1,6 +1,8 @@
+#include <msode/core/log.h>
+#include <msode/rl/factory.h>
 #include <msode/rl/helpers.h>
-#include <msode/rl/space/factory.h>
 
+#include <fstream>
 #include <type_traits>
 
 inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*argv*/)
@@ -8,14 +10,15 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     using namespace msode;
     
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
-    const auto bodies = msode::rl::createBodies("../config/swimmers_list.cfg");
+    const std::string confFileName = "../config.json";
+    std::ifstream confFile(confFileName);
 
-    const real magneticFieldMagnitude = 1.0_r;
+    if (!confFile.is_open())
+        msode_die("Could not open the config file '%s'", confFileName.c_str());
 
-    const real L = 50.0_r; // in body lengths units
-    const rl::EnvSpaceBox spaceInfos(L);
-    
-    auto env = createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude);
+    const Config config = json::parse(confFile);
+
+    auto env = rl::createEnvironment(config);
     
     rl::setActionDims  (env.get(), comm);
     rl::setActionBounds(env.get(), comm);

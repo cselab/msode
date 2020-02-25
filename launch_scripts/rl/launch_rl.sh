@@ -12,7 +12,13 @@ mkdir -p $rundir
 cd $rundir
 
 . mir.load
+
 export MSODE_ROOT=$srcdir/../../
+
+export APP_NAME=app_rl
+#export APP_NAME=app_rl_comp
+
+export CONF_FILE=helix_two_direct.json
 
 #settings="NAF.json"
 #settings="DPG.json"

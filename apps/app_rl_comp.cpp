@@ -1,11 +1,12 @@
-#include <msode/analytic_control/optimal_path.h>
 #include <msode/analytic_control/apply_strategy.h>
-#include <msode/rl/space/factory.h>
+#include <msode/analytic_control/optimal_path.h>
+#include <msode/core/log.h>
+#include <msode/rl/factory.h>
 #include <msode/rl/helpers.h>
 
-#include <type_traits>
-
+#include <fstream>
 #include <iomanip>
+#include <type_traits>
 
 using namespace msode;
 
@@ -55,17 +56,21 @@ static inline void dumpComparisonInfos(std::ostream& stream, int simId, real tim
 inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*argv*/)
 {
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
-    const auto bodies = rl::createBodies("../config/swimmers_list.cfg");
+    const std::string confFileName = "../config.json";
+    std::ifstream confFile(confFileName);
 
-    const real magneticFieldMagnitude = 1.0_r;
+    if (!confFile.is_open())
+        msode_die("Could not open the config file '%s'", confFileName.c_str());
 
-    const real L = 50.0_r; // in body lengths units
-    rl::EnvSpaceBox spaceInfos(L);
+    const Config config = json::parse(confFile);
+
+    const real magneticFieldMagnitude = config.at("fieldMagnitude").get<real>();
+    
+    auto env = rl::createEnvironment(config);
+
     const int dumpEvery = 1000;
 
-    auto env = rl::createEnvironment(bodies, &spaceInfos, magneticFieldMagnitude);
-
-    const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
+    const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, env->getBodies());
     const analytic_control::MatrixReal U = V.inverse();
     
     rl::setActionDims  (env.get(), comm);
