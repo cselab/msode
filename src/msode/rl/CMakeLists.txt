@@ -5,6 +5,7 @@ set(SRC_FILES
   field_from_action/action_change.cpp
   field_from_action/direct.cpp
   field_from_action/local_frame.cpp
+  field_from_action/factory.cpp
   helpers.cpp
   space/interface.cpp
   space/ball.cpp

@@ -13,7 +13,7 @@
 namespace msode {
 namespace rl {
 
-std::unique_ptr<EnvSpace> createVelocityField(const Config& config);
+std::unique_ptr<EnvSpace> createEnvSpace(const Config& config);
 
 } // namespace rl
 } // namespace msode
