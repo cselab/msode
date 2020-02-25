@@ -7,13 +7,14 @@
 
 namespace msode
 {
-namespace Factory
+namespace factory
 {
-/// read rigid object from a file, specific custom format; TODO: remove
-RigidBody readRigidBodyConfig(const std::string& fname);
+
+/// read rigid object from a file 
+RigidBody readRigidBodyConfigFromFile(const std::string& fname);
 
 /// read a RigidBody object from json format
 RigidBody readRigidBodyFromConfig(const Config& config);
 
-} // namespace Factory
+} // namespace factory
 } // namespace msode

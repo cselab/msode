@@ -36,7 +36,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    const auto body    = Factory::readRigidBodyConfig(argv[1]);
+    const auto body    = factory::readRigidBodyConfigFromFile(argv[1]);
     const real omega   = static_cast<real>(std::stod(argv[2]));
     const int fps      = std::stoi(argv[3]);
     const std::string out (argv[4]);

@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     std::vector<RigidBody> bodies;
     for (int i = 3; i < argc; ++i)
     {
-        const auto body = Factory::readRigidBodyConfig(argv[i]);
+        const auto body = factory::readRigidBodyConfigFromFile(argv[i]);
         bodies.push_back(body);
     }
 

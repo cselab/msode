@@ -9,7 +9,7 @@ std::vector<RigidBody> createBodies(const std::string& fileNameList)
     const FileParser parser(fileNameList);
 
     for (auto entry : parser)
-        bodies.push_back(Factory::readRigidBodyConfig(entry.second));
+        bodies.push_back(factory::readRigidBodyConfigFromFile(entry.second));
 
     return bodies;
 }

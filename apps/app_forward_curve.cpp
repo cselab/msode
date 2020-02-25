@@ -16,7 +16,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    const auto body = Factory::readRigidBodyConfig(argv[1]);
+    const auto body = factory::readRigidBodyConfigFromFile(argv[1]);
     const double maxOmega = std::stod(argv[2]);
     const int nOmegas     = std::stoi(argv[3]);
 

@@ -2,32 +2,24 @@
 #include "file_parser.h"
 #include "log.h"
 
-#include <map>
 #include <string>
 #include <fstream>
-#include <sstream>
 
 namespace msode
 {
 
-static PropulsionMatrix getPropulsion(const FileParser& parser)
+namespace factory
 {
-    return {parser.getSubMatrix("A"),
-            parser.getSubMatrix("B"),
-            parser.getSubMatrix("C")};
-}
+RigidBody readRigidBodyConfigFromFile(const std::string& fname)
+{
+    std::ifstream f(fname);
 
-namespace Factory
-{
-RigidBody readRigidBodyConfig(const std::string& fname)
-{
-    const FileParser parser(fname);
-    const PropulsionMatrix propulsion = getPropulsion(parser);
-    const Quaternion q = parser.getQuaternion("q");
-    const real3 r = parser.getReal3("r");
-    const real3 m = parser.getReal3("m");
+    if (!f.is_open())
+        msode_die("Could not open the file '%s'", fname.c_str());
 
-    return {q, r, m, propulsion};
+    const Config config = json::parse(f);
+
+    return readRigidBodyFromConfig(config);
 }
 
 
@@ -40,5 +32,5 @@ RigidBody readRigidBodyFromConfig(const Config& config)
 
     return {q, r, m, propulsion};
 }
-} // namespace Factory
+} // namespace factory
 } // namespace msode

@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     bodies.reserve(numSwimmers);
 
     for (int i = 0; i < numSwimmers; ++i)
-        bodies.push_back(Factory::readRigidBodyConfig(swimerNames[i]));
+        bodies.push_back(factory::readRigidBodyConfigFromFile(swimerNames[i]));
 
     const real dOmega = maxOmega / nOmegas;
     

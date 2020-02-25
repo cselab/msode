@@ -9,18 +9,23 @@ using namespace msode;
 
 GTEST_TEST( FACTORY, rigidBody )
 {
-    const std::string filename = "tmp.dat";
+    const std::string filename = "tmp.json";
     FILE *f = fopen(filename.c_str(), "w");
-    fprintf(f,
-            "m 0.0 10.000000 0.0\n"
-            "q 0.0 1.0 0.0 0.0\n"
-            "r 0.0 0.0 0.0\n"
-            "A 0.246391 0.200475 0.199631\n"
-            "B 0.100000 0.000000 0.000000\n"
-            "C 6.983636 1.153988 1.218122\n");
+    fprintf(f, R"(
+{
+    "moment" : [0.0, 10.000000, 0.0],
+    "quaternion" : [0.0, 1.0, 0.0, 0.0],
+    "position" : [0.0, 0.0, 0.0],
+    "propulsion" : {
+            "A" : [0.246391, 0.200475, 0.199631],
+            "B" : [0.100000, 0.000000, 0.000000],
+            "C" : [6.983636, 1.153988, 1.218122]
+    }
+}
+)");
     fclose(f);
 
-    const auto body = Factory::readRigidBodyConfig(filename);
+    const auto body = factory::readRigidBodyConfigFromFile(filename);
 
     ASSERT_EQ(body.magnMoment.x, 0.0_r);
     ASSERT_EQ(body.magnMoment.y, 10.0_r);

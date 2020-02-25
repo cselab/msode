@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     std::vector<RigidBody> rigidBodies;
     
     for (int i = 1; i < argc; ++i)
-        rigidBodies.push_back(Factory::readRigidBodyConfig(argv[i]));
+        rigidBodies.push_back(factory::readRigidBodyConfigFromFile(argv[i]));
     
     const real magneticFieldMagnitude {1.0_r};
     auto omegaField = [](real) {return 0.5_r;};
