@@ -88,7 +88,7 @@ std::vector<double> EnvSpaceBallCuriculumActionRW::_generateAction(std::mt19937&
     }
     else
     {
-        msode_die("Not implemented with field from action other than %s %d\n", "FieldFromActionFromLocalFrame");
+        msode_die("Not implemented with field from action other than FieldFromActionFromLocalFrame\n");
     }
     return actions;
 }

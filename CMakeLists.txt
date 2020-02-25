@@ -19,6 +19,9 @@ if (BUILD_WITH_CONTRACTS)
   set(msode_definitions "$msode_definitions;-DMSODE_FAIL_ON_CONTRACT")
 endif()
 
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(extern/json)
+
 add_subdirectory(src)
 add_subdirectory(units)
 add_subdirectory(apps)

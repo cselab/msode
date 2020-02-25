@@ -1,6 +1,7 @@
 set(MSODE_SOURCES
   factory.cpp
   file_parser.cpp
+  log.cpp
   simulation.cpp
   velocity_field/interface.cpp
   velocity_field/none.cpp
