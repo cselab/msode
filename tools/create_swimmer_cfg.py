@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 import numpy as np
-import os, argparse
+import os, argparse, json
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--props', type=str, nargs='+', required=True, help='the file of propulsion given by the SDPD simulations (see msode/data/propulsion/)')
@@ -39,7 +39,7 @@ props = [read_propulsion(fname) for fname in args.props]
 n = len(props)
 
 props = [rescale_propulsion_length(prop, args.l_scale) for prop in props]
-print(props)    
+#print(props)    
 
 scaling = args.B_target / props[0]['B'][0]
 
@@ -50,17 +50,16 @@ for i in range(n):
 magn_moments = [compute_magn_moment(prop) for prop in props]
 
 for i in range(n):
-    fname = 'swimmer_%02d.cfg'%(i)
-    fname = os.path.join(args.out_dir, fname)
-    f = open(fname, "w")
-    f.write("m 0.0 %f 0.0\n" % magn_moments[i])
-    f.write("q 0.0 1.0 0.0 0.0\n")
-    f.write("r 0.0 0.0 0.0\n")
+    config = {}
+    config["moment"]     = [0.0, magn_moments[i], 0.0]
+    config["quaternion"] = [0.0, 1.0, 0.0, 0.0]
+    config["position"]   = [0.0, 0.0, 0.0]
+    config["propulsion"] = props[i]
 
-    for key in props[i]:
-        v = props[i][key]
-        f.write("%s %f %f %f\n" % (key, v[0], v[1], v[2]))
-    f.close()
+    filename = args.out_dir + 'swimmer_%02d.json'%(i)
+    
+    with open(filename, "w") as outfile:
+        json.dump(config, outfile, indent=4)
 
     omegac = args.magnetic_field_magnitude * magn_moments[i] * props[i]['C'][0]
     print("omega_c = %f" % omegac)
