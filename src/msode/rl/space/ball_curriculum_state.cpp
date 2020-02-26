@@ -6,15 +6,15 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBallCuriculumStateRW::EnvSpaceBallCuriculumStateRW(real radius, real targetRadius, real sigmaRandomWalk) :
+EnvSpaceBallCurriculumStateRW::EnvSpaceBallCurriculumStateRW(real radius, real targetRadius, real sigmaRandomWalk) :
     EnvSpaceBall(radius),
     targetRadius_(targetRadius),
     sigmaRandomWalk_(sigmaRandomWalk)
 {}
 
-std::unique_ptr<EnvSpace> EnvSpaceBallCuriculumStateRW::clone() const
+std::unique_ptr<EnvSpace> EnvSpaceBallCurriculumStateRW::clone() const
 {
-    return std::make_unique<EnvSpaceBallCuriculumStateRW>(*this);
+    return std::make_unique<EnvSpaceBallCurriculumStateRW>(*this);
 }
 
 static inline real3 generateOnePositionMC(std::mt19937& gen, real3 r0, real radius, real targetRadius, real sigma)
@@ -35,7 +35,7 @@ static inline real3 generateOnePositionMC(std::mt19937& gen, real3 r0, real radi
     return r;
 }
 
-std::vector<real3> EnvSpaceBallCuriculumStateRW::generateNewPositions(std::mt19937& gen, int n)
+std::vector<real3> EnvSpaceBallCurriculumStateRW::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     

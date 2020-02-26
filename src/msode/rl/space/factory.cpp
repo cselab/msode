@@ -25,19 +25,19 @@ std::unique_ptr<EnvSpace> createEnvSpace(const Config& config)
     {
         es = std::make_unique<EnvSpaceBall>(config.at("radius").get<real>());
     }
-    else if (type == "BallCuriculumState")
+    else if (type == "BallCurriculumState")
     {
-        es = std::make_unique<EnvSpaceBallCuriculumStateRW>(config.at("radius").get<real>(),
-                                                            config.at("targetRadius").get<real>(),
-                                                            config.at("sigma").get<real>());
-    }
-    else if (type == "BallCuriculumAction")
-    {
-        auto environment = createEnvironment(config.at("environment"));
-        es = std::make_unique<EnvSpaceBallCuriculumActionRW>(std::move(environment),
-                                                             config.at("radius").get<real>(),
+        es = std::make_unique<EnvSpaceBallCurriculumStateRW>(config.at("radius").get<real>(),
                                                              config.at("targetRadius").get<real>(),
                                                              config.at("sigma").get<real>());
+    }
+    else if (type == "BallCurriculumAction")
+    {
+        auto environment = createEnvironment(config.at("environment"));
+        es = std::make_unique<EnvSpaceBallCurriculumActionRW>(std::move(environment),
+                                                              config.at("radius").get<real>(),
+                                                              config.at("targetRadius").get<real>(),
+                                                              config.at("sigma").get<real>());
     }
     else
     {

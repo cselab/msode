@@ -7,11 +7,11 @@ namespace rl {
 
 class MSodeEnvironment;
 
-class EnvSpaceBallCuriculumActionRW : public EnvSpaceBall
+class EnvSpaceBallCurriculumActionRW : public EnvSpaceBall
 {
 public:
-    EnvSpaceBallCuriculumActionRW(std::unique_ptr<MSodeEnvironment>&& environment,
-                                  real radius, real targetRadius, real sigmaRandomWalk);
+    EnvSpaceBallCurriculumActionRW(std::unique_ptr<MSodeEnvironment>&& environment,
+                                   real radius, real targetRadius, real sigmaRandomWalk);
 
     std::unique_ptr<EnvSpace> clone() const override;
     

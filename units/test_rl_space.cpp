@@ -64,7 +64,7 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_samples_are_inside )
     const int nPos = 16;
     const long nSamples = 1000;
 
-    rl::EnvSpaceBallCuriculumStateRW space(R, targetRadius, sigmaRW);
+    rl::EnvSpaceBallCurriculumStateRW space(R, targetRadius, sigmaRW);
     
     for (int i = 0; i < nSamples; ++i)
     {
