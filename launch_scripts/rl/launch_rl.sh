@@ -8,7 +8,8 @@ usage()
     cat <<EOF
 usage: ./launch_rl.sh <name_specifier> <simulation config file>
 
-The simulation will run in $res_dir/training<name_specifier>
+The simulation will run in $res_dir/training_<name_specifier>
+The simulation config file must be in the path relative to this launch script.
 
 EOF
     exit 1
