@@ -1,5 +1,6 @@
 #include "simulation.h"
 #include "math.h"
+#include "velocity_field/none.h"
 
 #include <tuple>
 
@@ -8,9 +9,17 @@ namespace msode
 
 Simulation::Simulation(const std::vector<RigidBody>& initialRBs,
                        const MagneticField& initialMF) :
-    rigidBodies_(initialRBs),
-    magneticField_(initialMF)
+    Simulation(initialRBs, initialMF, std::make_unique<VelocityFieldNone>())
 {}
+
+Simulation::Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF,
+                       std::unique_ptr<BaseVelocityField>&& velocityField) :
+    rigidBodies_(initialRBs),
+    magneticField_(initialMF),
+    velocityField_(std::move(velocityField))
+{}
+    
+
 
 static inline real3 operator*(const PropulsionMatrix::SubMatrix& A, const real3& v)
 {
@@ -70,7 +79,7 @@ void Simulation::advanceForwardEuler(real dt)
     if (file_.is_open() && currentTimeStep_ % dumpEvery_ == 0)
         dump();
 
-    stepForwardEuler(dt);
+    _stepForwardEuler(dt);
     
     ++currentTimeStep_;
 }
@@ -80,7 +89,7 @@ void Simulation::advanceRK4(real dt)
     if (file_.is_open() && currentTimeStep_ % dumpEvery_ == 0)
         dump();
 
-    stepRK4(dt);
+    _stepRK4(dt);
 
     ++currentTimeStep_;
 }
@@ -109,7 +118,7 @@ computeDerivatives(const RigidBody& b, real3 B)
     return {v, omega, dq_dt};
 }
 
-void Simulation::stepForwardEuler(real dt)
+void Simulation::_stepForwardEuler(real dt)
 {
     const real3 B = magneticField_(currentTime_);
     
@@ -117,6 +126,8 @@ void Simulation::stepForwardEuler(real dt)
     {
         Quaternion dq_dt;
         std::tie(rigidBody.v, rigidBody.omega, dq_dt) = computeDerivatives(rigidBody, B);
+
+        rigidBody.v += velocityField_->getVelocity(rigidBody.r, currentTime_);
         
         rigidBody.r += dt * rigidBody.v;
         rigidBody.q += dt * dq_dt;
@@ -128,7 +139,7 @@ void Simulation::stepForwardEuler(real dt)
     currentTime_ += dt;
 }
 
-void Simulation::stepRK4(real dt)
+void Simulation::_stepRK4(real dt)
 {
     const real dt_half = 0.5_r * dt;
 
@@ -136,7 +147,7 @@ void Simulation::stepRK4(real dt)
     magneticField_.advance(currentTime_, dt_half);
 
     const real3 Bh = magneticField_(currentTime_ + dt_half); // B half
-    magneticField_.advance(currentTime_, dt_half);
+    magneticField_.advance(currentTime_ + dt_half, dt_half);
 
     const real3 B1 = magneticField_(currentTime_ + dt);
     
@@ -149,6 +160,8 @@ void Simulation::stepRK4(real dt)
         RigidBody bWork = rigidBody;
         std::tie(v1, bWork.omega, dq_dt1) = computeDerivatives(bWork, B0);
 
+        v1 += velocityField_->getVelocity(rigidBody.r, currentTime_);
+        
         bWork.r = rigidBody.r + dt_half * v1;
         bWork.q = rigidBody.q + dt_half * dq_dt1;
         bWork.q = bWork.q.normalized();
@@ -157,6 +170,8 @@ void Simulation::stepRK4(real dt)
         // compute k2 = f(y0 + dt/2 * k1, t + dt/2)
         std::tie(v2, bWork.omega, dq_dt2) = computeDerivatives(bWork, Bh);
 
+        v2 += velocityField_->getVelocity(bWork.r, currentTime_ + dt_half);
+        
         bWork.r = rigidBody.r + dt_half * v2;
         bWork.q = rigidBody.q + dt_half * dq_dt2;
         bWork.q = bWork.q.normalized();
@@ -165,6 +180,8 @@ void Simulation::stepRK4(real dt)
         // compute k3 = f(y0 + dt/2 * k2, t + dt/2)
         std::tie(v3, bWork.omega, dq_dt3) = computeDerivatives(bWork, Bh);
 
+        v3 += velocityField_->getVelocity(bWork.r, currentTime_ + dt_half);
+        
         bWork.r = rigidBody.r + dt * v3;
         bWork.q = rigidBody.q + dt * dq_dt3;
         bWork.q = bWork.q.normalized();
@@ -173,6 +190,7 @@ void Simulation::stepRK4(real dt)
         // compute k4 = f(y0 + dt * k3, t + dt)
         std::tie(v4, rigidBody.omega, dq_dt4) = computeDerivatives(bWork, B1);
 
+        v4 += velocityField_->getVelocity(bWork.r, currentTime_ + dt);
 
         // compute y1 = y0 + (k1/6 + k2/3 + k3/3 + k4/6) * dt
         constexpr real one_third = 1.0_r / 3.0_r;

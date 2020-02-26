@@ -2,12 +2,14 @@
 
 #include "quaternion.h"
 #include "types.h"
+#include "velocity_field/interface.h"
 
 #include <array>
 #include <cmath>
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -85,6 +87,8 @@ public:
     enum class ODEScheme {ForwardEuler, RK4};
 
     Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
+    Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF,
+               std::unique_ptr<BaseVelocityField>&& velocityField);
     ~Simulation() = default;
 
     Simulation(const Simulation&) = default;
@@ -107,14 +111,15 @@ public:
     void dump();
 
 private:
-    void stepForwardEuler(real dt);
-    void stepRK4(real dt);
+    void _stepForwardEuler(real dt);
+    void _stepRK4(real dt);
     
 private:
     real currentTime_ {0.0_r};
     long currentTimeStep_ {0};
     std::vector<RigidBody> rigidBodies_;
     MagneticField magneticField_;
+    std::unique_ptr<BaseVelocityField> velocityField_;
 
     long dumpEvery_ {0};
     std::ofstream file_ {};
