@@ -6,9 +6,10 @@
 
 #include <memory>
 
-namespace msode
-{
+namespace msode {
+namespace factory {
 
 std::unique_ptr<BaseVelocityField> createVelocityField(const Config& config);
 
+} // namespace factory
 } // namespace msode

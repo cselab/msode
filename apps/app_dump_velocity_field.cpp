@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     
     const Config config = json::parse(confFile);
     
-    auto field = createVelocityField(config);
+    auto field = factory::createVelocityField(config);
     
     const real time = 0.0_r;
     const real3 L {5.0_r, 5.0_r, 5.0_r};

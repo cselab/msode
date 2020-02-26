@@ -5,10 +5,8 @@
 
 #include <string>
 
-namespace msode
-{
-namespace factory
-{
+namespace msode {
+namespace factory {
 
 /// read rigid object from a file 
 RigidBody readRigidBodyConfigFromFile(const std::string& fname);

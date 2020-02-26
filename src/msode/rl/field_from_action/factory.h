@@ -12,8 +12,10 @@
 
 namespace msode {
 namespace rl {
+namespace factory {
 
 std::unique_ptr<FieldFromAction> createFieldFromAction(const Config& config);
 
+} // namespace factory
 } // namespace rl
 } // namespace msode

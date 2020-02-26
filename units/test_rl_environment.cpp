@@ -123,7 +123,7 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
     }
     )");
 
-    auto env = createEnvironment(config);
+    auto env = factory::createEnvironment(config);
 
     auto space = env->getEnvSpace();
 

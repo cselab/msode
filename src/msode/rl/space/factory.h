@@ -12,8 +12,10 @@
 
 namespace msode {
 namespace rl {
+namespace factory {
 
 std::unique_ptr<EnvSpace> createEnvSpace(const Config& config);
 
+} // namespace factory
 } // namespace rl
 } // namespace msode

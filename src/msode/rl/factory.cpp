@@ -7,6 +7,7 @@
 
 namespace msode {
 namespace rl {
+namespace factory {
 
 static std::vector<RigidBody> readBodies(const Config& config)
 {
@@ -16,7 +17,7 @@ static std::vector<RigidBody> readBodies(const Config& config)
     std::vector<RigidBody> bodies;
 
     for (const auto& c : config)
-        bodies.push_back(factory::readRigidBodyFromConfig(c));
+        bodies.push_back(msode::factory::readRigidBodyFromConfig(c));
 
     return bodies;
 }
@@ -106,5 +107,6 @@ std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
     return std::make_unique<MSodeEnvironment>(params, std::move(space), bodies, std::move(fieldAction));
 }
 
+} // namespace factory
 } // namespace rl
 } // namespace msode

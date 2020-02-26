@@ -10,6 +10,8 @@
 
 namespace msode
 {
+namespace factory
+{
 
 std::unique_ptr<BaseVelocityField> createVelocityField(const Config& config)
 {
@@ -38,4 +40,5 @@ std::unique_ptr<BaseVelocityField> createVelocityField(const Config& config)
     return vf;
 }
 
+} // namespace factory
 } // namespace msode

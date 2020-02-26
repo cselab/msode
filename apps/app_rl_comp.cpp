@@ -66,7 +66,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
     const real magneticFieldMagnitude = config.at("fieldMagnitude").get<real>();
     
-    auto env = rl::createEnvironment(config);
+    auto env = rl::factory::createEnvironment(config);
 
     const int dumpEvery = 1000;
 

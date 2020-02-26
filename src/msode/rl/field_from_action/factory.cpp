@@ -7,6 +7,7 @@
 
 namespace msode {
 namespace rl {
+namespace factory {
 
 std::unique_ptr<FieldFromAction> createFieldFromAction(const Config& config)
 {
@@ -42,5 +43,6 @@ std::unique_ptr<FieldFromAction> createFieldFromAction(const Config& config)
     return fa;
 }
 
+} // namespace factory
 } // namespace rl
 } // namespace msode
