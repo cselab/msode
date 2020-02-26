@@ -1,5 +1,5 @@
 #include <msode/core/velocity_field/factory.h>
-#include <msode/core/math.h>
+#include <msode/rl/space/factory.h>
 
 #include <fstream>
 
@@ -23,13 +23,18 @@ int main(int argc, char **argv)
     
     const Config config = json::parse(confFile);
     
-    auto field = factory::createVelocityField(config);
+    auto field = factory::createVelocityField(config.at("velocityField"));
+    auto space = rl::factory::createEnvSpace(config.at("space"));
     
     const real time = 0.0_r;
-    const real3 L {5.0_r, 5.0_r, 5.0_r};
-    const real3 start = -0.5_r * L;
+    const real3 start = space->getLowestPosition();
+    const real3 end   = space->getHighestPosition();
+    const real3 size = end - start;
+
+    const int n = 64;
+    const int3 resolution {n, n, n};
     
-    field->dumpToVtkUniformGrid(outputName, {32, 32, 32}, start, L, time);
+    field->dumpToVtkUniformGrid(outputName, resolution, start, size, time);
     
     return 0;
 }

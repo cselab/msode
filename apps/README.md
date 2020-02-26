@@ -2,6 +2,10 @@
 
 a set of apps for simple cases with ABFs in a magnetic field
 
+## app_dump_velocity_field
+
+Read a config file compatible with one of ``app_rl`` or ``app_rl_comp`` and dump the velocity field that is described there. 
+
 ## app_forward
 
 ABF in a field rotating with frequency `omega` in the yz plane.
