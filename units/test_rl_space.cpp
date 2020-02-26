@@ -1,5 +1,8 @@
 #include <msode/core/math.h>
 #include <msode/rl/space/factory.h>
+#include <msode/rl/space/box.h>
+#include <msode/rl/space/ball.h>
+#include <msode/rl/space/ball_curriculum_state.h>
 
 #include <gtest/gtest.h>
 #include <cmath>
