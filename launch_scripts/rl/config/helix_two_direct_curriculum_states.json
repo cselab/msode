@@ -72,8 +72,10 @@
 	}
     ],
     "space" : {
-	"__type" : "Ball",
-	"radius" : 50.0
+	"__type" : "BallCurriculumState",
+	"radius" : 50.0,
+	"targetRadius" : 2.0,
+	"sigma" : 0.1
     },
     "fieldAction" : {
 	"__type" : "Direct",
