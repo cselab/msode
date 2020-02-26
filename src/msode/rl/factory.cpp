@@ -2,6 +2,7 @@
 
 #include <msode/core/log.h>
 #include <msode/core/factory.h>
+#include <msode/core/velocity_field/factory.h>
 #include <msode/rl/field_from_action/factory.h>
 #include <msode/rl/space/factory.h>
 
@@ -103,8 +104,9 @@ std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
     auto fieldAction = createFieldFromAction(config.at("fieldAction"));
     auto params      = createParams(bodies, space->computeMaxDistanceToTarget(),
                                     config.at("fieldMagnitude"), config.at("targetRadius"));
-        
-    return std::make_unique<MSodeEnvironment>(params, std::move(space), bodies, std::move(fieldAction));
+    auto velField = msode::factory::createVelocityField(config.at("velocityField"));
+    
+    return std::make_unique<MSodeEnvironment>(params, std::move(space), bodies, std::move(fieldAction), std::move(velField));
 }
 
 } // namespace factory

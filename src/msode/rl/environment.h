@@ -44,7 +44,8 @@ public:
     MSodeEnvironment(const Params& params,
                      std::unique_ptr<EnvSpace>&& space,
                      const std::vector<RigidBody>& initialRBs,
-                     std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction);
+                     std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction,
+                     std::unique_ptr<BaseVelocityField>&& velocityField);
     
     MSodeEnvironment(const MSodeEnvironment&) = delete;
     MSodeEnvironment& operator=(const MSodeEnvironment&) = delete;

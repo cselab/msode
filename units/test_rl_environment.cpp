@@ -1,3 +1,4 @@
+#include <msode/core/velocity_field/none.h>
 #include <msode/rl/environment.h>
 #include <msode/rl/factory.h>
 #include <msode/rl/space/factory.h>
@@ -63,8 +64,9 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     auto envSpace = std::make_unique<EnvSpaceBall>(domainRadius);
     std::vector<RigidBody> initialBodies = {body};
     auto actionField = std::make_unique<FieldFromActionDirect>(0.0_r, 2.0_r * omegaC);
+    auto velField = std::make_unique<VelocityFieldNone>();
 
-    return std::make_unique<MSodeEnvironment>(params, std::move(envSpace), initialBodies, std::move(actionField));
+    return std::make_unique<MSodeEnvironment>(params, std::move(envSpace), initialBodies, std::move(actionField), std::move(velField));
 }
 
 GTEST_TEST( RL_ENVIRONMENT, reward_positive_towards_target )
@@ -119,7 +121,10 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
         "maxOmega" : 120.0
     },
     "fieldMagnitude" : 1.0,
-    "targetRadius"   : 2.0
+    "targetRadius"   : 2.0,
+    "velocityField" : {
+        "__type" : "None"
+    }
     }
     )");
 

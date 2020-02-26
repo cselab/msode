@@ -17,7 +17,8 @@ Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, rea
 MSodeEnvironment::MSodeEnvironment(const Params& params,
                                    std::unique_ptr<EnvSpace>&& space,
                                    const std::vector<RigidBody>& initialRBs,
-                                   std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction) :
+                                   std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction,
+                                   std::unique_ptr<BaseVelocityField>&& velocityField) :
     magnFieldState(std::move(magnFieldStateFromAction)),
     fieldMagnitude(params.fieldMagnitude),
     nstepsPerAction_(params.time.nstepsPerAction),
@@ -46,7 +47,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
     
     MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
-    sim = std::make_unique<Simulation>(initialRBs, field);
+    sim = std::make_unique<Simulation>(initialRBs, field, std::move(velocityField));
     setDistances();
 }
 
