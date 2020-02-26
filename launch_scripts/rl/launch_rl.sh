@@ -7,6 +7,7 @@ usage()
 {
     cat <<EOF
 usage: ./launch_rl.sh <name_specifier> <simulation config file>
+    [-h | --help] Print this help message
 
 The simulation will run in $res_dir/training_<name_specifier>
 The simulation config file must be in the path relative to this launch script.
@@ -15,12 +16,32 @@ EOF
     exit 1
 }
 
-if test $# -ne 0 && test $1 = -h;     then usage; fi
-if test $# -ne 0 && test $1 = --help; then usage; fi
-if test $# -ne 2; then usage; fi
+POSITIONAL_ARGS=""
 
+# parse optional arguments
+while test $# -ne 0; do
+    case "$1" in
+	-h|--help)
+	    usage
+	    ;;
+	-*|--*)
+	    echo "Error: unsupported option $1"
+	    usage
+	    ;;
+	*)
+	    POSITIONAL_ARGS="$POSITIONAL_ARGS $1"
+	    shift
+	    ;;
+    esac
+done
+
+# parse positional arguments
+set -- "$POSITIONAL_ARGS"
+if test $# -ne 2; then usage; fi
 name=$1; shift
 sim_comfig=$1; shift
+
+
 
 srcdir=`pwd`
 rundir=$res_dir/training_$name
