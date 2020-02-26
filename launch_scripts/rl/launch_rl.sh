@@ -8,6 +8,8 @@ usage()
     cat <<EOF
 usage: ./launch_rl.sh <name_specifier> <simulation config file>
     [-h | --help] Print this help message
+    [-c | --comp] Launch the comparison rl + analytical methods
+    [--settings=<rl-settings.json>] Use specific smarties settings
 
 The simulation will run in $res_dir/training_<name_specifier>
 The simulation config file must be in the path relative to this launch script.
@@ -16,6 +18,10 @@ EOF
     exit 1
 }
 
+# default values
+app_name="app_rl"
+settings="default.json"
+
 POSITIONAL_ARGS=""
 
 # parse optional arguments
@@ -23,6 +29,14 @@ while test $# -ne 0; do
     case "$1" in
 	-h|--help)
 	    usage
+	    ;;
+	-c|--comp)
+	    app_name="app_rl_comp"
+	    shift
+	    ;;
+	--settings=*)
+	    settings="${1#*=}"
+	    shift
 	    ;;
 	-*|--*)
 	    echo "Error: unsupported option $1"
@@ -36,15 +50,24 @@ while test $# -ne 0; do
 done
 
 # parse positional arguments
-set -- "$POSITIONAL_ARGS"
+eval set -- "$POSITIONAL_ARGS"
 if test $# -ne 2; then usage; fi
 name=$1; shift
-sim_comfig=$1; shift
-
+sim_config=$1; shift
 
 
 srcdir=`pwd`
 rundir=$res_dir/training_$name
+
+cat<<EOF
+launch settings
+--------------------
+smarties settings:  $settings
+msode settings:     $sim_config
+application in use: $app_name"
+training output:    $rundir
+--------------------
+EOF
 
 mkdir -p $rundir
 cd $rundir
@@ -52,15 +75,8 @@ cd $rundir
 . mir.load
 
 export MSODE_ROOT=$srcdir/../../
-
-export APP_NAME=app_rl
-#export APP_NAME=app_rl_comp
-
-export CONF_FILE=$sim_comfig
-
-#settings="NAF.json"
-#settings="DPG.json"
-settings="default.json"
+export CONF_FILE=$sim_config
+export APP_NAME=$app_name
 
 smarties.py $srcdir $settings \
 	    --nThreads 8 \
