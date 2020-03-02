@@ -19,7 +19,7 @@ EOF
 }
 
 # default values
-app_name="app_rl"
+app_name="run_rl"
 settings="default.json"
 
 POSITIONAL_ARGS=""
@@ -31,7 +31,7 @@ while test $# -ne 0; do
 	    usage
 	    ;;
 	-c|--comp)
-	    app_name="app_rl_comp"
+	    app_name="run_rl_comp"
 	    shift
 	    ;;
 	--settings=*)
