@@ -27,8 +27,8 @@ void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 d
 
     // Compute the grid data
     
-    std::vector<real3> field;
-    field.reserve(numElements);
+    std::vector<real3> velocities, vorticities;
+    velocities.reserve(numElements);
 
     for (int iz = 0; iz < dimensions.z; ++iz)
     {
@@ -40,9 +40,8 @@ void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 d
                                start.y + iy * h.y,
                                start.z + iz * h.z};
                 
-                const real3 vel = getVelocity(r, t);
-
-                field.push_back(vel);
+                velocities .push_back(getVelocity (r, t));
+                vorticities.push_back(getVorticity(r, t));
             }
         }
     }
@@ -65,8 +64,13 @@ void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 d
     f << "POINT_DATA " << numElements << "\n"
       << "VECTORS velocity float\n";
 
-    for (auto v : field)
+    for (auto v : velocities)
         f << v.x << ' ' << v.y << ' ' << v.z << '\n';
+
+    f << "VECTORS vorticity float\n";
+
+    for (auto w : vorticities)
+        f << w.x << ' ' << w.y << ' ' << w.z << '\n';
 }
 
 } // namespace msode
