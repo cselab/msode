@@ -10,16 +10,25 @@ def read_rigid_data(data):
     return q, r, w
 
 
-def write_point_data(f, point_data, name):
+def write_point_data_scalar(f, point_data, name):
     f.write('SCALARS {} {}\n'.format(name, "FLOAT"))
     f.write('LOOKUP_TABLE {}\n'.format("default"))
     for val in point_data:
         f.write("{}\n".format(val))
     
+def write_point_data_vector(f, point_data, name):
+    f.write('VECTORS {} {}\n'.format(name, "FLOAT"))
+    print(point_data)
+    for val in point_data:
+        f.write("{} {} {}\n".format(val[0], val[1], val[2]))
+    
 
 parser = argparse.ArgumentParser()
 parser.add_argument('file',         type=str, help='output of ODE simulation')
 parser.add_argument('out_basename', type=str, help='vtk file output base name, will be basename.<swimmer id>.vtk')
+parser.add_argument('--with_field_from', type=str, default=None, metavar='config.json',
+                    help='if set, the background velocity field will be evaluated at every point of the trajectory. \
+                    The velocity fielf is described in the json file passed in this argument.')
 args = parser.parse_args()
 
 data = np.loadtxt(args.file)
@@ -65,7 +74,12 @@ for i in range(nrigids):
     f.write('\n')
     f.write('POINT_DATA {}\n'.format(n))
 
-    write_point_data(f, time, "time")
-    write_point_data(f, np.abs(omega_field), "omega")
+    write_point_data_scalar(f, time, "time")
+    write_point_data_scalar(f, np.abs(omega_field), "omega")
+
+    if args.with_field_from is not None:
+        import velocity_field
+        field_vel = velocity_field.evaluate_field_from_config_filename(x, y, z, args.with_field_from)
+        write_point_data_vector(f, field_vel, "velocity_field")
 
     f.close()
