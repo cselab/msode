@@ -31,8 +31,8 @@ def evaluate_field(x, y, z, config):
         vz = np.ones(n) * vel[2]
 
     else:
-        # TODO: fail
-        pass
+        print("Could not create a velocity field of type {}".format(strtype))
+        exit(1)
     
     return np.transpose(np.vstack((vx, vy, vz)))
 
