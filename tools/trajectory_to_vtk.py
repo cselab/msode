@@ -18,7 +18,6 @@ def write_point_data_scalar(f, point_data, name):
     
 def write_point_data_vector(f, point_data, name):
     f.write('VECTORS {} {}\n'.format(name, "FLOAT"))
-    print(point_data)
     for val in point_data:
         f.write("{} {} {}\n".format(val[0], val[1], val[2]))
     
