@@ -52,6 +52,55 @@ static void checkDivergenceFree(const VelocityField& velocityField, int nsamples
 }
 
 
+template<class VelocityField>
+static void checkVorticity(const VelocityField& velocityField, real3 r)
+{
+    constexpr real tol = 1e-6_r;
+    constexpr real h = 1e-6_r;
+    constexpr real invTwoH = 0.5_r / h;
+    constexpr real t = 0.0_r;
+
+    const real3 vp00 = velocityField.getVelocity(r + h * ex, t);
+    const real3 v0p0 = velocityField.getVelocity(r + h * ey, t);
+    const real3 v00p = velocityField.getVelocity(r + h * ez, t);
+
+    const real3 vm00 = velocityField.getVelocity(r - h * ex, t);
+    const real3 v0m0 = velocityField.getVelocity(r - h * ey, t);
+    const real3 v00m = velocityField.getVelocity(r - h * ez, t);
+
+    const real3 dxv = invTwoH * (vp00 - vm00);
+    const real3 dyv = invTwoH * (v0p0 - v0m0);
+    const real3 dzv = invTwoH * (v00p - v00m);
+
+    // finite differences
+    const real3 wfd {dyv.z - dzv.y,
+                     dzv.x - dxv.z,
+                     dxv.y - dyv.x};
+
+
+    const real3 wref = velocityField.getVorticity(r, t);
+    
+    ASSERT_NEAR(wfd.x, wref.x, tol);
+    ASSERT_NEAR(wfd.y, wref.y, tol);
+    ASSERT_NEAR(wfd.z, wref.z, tol);
+}
+
+template<class VelocityField>
+static void checkVorticity(const VelocityField& velocityField, int nsamples = 100, long seed = 424242L)
+{
+    constexpr real L = 10.0_r;
+    std::mt19937 gen{seed};
+    std::uniform_real_distribution<real> distr(-L, L);
+
+    for (int i = 0; i < nsamples; ++i)
+    {
+        const real3 r {distr(gen), distr(gen), distr(gen)};
+        checkVorticity(velocityField, r);
+    }
+}
+
+
+
 GTEST_TEST( VELOCITY_FIELD, divergence_constant )
 {
     const real3 v {-1.04_r, 2.3_r, 0.12_r};
@@ -71,6 +120,28 @@ GTEST_TEST( VELOCITY_FIELD, divergence_taylorGreenVortex )
     const real3 invPeriod {0.3_r, 0.3_r, 0.3_r};
     const VelocityFieldTaylorGreenVortex vel{magn, invPeriod};
     checkDivergenceFree(vel);
+}
+
+
+GTEST_TEST( VELOCITY_FIELD, vorticity_constant )
+{
+    const real3 v {-1.04_r, 2.3_r, 0.12_r};
+    const VelocityFieldConstant vel{v};
+    checkVorticity(vel);
+}
+
+GTEST_TEST( VELOCITY_FIELD, vorticity_none )
+{
+    const VelocityFieldNone vel{};
+    checkVorticity(vel);
+}
+
+GTEST_TEST( VELOCITY_FIELD, vorticity_taylorGreenVortex )
+{
+    const real3 magn {1.0_r, 1.0_r, -2.0_r};
+    const real3 invPeriod {0.3_r, 0.3_r, 0.3_r};
+    const VelocityFieldTaylorGreenVortex vel{magn, invPeriod};
+    checkVorticity(vel);
 }
 
 int main(int argc, char **argv)

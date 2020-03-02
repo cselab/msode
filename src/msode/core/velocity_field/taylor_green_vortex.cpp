@@ -42,7 +42,7 @@ real3 VelocityFieldTaylorGreenVortex::getVorticity(real3 r, real /* t */) const
     const real cz = std::cos(invPeriod_.z * r.z);
     const real sz = std::sin(invPeriod_.z * r.z);
 
-    const real3 w = cross(magnitude_, invPeriod_);
+    const real3 w = cross(invPeriod_, magnitude_);
     
     return {sx * cy * cz * w.x,
             cx * sy * cz * w.y,
