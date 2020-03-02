@@ -77,8 +77,8 @@ for i in range(nrigids):
     write_point_data_scalar(f, np.abs(omega_field), "omega")
 
     if args.with_field_from is not None:
-        import velocity_field
-        field_vel = velocity_field.evaluate_field_from_config_filename(x, y, z, args.with_field_from)
+        import velocity_field as vf
+        field_vel = vf.evaluate_field_from_config_filename(x, y, z, args.with_field_from)
         write_point_data_vector(f, field_vel, "velocity_field")
 
     f.close()
