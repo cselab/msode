@@ -12,6 +12,7 @@ public:
     VelocityFieldConstant(real3 vel);
 
     real3 getVelocity(real3 r, real t) const override;
+    real3 getVorticity(real3 r, real t) const override;
     
 private:
     const real3 vel_; ///< velocity everywhere in space and time

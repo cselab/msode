@@ -19,6 +19,12 @@ public:
     */
     virtual real3 getVelocity(real3 r, real t) const = 0;
 
+    /** \returns the vorticity at position \p r and time \p t
+        \param [in] r The position at which to evaluate the vorticity
+        \param [in] t The current time
+    */
+    virtual real3 getVorticity(real3 r, real t) const = 0;
+
     /** dump the vector field on a uniform grid to a vtk file called \p fileName.
         \param [in] fileName The destination file name. 
         \param [in] dimensions Number of points per dimension
