@@ -6,26 +6,26 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBallCurriculumStateDriftRW::EnvSpaceBallCurriculumStateDriftRW(int maxTries, real radius,
+EnvPosICBallCurriculumStateDriftRW::EnvPosICBallCurriculumStateDriftRW(int maxTries, real radius,
                                                                        real targetRadius, real sigmaRandomWalk,
                                                                        std::unique_ptr<BaseVelocityField> velField, real driftTime) :
-    EnvSpaceBallCurriculumStateRW(maxTries, radius, targetRadius, sigmaRandomWalk),
+    EnvPosICBallCurriculumStateRW(maxTries, radius, targetRadius, sigmaRandomWalk),
     velField_(std::move(velField)),
     driftTime_(driftTime)
 {}
 
-EnvSpaceBallCurriculumStateDriftRW::EnvSpaceBallCurriculumStateDriftRW(const EnvSpaceBallCurriculumStateDriftRW& other) :
-    EnvSpaceBallCurriculumStateRW(other),
+EnvPosICBallCurriculumStateDriftRW::EnvPosICBallCurriculumStateDriftRW(const EnvPosICBallCurriculumStateDriftRW& other) :
+    EnvPosICBallCurriculumStateRW(other),
     velField_(other.velField_->clone()),
     driftTime_(other.driftTime_)
 {}
 
-std::unique_ptr<EnvSpace> EnvSpaceBallCurriculumStateDriftRW::clone() const
+std::unique_ptr<EnvPosIC> EnvPosICBallCurriculumStateDriftRW::clone() const
 {
-    return std::make_unique<EnvSpaceBallCurriculumStateDriftRW>(*this);
+    return std::make_unique<EnvPosICBallCurriculumStateDriftRW>(*this);
 }
 
-std::vector<real3> EnvSpaceBallCurriculumStateDriftRW::generateNewPositions(std::mt19937& gen, int n)
+std::vector<real3> EnvPosICBallCurriculumStateDriftRW::generateNewPositions(std::mt19937& gen, int n)
 {
     _setPositionsIfNotUnitialized(gen, n);
     
@@ -38,7 +38,7 @@ std::vector<real3> EnvSpaceBallCurriculumStateDriftRW::generateNewPositions(std:
     return positions;
 }
 
-real3 EnvSpaceBallCurriculumStateDriftRW::_applyInverseDrift(real3 r) const
+real3 EnvPosICBallCurriculumStateDriftRW::_applyInverseDrift(real3 r) const
 {
     constexpr int nsteps = 100; // TODO
     const real dt = driftTime_ / nsteps;

@@ -6,21 +6,21 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBox::EnvSpaceBox(int maxTries, real L_) :
-    EnvSpace(maxTries),
+EnvPosICBox::EnvPosICBox(int maxTries, real L_) :
+    EnvPosIC(maxTries),
     domain_{{-L_, -L_, -L_},
             {+L_, +L_, +L_}}
 {}
 
-std::unique_ptr<EnvSpace> EnvSpaceBox::clone() const
+std::unique_ptr<EnvPosIC> EnvPosICBox::clone() const
 {
-    return std::make_unique<EnvSpaceBox>(*this);
+    return std::make_unique<EnvPosICBox>(*this);
 }
 
-real3 EnvSpaceBox::getLowestPosition()  const {return domain_.lo;}
-real3 EnvSpaceBox::getHighestPosition() const {return domain_.hi;}
+real3 EnvPosICBox::getLowestPosition()  const {return domain_.lo;}
+real3 EnvPosICBox::getHighestPosition() const {return domain_.hi;}
 
-real EnvSpaceBox::computeMaxDistanceToTarget() const
+real EnvPosICBox::computeMaxDistanceToTarget() const
 {
     auto distFromDst = [](real3 dst, real3 r) {return length(r-dst);};
     real d{0.0_r};
@@ -29,7 +29,7 @@ real EnvSpaceBox::computeMaxDistanceToTarget() const
     return d;
 }
 
-std::vector<real3> EnvSpaceBox::generateNewPositions(std::mt19937& gen, int n)
+std::vector<real3> EnvPosICBox::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)

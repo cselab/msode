@@ -6,13 +6,13 @@
 namespace msode {
 namespace rl {
 
-EnvSpace::EnvSpace(int maxTries) :
+EnvPosIC::EnvPosIC(int maxTries) :
     maxTries_(maxTries)
 {}
 
-EnvSpace::~EnvSpace() = default;
+EnvPosIC::~EnvPosIC() = default;
 
-const std::vector<real3>& EnvSpace::generateNewPositionsEveryMaxTries(std::mt19937& gen, int n, bool succesfulTry)
+const std::vector<real3>& EnvPosIC::generateNewPositionsEveryMaxTries(std::mt19937& gen, int n, bool succesfulTry)
 {
     if (!savedPositionsInitialized_)
     {

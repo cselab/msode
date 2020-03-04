@@ -21,7 +21,7 @@ GTEST_TEST( RL_SPACE, box_samples_are_inside )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvSpaceBox space(maxTries, L);
+    rl::EnvPosICBox space(maxTries, L);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -49,7 +49,7 @@ GTEST_TEST( RL_SPACE, ball_samples_are_inside )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvSpaceBall space(maxTries, R);
+    rl::EnvPosICBall space(maxTries, R);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -73,7 +73,7 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_samples_are_inside )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvSpaceBallCurriculumStateRW space(maxTries, R, targetRadius, sigmaRW);
+    rl::EnvPosICBallCurriculumStateRW space(maxTries, R, targetRadius, sigmaRW);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -105,7 +105,7 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_drift_correct_drift )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvSpaceBallCurriculumStateDriftRW space(maxTries, R, targetRadius, sigmaRW,
+    rl::EnvPosICBallCurriculumStateDriftRW space(maxTries, R, targetRadius, sigmaRW,
                                                  std::make_unique<VelocityFieldConstant>(vel),
                                                  driftTime);
     

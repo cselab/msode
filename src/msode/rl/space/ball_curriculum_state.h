@@ -5,12 +5,12 @@
 namespace msode {
 namespace rl {
 
-class EnvSpaceBallCurriculumStateRW : public EnvSpaceBall
+class EnvPosICBallCurriculumStateRW : public EnvPosICBall
 {
 public:
-    EnvSpaceBallCurriculumStateRW(int maxTries, real radius, real targetRadius, real sigmaRandomWalk);
+    EnvPosICBallCurriculumStateRW(int maxTries, real radius, real targetRadius, real sigmaRandomWalk);
 
-    std::unique_ptr<EnvSpace> clone() const override;
+    std::unique_ptr<EnvPosIC> clone() const override;
     
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 

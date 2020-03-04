@@ -8,17 +8,17 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBallCurriculumActionRW::EnvSpaceBallCurriculumActionRW(int maxTries, std::unique_ptr<MSodeEnvironment>&& environment,
+EnvPosICBallCurriculumActionRW::EnvPosICBallCurriculumActionRW(int maxTries, std::unique_ptr<MSodeEnvironment>&& environment,
                                                                real radius, real targetRadius, real sigmaRandomWalk) :
-    EnvSpaceBall(maxTries, radius),
+    EnvPosICBall(maxTries, radius),
     targetRadius_(targetRadius),
     sigmaRandomWalk_(sigmaRandomWalk),
     environment_(std::move(environment))
 {}
 
-std::unique_ptr<EnvSpace> EnvSpaceBallCurriculumActionRW::clone() const
+std::unique_ptr<EnvPosIC> EnvPosICBallCurriculumActionRW::clone() const
 {
-    return std::make_unique<EnvSpaceBallCurriculumActionRW>(*this);
+    return std::make_unique<EnvPosICBallCurriculumActionRW>(*this);
 }
 
 
@@ -37,7 +37,7 @@ static inline bool isCorrectSample(const std::vector<real3>& positions, real Rmi
     return ! allPositionsInsideRmin;
 }
 
-std::vector<real3> EnvSpaceBallCurriculumActionRW::generateNewPositions(std::mt19937& gen, int n)
+std::vector<real3> EnvPosICBallCurriculumActionRW::generateNewPositions(std::mt19937& gen, int n)
 {
     if (!initialized_)
     {
@@ -65,7 +65,7 @@ std::vector<real3> EnvSpaceBallCurriculumActionRW::generateNewPositions(std::mt1
     return positions;
 }
 
-std::vector<double> EnvSpaceBallCurriculumActionRW::_generateAction(std::mt19937& gen) const
+std::vector<double> EnvPosICBallCurriculumActionRW::_generateAction(std::mt19937& gen) const
 {
     std::vector<double> actions;
     auto state = environment_->magnFieldState.get();

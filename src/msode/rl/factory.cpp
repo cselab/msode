@@ -100,7 +100,7 @@ static Params createParams(const std::vector<RigidBody>& bodies, real maxDistanc
 std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
 {
     auto bodies      = readBodies(config.at("bodies"));
-    auto space       = createEnvSpace(config.at("space"));
+    auto space       = createEnvPosIC(config.at("space"));
     auto fieldAction = createFieldFromAction(config.at("fieldAction"));
     auto params      = createParams(bodies, space->computeMaxDistanceToTarget(),
                                     config.at("fieldMagnitude"), config.at("targetRadius"));

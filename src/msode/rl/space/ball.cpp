@@ -6,22 +6,22 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBall::EnvSpaceBall(int maxTries, real radius) :
-    EnvSpace(maxTries),
+EnvPosICBall::EnvPosICBall(int maxTries, real radius) :
+    EnvPosIC(maxTries),
     radius_(radius)
 {}
 
-std::unique_ptr<EnvSpace> EnvSpaceBall::clone() const
+std::unique_ptr<EnvPosIC> EnvPosICBall::clone() const
 {
-    return std::make_unique<EnvSpaceBall>(*this);
+    return std::make_unique<EnvPosICBall>(*this);
 }
 
-real3 EnvSpaceBall::getLowestPosition()  const {return {-radius_, -radius_, -radius_};}
-real3 EnvSpaceBall::getHighestPosition() const {return {+radius_, +radius_, +radius_};}
+real3 EnvPosICBall::getLowestPosition()  const {return {-radius_, -radius_, -radius_};}
+real3 EnvPosICBall::getHighestPosition() const {return {+radius_, +radius_, +radius_};}
 
-real EnvSpaceBall::computeMaxDistanceToTarget() const {return radius_;}
+real EnvPosICBall::computeMaxDistanceToTarget() const {return radius_;}
 
-std::vector<real3> EnvSpaceBall::generateNewPositions(std::mt19937& gen, int n)
+std::vector<real3> EnvPosICBall::generateNewPositions(std::mt19937& gen, int n)
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)

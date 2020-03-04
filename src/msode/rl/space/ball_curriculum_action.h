@@ -7,13 +7,13 @@ namespace rl {
 
 class MSodeEnvironment;
 
-class EnvSpaceBallCurriculumActionRW : public EnvSpaceBall
+class EnvPosICBallCurriculumActionRW : public EnvPosICBall
 {
 public:
-    EnvSpaceBallCurriculumActionRW(int maxTries, std::unique_ptr<MSodeEnvironment>&& environment,
+    EnvPosICBallCurriculumActionRW(int maxTries, std::unique_ptr<MSodeEnvironment>&& environment,
                                    real radius, real targetRadius, real sigmaRandomWalk);
 
-    std::unique_ptr<EnvSpace> clone() const override;
+    std::unique_ptr<EnvPosIC> clone() const override;
     
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 

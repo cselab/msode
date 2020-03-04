@@ -24,7 +24,7 @@ int main(int argc, char **argv)
     const Config config = json::parse(confFile);
     
     auto field = factory::createVelocityField(config.at("velocityField"));
-    auto space = rl::factory::createEnvSpace(config.at("space"));
+    auto space = rl::factory::createEnvPosIC(config.at("space"));
     
     const real time = 0.0_r;
     const real3 start = space->getLowestPosition();

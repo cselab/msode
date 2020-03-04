@@ -34,7 +34,7 @@ static real3 max3(real3 a, real3 b)
 
 void setStateBounds(const MSodeEnvironment *env, smarties::Communicator *const comm)
 {
-    const EnvSpace *space = env->getEnvSpace();
+    const EnvPosIC *space = env->getEnvPosIC();
     std::vector<double> lo, hi;
 
     const real3 minr = min3(space->target, space->getLowestPosition());

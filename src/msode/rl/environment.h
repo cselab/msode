@@ -42,7 +42,7 @@ public:
     enum {NO_DUMP = -1};
     
     MSodeEnvironment(const Params& params,
-                     std::unique_ptr<EnvSpace>&& space,
+                     std::unique_ptr<EnvPosIC>&& space,
                      const std::vector<RigidBody>& initialRBs,
                      std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction,
                      std::unique_ptr<BaseVelocityField>&& velocityField);
@@ -67,7 +67,7 @@ public:
 
     const std::vector<RigidBody>& getBodies() const;
     const std::vector<real3>& getTargetPositions() const;
-    const EnvSpace* getEnvSpace() const;
+    const EnvPosIC* getEnvPosIC() const;
 
     real getSimulationTime() const;
 
@@ -87,7 +87,7 @@ private:
     const real dt_;
     const real tmax_;
     const real distanceThreshold_;
-    std::unique_ptr<EnvSpace> space_;
+    std::unique_ptr<EnvPosIC> space_;
     const RewardParams rewardParams_;
 
     std::vector<real3> targetPositions_;

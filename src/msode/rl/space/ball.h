@@ -5,12 +5,12 @@
 namespace msode {
 namespace rl {
 
-class EnvSpaceBall : public EnvSpace
+class EnvPosICBall : public EnvPosIC
 {
 public:
-    EnvSpaceBall(int maxTries, real radius);
+    EnvPosICBall(int maxTries, real radius);
 
-    std::unique_ptr<EnvSpace> clone() const override;
+    std::unique_ptr<EnvPosIC> clone() const override;
     
     real3 getLowestPosition()  const override;
     real3 getHighestPosition() const override;

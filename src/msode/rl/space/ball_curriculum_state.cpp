@@ -6,18 +6,18 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBallCurriculumStateRW::EnvSpaceBallCurriculumStateRW(int maxTries, real radius, real targetRadius, real sigmaRandomWalk) :
-    EnvSpaceBall(maxTries, radius),
+EnvPosICBallCurriculumStateRW::EnvPosICBallCurriculumStateRW(int maxTries, real radius, real targetRadius, real sigmaRandomWalk) :
+    EnvPosICBall(maxTries, radius),
     targetRadius_(targetRadius),
     sigmaRandomWalk_(sigmaRandomWalk)
 {}
 
-std::unique_ptr<EnvSpace> EnvSpaceBallCurriculumStateRW::clone() const
+std::unique_ptr<EnvPosIC> EnvPosICBallCurriculumStateRW::clone() const
 {
-    return std::make_unique<EnvSpaceBallCurriculumStateRW>(*this);
+    return std::make_unique<EnvPosICBallCurriculumStateRW>(*this);
 }
 
-std::vector<real3> EnvSpaceBallCurriculumStateRW::generateNewPositions(std::mt19937& gen, int n)
+std::vector<real3> EnvPosICBallCurriculumStateRW::generateNewPositions(std::mt19937& gen, int n)
 {
     _setPositionsIfNotUnitialized(gen, n);
     
@@ -30,7 +30,7 @@ std::vector<real3> EnvSpaceBallCurriculumStateRW::generateNewPositions(std::mt19
     return positions;
 }
 
-void EnvSpaceBallCurriculumStateRW::_setPositionsIfNotUnitialized(std::mt19937& gen, int n)
+void EnvPosICBallCurriculumStateRW::_setPositionsIfNotUnitialized(std::mt19937& gen, int n)
 {
     if (!initialized_)
     {
@@ -42,7 +42,7 @@ void EnvSpaceBallCurriculumStateRW::_setPositionsIfNotUnitialized(std::mt19937& 
     }
 }
 
-real3 EnvSpaceBallCurriculumStateRW::_generateOnePositionMC(std::mt19937& gen, real3 r0) const 
+real3 EnvPosICBallCurriculumStateRW::_generateOnePositionMC(std::mt19937& gen, real3 r0) const 
 {
     bool accepted {false};
     real3 r;

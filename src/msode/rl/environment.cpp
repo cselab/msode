@@ -15,7 +15,7 @@ Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, rea
 
 
 MSodeEnvironment::MSodeEnvironment(const Params& params,
-                                   std::unique_ptr<EnvSpace>&& space,
+                                   std::unique_ptr<EnvPosIC>&& space,
                                    const std::vector<RigidBody>& initialRBs,
                                    std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction,
                                    std::unique_ptr<BaseVelocityField>&& velocityField) :
@@ -193,7 +193,7 @@ const std::vector<real3>& MSodeEnvironment::getTargetPositions() const
     return targetPositions_;
 }
 
-const EnvSpace* MSodeEnvironment::getEnvSpace() const
+const EnvPosIC* MSodeEnvironment::getEnvPosIC() const
 {
     return space_.get();
 }
