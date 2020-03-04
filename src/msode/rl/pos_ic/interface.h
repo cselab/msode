@@ -47,6 +47,11 @@ public:
      */
     virtual std::vector<real3> generateNewPositions(std::mt19937& gen, int n) = 0;
 
+    /** \brief Update the internal state according to the success of the previous simulation.
+        This allows to create curriculum-like ICs
+     */
+    virtual void update(bool succesfulTry);
+
 public:
     const real3 target {0.0_r, 0.0_r, 0.0_r}; ///< the target position
 

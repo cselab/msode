@@ -1,6 +1,7 @@
 #include "factory.h"
 
 #include "ball.h"
+#include "ball_growing.h"
 #include "ball_random_walk.h"
 #include "ball_random_walk_drift.h"
 #include "box.h"
@@ -46,6 +47,13 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
                                                            config.at("sigma").get<real>(),
                                                            std::move(velField),
                                                            config.at("driftTime").get<real>());
+    }
+    else if (type == "BallGrowing")
+    {
+        es = std::make_unique<EnvPosICBallGrowing>(maxTries,
+                                                   config.at("radius").get<real>(),
+                                                   config.at("targetRadius").get<real>(),
+                                                   config.at("growStep").get<real>());
     }
     else
     {

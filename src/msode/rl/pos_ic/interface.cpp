@@ -35,5 +35,8 @@ const std::vector<real3>& EnvPosIC::generateNewPositionsEveryMaxTries(std::mt199
     return savedPositions_;
 }
 
+void EnvPosIC::update(bool /* succesfulTry */)
+{}
+
 } // namespace rl
 } // namespace msode
