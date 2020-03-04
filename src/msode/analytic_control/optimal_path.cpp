@@ -10,11 +10,6 @@
 namespace msode {
 namespace analytic_control {
 
-// because korali passes functions through json... (WTF!?)
-// need to use global variables
-
-std::vector<real3> AGlobal;
-
 std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& positions)
 {
     const size_t n = positions.size();
@@ -69,19 +64,17 @@ static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
     return q.normalized();
 }
 
-static void evaluatePath(korali::Sample& k)
-{
-    const auto q = paramsToQuaternion(k["Parameters"]);
-    k["F(x)"] = -computeTime(AGlobal, q); // maximize -T
-}
-
 Quaternion findBestPath(const std::vector<real3>& A)
 {
-    AGlobal = A;
+    std::function<void(korali::Sample&)> evaluatePath = [&](korali::Sample& k)
+    {
+        const auto q = paramsToQuaternion(k["Parameters"]);
+        k["F(x)"] = -computeTime(A, q); // maximize -T
+    };
 
     auto e = korali::Experiment();
     e["Problem"]["Type"] = "Optimization/Stochastic";
-    e["Problem"]["Objective Function"] = &evaluatePath;
+    e["Problem"]["Objective Function"] = evaluatePath;
 
     e["Solver"]["Type"] = "CMAES";
     e["Solver"]["Population Size"] = 32;
