@@ -17,28 +17,21 @@ std::unique_ptr<EnvSpace> EnvSpaceBallCurriculumStateRW::clone() const
     return std::make_unique<EnvSpaceBallCurriculumStateRW>(*this);
 }
 
-static inline real3 generateOnePositionMC(std::mt19937& gen, real3 r0, real radius, real targetRadius, real sigma)
-{
-    bool accepted {false};
-    real3 r;
-    std::normal_distribution<real> distr {0.0_r, sigma};
-
-    while (!accepted)
-    {
-        const real3 step {distr(gen), distr(gen), distr(gen)};
-        r = r0 + step;
-
-        if (dot(r,r) <= radius * radius &&
-            dot(r,r) > targetRadius * targetRadius)
-            accepted = true;
-    }
-    return r;
-}
-
 std::vector<real3> EnvSpaceBallCurriculumStateRW::generateNewPositions(std::mt19937& gen, int n)
 {
-    std::vector<real3> positions(n);
+    _setPositionsIfNotUnitialized(gen, n);
     
+    std::vector<real3> positions(n);
+
+    for (int i = 0; i < n; ++i)
+        positions[i] = _generateOnePositionMC(gen, previousPositions_[i]);
+        
+    previousPositions_ = positions;
+    return positions;
+}
+
+void EnvSpaceBallCurriculumStateRW::_setPositionsIfNotUnitialized(std::mt19937& gen, int n)
+{
     if (!initialized_)
     {
         constexpr real eps = 0.01_r;
@@ -47,13 +40,26 @@ std::vector<real3> EnvSpaceBallCurriculumStateRW::generateNewPositions(std::mt19
             p = utils::generateUniformPositionShell(gen, targetRadius_, targetRadius_ * (1.0_r + eps));
         initialized_ = true;
     }
-
-    for (int i = 0; i < n; ++i)
-        positions[i] = generateOnePositionMC(gen, previousPositions_[i], radius_, targetRadius_, sigmaRandomWalk_);
-        
-    previousPositions_ = positions;
-    return positions;
 }
+
+real3 EnvSpaceBallCurriculumStateRW::_generateOnePositionMC(std::mt19937& gen, real3 r0) const 
+{
+    bool accepted {false};
+    real3 r;
+    std::normal_distribution<real> distr {0.0_r, sigmaRandomWalk_};
+
+    while (!accepted)
+    {
+        const real3 step {distr(gen), distr(gen), distr(gen)};
+        r = r0 + step;
+
+        if (dot(r,r) <= radius_ * radius_ &&
+            dot(r,r) > targetRadius_ * targetRadius_)
+            accepted = true;
+    }
+    return r;
+}
+
 
 } // namespace rl
 } // namespace msode

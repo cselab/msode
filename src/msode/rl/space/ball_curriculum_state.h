@@ -15,6 +15,10 @@ public:
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
+    void _setPositionsIfNotUnitialized(std::mt19937& gen, int n);
+    real3 _generateOnePositionMC(std::mt19937& gen, real3 r0) const;
+    
+protected:
     const real targetRadius_;
     const real sigmaRandomWalk_;
     
