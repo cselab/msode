@@ -39,7 +39,7 @@ std::unique_ptr<EnvSpace> createEnvSpace(const Config& config)
     }
     else if (type == "BallCurriculumStateDrift")
     {
-        auto velField = msode::factory::createVelocityField(config.at("velField"));
+        auto velField = msode::factory::createVelocityField(config.at("velocityField"));
         
         es = std::make_unique<EnvSpaceBallCurriculumStateDriftRW>(maxTries,
                                                                   config.at("radius").get<real>(),
