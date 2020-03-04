@@ -30,19 +30,22 @@ std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& posit
 }
 
 
-real computeTime(const std::vector<real3>& A, real3 normal)
+real computeTime(const std::vector<real3>& A, real3 direction)
 {
+    MSODE_Expect(std::fabs(length(direction) - 1.0_r) < 1e-6_r,
+                 "Expect a direction with unit length");
+    
     real t {0._r};
     for (auto ai : A)
-        t += std::fabs(dot(ai, normal));
+        t += std::fabs(dot(ai, direction));
     return t;
 }
 
 real computeTime(const std::vector<real3>& A, Quaternion q)
 {
-    const real3 e1 {1.0_r, 0.0_r, 0.0_r};
-    const real3 e2 {0.0_r, 1.0_r, 0.0_r};
-    const real3 e3 {0.0_r, 0.0_r, 1.0_r};
+    constexpr real3 e1 {1.0_r, 0.0_r, 0.0_r};
+    constexpr real3 e2 {0.0_r, 1.0_r, 0.0_r};
+    constexpr real3 e3 {0.0_r, 0.0_r, 1.0_r};
 
     return
         computeTime(A, q.rotate(e1)) +
