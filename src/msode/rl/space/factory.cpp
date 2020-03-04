@@ -2,10 +2,12 @@
 
 #include "ball.h"
 #include "ball_curriculum_state.h"
+#include "ball_curriculum_state_drift.h"
 #include "ball_curriculum_action.h"
 #include "box.h"
 
 #include <msode/rl/factory.h>
+#include <msode/core/velocity_field/factory.h>
 
 namespace msode {
 namespace rl {
@@ -34,6 +36,17 @@ std::unique_ptr<EnvSpace> createEnvSpace(const Config& config)
                                                              config.at("radius").get<real>(),
                                                              config.at("targetRadius").get<real>(),
                                                              config.at("sigma").get<real>());
+    }
+    else if (type == "BallCurriculumStateDrift")
+    {
+        auto velField = msode::factory::createVelocityField(config.at("velField"));
+        
+        es = std::make_unique<EnvSpaceBallCurriculumStateDriftRW>(maxTries,
+                                                                  config.at("radius").get<real>(),
+                                                                  config.at("targetRadius").get<real>(),
+                                                                  config.at("sigma").get<real>(),
+                                                                  std::move(velField),
+                                                                  config.at("driftTime").get<real>());
     }
     else if (type == "BallCurriculumAction")
     {

@@ -11,6 +11,7 @@ set(SRC_FILES
   space/interface.cpp
   space/ball.cpp
   space/ball_curriculum_state.cpp
+  space/ball_curriculum_state_drift.cpp
   space/ball_curriculum_action.cpp
   space/box.cpp
   space/factory.cpp
