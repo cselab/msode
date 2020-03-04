@@ -3,7 +3,6 @@
 #include "ball.h"
 #include "ball_curriculum_state.h"
 #include "ball_curriculum_state_drift.h"
-#include "ball_curriculum_action.h"
 #include "box.h"
 
 #include <msode/rl/factory.h>
@@ -47,15 +46,6 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
                                                                   config.at("sigma").get<real>(),
                                                                   std::move(velField),
                                                                   config.at("driftTime").get<real>());
-    }
-    else if (type == "BallCurriculumAction")
-    {
-        auto environment = createEnvironment(config.at("environment"));
-        es = std::make_unique<EnvPosICBallCurriculumActionRW>(maxTries,
-                                                              std::move(environment),
-                                                              config.at("radius").get<real>(),
-                                                              config.at("targetRadius").get<real>(),
-                                                              config.at("sigma").get<real>());
     }
     else
     {

@@ -12,7 +12,6 @@ set(SRC_FILES
   pos_ic/ball.cpp
   pos_ic/ball_curriculum_state.cpp
   pos_ic/ball_curriculum_state_drift.cpp
-  pos_ic/ball_curriculum_action.cpp
   pos_ic/box.cpp
   pos_ic/factory.cpp
   )
