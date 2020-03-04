@@ -1,8 +1,8 @@
 #include "factory.h"
 
 #include "ball.h"
-#include "ball_curriculum_state.h"
-#include "ball_curriculum_state_drift.h"
+#include "ball_random_walk.h"
+#include "ball_random_walk_drift.h"
 #include "box.h"
 
 #include <msode/rl/factory.h>
@@ -29,23 +29,23 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
         es = std::make_unique<EnvPosICBall>(maxTries,
                                             config.at("radius").get<real>());
     }
-    else if (type == "BallCurriculumState")
+    else if (type == "BallRandomWalk")
     {
-        es = std::make_unique<EnvPosICBallCurriculumStateRW>(maxTries,
-                                                             config.at("radius").get<real>(),
-                                                             config.at("targetRadius").get<real>(),
-                                                             config.at("sigma").get<real>());
+        es = std::make_unique<EnvPosICBallRandomWalk>(maxTries,
+                                                      config.at("radius").get<real>(),
+                                                      config.at("targetRadius").get<real>(),
+                                                      config.at("sigma").get<real>());
     }
-    else if (type == "BallCurriculumStateDrift")
+    else if (type == "BallRandomWalkDrift")
     {
         auto velField = msode::factory::createVelocityField(config.at("velocityField"));
         
-        es = std::make_unique<EnvPosICBallCurriculumStateDriftRW>(maxTries,
-                                                                  config.at("radius").get<real>(),
-                                                                  config.at("targetRadius").get<real>(),
-                                                                  config.at("sigma").get<real>(),
-                                                                  std::move(velField),
-                                                                  config.at("driftTime").get<real>());
+        es = std::make_unique<EnvPosICBallRandomWalkDrift>(maxTries,
+                                                           config.at("radius").get<real>(),
+                                                           config.at("targetRadius").get<real>(),
+                                                           config.at("sigma").get<real>(),
+                                                           std::move(velField),
+                                                           config.at("driftTime").get<real>());
     }
     else
     {

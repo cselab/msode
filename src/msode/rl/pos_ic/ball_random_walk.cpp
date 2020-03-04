@@ -1,4 +1,4 @@
-#include "ball_curriculum_state.h"
+#include "ball_random_walk.h"
 
 #include <msode/core/math.h>
 #include <msode/utils/rnd.h>
@@ -6,18 +6,18 @@
 namespace msode {
 namespace rl {
 
-EnvPosICBallCurriculumStateRW::EnvPosICBallCurriculumStateRW(int maxTries, real radius, real targetRadius, real sigmaRandomWalk) :
+EnvPosICBallRandomWalk::EnvPosICBallRandomWalk(int maxTries, real radius, real targetRadius, real sigmaRandomWalk) :
     EnvPosICBall(maxTries, radius),
     targetRadius_(targetRadius),
     sigmaRandomWalk_(sigmaRandomWalk)
 {}
 
-std::unique_ptr<EnvPosIC> EnvPosICBallCurriculumStateRW::clone() const
+std::unique_ptr<EnvPosIC> EnvPosICBallRandomWalk::clone() const
 {
-    return std::make_unique<EnvPosICBallCurriculumStateRW>(*this);
+    return std::make_unique<EnvPosICBallRandomWalk>(*this);
 }
 
-std::vector<real3> EnvPosICBallCurriculumStateRW::generateNewPositions(std::mt19937& gen, int n)
+std::vector<real3> EnvPosICBallRandomWalk::generateNewPositions(std::mt19937& gen, int n)
 {
     _setPositionsIfNotUnitialized(gen, n);
     
@@ -30,7 +30,7 @@ std::vector<real3> EnvPosICBallCurriculumStateRW::generateNewPositions(std::mt19
     return positions;
 }
 
-void EnvPosICBallCurriculumStateRW::_setPositionsIfNotUnitialized(std::mt19937& gen, int n)
+void EnvPosICBallRandomWalk::_setPositionsIfNotUnitialized(std::mt19937& gen, int n)
 {
     if (!initialized_)
     {
@@ -42,7 +42,7 @@ void EnvPosICBallCurriculumStateRW::_setPositionsIfNotUnitialized(std::mt19937& 
     }
 }
 
-real3 EnvPosICBallCurriculumStateRW::_generateOnePositionMC(std::mt19937& gen, real3 r0) const 
+real3 EnvPosICBallRandomWalk::_generateOnePositionMC(std::mt19937& gen, real3 r0) const 
 {
     bool accepted {false};
     real3 r;

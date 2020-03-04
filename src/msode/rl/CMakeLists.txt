@@ -10,8 +10,8 @@ set(SRC_FILES
   helpers.cpp
   pos_ic/interface.cpp
   pos_ic/ball.cpp
-  pos_ic/ball_curriculum_state.cpp
-  pos_ic/ball_curriculum_state_drift.cpp
+  pos_ic/ball_random_walk.cpp
+  pos_ic/ball_random_walk_drift.cpp
   pos_ic/box.cpp
   pos_ic/factory.cpp
   )

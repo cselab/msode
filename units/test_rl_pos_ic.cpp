@@ -3,8 +3,8 @@
 #include <msode/rl/pos_ic/factory.h>
 #include <msode/rl/pos_ic/box.h>
 #include <msode/rl/pos_ic/ball.h>
-#include <msode/rl/pos_ic/ball_curriculum_state.h>
-#include <msode/rl/pos_ic/ball_curriculum_state_drift.h>
+#include <msode/rl/pos_ic/ball_random_walk.h>
+#include <msode/rl/pos_ic/ball_random_walk_drift.h>
 
 #include <gtest/gtest.h>
 #include <cmath>
@@ -73,7 +73,7 @@ GTEST_TEST( RL_POS_IC, ball_curriculum_state_samples_are_inside )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvPosICBallCurriculumStateRW posIc(maxTries, R, targetRadius, sigmaRW);
+    rl::EnvPosICBallRandomWalk posIc(maxTries, R, targetRadius, sigmaRW);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -105,9 +105,9 @@ GTEST_TEST( RL_POS_IC, ball_curriculum_state_drift_correct_drift )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvPosICBallCurriculumStateDriftRW posIc(maxTries, R, targetRadius, sigmaRW,
-                                                 std::make_unique<VelocityFieldConstant>(vel),
-                                                 driftTime);
+    rl::EnvPosICBallRandomWalkDrift posIc(maxTries, R, targetRadius, sigmaRW,
+                                          std::make_unique<VelocityFieldConstant>(vel),
+                                          driftTime);
     
     const auto initPos = posIc.generateNewPositions(gen, nPos);
     const auto nextPos = posIc.generateNewPositions(gen, nPos);

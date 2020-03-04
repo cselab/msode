@@ -5,10 +5,10 @@
 namespace msode {
 namespace rl {
 
-class EnvPosICBallCurriculumStateRW : public EnvPosICBall
+class EnvPosICBallRandomWalk : public EnvPosICBall
 {
 public:
-    EnvPosICBallCurriculumStateRW(int maxTries, real radius, real targetRadius, real sigmaRandomWalk);
+    EnvPosICBallRandomWalk(int maxTries, real radius, real targetRadius, real sigmaRandomWalk);
 
     std::unique_ptr<EnvPosIC> clone() const override;
     
