@@ -8,7 +8,7 @@ namespace rl {
 class EnvSpaceBallCurriculumStateRW : public EnvSpaceBall
 {
 public:
-    EnvSpaceBallCurriculumStateRW(real radius, real targetRadius, real sigmaRandomWalk);
+    EnvSpaceBallCurriculumStateRW(int maxTries, real radius, real targetRadius, real sigmaRandomWalk);
 
     std::unique_ptr<EnvSpace> clone() const override;
     

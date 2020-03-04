@@ -6,8 +6,8 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBallCurriculumStateRW::EnvSpaceBallCurriculumStateRW(real radius, real targetRadius, real sigmaRandomWalk) :
-    EnvSpaceBall(radius),
+EnvSpaceBallCurriculumStateRW::EnvSpaceBallCurriculumStateRW(int maxTries, real radius, real targetRadius, real sigmaRandomWalk) :
+    EnvSpaceBall(maxTries, radius),
     targetRadius_(targetRadius),
     sigmaRandomWalk_(sigmaRandomWalk)
 {}

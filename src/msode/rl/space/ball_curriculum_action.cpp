@@ -8,9 +8,9 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBallCurriculumActionRW::EnvSpaceBallCurriculumActionRW(std::unique_ptr<MSodeEnvironment>&& environment,
+EnvSpaceBallCurriculumActionRW::EnvSpaceBallCurriculumActionRW(int maxTries, std::unique_ptr<MSodeEnvironment>&& environment,
                                                                real radius, real targetRadius, real sigmaRandomWalk) :
-    EnvSpaceBall(radius),
+    EnvSpaceBall(maxTries, radius),
     targetRadius_(targetRadius),
     sigmaRandomWalk_(sigmaRandomWalk),
     environment_(std::move(environment))
@@ -51,7 +51,8 @@ std::vector<real3> EnvSpaceBallCurriculumActionRW::generateNewPositions(std::mt1
     std::vector<real3> positions;
 
     do {
-        environment_->reset(gen);
+        const bool succesfulPreviousTry {true}; // always regenerate a new sample
+        environment_->reset(gen, MSodeEnvironment::NO_DUMP, succesfulPreviousTry);
         environment_->setPositions(previousPositions_);
         
         const auto action = _generateAction(gen);

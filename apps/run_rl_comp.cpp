@@ -81,12 +81,15 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     long simId {0};
 
     using Status = typename std::remove_pointer<decltype(env.get())>::type::Status;
+
+    Status previousStatus {Status::Success};
     
     while (isTraining)
     {
         auto status {Status::Running};
 
-        env->reset(comm->getPRNG(), simId);
+        const bool succesfulPreviousTry = previousStatus == Status::Success;
+        env->reset(comm->getPRNG(), simId, succesfulPreviousTry);
         comm->sendInitState(env->getState());
 
         const real initDistance = computeMinDistance(env->getBodies());
@@ -122,6 +125,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
             }
         }
 
+        previousStatus = status;
         ++simId;
     }
 }

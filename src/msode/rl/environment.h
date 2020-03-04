@@ -56,7 +56,7 @@ public:
     int numActions() const;
     ActionBounds getActionBounds() const;
 
-    void reset(std::mt19937& gen, long simId = NO_DUMP, bool usePreviousIC = false);
+    void reset(std::mt19937& gen, long simId, bool succesfulPreviousTry);
     void setPositions(const std::vector<real3>& positions);
     std::vector<real3> getPositions() const;
 

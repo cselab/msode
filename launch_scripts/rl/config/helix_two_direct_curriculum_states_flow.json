@@ -73,6 +73,7 @@
     ],
     "space" : {
 	"__type" : "BallCurriculumState",
+	"maxTries" : 50,
 	"radius" : 50.0,
 	"targetRadius" : 2.0,
 	"sigma" : 0.1

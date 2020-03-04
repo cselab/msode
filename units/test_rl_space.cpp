@@ -17,7 +17,8 @@ GTEST_TEST( RL_SPACE, box_samples_are_inside )
     const int nPos = 16;
     const long nSamples = 1000;
 
-    rl::EnvSpaceBox space(L);
+    constexpr int maxTries = 1;
+    rl::EnvSpaceBox space(maxTries, L);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -44,7 +45,8 @@ GTEST_TEST( RL_SPACE, ball_samples_are_inside )
     const int nPos = 16;
     const long nSamples = 1000;
 
-    rl::EnvSpaceBall space(R);
+    constexpr int maxTries = 1;
+    rl::EnvSpaceBall space(maxTries, R);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -67,7 +69,8 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_samples_are_inside )
     const int nPos = 16;
     const long nSamples = 1000;
 
-    rl::EnvSpaceBallCurriculumStateRW space(R, targetRadius, sigmaRW);
+    constexpr int maxTries = 1;
+    rl::EnvSpaceBallCurriculumStateRW space(maxTries, R, targetRadius, sigmaRW);
     
     for (int i = 0; i < nSamples; ++i)
     {

@@ -6,7 +6,8 @@
 namespace msode {
 namespace rl {
 
-EnvSpaceBox::EnvSpaceBox(real L_) :
+EnvSpaceBox::EnvSpaceBox(int maxTries, real L_) :
+    EnvSpace(maxTries),
     domain_{{-L_, -L_, -L_},
             {+L_, +L_, +L_}}
 {}

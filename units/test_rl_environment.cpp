@@ -63,7 +63,8 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     
     Params params(tParams, rParams, magneticFieldMagnitude, distanceThreshold);
 
-    auto envSpace = std::make_unique<EnvSpaceBall>(domainRadius);
+    constexpr int maxTries = 1;
+    auto envSpace = std::make_unique<EnvSpaceBall>(maxTries, domainRadius);
     std::vector<RigidBody> initialBodies = {body};
     auto actionField = std::make_unique<FieldFromActionDirect>(0.0_r, 2.0_r * omegaC);
     auto velField = std::make_unique<VelocityFieldNone>();
@@ -86,7 +87,8 @@ GTEST_TEST( RL_ENVIRONMENT, reward_positive_towards_target )
         return {omega, r.x, r.y, r.z};
     };
 
-    env->reset(gen);
+    const bool succesfulPreviousTry = true; // to always generate new positions
+    env->reset(gen, MSodeEnvironment::NO_DUMP, succesfulPreviousTry);
     env->advance(computeAction(env.get()));
     
     for (int i = 0; i < 10; ++i)
@@ -115,6 +117,7 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
     ],
     "space" : {
         "__type" : "Ball",
+        "maxTries" : 1,
         "radius" : 50.0
     },
     "fieldAction" : {

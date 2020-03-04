@@ -8,7 +8,7 @@ namespace rl {
 class EnvSpaceBox : public EnvSpace
 {
 public:
-    EnvSpaceBox(real L);
+    EnvSpaceBox(int maxTries, real L);
 
     std::unique_ptr<EnvSpace> clone() const override;
     

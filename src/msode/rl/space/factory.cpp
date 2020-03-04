@@ -16,25 +16,30 @@ std::unique_ptr<EnvSpace> createEnvSpace(const Config& config)
     std::unique_ptr<EnvSpace> es;
 
     const auto type = config.at("__type").get<std::string>();
+    const int maxTries = config.at("maxTries").get<int>();
 
     if (type == "Box")
     {
-        es = std::make_unique<EnvSpaceBox>(config.at("L").get<real>());
+        es = std::make_unique<EnvSpaceBox>(maxTries,
+                                           config.at("L").get<real>());
     }
     else if (type == "Ball")
     {
-        es = std::make_unique<EnvSpaceBall>(config.at("radius").get<real>());
+        es = std::make_unique<EnvSpaceBall>(maxTries,
+                                            config.at("radius").get<real>());
     }
     else if (type == "BallCurriculumState")
     {
-        es = std::make_unique<EnvSpaceBallCurriculumStateRW>(config.at("radius").get<real>(),
+        es = std::make_unique<EnvSpaceBallCurriculumStateRW>(maxTries,
+                                                             config.at("radius").get<real>(),
                                                              config.at("targetRadius").get<real>(),
                                                              config.at("sigma").get<real>());
     }
     else if (type == "BallCurriculumAction")
     {
         auto environment = createEnvironment(config.at("environment"));
-        es = std::make_unique<EnvSpaceBallCurriculumActionRW>(std::move(environment),
+        es = std::make_unique<EnvSpaceBallCurriculumActionRW>(maxTries,
+                                                              std::move(environment),
                                                               config.at("radius").get<real>(),
                                                               config.at("targetRadius").get<real>(),
                                                               config.at("sigma").get<real>());

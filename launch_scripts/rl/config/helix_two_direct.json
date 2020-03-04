@@ -73,6 +73,7 @@
     ],
     "space" : {
 	"__type" : "Ball",
+	"maxTries" : 50,
 	"radius" : 50.0
     },
     "fieldAction" : {

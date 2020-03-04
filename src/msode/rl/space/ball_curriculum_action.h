@@ -10,7 +10,7 @@ class MSodeEnvironment;
 class EnvSpaceBallCurriculumActionRW : public EnvSpaceBall
 {
 public:
-    EnvSpaceBallCurriculumActionRW(std::unique_ptr<MSodeEnvironment>&& environment,
+    EnvSpaceBallCurriculumActionRW(int maxTries, std::unique_ptr<MSodeEnvironment>&& environment,
                                    real radius, real targetRadius, real sigmaRandomWalk);
 
     std::unique_ptr<EnvSpace> clone() const override;
