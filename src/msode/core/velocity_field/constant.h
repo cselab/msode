@@ -11,6 +11,8 @@ public:
     /// construct a VelocityFieldConstant with constant velocity \p vel
     VelocityFieldConstant(real3 vel);
 
+    std::unique_ptr<BaseVelocityField> clone() const override;
+
     real3 getVelocity(real3 r, real t) const override;
     real3 getVorticity(real3 r, real t) const override;
     

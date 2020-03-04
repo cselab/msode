@@ -11,6 +11,8 @@ class VelocityFieldNone : public VelocityFieldConstant
 public:
     /// construct a VelocityFieldNone
     VelocityFieldNone();
+
+    std::unique_ptr<BaseVelocityField> clone() const override;
 };
 
 } // namespace msode

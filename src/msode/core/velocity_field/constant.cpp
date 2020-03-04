@@ -7,6 +7,11 @@ VelocityFieldConstant::VelocityFieldConstant(real3 vel) :
     vel_(vel)
 {}
 
+std::unique_ptr<BaseVelocityField> VelocityFieldConstant::clone() const
+{
+    return std::make_unique<VelocityFieldConstant>(*this);
+}
+
 real3 VelocityFieldConstant::getVelocity(real3 /* r */, real /* t */) const
 {
     return vel_;

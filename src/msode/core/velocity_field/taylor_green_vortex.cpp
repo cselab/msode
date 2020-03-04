@@ -15,6 +15,11 @@ VelocityFieldTaylorGreenVortex::VelocityFieldTaylorGreenVortex(real3 magnitude, 
                  "The parameters must satisfy the incompressibility condition");
 }
 
+std::unique_ptr<BaseVelocityField> VelocityFieldTaylorGreenVortex::clone() const
+{
+    return std::make_unique<VelocityFieldTaylorGreenVortex>(*this);
+}
+
 real3 VelocityFieldTaylorGreenVortex::getVelocity(real3 r, real /* t */) const
 {
     const real cx = std::cos(invPeriod_.x * r.x);

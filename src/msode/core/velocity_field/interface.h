@@ -2,6 +2,7 @@
 
 #include <msode/core/types.h>
 
+#include <memory>
 #include <string>
 
 namespace msode
@@ -12,6 +13,8 @@ class BaseVelocityField
 {
 public:
     virtual ~BaseVelocityField();
+
+    virtual std::unique_ptr<BaseVelocityField> clone() const = 0;
 
     /** \returns the velocity at position \p r and time \p t
         \param [in] r The position at which to evaluate the velocity

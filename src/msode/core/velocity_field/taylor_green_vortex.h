@@ -18,6 +18,8 @@ public:
     */
     VelocityFieldTaylorGreenVortex(real3 magnitude, real3 invPeriod);
 
+    std::unique_ptr<BaseVelocityField> clone() const override;
+
     real3 getVelocity(real3 r, real t) const override;
     real3 getVorticity(real3 r, real t) const override;
     
