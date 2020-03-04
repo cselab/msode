@@ -115,7 +115,7 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
             }
         }
     ],
-    "space" : {
+    "posIc" : {
         "__type" : "Ball",
         "maxTries" : 1,
         "radius" : 50.0
