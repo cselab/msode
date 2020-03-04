@@ -12,6 +12,9 @@ EnvPosIC::EnvPosIC(int maxTries) :
 
 EnvPosIC::~EnvPosIC() = default;
 
+void EnvPosIC::update(bool /* succesfulTry */)
+{}
+
 const std::vector<real3>& EnvPosIC::generateNewPositionsEveryMaxTries(std::mt19937& gen, int n, bool succesfulTry)
 {
     if (!savedPositionsInitialized_)
@@ -34,9 +37,6 @@ const std::vector<real3>& EnvPosIC::generateNewPositionsEveryMaxTries(std::mt199
     }
     return savedPositions_;
 }
-
-void EnvPosIC::update(bool /* succesfulTry */)
-{}
 
 } // namespace rl
 } // namespace msode
