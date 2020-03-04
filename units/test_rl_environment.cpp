@@ -3,8 +3,8 @@
 #include <msode/rl/factory.h>
 #include <msode/rl/field_from_action/factory.h>
 #include <msode/rl/field_from_action/direct.h>
-#include <msode/rl/space/ball.h>
-#include <msode/rl/space/factory.h>
+#include <msode/rl/pos_ic/ball.h>
+#include <msode/rl/pos_ic/factory.h>
 
 #include <gtest/gtest.h>
 #include <memory>
@@ -64,12 +64,12 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     Params params(tParams, rParams, magneticFieldMagnitude, distanceThreshold);
 
     constexpr int maxTries = 1;
-    auto envSpace = std::make_unique<EnvPosICBall>(maxTries, domainRadius);
+    auto posIc = std::make_unique<EnvPosICBall>(maxTries, domainRadius);
     std::vector<RigidBody> initialBodies = {body};
     auto actionField = std::make_unique<FieldFromActionDirect>(0.0_r, 2.0_r * omegaC);
     auto velField = std::make_unique<VelocityFieldNone>();
 
-    return std::make_unique<MSodeEnvironment>(params, std::move(envSpace), initialBodies, std::move(actionField), std::move(velField));
+    return std::make_unique<MSodeEnvironment>(params, std::move(posIc), initialBodies, std::move(actionField), std::move(velField));
 }
 
 GTEST_TEST( RL_ENVIRONMENT, reward_positive_towards_target )

@@ -15,7 +15,7 @@ Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, rea
 
 
 MSodeEnvironment::MSodeEnvironment(const Params& params,
-                                   std::unique_ptr<EnvPosIC>&& space,
+                                   std::unique_ptr<EnvPosIC>&& posIc,
                                    const std::vector<RigidBody>& initialRBs,
                                    std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction,
                                    std::unique_ptr<BaseVelocityField>&& velocityField) :
@@ -25,9 +25,9 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
     dt_(params.time.dt),
     tmax_(params.time.tmax),
     distanceThreshold_(params.distanceThreshold),
-    space_(std::move(space)),
+    posIc_(std::move(posIc)),
     rewardParams_(params.reward),
-    targetPositions_(initialRBs.size(), space_->target),
+    targetPositions_(initialRBs.size(), posIc_->target),
     dumpEvery_(params.time.dumpEvery)
 {
     MSODE_Expect(initialRBs.size() == targetPositions_.size(), "must give one target per body");
@@ -68,7 +68,7 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool succesfulPrevio
 
     field.phase = 0.0_r;
 
-    const auto positions = space_->generateNewPositionsEveryMaxTries(gen, bodies.size(), succesfulPreviousTry);
+    const auto positions = posIc_->generateNewPositionsEveryMaxTries(gen, bodies.size(), succesfulPreviousTry);
 
     for (size_t i = 0; i < bodies.size(); ++i)
     {
@@ -195,7 +195,7 @@ const std::vector<real3>& MSodeEnvironment::getTargetPositions() const
 
 const EnvPosIC* MSodeEnvironment::getEnvPosIC() const
 {
-    return space_.get();
+    return posIc_.get();
 }
 
 real MSodeEnvironment::getSimulationTime() const

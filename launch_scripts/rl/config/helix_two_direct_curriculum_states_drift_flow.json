@@ -71,7 +71,7 @@
 	    }
 	}
     ],
-    "space" : {
+    "posIc" : {
 	"__type" : "BallCurriculumStateDrift",
 	"maxTries" : 50,
 	"radius" : 50.0,

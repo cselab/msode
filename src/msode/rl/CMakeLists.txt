@@ -8,13 +8,13 @@ set(SRC_FILES
   field_from_action/local_frame.cpp
   field_from_action/factory.cpp
   helpers.cpp
-  space/interface.cpp
-  space/ball.cpp
-  space/ball_curriculum_state.cpp
-  space/ball_curriculum_state_drift.cpp
-  space/ball_curriculum_action.cpp
-  space/box.cpp
-  space/factory.cpp
+  pos_ic/interface.cpp
+  pos_ic/ball.cpp
+  pos_ic/ball_curriculum_state.cpp
+  pos_ic/ball_curriculum_state_drift.cpp
+  pos_ic/ball_curriculum_action.cpp
+  pos_ic/box.cpp
+  pos_ic/factory.cpp
   )
 
 find_package(SMARTIES REQUIRED)

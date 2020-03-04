@@ -1,10 +1,10 @@
 #include <msode/core/math.h>
 #include <msode/core/velocity_field/constant.h>
-#include <msode/rl/space/factory.h>
-#include <msode/rl/space/box.h>
-#include <msode/rl/space/ball.h>
-#include <msode/rl/space/ball_curriculum_state.h>
-#include <msode/rl/space/ball_curriculum_state_drift.h>
+#include <msode/rl/pos_ic/factory.h>
+#include <msode/rl/pos_ic/box.h>
+#include <msode/rl/pos_ic/ball.h>
+#include <msode/rl/pos_ic/ball_curriculum_state.h>
+#include <msode/rl/pos_ic/ball_curriculum_state_drift.h>
 
 #include <gtest/gtest.h>
 #include <cmath>
@@ -12,7 +12,7 @@
 
 using namespace msode;
 
-GTEST_TEST( RL_SPACE, box_samples_are_inside )
+GTEST_TEST( RL_POS_IC, box_samples_are_inside )
 {
     std::mt19937 gen(4242);
     const real L {25.0_r};
@@ -21,11 +21,11 @@ GTEST_TEST( RL_SPACE, box_samples_are_inside )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvPosICBox space(maxTries, L);
+    rl::EnvPosICBox posIc(maxTries, L);
     
     for (int i = 0; i < nSamples; ++i)
     {
-        const auto positions = space.generateNewPositions(gen, nPos);
+        const auto positions = posIc.generateNewPositions(gen, nPos);
 
         for (auto r : positions)
         {
@@ -40,7 +40,7 @@ GTEST_TEST( RL_SPACE, box_samples_are_inside )
     }
 }
 
-GTEST_TEST( RL_SPACE, ball_samples_are_inside )
+GTEST_TEST( RL_POS_IC, ball_samples_are_inside )
 {
     std::mt19937 gen(4242);
     const real R {25.0_r};
@@ -49,11 +49,11 @@ GTEST_TEST( RL_SPACE, ball_samples_are_inside )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvPosICBall space(maxTries, R);
+    rl::EnvPosICBall posIc(maxTries, R);
     
     for (int i = 0; i < nSamples; ++i)
     {
-        const auto positions = space.generateNewPositions(gen, nPos);
+        const auto positions = posIc.generateNewPositions(gen, nPos);
 
         for (auto r : positions)
         {
@@ -62,7 +62,7 @@ GTEST_TEST( RL_SPACE, ball_samples_are_inside )
     }
 }
 
-GTEST_TEST( RL_SPACE, ball_curriculum_state_samples_are_inside )
+GTEST_TEST( RL_POS_IC, ball_curriculum_state_samples_are_inside )
 {
     std::mt19937 gen(4242);
     const real R {25.0_r};
@@ -73,11 +73,11 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_samples_are_inside )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvPosICBallCurriculumStateRW space(maxTries, R, targetRadius, sigmaRW);
+    rl::EnvPosICBallCurriculumStateRW posIc(maxTries, R, targetRadius, sigmaRW);
     
     for (int i = 0; i < nSamples; ++i)
     {
-        const auto positions = space.generateNewPositions(gen, nPos);
+        const auto positions = posIc.generateNewPositions(gen, nPos);
 
         for (auto r : positions)
         {
@@ -87,7 +87,7 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_samples_are_inside )
     }
 }
 
-GTEST_TEST( RL_SPACE, ball_curriculum_state_drift_correct_drift )
+GTEST_TEST( RL_POS_IC, ball_curriculum_state_drift_correct_drift )
 {
     std::mt19937 gen(4242);
     const real R {25.0_r};
@@ -105,12 +105,12 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_drift_correct_drift )
     const long nSamples = 1000;
 
     constexpr int maxTries = 1;
-    rl::EnvPosICBallCurriculumStateDriftRW space(maxTries, R, targetRadius, sigmaRW,
+    rl::EnvPosICBallCurriculumStateDriftRW posIc(maxTries, R, targetRadius, sigmaRW,
                                                  std::make_unique<VelocityFieldConstant>(vel),
                                                  driftTime);
     
-    const auto initPos = space.generateNewPositions(gen, nPos);
-    const auto nextPos = space.generateNewPositions(gen, nPos);
+    const auto initPos = posIc.generateNewPositions(gen, nPos);
+    const auto nextPos = posIc.generateNewPositions(gen, nPos);
 
     for (size_t i = 0; i < initPos.size(); ++i)
     {
@@ -124,7 +124,6 @@ GTEST_TEST( RL_SPACE, ball_curriculum_state_drift_correct_drift )
         ASSERT_NEAR(drift.z, refDrift.z, tol);
     }
 }
-
 
 
 int main(int argc, char **argv)

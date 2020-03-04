@@ -1,5 +1,5 @@
 #include <msode/core/velocity_field/factory.h>
-#include <msode/rl/space/factory.h>
+#include <msode/rl/pos_ic/factory.h>
 
 #include <fstream>
 
@@ -24,11 +24,11 @@ int main(int argc, char **argv)
     const Config config = json::parse(confFile);
     
     auto field = factory::createVelocityField(config.at("velocityField"));
-    auto space = rl::factory::createEnvPosIC(config.at("space"));
+    auto posIc = rl::factory::createEnvPosIC(config.at("posIc"));
     
     const real time = 0.0_r;
-    const real3 start = space->getLowestPosition();
-    const real3 end   = space->getHighestPosition();
+    const real3 start = posIc->getLowestPosition();
+    const real3 end   = posIc->getHighestPosition();
     const real3 size = end - start;
 
     const int n = 64;

@@ -1,7 +1,7 @@
 #include "helpers.h"
 
 #include <msode/rl/field_from_action/factory.h>
-#include <msode/rl/space/factory.h>
+#include <msode/rl/pos_ic/factory.h>
 
 namespace msode {
 namespace rl {
@@ -34,11 +34,11 @@ static real3 max3(real3 a, real3 b)
 
 void setStateBounds(const MSodeEnvironment *env, smarties::Communicator *const comm)
 {
-    const EnvPosIC *space = env->getEnvPosIC();
+    const EnvPosIC *posIc = env->getEnvPosIC();
     std::vector<double> lo, hi;
 
-    const real3 minr = min3(space->target, space->getLowestPosition());
-    const real3 maxr = max3(space->target, space->getHighestPosition());
+    const real3 minr = min3(posIc->target, posIc->getLowestPosition());
+    const real3 maxr = max3(posIc->target, posIc->getHighestPosition());
 
     for (size_t i = 0; i < env->getBodies().size(); ++i)
     {

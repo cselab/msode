@@ -1,7 +1,7 @@
 #pragma once
 
 #include "field_from_action/interface.h"
-#include "space/interface.h"
+#include "pos_ic/interface.h"
 
 #include <msode/core/simulation.h>
 #include <msode/utils/rnd.h>
@@ -42,7 +42,7 @@ public:
     enum {NO_DUMP = -1};
     
     MSodeEnvironment(const Params& params,
-                     std::unique_ptr<EnvPosIC>&& space,
+                     std::unique_ptr<EnvPosIC>&& posIc,
                      const std::vector<RigidBody>& initialRBs,
                      std::unique_ptr<FieldFromAction>&& magnFieldStateFromAction,
                      std::unique_ptr<BaseVelocityField>&& velocityField);
@@ -87,7 +87,7 @@ private:
     const real dt_;
     const real tmax_;
     const real distanceThreshold_;
-    std::unique_ptr<EnvPosIC> space_;
+    std::unique_ptr<EnvPosIC> posIc_;
     const RewardParams rewardParams_;
 
     std::vector<real3> targetPositions_;
