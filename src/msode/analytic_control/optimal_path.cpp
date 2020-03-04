@@ -43,58 +43,6 @@ real computeTime(const std::vector<real3>& A, real3 normal)
     return t;
 }
 
-static inline real3 paramsToNormal(const std::vector<double>& params)
-{
-    const real theta = static_cast<real>(params[0]);
-    const real phi   = static_cast<real>(params[1]);
-    
-    const real3 normal {std::cos(theta) * std::sin(phi),
-                        std::sin(theta) * std::sin(phi),
-                        std::cos(phi)};
-    return normal;
-}
-
-static void evaluate(korali::Sample& k)
-{
-    const real3 normal = paramsToNormal(k["Parameters"]);
-    k["F(x)"] = -computeTime(AGlobal, normal); // we minimize the time -> maximize -T
-}
-
-real3 findBestPlane(const std::vector<real3>& A)
-{
-    AGlobal = A;
-
-    auto e = korali::Experiment();
-    e["Problem"]["Type"] = "Optimization/Stochastic";
-    e["Problem"]["Objective Function"] = &evaluate;
-
-    e["Solver"]["Type"] = "CMAES";
-    e["Solver"]["Population Size"] = 32;
-    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
-    e["Solver"]["Termination Criteria"]["Max Generations"] = 100;
-
-    e["Variables"][0]["Name"] = "theta";
-    e["Variables"][0]["Lower Bound"] = -2 * M_PI;
-    e["Variables"][0]["Upper Bound"] = +4 * M_PI;
-
-    e["Variables"][1]["Name"] = "phi";
-    e["Variables"][1]["Lower Bound"] =   - M_PI;
-    e["Variables"][1]["Upper Bound"] = 2 * M_PI;
-
-    e["Console Output"]["Frequency"] = 0;
-    e["Console Output"]["Verbosity"] = "Silent";
-    e["Results"]["Frequency"] = 0;
-    
-    e["Random Seed"] = 424242;
-
-    auto k = korali::Engine();
-    k.run(e);
-
-    return paramsToNormal(e["Solver"]["Best Ever Variables"]);
-}
-
-
-
 real computeTime(const std::vector<real3>& A, Quaternion q)
 {
     const real3 e1 {1.0_r, 0.0_r, 0.0_r};
