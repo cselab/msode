@@ -47,8 +47,8 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     }
     else if (type == "BallGrowing")
     {
-        es = std::make_unique<EnvPosICBallGrowing>(config.at("radius").get<real>(),
-                                                   config.at("targetRadius").get<real>(),
+        es = std::make_unique<EnvPosICBallGrowing>(config.at("targetRadius").get<real>(),
+                                                   config.at("radius").get<real>(),
                                                    config.at("growStep").get<real>());
     }
     else
