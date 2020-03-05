@@ -28,14 +28,14 @@ std::unique_ptr<EnvPosIC> EnvPosICBallRandomWalkDrift::clone() const
 std::vector<real3> EnvPosICBallRandomWalkDrift::generateNewPositions(std::mt19937& gen, int n)
 {
     _setPositionsIfNotUnitialized(gen, n);
-    
-    std::vector<real3> positions(n);
-    
-    for (int i = 0; i < n; ++i)
-        positions[i] = _generateOnePositionMC(gen, _applyInverseDrift(previousPositions_[i]));
-        
-    previousPositions_ = positions;
-    return positions;
+
+    if (needUpdate_)
+    {
+        for (int i = 0; i < n; ++i)
+            previousPositions_[i] = _generateOnePositionMC(gen, _applyInverseDrift(previousPositions_[i]));
+    }
+
+    return previousPositions_;
 }
 
 real3 EnvPosICBallRandomWalkDrift::_applyInverseDrift(real3 r) const

@@ -17,17 +17,25 @@ std::unique_ptr<EnvPosIC> EnvPosICBallRandomWalk::clone() const
     return std::make_unique<EnvPosICBallRandomWalk>(*this);
 }
 
+void EnvPosICBallRandomWalk::update(bool succesfulTry)
+{
+    if (succesfulTry)
+        needUpdate_ = true;
+    else
+        needUpdate_ = false;
+}
+
 std::vector<real3> EnvPosICBallRandomWalk::generateNewPositions(std::mt19937& gen, int n)
 {
     _setPositionsIfNotUnitialized(gen, n);
-    
-    std::vector<real3> positions(n);
 
-    for (int i = 0; i < n; ++i)
-        positions[i] = _generateOnePositionMC(gen, previousPositions_[i]);
-        
-    previousPositions_ = positions;
-    return positions;
+    if (needUpdate_)
+    {
+        for (int i = 0; i < n; ++i)
+            previousPositions_[i] = _generateOnePositionMC(gen, previousPositions_[i]);
+    }
+
+    return previousPositions_;
 }
 
 void EnvPosICBallRandomWalk::_setPositionsIfNotUnitialized(std::mt19937& gen, int n)

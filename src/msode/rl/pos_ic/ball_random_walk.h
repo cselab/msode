@@ -11,7 +11,8 @@ public:
     EnvPosICBallRandomWalk(int maxTries, real radius, real targetRadius, real sigmaRandomWalk);
 
     std::unique_ptr<EnvPosIC> clone() const override;
-    
+
+    void update(bool succesfulTry) override;
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:
@@ -21,7 +22,8 @@ protected:
 protected:
     const real targetRadius_;
     const real sigmaRandomWalk_;
-    
+
+    bool needUpdate_ {true};
     bool initialized_ {false};
     std::vector<real3> previousPositions_;
 };
