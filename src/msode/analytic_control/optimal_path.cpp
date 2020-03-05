@@ -69,7 +69,7 @@ static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
 
 Quaternion findBestPath(const std::vector<real3>& A)
 {
-    std::function<void(korali::Sample&)> evaluatePath = [&](korali::Sample& k)
+    auto evaluatePath = [&](korali::Sample& k)
     {
         const auto q = paramsToQuaternion(k["Parameters"]);
         k["F(x)"] = -computeTime(A, q); // maximize -T
