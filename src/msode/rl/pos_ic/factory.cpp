@@ -31,7 +31,8 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     {
         es = std::make_unique<EnvPosICBallRandomWalk>(config.at("radius").get<real>(),
                                                       config.at("targetRadius").get<real>(),
-                                                      config.at("sigma").get<real>());
+                                                      config.at("sigma").get<real>(),
+                                                      config.at("curriculumTries").get<int>());
     }
     else if (type == "BallRandomWalkDrift")
     {
@@ -41,7 +42,8 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
                                                            config.at("targetRadius").get<real>(),
                                                            config.at("sigma").get<real>(),
                                                            std::move(velField),
-                                                           config.at("driftTime").get<real>());
+                                                           config.at("driftTime").get<real>(),
+                                                           config.at("curriculumTries").get<int>());
     }
     else if (type == "BallGrowing")
     {
