@@ -60,7 +60,7 @@ GTEST_TEST( RL_POS_IC, ball_samples_are_inside )
     }
 }
 
-GTEST_TEST( RL_POS_IC, ball_curriculum_state_samples_are_inside )
+GTEST_TEST( RL_POS_IC, ball_random_walk_samples_are_inside )
 {
     std::mt19937 gen(4242);
     const real R {25.0_r};
@@ -84,7 +84,7 @@ GTEST_TEST( RL_POS_IC, ball_curriculum_state_samples_are_inside )
     }
 }
 
-GTEST_TEST( RL_POS_IC, ball_curriculum_state_drift_correct_drift )
+GTEST_TEST( RL_POS_IC, ball_random_walk_drift_correct_drift )
 {
     std::mt19937 gen(4242);
     const real R {25.0_r};
@@ -119,6 +119,78 @@ GTEST_TEST( RL_POS_IC, ball_curriculum_state_drift_correct_drift )
         ASSERT_NEAR(drift.y, refDrift.y, tol);
         ASSERT_NEAR(drift.z, refDrift.z, tol);
     }
+}
+
+static void assertSame(const std::vector<real3>& a, const std::vector<real3>& b)
+{
+    ASSERT_EQ(a.size(), b.size());
+    
+    for (size_t i = 0; i < a.size(); ++i)
+    {
+        ASSERT_EQ(a[i].x, b[i].x);
+        ASSERT_EQ(a[i].y, b[i].y);
+        ASSERT_EQ(a[i].z, b[i].z);
+    }
+}
+
+static void assertNotSame(const std::vector<real3>& a, const std::vector<real3>& b)
+{
+    ASSERT_EQ(a.size(), b.size());
+    
+    for (size_t i = 0; i < a.size(); ++i)
+    {
+        ASSERT_NE(a[i].x, b[i].x);
+        ASSERT_NE(a[i].y, b[i].y);
+        ASSERT_NE(a[i].z, b[i].z);
+    }
+}
+
+GTEST_TEST( RL_POS_IC, ball_random_walk_curriculum )
+{
+    std::mt19937 gen(4242);
+    const real R {25.0_r};
+    const real targetRadius {2.0_r};
+    const real sigmaRW = targetRadius * 0.5_r;
+    const int nPos = 16;
+
+    auto checkChangeAfterTries = [&](int curriculumTries)
+    {
+        rl::EnvPosICBallRandomWalk posIc(R, targetRadius, sigmaRW, curriculumTries);
+
+        auto prevPos = posIc.generateNewPositions(gen, nPos);
+        for (int i = 0; i < curriculumTries; ++i)
+        {
+            posIc.update(false);
+            auto currPos = posIc.generateNewPositions(gen, nPos);
+            assertSame(prevPos, currPos);
+            prevPos = currPos;
+        }
+        posIc.update(false);
+        auto currPos = posIc.generateNewPositions(gen, nPos);
+        assertNotSame(prevPos, currPos);
+    };
+
+    checkChangeAfterTries(0);
+    checkChangeAfterTries(1);
+    checkChangeAfterTries(16);
+
+    auto checkChangeAfterSuccess = [&](int curriculumTries, int numChecks = 16)
+    {
+        rl::EnvPosICBallRandomWalk posIc(R, targetRadius, sigmaRW, curriculumTries);
+
+        auto prevPos = posIc.generateNewPositions(gen, nPos);
+        for (int i = 0; i < numChecks; ++i)
+        {
+            posIc.update(true);
+            auto currPos = posIc.generateNewPositions(gen, nPos);
+            assertNotSame(prevPos, currPos);
+            prevPos = currPos;
+        }
+    };
+
+    checkChangeAfterSuccess(0);
+    checkChangeAfterSuccess(1);
+    checkChangeAfterSuccess(16);
 }
 
 
