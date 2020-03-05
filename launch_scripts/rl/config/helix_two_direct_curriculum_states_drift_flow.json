@@ -81,7 +81,8 @@
 	    "__type" : "FieldTaylorGreenVortex",
 	    "magnitude" : [0.2, 0.2, -0.4],
 	    "invPeriod" : [0.1256637061, 0.1256637061, 0.1256637061]
-	}
+	},
+	"curriculumTries" : 10
     },
     "fieldAction" : {
 	"__type" : "Direct",

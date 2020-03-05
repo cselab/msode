@@ -75,7 +75,8 @@
 	"__type" : "BallRandomWalk",
 	"radius" : 50.0,
 	"targetRadius" : 2.0,
-	"sigma" : 0.1
+	"sigma" : 0.1,
+	"curriculumTries" : 10
     },
     "fieldAction" : {
 	"__type" : "Direct",
