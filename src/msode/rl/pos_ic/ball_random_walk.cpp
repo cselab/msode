@@ -6,11 +6,16 @@
 namespace msode {
 namespace rl {
 
-EnvPosICBallRandomWalk::EnvPosICBallRandomWalk(real radius, real targetRadius, real sigmaRandomWalk) :
+EnvPosICBallRandomWalk::EnvPosICBallRandomWalk(real radius, real targetRadius, real sigmaRandomWalk, int curriculumTries) :
     EnvPosICBall(radius),
     targetRadius_(targetRadius),
-    sigmaRandomWalk_(sigmaRandomWalk)
-{}
+    sigmaRandomWalk_(sigmaRandomWalk),
+    curriculumTries_(curriculumTries)
+{
+    MSODE_Expect(curriculumTries_ == NoCurriculum ||
+                 curriculumTries_ > 0,
+                 "Wrong value for curriculum Tries");
+}
 
 std::unique_ptr<EnvPosIC> EnvPosICBallRandomWalk::clone() const
 {
@@ -20,9 +25,24 @@ std::unique_ptr<EnvPosIC> EnvPosICBallRandomWalk::clone() const
 void EnvPosICBallRandomWalk::update(bool succesfulTry)
 {
     if (succesfulTry)
+    {
         needUpdate_ = true;
+        numTries_ = 0;
+    }
     else
-        needUpdate_ = false;
+    {
+        ++numTries_;
+        
+        if (numTries_ > curriculumTries_)
+        {
+            numTries_ = 0;
+            needUpdate_ = true;
+        }
+        else
+        {
+            needUpdate_ = false;
+        }
+    }
 }
 
 std::vector<real3> EnvPosICBallRandomWalk::generateNewPositions(std::mt19937& gen, int n)

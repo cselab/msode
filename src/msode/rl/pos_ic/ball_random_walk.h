@@ -8,7 +8,9 @@ namespace rl {
 class EnvPosICBallRandomWalk : public EnvPosICBall
 {
 public:
-    EnvPosICBallRandomWalk(real radius, real targetRadius, real sigmaRandomWalk);
+    static constexpr int NoCurriculum = 0;
+    
+    EnvPosICBallRandomWalk(real radius, real targetRadius, real sigmaRandomWalk, int curriculumTries = NoCurriculum);
 
     std::unique_ptr<EnvPosIC> clone() const override;
 
@@ -26,6 +28,10 @@ protected:
     bool needUpdate_ {true};
     bool initialized_ {false};
     std::vector<real3> previousPositions_;
+
+private:
+    int numTries_ {0};
+    const int curriculumTries_;
 };
 
 } // namespace rl

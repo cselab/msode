@@ -16,7 +16,8 @@ class EnvPosICBallRandomWalkDrift : public EnvPosICBallRandomWalk
 {
 public:
     EnvPosICBallRandomWalkDrift(real radius, real targetRadius, real sigmaRandomWalk,
-                                std::unique_ptr<BaseVelocityField> velField, real driftTime);
+                                std::unique_ptr<BaseVelocityField> velField, real driftTime,
+                                int curriculumTries = NoCurriculum);
 
     EnvPosICBallRandomWalkDrift(const EnvPosICBallRandomWalkDrift&);
 
