@@ -7,8 +7,8 @@
 namespace msode {
 namespace rl {
 
-EnvPosICBallGrowing::EnvPosICBallGrowing(int maxTries, real targetRadius, real maxRadius, real growStep) :
-    EnvPosICBall(maxTries, maxRadius),
+EnvPosICBallGrowing::EnvPosICBallGrowing(real targetRadius, real maxRadius, real growStep) :
+    EnvPosICBall(maxRadius),
     targetRadius_(targetRadius),
     currentRadius_(targetRadius),
     growStep_(growStep)

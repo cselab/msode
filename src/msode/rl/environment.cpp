@@ -68,7 +68,8 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool succesfulPrevio
 
     field.phase = 0.0_r;
 
-    const auto positions = posIc_->generateNewPositionsEveryMaxTries(gen, bodies.size(), succesfulPreviousTry);
+    posIc_->update(succesfulPreviousTry);
+    const auto positions = posIc_->generateNewPositions(gen, bodies.size());
 
     for (size_t i = 0; i < bodies.size(); ++i)
     {

@@ -6,8 +6,7 @@
 namespace msode {
 namespace rl {
 
-EnvPosICBox::EnvPosICBox(int maxTries, real L_) :
-    EnvPosIC(maxTries),
+EnvPosICBox::EnvPosICBox(real L_) :
     domain_{{-L_, -L_, -L_},
             {+L_, +L_, +L_}}
 {}

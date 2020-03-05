@@ -18,22 +18,18 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     std::unique_ptr<EnvPosIC> es;
 
     const auto type = config.at("__type").get<std::string>();
-    const int maxTries = config.at("maxTries").get<int>();
 
     if (type == "Box")
     {
-        es = std::make_unique<EnvPosICBox>(maxTries,
-                                           config.at("L").get<real>());
+        es = std::make_unique<EnvPosICBox>(config.at("L").get<real>());
     }
     else if (type == "Ball")
     {
-        es = std::make_unique<EnvPosICBall>(maxTries,
-                                            config.at("radius").get<real>());
+        es = std::make_unique<EnvPosICBall>(config.at("radius").get<real>());
     }
     else if (type == "BallRandomWalk")
     {
-        es = std::make_unique<EnvPosICBallRandomWalk>(maxTries,
-                                                      config.at("radius").get<real>(),
+        es = std::make_unique<EnvPosICBallRandomWalk>(config.at("radius").get<real>(),
                                                       config.at("targetRadius").get<real>(),
                                                       config.at("sigma").get<real>());
     }
@@ -41,8 +37,7 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     {
         auto velField = msode::factory::createVelocityField(config.at("velocityField"));
         
-        es = std::make_unique<EnvPosICBallRandomWalkDrift>(maxTries,
-                                                           config.at("radius").get<real>(),
+        es = std::make_unique<EnvPosICBallRandomWalkDrift>(config.at("radius").get<real>(),
                                                            config.at("targetRadius").get<real>(),
                                                            config.at("sigma").get<real>(),
                                                            std::move(velField),
@@ -50,8 +45,7 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     }
     else if (type == "BallGrowing")
     {
-        es = std::make_unique<EnvPosICBallGrowing>(maxTries,
-                                                   config.at("radius").get<real>(),
+        es = std::make_unique<EnvPosICBallGrowing>(config.at("radius").get<real>(),
                                                    config.at("targetRadius").get<real>(),
                                                    config.at("growStep").get<real>());
     }

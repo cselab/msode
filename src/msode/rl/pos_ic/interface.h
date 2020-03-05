@@ -14,11 +14,7 @@ namespace rl {
 class EnvPosIC
 {
 public:
-    /** Create a EnvPosIC object
-        \param maxTries Maximum number of unsuccesful tries before sampling a new position
-                        with generateNewPositionsEveryMaxTries().
-     */
-    EnvPosIC(int maxTries);
+    EnvPosIC();
     virtual ~EnvPosIC();
 
     /// \return a copy of the object, with the correct type
@@ -33,18 +29,6 @@ public:
      */
     virtual void update(bool succesfulTry);
 
-    /** \brief Generate new positions in the space unless the previous try (see rl environment) was not succesful
-        \param gen rng
-        \param n Number of positions to generate; must be alwasy the same between two calls
-        \param succesfulTry \c true if the previous simulation reached the target, \c false otherwise.
-        \return \p n positions in the space
-
-        This method will generate a new position only if:
-        - \p succesfulTry is \c true
-        - \p succesfulTry has been \c false for the last maxTries steps.
-     */
-    const std::vector<real3>& generateNewPositionsEveryMaxTries(std::mt19937& gen, int n, bool succesfulTry);
-
     /** \brief generate new positions in the current space
         \param gen rng
         \param n Number of positions to generate; must be alwasy the same between two calls
@@ -54,12 +38,6 @@ public:
 
 public:
     const real3 target {0.0_r, 0.0_r, 0.0_r}; ///< the target position
-
-private:
-    int numTries_ {0};                       ///< internal counter used in generateNewPositionsEveryMaxTries()
-    const int maxTries_;                     ///< maximum number of unsuccesful tries before sampling a new position
-    bool savedPositionsInitialized_ {false}; ///< flag used in generateNewPositionsEveryMaxTries()
-    std::vector<real3> savedPositions_;      ///< positions saved for generateNewPositionsEveryMaxTries()
 };
 
 } // namespace rl

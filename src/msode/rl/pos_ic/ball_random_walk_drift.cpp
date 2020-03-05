@@ -6,10 +6,9 @@
 namespace msode {
 namespace rl {
 
-EnvPosICBallRandomWalkDrift::EnvPosICBallRandomWalkDrift(int maxTries, real radius,
-                                                         real targetRadius, real sigmaRandomWalk,
+EnvPosICBallRandomWalkDrift::EnvPosICBallRandomWalkDrift(real radius, real targetRadius, real sigmaRandomWalk,
                                                          std::unique_ptr<BaseVelocityField> velField, real driftTime) :
-    EnvPosICBallRandomWalk(maxTries, radius, targetRadius, sigmaRandomWalk),
+    EnvPosICBallRandomWalk(radius, targetRadius, sigmaRandomWalk),
     velField_(std::move(velField)),
     driftTime_(driftTime)
 {}

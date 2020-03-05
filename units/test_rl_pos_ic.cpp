@@ -20,8 +20,7 @@ GTEST_TEST( RL_POS_IC, box_samples_are_inside )
     const int nPos = 16;
     const long nSamples = 1000;
 
-    constexpr int maxTries = 1;
-    rl::EnvPosICBox posIc(maxTries, L);
+    rl::EnvPosICBox posIc(L);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -48,8 +47,7 @@ GTEST_TEST( RL_POS_IC, ball_samples_are_inside )
     const int nPos = 16;
     const long nSamples = 1000;
 
-    constexpr int maxTries = 1;
-    rl::EnvPosICBall posIc(maxTries, R);
+    rl::EnvPosICBall posIc(R);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -72,8 +70,7 @@ GTEST_TEST( RL_POS_IC, ball_curriculum_state_samples_are_inside )
     const int nPos = 16;
     const long nSamples = 1000;
 
-    constexpr int maxTries = 1;
-    rl::EnvPosICBallRandomWalk posIc(maxTries, R, targetRadius, sigmaRW);
+    rl::EnvPosICBallRandomWalk posIc(R, targetRadius, sigmaRW);
     
     for (int i = 0; i < nSamples; ++i)
     {
@@ -104,8 +101,7 @@ GTEST_TEST( RL_POS_IC, ball_curriculum_state_drift_correct_drift )
     const int nPos = 16;
     const long nSamples = 1000;
 
-    constexpr int maxTries = 1;
-    rl::EnvPosICBallRandomWalkDrift posIc(maxTries, R, targetRadius, sigmaRW,
+    rl::EnvPosICBallRandomWalkDrift posIc( R, targetRadius, sigmaRW,
                                           std::make_unique<VelocityFieldConstant>(vel),
                                           driftTime);
     

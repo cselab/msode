@@ -8,7 +8,7 @@ namespace rl {
 class EnvPosICBox : public EnvPosIC
 {
 public:
-    EnvPosICBox(int maxTries, real L);
+    EnvPosICBox(real L);
 
     std::unique_ptr<EnvPosIC> clone() const override;
     

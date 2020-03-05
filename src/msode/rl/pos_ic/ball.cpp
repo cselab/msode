@@ -6,8 +6,7 @@
 namespace msode {
 namespace rl {
 
-EnvPosICBall::EnvPosICBall(int maxTries, real radius) :
-    EnvPosIC(maxTries),
+EnvPosICBall::EnvPosICBall(real radius) :
     radius_(radius)
 {}
 

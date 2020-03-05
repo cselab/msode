@@ -15,8 +15,7 @@ namespace rl {
 class EnvPosICBallRandomWalkDrift : public EnvPosICBallRandomWalk
 {
 public:
-    EnvPosICBallRandomWalkDrift(int maxTries, real radius,
-                                real targetRadius, real sigmaRandomWalk,
+    EnvPosICBallRandomWalkDrift(real radius, real targetRadius, real sigmaRandomWalk,
                                 std::unique_ptr<BaseVelocityField> velField, real driftTime);
 
     EnvPosICBallRandomWalkDrift(const EnvPosICBallRandomWalkDrift&);

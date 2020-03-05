@@ -63,8 +63,7 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     
     Params params(tParams, rParams, magneticFieldMagnitude, distanceThreshold);
 
-    constexpr int maxTries = 1;
-    auto posIc = std::make_unique<EnvPosICBall>(maxTries, domainRadius);
+    auto posIc = std::make_unique<EnvPosICBall>(domainRadius);
     std::vector<RigidBody> initialBodies = {body};
     auto actionField = std::make_unique<FieldFromActionDirect>(0.0_r, 2.0_r * omegaC);
     auto velField = std::make_unique<VelocityFieldNone>();
@@ -117,7 +116,6 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
     ],
     "posIc" : {
         "__type" : "Ball",
-        "maxTries" : 1,
         "radius" : 50.0
     },
     "fieldAction" : {

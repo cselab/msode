@@ -6,8 +6,8 @@
 namespace msode {
 namespace rl {
 
-EnvPosICBallRandomWalk::EnvPosICBallRandomWalk(int maxTries, real radius, real targetRadius, real sigmaRandomWalk) :
-    EnvPosICBall(maxTries, radius),
+EnvPosICBallRandomWalk::EnvPosICBallRandomWalk(real radius, real targetRadius, real sigmaRandomWalk) :
+    EnvPosICBall(radius),
     targetRadius_(targetRadius),
     sigmaRandomWalk_(sigmaRandomWalk)
 {}
