@@ -8,7 +8,7 @@ namespace rl {
 class EnvPosICBallGrowing : public EnvPosICBall
 {
 public:
-    EnvPosICBallGrowing(real targetRadius, real maxRadius, real growStep);
+    EnvPosICBallGrowing(real targetRadius, real maxRadius, real volumeGrowStep);
 
     std::unique_ptr<EnvPosIC> clone() const override;
 
@@ -18,7 +18,7 @@ public:
 private:
     real targetRadius_;
     real currentRadius_;
-    real growStep_;
+    real volumeGrowStep_;
 };
 
 } // namespace rl

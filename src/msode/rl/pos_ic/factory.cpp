@@ -49,7 +49,7 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     {
         es = std::make_unique<EnvPosICBallGrowing>(config.at("targetRadius").get<real>(),
                                                    config.at("radius").get<real>(),
-                                                   config.at("growStep").get<real>());
+                                                   config.at("volumeGrowStep").get<real>());
     }
     else
     {

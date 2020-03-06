@@ -75,7 +75,7 @@
 	"__type" : "BallGrowing",
 	"radius" : 50.0,
 	"targetRadius" : 2.0,
-	"growStep" : 0.1
+	"volumeGrowStep" : 4
     },
     "fieldAction" : {
 	"__type" : "Direct",
