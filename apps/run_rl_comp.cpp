@@ -111,14 +111,21 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
             const auto& state  = env->getState();
             const auto  reward = env->getReward();
 
-            if (status == Status::Running)
+            switch (status)
             {
+            case Status::Running:
                 comm->sendState(state, reward);
-            }
-            else
-            {
+                break;
+            case Status::Success:
                 comm->sendTermState(state, reward);
+                break;
+            case Status::MaxTimeEllapsed:
+                comm->sendLastState(state, reward);
+                break;
+            }
 
+            if (status != Status::Running)
+            {
                 const auto envBodies = env->getBodies();
                 const real tRL = env->getSimulationTime();
                 dumpComparisonInfos(std::cout, simId, tAC, tRL, envBodies, initDistance);
