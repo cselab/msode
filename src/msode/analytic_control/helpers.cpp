@@ -1,6 +1,7 @@
 #include "helpers.h"
 
 #include <msode/utils/mean_vel.h>
+#include <msode/utils/rnd.h>
 
 #include <Eigen/Eigenvalues>
 #include <random>
@@ -14,18 +15,9 @@ std::vector<real3> generateRandomPositionsBox(int n, real3 boxLo, real3 boxHi, l
     positions.reserve(n);
 
     std::mt19937 gen(seed);
-    std::uniform_real_distribution<real> distrx(boxLo.x, boxHi.x);
-    std::uniform_real_distribution<real> distry(boxLo.y, boxHi.y);
-    std::uniform_real_distribution<real> distrz(boxLo.z, boxHi.z);
 
     for (int i = 0; i < n; ++i)
-    {
-        real3 r;
-        r.x = distrx(gen);
-        r.y = distry(gen);
-        r.z = distrz(gen);
-        positions.push_back(r);
-    }
+        positions.push_back(utils::generateUniformPositionBox(gen, boxLo, boxHi));
 
     return positions;
 }
