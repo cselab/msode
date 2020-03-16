@@ -72,7 +72,6 @@ public:
     real getSimulationTime() const;
 
 private:
-    
     void setDistances();
     bool bodiesWithinDistanceToTargets() const;
     Status getCurrentStatus() const;

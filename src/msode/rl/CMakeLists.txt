@@ -15,6 +15,9 @@ set(SRC_FILES
   pos_ic/ball_random_walk_drift.cpp
   pos_ic/box.cpp
   pos_ic/factory.cpp
+  target_distances/factory.cpp
+  target_distances/none.cpp
+  target_distances/square.cpp
   )
 
 find_package(SMARTIES REQUIRED)
