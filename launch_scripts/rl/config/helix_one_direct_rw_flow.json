@@ -1,0 +1,58 @@
+{
+    "bodies" : [
+	{
+	    "moment": [
+		0.0,
+		3.0356727390869245,
+		0.0
+	    ],
+	    "quaternion": [
+		0.0,
+		1.0,
+		0.0,
+		0.0
+	    ],
+	    "position": [
+		0.0,
+		0.0,
+		0.0
+	    ],
+	    "propulsion": {
+		"A": [
+		    0.3239313882752511,
+		    0.2413293038414949,
+		    0.2543042668817562
+		],
+		"B": [
+		    0.32941627307981225,
+		    0.0,
+		    0.0
+		],
+		"C": [
+		    9.43265794343002,
+		    1.681798137390105,
+		    1.7429895150200194
+		]
+	    }
+	}
+    ],
+    "posIc" : {
+	"__type" : "BallRandomWalk",
+	"radius" : 50.0,
+	"targetRadius" : 2.0,
+	"sigma" : 0.1,
+	"curriculumTries" : 10
+    },
+    "fieldAction" : {
+	"__type" : "Direct",
+	"minOmega" : 0.0,
+	"maxOmega" : 120.0
+    },
+    "fieldMagnitude" : 1.0,
+    "targetRadius" : 2.0,
+    "velocityField" : {
+	"__type" : "FieldTaylorGreenVortex",
+	"magnitude" : [0.2, 0.2, -0.4],
+	"invPeriod" : [0.1256637061, 0.1256637061, 0.1256637061]
+    }
+}

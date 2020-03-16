@@ -15,10 +15,16 @@ def evaluate_field(x, y, z, config):
         magn = cfg["magnitude"]
         invP = cfg["invPeriod"]
 
-        factor = np.cos(invP[0] * x) * np.sin(invP[1] * y) * np.sin(invP[2] * z)
-        vx = factor * magn[0]
-        vy = factor * magn[1]
-        vz = factor * magn[2]
+        cx = np.cos(invP[0] * x)
+        sx = np.sin(invP[0] * x)
+        cy = np.cos(invP[1] * y)
+        sy = np.sin(invP[1] * y)
+        cz = np.cos(invP[2] * z)
+        sz = np.sin(invP[2] * z)
+        
+        vx = magn[0] * cx * sy * sz
+        vy = magn[1] * sx * cy * sz
+        vz = magn[2] * sx * sy * cz
         
     elif strtype == "None":
         # already zero
