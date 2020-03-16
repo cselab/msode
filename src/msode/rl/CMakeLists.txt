@@ -18,6 +18,7 @@ set(SRC_FILES
   target_distances/factory.cpp
   target_distances/none.cpp
   target_distances/square.cpp
+  target_distances/travel_time.cpp
   )
 
 find_package(SMARTIES REQUIRED)
@@ -26,7 +27,7 @@ find_package(SMARTIES REQUIRED)
 execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
 
 add_library(rl STATIC ${SRC_FILES})
-target_link_libraries(rl PUBLIC ${LIB_NAME_MSODE} smarties utils)
+target_link_libraries(rl PUBLIC ${LIB_NAME_MSODE} smarties utils analytic_control)
 target_include_directories(rl PUBLIC ${MSODE_INCLUDES})
 
 target_compile_features(rl PUBLIC cxx_std_14)

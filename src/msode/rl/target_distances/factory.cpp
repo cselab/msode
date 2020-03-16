@@ -2,6 +2,7 @@
 
 #include "none.h"
 #include "square.h"
+#include "travel_time.h"
 
 namespace msode {
 namespace rl {
@@ -20,6 +21,10 @@ std::unique_ptr<TargetDistance> createTargetDistance(const Config& config)
     else if (type == "Square")
     {
         td = std::make_unique<TargetDistanceSquare>();
+    }
+    else if (type == "TravelTime")
+    {
+        td = std::make_unique<TargetDistanceTravelTime>(config.at("fieldMagnitude"));
     }
     else
     {
