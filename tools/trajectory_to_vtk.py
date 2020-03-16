@@ -22,7 +22,7 @@ def write_point_data_vector(f, point_data, name):
         f.write("{} {} {}\n".format(val[0], val[1], val[2]))
     
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description="Create a vtk file from the trajectory files output by an msode simulation")
 parser.add_argument('file',         type=str, help='output of ODE simulation')
 parser.add_argument('out_basename', type=str, help='vtk file output base name, will be basename.<swimmer id>.vtk')
 parser.add_argument('--with_field_from', type=str, default=None, metavar='config.json',
