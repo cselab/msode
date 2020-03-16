@@ -3,29 +3,43 @@
 
 #include <iostream>
 
+using namespace msode;
+
+static std::vector<RigidBody> readBodies(const Config& config)
+{
+    if (!config.is_array())
+        msode_die("Expected an array of bodies in config");
+
+    std::vector<RigidBody> bodies;
+
+    for (const auto& c : config)
+        bodies.push_back(msode::factory::readRigidBodyFromConfig(c));
+
+    return bodies;
+}
+
 int main(int argc, char **argv)
 {
-    using namespace msode;
-    
-    if (argc < 2                     ||
+    if (argc != 2                    ||
         std::string(argv[1]) == "-h" ||
         std::string(argv[1]) == "--help")
     {
-        fprintf(stderr, "usage : %s <swimmer0.json> <swimmer1.json>... \n\n", argv[0]);
+        fprintf(stderr, "usage : %s <config.json>\n\n", argv[0]);
         return 1;
     }
 
-    const real magneticFieldMagnitude = 1.0_r;
+    std::ifstream confFile(argv[1]);
+
+    if (!confFile.is_open())
+        msode_die("Could not open the config file '%s'", argv[1]);
+
+    const Config config = json::parse(confFile);
+
+    const real magneticFieldMagnitude = config.at("fieldMagnitude");
+    const auto bodies = readBodies(config.at("bodies"));
 
     const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
     const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};
-    
-    std::vector<RigidBody> bodies;
-    for (int i = 1; i < argc; ++i)
-    {
-        const auto body = factory::readRigidBodyConfigFromFile(argv[i]);
-        bodies.push_back(body);
-    }
 
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
     const analytic_control::MatrixReal U = V.inverse();
