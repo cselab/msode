@@ -1,5 +1,6 @@
 #include <msode/analytic_control/optimal_path.h>
 #include <msode/analytic_control/apply_strategy.h>
+#include <msode/core/velocity_field/factory.h>
 
 #include <iostream>
 
@@ -37,6 +38,7 @@ int main(int argc, char **argv)
 
     const real magneticFieldMagnitude = config.at("fieldMagnitude");
     const auto bodies = readBodies(config.at("bodies"));
+    auto velocityField = factory::createVelocityField(config.at("velocityField"));
 
     const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
     const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};
@@ -44,12 +46,11 @@ int main(int argc, char **argv)
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
     const analytic_control::MatrixReal U = V.inverse();
 
-    // std::cout << V << "\n\n";
-    // std::cout << U << std::endl;
-
     const long seed = 42424242;
+    const int dumpEvery = 1000;
     auto initialPositions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
-    const real tTot = analytic_control::simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions, U, "ac_trajectories.dat", 1000);
+    const real tTot = analytic_control::simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions,
+                                                            std::move(velocityField), U, "ac_trajectories.dat", dumpEvery);
 
     std::cout << "Took " << tTot << " time units to bring to target" << std::endl;
     

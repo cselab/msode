@@ -1,6 +1,7 @@
 #include <msode/analytic_control/apply_strategy.h>
 #include <msode/analytic_control/optimal_path.h>
 #include <msode/core/log.h>
+#include <msode/core/velocity_field/factory.h>
 #include <msode/rl/factory.h>
 #include <msode/rl/helpers.h>
 
@@ -96,7 +97,9 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
         const real tAC =  [&]()
         {
             const auto envBodies = env->getBodies();
-            return analytic_control::simulateOptimalPath(magneticFieldMagnitude, envBodies, extractPositions(envBodies), U, generateACfname(simId), dumpEvery);
+            auto velocityField = factory::createVelocityField(config.at("velocityField"));
+            return analytic_control::simulateOptimalPath(magneticFieldMagnitude, envBodies, extractPositions(envBodies),
+                                                         std::move(velocityField), U, generateACfname(simId), dumpEvery);
         }();
 
         while (status == Status::Running) // simulation loop

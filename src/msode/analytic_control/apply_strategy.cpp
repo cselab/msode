@@ -35,6 +35,7 @@ static inline real computeMinOmega(int dir, const std::vector<RigidBody>& bodies
 real simulateOptimalPath(real magneticFieldMagnitude,
                          std::vector<RigidBody> bodies, // by copy because will be modified (IC)
                          const std::vector<real3>& initialPositions,
+                         std::unique_ptr<BaseVelocityField> velocityField,
                          const MatrixReal& U, const std::string& fname, int dumpEvery)
 {
     const auto A = computeA(U, initialPositions);
@@ -112,8 +113,8 @@ real simulateOptimalPath(real magneticFieldMagnitude,
         else                return dir3;
     };
     
-    MagneticField field(magneticFieldMagnitude, omega, rotatingDirection);
-    Simulation sim(bodies, field);
+    MagneticField magnField(magneticFieldMagnitude, omega, rotatingDirection);
+    Simulation sim(bodies, magnField, std::move(velocityField));
 
     const real tTot = scan2 + tReorient + t3;
     const real omegaMax = *std::max_element(omegas.begin(), omegas.end());
