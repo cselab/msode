@@ -76,7 +76,7 @@
 	"radius" : 50.0,
 	"targetRadius" : 2.0,
 	"sigma" : 0.1,
-	"curriculumTries" : 10
+	"curriculumTries" : 200
     },
     "fieldAction" : {
 	"__type" : "Direct",
