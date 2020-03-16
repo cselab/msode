@@ -74,9 +74,9 @@ public:
     real getSimulationTime() const;
 
 private:
-    void setDistances();
-    bool bodiesWithinDistanceToTargets() const;
-    Status getCurrentStatus() const;
+    void _setDistances();
+    bool _bodiesWithinDistanceToTargets() const;
+    Status _getCurrentStatus() const;
 
 public:
     std::unique_ptr<Simulation> sim;
