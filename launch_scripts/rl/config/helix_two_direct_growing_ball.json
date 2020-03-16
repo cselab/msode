@@ -86,5 +86,9 @@
     "targetRadius" : 2.0,
     "velocityField" : {
 	"__type" : "None"
+    },
+    "targetDistance" :
+    {
+	"__type" : "Square"
     }
 }
