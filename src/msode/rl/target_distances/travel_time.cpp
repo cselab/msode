@@ -1,6 +1,6 @@
 #include "travel_time.h"
 
-#include <msode/analytic_control/apply_strategy.h>
+#include <msode/analytic_control/optimal_path.h>
 
 namespace msode {
 namespace rl {
@@ -25,11 +25,10 @@ real TargetDistanceTravelTime::compute(const std::vector<RigidBody>& bodies) con
         U_ = V.inverse();
         initialized_ = true;
     }
-    
-    constexpr bool includeReorient = false; // useless for the distance computation
-    return msode::analytic_control::computeRequiredTime(magneticFieldMagnitude_,
-                                                        bodies, getPositions(bodies),
-                                                        U_, includeReorient);
+
+    auto A = msode::analytic_control::computeA(U_, getPositions(bodies));
+    const real travelTime = msode::analytic_control::computeTime(A, q_);
+    return travelTime;
 }
 
 } // namespace rl

@@ -2,13 +2,14 @@
 
 #include "interface.h"
 
-#include <msode/analytic_control/helpers.h>
+#include <msode/analytic_control/optimal_path.h>
 
 namespace msode {
 namespace rl {
 
 /** Compute the travel time from the free-space/zero velocity approximation.
     \note Assume that always the same bodies will be used with this object.
+    \note We do NOT compute the optimal travel time; we choose an arbitrary orientation instead.
  */
 class TargetDistanceTravelTime : public TargetDistance
 {
@@ -21,6 +22,7 @@ private:
 
     mutable bool initialized_ {false};
     mutable msode::analytic_control::MatrixReal U_; ///< inverse of the velocity matrix
+    Quaternion q_{Quaternion::createIdentity()}; ///< orientation used to compute the travel time 
 };
 
 } // namespace rl

@@ -7,6 +7,7 @@
 namespace msode {
 namespace analytic_control {
 
+/// \return A = U * positions
 std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& positions);
 
 /** \brief Compute the time it takes to bring the swimmers on the plane perpendicular to the given direction 
