@@ -5,6 +5,9 @@
 namespace msode {
 namespace rl {
 
+/** Special Distance which always returns zero.
+    Useful to test "non-engineered rewards"
+ */
 class TargetDistanceNone : public TargetDistance
 {
 public:
