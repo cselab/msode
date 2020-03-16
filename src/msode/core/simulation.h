@@ -88,7 +88,7 @@ public:
 
     Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
     Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF,
-               std::unique_ptr<BaseVelocityField>&& velocityField);
+               std::unique_ptr<BaseVelocityField> velocityField);
     ~Simulation() = default;
 
     Simulation(const Simulation&) = default;

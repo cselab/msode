@@ -13,7 +13,7 @@ Simulation::Simulation(const std::vector<RigidBody>& initialRBs,
 {}
 
 Simulation::Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF,
-                       std::unique_ptr<BaseVelocityField>&& velocityField) :
+                       std::unique_ptr<BaseVelocityField> velocityField) :
     rigidBodies_(initialRBs),
     magneticField_(initialMF),
     velocityField_(std::move(velocityField))
