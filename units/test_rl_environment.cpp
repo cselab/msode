@@ -5,6 +5,7 @@
 #include <msode/rl/field_from_action/direct.h>
 #include <msode/rl/pos_ic/ball.h>
 #include <msode/rl/pos_ic/factory.h>
+#include <msode/rl/target_distances/square.h>
 
 #include <gtest/gtest.h>
 #include <memory>
@@ -67,8 +68,9 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     std::vector<RigidBody> initialBodies = {body};
     auto actionField = std::make_unique<FieldFromActionDirect>(0.0_r, 2.0_r * omegaC);
     auto velField = std::make_unique<VelocityFieldNone>();
+    auto targetDistance = std::make_unique<TargetDistanceSquare>();
 
-    return std::make_unique<MSodeEnvironment>(params, std::move(posIc), initialBodies, std::move(actionField), std::move(velField));
+    return std::make_unique<MSodeEnvironment>(params, std::move(posIc), initialBodies, std::move(actionField), std::move(velField), std::move(targetDistance));
 }
 
 GTEST_TEST( RL_ENVIRONMENT, reward_positive_towards_target )
@@ -127,6 +129,9 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
     "targetRadius"   : 2.0,
     "velocityField" : {
         "__type" : "None"
+    },
+    "targetDistance" : {
+        "__type" : "Square"
     }
     }
     )");

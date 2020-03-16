@@ -18,7 +18,8 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
                                    std::unique_ptr<EnvPosIC> posIc,
                                    const std::vector<RigidBody>& initialRBs,
                                    std::unique_ptr<FieldFromAction> magnFieldStateFromAction,
-                                   std::unique_ptr<BaseVelocityField> velocityField) :
+                                   std::unique_ptr<BaseVelocityField> velocityField,
+                                   std::unique_ptr<TargetDistance> targetDistance) :
     magnFieldState(std::move(magnFieldStateFromAction)),
     fieldMagnitude(params.fieldMagnitude),
     nstepsPerAction_(params.time.nstepsPerAction),
@@ -26,6 +27,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
     tmax_(params.time.tmax),
     distanceThreshold_(params.distanceThreshold),
     posIc_(std::move(posIc)),
+    targetDistance_(std::move(targetDistance)),
     rewardParams_(params.reward),
     targetPositions_(initialRBs.size(), posIc_->target),
     dumpEvery_(params.time.dumpEvery)
@@ -165,22 +167,16 @@ double MSodeEnvironment::getReward() const
     real r {0.0_r};
     const auto status = getCurrentStatus();
     const auto& bodies = sim->getBodies();
+    const auto currentDistance = targetDistance_->compute(bodies);
 
-    auto square = [](real a) {return a*a;};
-    
-    for (size_t i = 0; i < bodies.size(); ++i)
-    {
-        const real3 dr = bodies[i].r - targetPositions_[i];
-        const real distance = length(dr);
-        
-        r += square(previousDistance_[i]) - square(distance);
-        previousDistance_[i] = distance;
-    }
+    r += previousDistance_ - currentDistance;
     r -= rewardParams_.timeCoeff * dt_ * nstepsPerAction_;
 
     if (status == Status::Success)
         r += rewardParams_.terminationBonus;
 
+    previousDistance_ = currentDistance;
+    
     return r;
 }
 
@@ -207,13 +203,7 @@ real MSodeEnvironment::getSimulationTime() const
 void MSodeEnvironment::setDistances()
 {
     const auto& bodies = sim->getBodies();
-    previousDistance_.resize(bodies.size());
-    
-    for (size_t i = 0; i < bodies.size(); ++i)
-    {
-        const real3 dr = bodies[i].r - targetPositions_[i];
-        previousDistance_[i] = length(dr);
-    }
+    previousDistance_ = targetDistance_->compute(bodies);
 }
 
 bool MSodeEnvironment::bodiesWithinDistanceToTargets() const
