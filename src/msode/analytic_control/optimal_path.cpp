@@ -53,6 +53,8 @@ real computeTime(const std::vector<real3>& A, Quaternion q)
         computeTime(A, q.rotate(e3));
 }
 
+/** \brief maps from euler angles to quaternion
+ */
 static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
 {
     const real theta = static_cast<real>(params[0]);
