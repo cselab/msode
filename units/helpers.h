@@ -8,7 +8,7 @@ namespace helpers
 {
 using namespace msode;
 
-inline PropulsionMatrix generateRandomPropulsion(std::mt19937& gen)
+static inline PropulsionMatrix generateRandomPropulsion(std::mt19937& gen)
 {
     std::uniform_real_distribution<real> unif(0.8, 1.2);
     PropulsionMatrix P;
