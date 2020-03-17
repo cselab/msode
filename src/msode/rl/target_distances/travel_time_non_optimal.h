@@ -9,12 +9,13 @@ namespace rl {
 
 /** Compute the travel time from the free-space/zero velocity approximation.
     \note Assume that always the same bodies will be used with this object.
-    \note The travel time is optimized for each distance evaluation. This may lead to prohibitive compute times. 
+    \note We do NOT compute the optimal travel time; we choose an arbitrary orientation instead.
+          This allows to save computational resources.
  */
-class TargetDistanceTravelTime : public TargetDistance
+class TargetDistanceTravelTimeNonOptimal : public TargetDistance
 {
 public:
-    TargetDistanceTravelTime(real magneticFieldMagnitude);
+    TargetDistanceTravelTimeNonOptimal(real magneticFieldMagnitude);
     real compute(const std::vector<RigidBody>& bodies) const override;
 
 private:
@@ -22,6 +23,7 @@ private:
 
     mutable bool initialized_ {false};
     mutable msode::analytic_control::MatrixReal U_; ///< inverse of the velocity matrix
+    Quaternion q_{Quaternion::createIdentity()}; ///< orientation used to compute the travel time 
 };
 
 } // namespace rl

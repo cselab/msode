@@ -3,6 +3,7 @@
 #include "none.h"
 #include "square.h"
 #include "travel_time.h"
+#include "travel_time_non_optimal.h"
 
 namespace msode {
 namespace rl {
@@ -25,6 +26,10 @@ std::unique_ptr<TargetDistance> createTargetDistance(const Config& config)
     else if (type == "TravelTime")
     {
         td = std::make_unique<TargetDistanceTravelTime>(config.at("fieldMagnitude"));
+    }
+    else if (type == "TravelTimeNonOptimal")
+    {
+        td = std::make_unique<TargetDistanceTravelTimeNonOptimal>(config.at("fieldMagnitude"));
     }
     else
     {
