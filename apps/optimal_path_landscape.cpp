@@ -69,9 +69,11 @@ int main(int argc, char **argv)
         return analytic_control::computeTime(A, quaternionFromAngles(theta, phi, psi));
     };
 
-    const int ntheta = 64;
-    const int nphi = 32;
-    const int npsi = 64;
+    const int res = 128;
+    
+    const int ntheta = 2*res;
+    const int nphi = res;
+    const int npsi = res;
     
     const real dtheta = 2 * M_PI / ntheta;
     const real dphi   = M_PI     / nphi;
