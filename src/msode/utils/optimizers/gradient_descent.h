@@ -10,7 +10,7 @@ namespace utils {
 template<class F, class DerF, class Point>
 std::tuple<Point, real> minimizeGradientDescent(const F& func, const DerF& derF, Point x, int maxIter, real tol)
 {
-    constexpr real maxAlpha = 0.1_r;
+    constexpr real maxAlpha = 1.0_r;
     
     Point grad;
     real fValCurr = func(x);

@@ -39,10 +39,10 @@ GTEST_TEST( OPTIMIZERS, gradientDescent )
 
         std::tie(x, fval) = utils::minimizeGradientDescent(f, fder, x, 1000, tol);
         
-        ASSERT_NEAR(fval, 0.0_r, 1e-3_r);
-        ASSERT_NEAR(x.x,  1.0_r, 1e-2_r);
-        ASSERT_NEAR(x.y, -2.0_r, 1e-2_r);
-        ASSERT_NEAR(x.z,  0.0_r, 1e-2_r);
+        ASSERT_NEAR(fval, 0.0_r, tol);
+        ASSERT_NEAR(x.x,  1.0_r, tol);
+        ASSERT_NEAR(x.y, -2.0_r, tol);
+        ASSERT_NEAR(x.z,  0.0_r, tol);
     }
 }
 
