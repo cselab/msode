@@ -163,6 +163,39 @@ GTEST_TEST( CONSTRUCTION, from_rotation_matrix )
     }
 }
 
+static RotMatrix rotationFromAxisAngle(real theta, real3 u)
+{
+    const real ct = std::cos(theta);
+    const real st = std::sin(theta);
+    const real cm = 1.0_r - ct;
+
+    const std::array<real, 3> row0 {ct + u.x * u.x * cm,         u.x * u.y * cm - u.z * st,   u.x * u.z * cm + u.y * st};
+    const std::array<real, 3> row1 {u.y * u.x * cm + u.z * st,   ct + u.y * u.y * cm,         u.y * u.z * cm - u.x * st};
+    const std::array<real, 3> row2 {u.z * u.x * cm - u.y * st,   u.z * u.y * cm + u.x * st,   ct + u.z * u.z * cm      };
+    return {row0, row1, row2};
+}
+
+GTEST_TEST( CONSTRUCTION, from_axis_angle )
+{
+    const unsigned long seed = 424242;
+    const int numTries = 50;
+    std::mt19937 gen(seed);
+
+    std::uniform_real_distribution<real> distrU(-1.0_r, 1.0_r);
+    std::uniform_real_distribution<real> distrT(0.0_r, 2.0_r * M_PI);
+    
+    for (int i = 0; i < numTries; ++i)
+    {
+        const real3 u = normalized(real3{distrU(gen), distrU(gen), distrU(gen)});
+        const real theta = distrT(gen);
+        
+        const auto R = rotationFromAxisAngle(theta, u);
+        const auto q = Quaternion::createFromRotation(theta, u);
+        
+        checkSameRotation(R, q);
+    }
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
