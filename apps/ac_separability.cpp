@@ -1,3 +1,9 @@
+/** ac_separability
+
+    Collect optimal travel time in one dimension for N swimmers, along with properties of the velocity matrix.
+    See ../launch_scripts/separability/ for application.
+ */
+
 #include <msode/analytic_control/helpers.h>
 #include <msode/analytic_control/optimal_path.h>
 #include <msode/core/simulation.h>

@@ -1,3 +1,11 @@
+/** orient
+
+    A small case for reorienting randomly oriented ABFs along a given axis.
+    The method for reorienting consists in applying a field rotating along the target axis with alternating +/- `omega`.
+    The magnitude `omega` is lower than the step out frequency to allow the rotation of the ABF.
+    This is the method used used in `analytic_control`.
+ */
+
 #include <msode/simulation.h>
 #include <msode/factory.h>
 

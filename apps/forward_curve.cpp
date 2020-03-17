@@ -1,3 +1,9 @@
+/** forward_curve
+
+    ABF in a field rotating with frequencies `omega` in the yz plane.
+    report mean velocity along the x axis for many omegas.
+ */
+
 #include <msode/core/simulation.h>
 #include <msode/core/factory.h>
 #include <msode/utils/mean_vel.h>

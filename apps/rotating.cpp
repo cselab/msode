@@ -1,3 +1,8 @@
+/** rotating
+
+    ABF in a rotating field with direction changing direction over time (describes a circle).
+*/
+
 #include <msode/core/simulation.h>
 #include <msode/core/factory.h>
 

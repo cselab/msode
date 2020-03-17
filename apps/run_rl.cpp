@@ -1,3 +1,8 @@
+/** run_rl
+    
+    Use smarties to find optimal policy for the problem stated in `run_ac`.
+ */
+
 #include <msode/core/log.h>
 #include <msode/rl/factory.h>
 #include <msode/rl/helpers.h>

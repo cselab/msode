@@ -1,3 +1,9 @@
+/** run_ac
+
+    Finds a sequence of magnetic field rotation frequencies and directions to bring given ABFs to a target position optimally.
+ */
+
+
 #include <msode/analytic_control/optimal_path.h>
 #include <msode/analytic_control/apply_strategy.h>
 #include <msode/core/velocity_field/factory.h>

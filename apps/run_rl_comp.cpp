@@ -1,3 +1,8 @@
+/** run_rl_comp
+    
+    Use smarties to find optimal policy for the problem stated in `run_ac` and compare to the `run_ac` results for the same setup.
+ */
+
 #include <msode/analytic_control/apply_strategy.h>
 #include <msode/analytic_control/optimal_path.h>
 #include <msode/core/log.h>

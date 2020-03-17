@@ -1,3 +1,10 @@
+/** convex_hull
+
+    reports forward velocities for `N` given swimmers; 
+    output are "velocity vectors" (one for each omega sample) which can be processed to obtained the convex hull of that cloud 
+    this allows to choose a velocity matrix with optimal omegas.
+ */
+
 #include <msode/core/simulation.h>
 #include <msode/core/factory.h>
 #include <msode/utils/mean_vel.h>

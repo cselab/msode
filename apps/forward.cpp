@@ -1,3 +1,8 @@
+/** forward
+
+    ABF in a field rotating with frequency `omega` in the yz plane.
+ */
+
 #include <msode/core/simulation.h>
 #include <msode/core/factory.h>
 

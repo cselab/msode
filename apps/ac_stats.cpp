@@ -1,3 +1,8 @@
+/** ac_stats
+
+    Compute mean travel time of multiple swimmers from a random position in a box to the origin.
+ */
+
 #include <msode/analytic_control/optimal_path.h>
 #include <msode/analytic_control/apply_strategy.h>
 

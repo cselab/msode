@@ -1,3 +1,8 @@
+/** dump_velocity_field
+    
+    Read a config file compatible with one of ``run_rl`` or ``run_rl_comp`` and dump the velocity field that is described there. 
+*/
+
 #include <msode/core/velocity_field/factory.h>
 #include <msode/rl/pos_ic/factory.h>
 
