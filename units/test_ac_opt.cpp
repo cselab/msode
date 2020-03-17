@@ -66,6 +66,9 @@ static real3 computeGradient(const std::vector<real3>& A, real theta, real phi, 
     
     const real3 u {cph * sps, sph * sps, cps};
 
+    const real3 uph {-sph * sps, cph * sps, 0.0_r};
+    const real3 ups {cph * cps, sph * cps, -sps};
+    
     // The rotation matrix columns
 
     const real3 R0 {u.x * u.x * omct + ct,         u.y * u.x * omct + u.z * st,   u.z * u.x * omct - u.y * st};
@@ -78,13 +81,13 @@ static real3 computeGradient(const std::vector<real3>& A, real theta, real phi, 
     const real3 Rth1 {u.x * u.y * st - u.z * ct,   u.y * u.y * st - st,         u.z * u.y * st + u.x * ct};
     const real3 Rth2 {u.x * u.z * st + u.y * ct,   u.y * u.z * st - u.x * ct,   u.z * u.z * st - st      };
 
-    const real3 Rph0 {0.0_r, 0.0_r, 0.0_r};
-    const real3 Rph1 {0.0_r, 0.0_r, 0.0_r};
-    const real3 Rph2 {0.0_r, 0.0_r, 0.0_r};
+    const real3 Rph0 {2 * uph.x * u.x * omct,         (uph.y * u.x + u.y * uph.x) * omct + uph.z * st,   (uph.z * u.x + u.z * uph.x) * omct - uph.y * st};
+    const real3 Rph1 {(uph.x * u.y + u.x * uph.y) * omct - uph.z * st,   2 * uph.y * u.y * omct,         (uph.z * u.y + u.z * uph.y) * omct + uph.x * st};
+    const real3 Rph2 {(uph.x * u.z + u.x * uph.z) * omct + uph.y * st,   (uph.y * u.z + u.y * uph.z) * omct - uph.x * st,   2 * uph.z * u.z * omct      };
 
-    const real3 Rps0 {0.0_r, 0.0_r, 0.0_r};
-    const real3 Rps1 {0.0_r, 0.0_r, 0.0_r};
-    const real3 Rps2 {0.0_r, 0.0_r, 0.0_r};
+    const real3 Rps0 {2 * ups.x * u.x * omct,         (ups.y * u.x + u.y * ups.x) * omct + ups.z * st,   (ups.z * u.x + u.z * ups.x) * omct - ups.y * st};
+    const real3 Rps1 {(ups.x * u.y + u.x * ups.y) * omct - ups.z * st,   2 * ups.y * u.y * omct,         (ups.z * u.y + u.z * ups.y) * omct + ups.x * st};
+    const real3 Rps2 {(ups.x * u.z + u.x * ups.z) * omct + ups.y * st,   (ups.y * u.z + u.y * ups.z) * omct - ups.x * st,   2 * ups.z * u.z * omct      };
 
     real3 gradient {0.0_r, 0.0_r, 0.0_r};
 
@@ -128,17 +131,19 @@ GTEST_TEST( AC_OPT, derivative )
         const real h = 1e-4_r;
         const real tolerance = 1e-3_r;
 
-        const real F0 = F(theta, phi, psi);
         const real3 gradient_FD = {(F(theta + h, phi, psi) - F(theta - h, phi, psi)) / (2*h),
-                                   (F(theta, phi + h, psi) - F0) / h,
-                                   (F(theta, phi, psi + h) - F0) / h};
+                                   (F(theta, phi + h, psi) - F(theta, phi - h, psi)) / (2*h),
+                                   (F(theta, phi, psi + h) - F(theta, phi, psi - h)) / (2*h)};
 
         const real3 gradient = computeGradient(A, theta, phi, psi);
 
         ASSERT_NEAR(gradient_FD.x, gradient.x, tolerance);
+        ASSERT_NEAR(gradient_FD.y, gradient.y, tolerance);
+        ASSERT_NEAR(gradient_FD.z, gradient.z, tolerance);
 
-        // TODO
-        printf("%g  %g\n", gradient_FD.x, gradient.x);
+        // printf("%g  %g\n", gradient_FD.x, gradient.x);
+        // printf("%g  %g\n", gradient_FD.y, gradient.y);
+        // printf("%g  %g\n\n", gradient_FD.z, gradient.z);
     }
 }
 
