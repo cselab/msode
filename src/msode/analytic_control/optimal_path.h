@@ -26,5 +26,12 @@ real computeTime(const std::vector<real3>& A, Quaternion q);
  */
 Quaternion findBestPath(const std::vector<real3>& A);
 
+
+/** \brief Compute the derivative of the travel time with respect to 3 angles.
+    The angles describe the rotation as follow:
+    The rotation is the one of angle \p theta around the axis u that has spherical coordinates (1, phi, psi).
+ */
+real3 computeTimeGradient(const std::vector<real3>& A, real theta, real phi, real psi);
+
 } // namespace analytic_control
 } // namespace msode
