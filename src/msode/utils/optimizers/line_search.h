@@ -1,5 +1,6 @@
 #pragma once
 
+#include <msode/core/math.h>
 #include <msode/core/types.h>
 
 namespace msode {
