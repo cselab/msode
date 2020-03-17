@@ -55,18 +55,22 @@ real computeTime(const std::vector<real3>& A, Quaternion q)
 
 /** \brief maps from euler angles to quaternion
  */
-static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
+static inline Quaternion anglesToQuaternion(real theta, real phi, real psi)
 {
-    const real theta = static_cast<real>(params[0]);
-    const real phi   = static_cast<real>(params[1]);
-    const real psi   = static_cast<real>(params[2]);
-    
     const real3 normal {std::cos(phi) * std::sin(psi),
                         std::sin(phi) * std::sin(psi),
                         std::cos(psi)};
 
     const auto q = Quaternion::createFromRotation(theta, normal);
     return q.normalized();
+}
+
+static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
+{
+    const real theta = static_cast<real>(params[0]);
+    const real phi   = static_cast<real>(params[1]);
+    const real psi   = static_cast<real>(params[2]);
+    return anglesToQuaternion(theta, phi, psi);
 }
 
 Quaternion findBestPath(const std::vector<real3>& A)
@@ -82,9 +86,9 @@ Quaternion findBestPath(const std::vector<real3>& A)
     e["Problem"]["Objective Function"] = evaluatePath;
 
     e["Solver"]["Type"] = "CMAES";
-    e["Solver"]["Population Size"] = 32;
-    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-7;
-    e["Solver"]["Termination Criteria"]["Max Generations"] = 10000;
+    e["Solver"]["Population Size"] = 8;
+    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-3;
+    e["Solver"]["Termination Criteria"]["Max Generations"] = 1000;
 
     e["Variables"][0]["Name"] = "theta";
     e["Variables"][0]["Lower Bound"] =   - M_PI;
