@@ -8,6 +8,9 @@ endif()
 add_executable(ac_stats ac_stats.cpp)
 target_link_libraries(ac_stats msode analytic_control)
 
+add_executable(convex_hull convex_hull.cpp)
+target_link_libraries(convex_hull utils)
+
 add_executable(dump_velocity_field dump_velocity_field.cpp)
 target_link_libraries(dump_velocity_field msode rl)
 
@@ -17,8 +20,8 @@ target_link_libraries(forward msode)
 add_executable(forward_curve forward_curve.cpp)
 target_link_libraries(forward_curve utils)
 
-add_executable(convex_hull convex_hull.cpp)
-target_link_libraries(convex_hull utils)
+add_executable(optimal_path_landscape optimal_path_landscape.cpp)
+target_link_libraries(optimal_path_landscape analytic_control)
 
 add_executable(run_ac run_ac.cpp)
 target_link_libraries(run_ac msode analytic_control)
