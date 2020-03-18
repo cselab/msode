@@ -101,8 +101,8 @@ static Params createParams(const std::vector<RigidBody>& bodies,
     const real terminationBonus = maxDistance;
     
     const real timeCoeffReward = maxDistance / maxTravelTime;
-    const real tmax            = 5.0_r * maxTravelTime;
-    const real dtAction        = 20.0_r * computeActionTimeScale(fieldMagnitude, bodies);
+    const real tmax            = 2.0_r * maxTravelTime;
+    const real dtAction        = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
 
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
