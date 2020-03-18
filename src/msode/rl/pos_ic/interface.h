@@ -36,6 +36,15 @@ public:
      */
     virtual std::vector<real3> generateNewPositions(std::mt19937& gen, int n) = 0;
 
+    /** \brief generate positions uniformly in the whole spanned space
+        \param gen rng
+        \param n Number of positions to generate
+        \return \p n positions in the space
+
+        This is used to estimate the maximum distances and maximum travel times in the RL environment
+    */
+    virtual std::vector<real3> generateUniformPositions(std::mt19937& gen, int n) const = 0;
+
 public:
     const real3 target {0.0_r, 0.0_r, 0.0_r}; ///< the target position
 };

@@ -17,7 +17,8 @@ public:
     real computeMaxDistanceToTarget() const override;
 
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
-
+    std::vector<real3> generateUniformPositions(std::mt19937& gen, int n) const override;
+    
 private:
     struct Box
     {

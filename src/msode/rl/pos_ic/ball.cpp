@@ -22,6 +22,11 @@ real EnvPosICBall::computeMaxDistanceToTarget() const {return radius_;}
 
 std::vector<real3> EnvPosICBall::generateNewPositions(std::mt19937& gen, int n)
 {
+    return generateUniformPositions(gen, n);
+}
+
+std::vector<real3> EnvPosICBall::generateUniformPositions(std::mt19937& gen, int n) const
+{
     std::vector<real3> positions(n);
     for (auto& p : positions)
         p = utils::generateUniformPositionBall(gen, radius_);

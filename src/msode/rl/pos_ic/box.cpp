@@ -30,11 +30,17 @@ real EnvPosICBox::computeMaxDistanceToTarget() const
 
 std::vector<real3> EnvPosICBox::generateNewPositions(std::mt19937& gen, int n)
 {
+    return generateUniformPositions(gen, n);
+}
+
+std::vector<real3> EnvPosICBox::generateUniformPositions(std::mt19937& gen, int n) const
+{
     std::vector<real3> positions(n);
     for (auto& p : positions)
         p = utils::generateUniformPositionBox(gen, domain_.lo, domain_.hi); 
     return positions;
 }
+
 
 } // namespace rl
 } // namespace msode
