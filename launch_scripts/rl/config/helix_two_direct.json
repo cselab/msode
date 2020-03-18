@@ -88,5 +88,6 @@
     "targetDistance" :
     {
 	"__type" : "Square"
-    }
+    },
+    "dumpEvery" : 1000
 }

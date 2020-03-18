@@ -92,5 +92,6 @@
     {
 	"__type" : "TravelTime",
 	"fieldMagnitude" : 1.0
-    }
+    },
+    "dumpEvery" : 1000
 }

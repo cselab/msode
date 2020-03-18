@@ -63,7 +63,7 @@ static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
 }
 
 // TODO what parameters should be in the config?
-static Params createParams(const std::vector<RigidBody>& bodies, real maxDistance, real fieldMagnitude, real distanceThreshold)
+static Params createParams(const std::vector<RigidBody>& bodies, real maxDistance, real fieldMagnitude, real distanceThreshold, long dumpEvery)
 {
     const int nbodies = bodies.size();
     
@@ -77,8 +77,6 @@ static Params createParams(const std::vector<RigidBody>& bodies, real maxDistanc
     const real dtAction        = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
 
-    const long dumpEvery {1000}; // TODO
-    // const long dumpEvery {30};
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
     const RewardParams rewardParams {timeCoeffReward, terminationBonus};
 
@@ -100,14 +98,14 @@ static Params createParams(const std::vector<RigidBody>& bodies, real maxDistanc
 
 std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
 {
-    auto bodies      = readBodies(config.at("bodies"));
-    auto posIc       = createEnvPosIC(config.at("posIc"));
-    auto fieldAction = createFieldFromAction(config.at("fieldAction"));
-    auto params      = createParams(bodies, posIc->computeMaxDistanceToTarget(),
-                                    config.at("fieldMagnitude"), config.at("targetRadius"));
+    auto bodies         = readBodies(config.at("bodies"));
+    auto posIc          = createEnvPosIC(config.at("posIc"));
+    auto fieldAction    = createFieldFromAction(config.at("fieldAction"));
+    auto targetDistance = createTargetDistance(config.at("targetDistance"));
     auto velField = msode::factory::createVelocityField(config.at("velocityField"));
 
-    auto targetDistance = createTargetDistance(config.at("targetDistance"));
+    auto params = createParams(bodies, posIc->computeMaxDistanceToTarget(),
+                               config.at("fieldMagnitude"), config.at("targetRadius"), config.at("dumpEvery"));
     
     return std::make_unique<MSodeEnvironment>(params, std::move(posIc), bodies, std::move(fieldAction), std::move(velField), std::move(targetDistance));
 }

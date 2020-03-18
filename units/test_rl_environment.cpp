@@ -109,7 +109,8 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
     },
     "targetDistance" : {
         "__type" : "Square"
-    }
+    },
+    "dumpEvery" : 0
     }
     )");
 
