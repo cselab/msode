@@ -56,7 +56,7 @@ GTEST_TEST( AC_OPT, derivative )
 
     auto F = [&](real theta, real phi, real psi)
     {
-        return analytic_control::computeTime(A, quaternionFromAngles(theta, phi, psi));
+        return analytic_control::computeTravelTime(A, quaternionFromAngles(theta, phi, psi));
     };
 
     std::uniform_real_distribution<real> dstr(0.0_r, 1.0_r);
@@ -74,7 +74,7 @@ GTEST_TEST( AC_OPT, derivative )
                                    (F(theta, phi + h, psi) - F(theta, phi - h, psi)) / (2*h),
                                    (F(theta, phi, psi + h) - F(theta, phi, psi - h)) / (2*h)};
 
-        const real3 gradient = analytic_control::computeTimeGradient(A, theta, phi, psi);
+        const real3 gradient = analytic_control::computeTravelTimeGradient(A, theta, phi, psi);
 
         ASSERT_NEAR(gradient_FD.x, gradient.x, tolerance);
         ASSERT_NEAR(gradient_FD.y, gradient.y, tolerance);
@@ -107,8 +107,8 @@ GTEST_TEST( AC_OPT, optimum )
         qLBFGS = analytic_control::findBestPathLBFGS(A);
     const double tLBFGS = timer.elapsedAndReset() / numTries;
 
-    const real ttCMAES = analytic_control::computeTime(A, qCMAES);
-    const real ttLBFGS = analytic_control::computeTime(A, qLBFGS);
+    const real ttCMAES = analytic_control::computeTravelTime(A, qCMAES);
+    const real ttLBFGS = analytic_control::computeTravelTime(A, qLBFGS);
     
     printf("CMAES: %g in %g ms\n"
            "LBFGS: %g in %g ms\n",

@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 
     auto F = [&](real theta, real phi, real psi)
     {
-        return analytic_control::computeTime(A, quaternionFromAngles(theta, phi, psi));
+        return analytic_control::computeTravelTime(A, quaternionFromAngles(theta, phi, psi));
     };
 
     const int res = 128;

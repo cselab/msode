@@ -27,7 +27,7 @@ real TargetDistanceTravelTimeNonOptimal::compute(const std::vector<RigidBody>& b
     }
 
     auto A = msode::analytic_control::computeA(U_, getPositions(bodies));
-    const real travelTime = msode::analytic_control::computeTime(A, q_);
+    const real travelTime = msode::analytic_control::computeTravelTime(A, q_);
     return travelTime;
 }
 

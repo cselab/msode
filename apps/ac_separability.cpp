@@ -125,7 +125,7 @@ static real computeMeanTimeFromRandomIC(const analytic_control::MatrixReal& V, c
         const long seed = 242 * sample + 13;
         const auto initialPositions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
         const auto A = analytic_control::computeA(U, initialPositions);
-        const real t = analytic_control::computeTime(A, direction);
+        const real t = analytic_control::computeTravelTime(A, direction);
         tSum += t;
     }
     
@@ -155,7 +155,7 @@ static real computeMeanTimeFromTestIC(const analytic_control::MatrixReal& V, con
             initialPositions[i] = isRight ? real3 {L, 0.0_r, 0.0_r} : real3 {-L, 0.0_r, 0.0_r};
         }
         const auto A = analytic_control::computeA(U, initialPositions);
-        const real t = analytic_control::computeTime(A, direction);
+        const real t = analytic_control::computeTravelTime(A, direction);
         tSum += t;
     }
     

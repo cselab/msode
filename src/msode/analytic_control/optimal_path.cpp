@@ -32,7 +32,7 @@ std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& posit
 }
 
 
-real computeTime(const std::vector<real3>& A, real3 direction)
+real computeTravelTime(const std::vector<real3>& A, real3 direction)
 {
     MSODE_Expect(std::fabs(length(direction) - 1.0_r) < 1e-6_r,
                  "Expect a direction with unit length");
@@ -43,16 +43,16 @@ real computeTime(const std::vector<real3>& A, real3 direction)
     return t;
 }
 
-real computeTime(const std::vector<real3>& A, Quaternion q)
+real computeTravelTime(const std::vector<real3>& A, Quaternion q)
 {
     constexpr real3 e1 {1.0_r, 0.0_r, 0.0_r};
     constexpr real3 e2 {0.0_r, 1.0_r, 0.0_r};
     constexpr real3 e3 {0.0_r, 0.0_r, 1.0_r};
 
     return
-        computeTime(A, q.rotate(e1)) +
-        computeTime(A, q.rotate(e2)) +
-        computeTime(A, q.rotate(e3));
+        computeTravelTime(A, q.rotate(e1)) +
+        computeTravelTime(A, q.rotate(e2)) +
+        computeTravelTime(A, q.rotate(e3));
 }
 
 /** \brief maps from euler angles to quaternion
@@ -80,7 +80,7 @@ Quaternion findBestPath(const std::vector<real3>& A)
     auto evaluatePath = [&](korali::Sample& k)
     {
         const auto q = paramsToQuaternion(k["Parameters"]);
-        k["F(x)"] = -computeTime(A, q); // maximize -T
+        k["F(x)"] = -computeTravelTime(A, q); // maximize -T
     };
 
     auto e = korali::Experiment();
@@ -122,7 +122,7 @@ int sgn(T val)
     return (T(0) < val) - (val < T(0));
 }
 
-real3 computeTimeGradient(const std::vector<real3>& A, real theta, real phi, real psi)
+real3 computeTravelTimeGradient(const std::vector<real3>& A, real theta, real phi, real psi)
 {
     const real ct = std::cos(theta);
     const real st = std::sin(theta);

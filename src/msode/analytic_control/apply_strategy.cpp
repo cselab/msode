@@ -61,9 +61,9 @@ real simulateOptimalPath(real magneticFieldMagnitude,
     const auto betas2 = computeBetas(initialPositions, U, dir2);
     const auto betas3 = computeBetas(initialPositions, U, dir3);
 
-    const real t1 = computeTime(A, dir1);
-    const real t2 = computeTime(A, dir2);
-    const real t3 = computeTime(A, dir3);
+    const real t1 = computeTravelTime(A, dir1);
+    const real t2 = computeTravelTime(A, dir2);
+    const real t3 = computeTravelTime(A, dir3);
 
     const real omegaPerpMin = computeMinOmega(2, bodies, magneticFieldMagnitude);
     constexpr real secureFactor = 5.0_r;
@@ -149,9 +149,9 @@ real computeRequiredTime(real magneticFieldMagnitude,
     const real3 dir2 = q.rotate(e2);
     const real3 dir3 = q.rotate(e3);
 
-    const real t1 = computeTime(A, dir1);
-    const real t2 = computeTime(A, dir2);
-    const real t3 = computeTime(A, dir3);
+    const real t1 = computeTravelTime(A, dir1);
+    const real t2 = computeTravelTime(A, dir2);
+    const real t3 = computeTravelTime(A, dir3);
 
     real tReorient {0.0_r};
     if (includeReorient)
