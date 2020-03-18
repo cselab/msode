@@ -281,7 +281,7 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
     // Set up parameters
     LBFGSParam<real> param;
     param.epsilon = 1e-6_r;
-    param.max_iterations = 500;
+    param.max_iterations = 5000;
 
     // Create solver and function object
     LBFGSSolver<real, LineSearchBracketing> solver(param);
@@ -290,10 +290,11 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
     VectorXd x = VectorXd::Zero(n);
     // x will be overwritten to be the best point found
     real fx;
-    const int niter = solver.minimize(func, x, fx);
+    // const int niter =
+    solver.minimize(func, x, fx);
 
-    if (niter >= param.max_iterations)
-        fprintf(stderr, "warning: did not converge in less that %d iterations\n", niter);
+    // if (niter >= param.max_iterations)
+    //     fprintf(stderr, "warning: did not converge in less that %d iterations\n", niter);
 
     return anglesToQuaternion(x[0], x[1], x[2]);
 }
