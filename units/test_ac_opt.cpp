@@ -1,4 +1,6 @@
 #include "helpers.h"
+#include "timer.h"
+
 
 #include <msode/analytic_control/helpers.h>
 #include <msode/analytic_control/optimal_path.h>
@@ -90,12 +92,30 @@ GTEST_TEST( AC_OPT, optimum )
     std::mt19937 gen {4217};
     const auto A = generateA(n, gen);
 
-    auto qCMA = analytic_control::findBestPath(A);
-    auto qGD = analytic_control::findBestPathLBFGS(A);
+    mTimer timer;
+    Quaternion qCMAES, qLBFGS;
 
-    printf("%g %g\n",
-           analytic_control::computeTime(A, qGD),
-           analytic_control::computeTime(A, qCMA));
+    const int numTries {10};
+
+    timer.start();
+    for (int i = 0; i < numTries; ++i)
+        qCMAES = analytic_control::findBestPath(A);
+    const double tCMAES = timer.elapsedAndReset() / numTries;
+
+    timer.start();
+    for (int i = 0; i < numTries; ++i)
+        qLBFGS = analytic_control::findBestPathLBFGS(A);
+    const double tLBFGS = timer.elapsedAndReset() / numTries;
+
+    const real ttCMAES = analytic_control::computeTime(A, qCMAES);
+    const real ttLBFGS = analytic_control::computeTime(A, qLBFGS);
+    
+    printf("CMAES: %g in %g ms\n"
+           "LBFGS: %g in %g ms\n",
+           ttCMAES, tCMAES, ttLBFGS, tLBFGS);
+
+    // check that the approximate optimizer is within 1% bounds
+    ASSERT_NEAR(ttCMAES, ttCMAES, 0.01_r * std::abs(ttCMAES));
 }
 
 int main(int argc, char **argv)

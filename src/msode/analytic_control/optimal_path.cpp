@@ -294,7 +294,7 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
     // Set up parameters
     LBFGSParam<real> param;
     param.epsilon = 1e-6_r;
-    param.max_iterations = 1000;
+    param.max_iterations = 500;
 
     // Create solver and function object
     LBFGSSolver<real, LineSearchBracketing> solver(param);
