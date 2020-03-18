@@ -33,6 +33,10 @@ Quaternion findBestPath(const std::vector<real3>& A);
  */
 real3 computeTimeGradient(const std::vector<real3>& A, real theta, real phi, real psi);
 
+/** \brief Find the rotation that minimizes computeTime() with LBFGS.
+    \note The optimization is performed on a smoothed version of the original function.
+          The absolute value is transformed to x / sqrt(x^2 + eps), with eps a small parameter
+ */
 Quaternion findBestPathLBFGS(const std::vector<real3>& A);
 
 } // namespace analytic_control

@@ -273,19 +273,6 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
 {
     using Eigen::VectorXd;
     using namespace LBFGSpp;
-    
-    // auto travelTimeFunction = [&](const VectorXd& x, VectorXd& grad) -> real
-    // {
-    //     real3 grad3 = computeTimeGradient(A, x[0], x[1], x[2]);
-    //     grad[0] = grad3.x;
-    //     grad[1] = grad3.y;
-    //     grad[2] = grad3.z;
-
-    //     const auto q = anglesToQuaternion(x[0], x[1], x[2]);
-    //     const auto tt = computeTime(A, q);
-    //     fprintf(stderr, "%g %g %g %g\n", x[0], x[1], x[2], tt);
-    //     return tt;
-    // };
 
     TravelTimeSmoothFunction func(A, 5e-1_r);
     
