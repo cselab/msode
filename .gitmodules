@@ -7,3 +7,6 @@
 [submodule "extern/json"]
 	path = extern/json
 	url = https://github.com/nlohmann/json.git
+[submodule "extern/LBFGSpp"]
+	path = extern/LBFGSpp
+	url = git@github.com:yixuan/LBFGSpp.git
