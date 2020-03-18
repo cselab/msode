@@ -39,7 +39,7 @@ real simulateOptimalPath(real magneticFieldMagnitude,
                          const MatrixReal& U, const std::string& fname, int dumpEvery)
 {
     const auto A = computeA(U, initialPositions);
-    const Quaternion q = findBestPath(A);
+    const Quaternion q = findBestPathCMAES(A);
 
     const std::vector<real> omegas = computeStepOutFrequencies(magneticFieldMagnitude, bodies);
 
@@ -137,7 +137,7 @@ real computeRequiredTime(real magneticFieldMagnitude,
                          const MatrixReal& U, bool includeReorient)
 {
     const auto A = computeA(U, initialPositions);
-    const Quaternion q = findBestPath(A);
+    const Quaternion q = findBestPathCMAES(A);
 
     const std::vector<real> omegas = computeStepOutFrequencies(magneticFieldMagnitude, bodies);
 

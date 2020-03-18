@@ -75,7 +75,7 @@ static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
     return anglesToQuaternion(theta, phi, psi);
 }
 
-Quaternion findBestPath(const std::vector<real3>& A)
+Quaternion findBestPathCMAES(const std::vector<real3>& A)
 {
     auto evaluatePath = [&](korali::Sample& k)
     {

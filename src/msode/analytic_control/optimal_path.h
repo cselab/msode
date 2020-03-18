@@ -24,7 +24,7 @@ real computeTravelTime(const std::vector<real3>& A, Quaternion q);
 
 /** \brief Find the rotation that minimizes computeTravelTime() with CMA-ES
  */
-Quaternion findBestPath(const std::vector<real3>& A);
+Quaternion findBestPathCMAES(const std::vector<real3>& A);
 
 
 /** \brief Compute the derivative of the travel time with respect to 3 angles.

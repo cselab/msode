@@ -99,7 +99,7 @@ GTEST_TEST( AC_OPT, optimum )
 
     timer.start();
     for (int i = 0; i < numTries; ++i)
-        qCMAES = analytic_control::findBestPath(A);
+        qCMAES = analytic_control::findBestPathCMAES(A);
     const double tCMAES = timer.elapsedAndReset() / numTries;
 
     timer.start();
