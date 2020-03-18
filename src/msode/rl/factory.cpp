@@ -1,7 +1,8 @@
 #include "factory.h"
 
-#include <msode/core/log.h>
+#include <msode/analytic_control/optimal_path.h>
 #include <msode/core/factory.h>
+#include <msode/core/log.h>
 #include <msode/core/velocity_field/factory.h>
 #include <msode/rl/field_from_action/factory.h>
 #include <msode/rl/pos_ic/factory.h>
@@ -22,23 +23,6 @@ static std::vector<RigidBody> readBodies(const Config& config)
         bodies.push_back(msode::factory::readRigidBodyFromConfig(c));
 
     return bodies;
-}
-
-static real computeMinForwardVelocity(real fieldMagnitude, const std::vector<RigidBody>& bodies)
-{
-    real v = 1e9_r;
-    
-    for (const auto& body : bodies)
-    {
-        const real vmaxBody = fieldMagnitude * length(body.magnMoment) * fabs(body.propulsion.B[0]);
-        v = std::min(v, vmaxBody);
-    }
-    return v;
-}
-
-static real computeTimeToTravel(real maxDistance, real fieldMagnitude, const std::vector<RigidBody>& bodies)
-{
-    return maxDistance / computeMinForwardVelocity(fieldMagnitude, bodies);
 }
 
 static real computeActionTimeScale(real fieldMagnitude, const std::vector<RigidBody>& bodies)
@@ -62,19 +46,63 @@ static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBo
     return wmax;
 }
 
-// TODO what parameters should be in the config?
-static Params createParams(const std::vector<RigidBody>& bodies, real maxDistance, real fieldMagnitude, real distanceThreshold, long dumpEvery)
+static inline void setPositions(std::vector<RigidBody>& bodies, const std::vector<real3>& positions)
 {
-    const int nbodies = bodies.size();
+    MSODE_Expect(bodies.size() == positions.size(), "must have same size");
     
+    for (size_t i = 0; i < positions.size(); ++i)
+        bodies[i].r = positions[i];
+}
+
+static std::tuple<real, real>
+estimateMaxDistanceAndTravelTime(const std::vector<RigidBody>& bodies,
+                                 const EnvPosIC *posIc,
+                                 const TargetDistance *targetDist,
+                                 real fieldMagnitude, int nsamples = 5000)
+{
+    real maxDistance {0.0_r};
+    real maxTravelTime {0.0_r};
+
+    std::mt19937 gen {42422L};
+    const int n = bodies.size();
+
+    auto bodiesCopy = bodies;
+
+    const auto V = msode::analytic_control::createVelocityMatrix(fieldMagnitude, bodies);
+    const auto U = V.inverse();
+
+    for (int i = 0; i < nsamples; ++i)
+    {
+        const auto positions = posIc->generateUniformPositions(gen, n);
+        setPositions(bodiesCopy, positions);
+        const real dist = targetDist->compute(bodiesCopy);
+
+        const auto A = analytic_control::computeA(U, positions);
+        const auto q = analytic_control::findBestPathLBFGS(A);
+        const real travelTime = analytic_control::computeTravelTime(A, q);
+
+        maxDistance = std::max(maxDistance, dist);
+        maxTravelTime = std::max(maxTravelTime, travelTime);
+    }
+    
+    return {maxDistance, maxTravelTime};
+}
+
+static Params createParams(const std::vector<RigidBody>& bodies,
+                           const EnvPosIC *posIc, const TargetDistance *targetDist,
+                           real fieldMagnitude, real distanceThreshold, long dumpEvery)
+{
+    real maxDistance, maxTravelTime;
+    std::tie(maxDistance, maxTravelTime) = estimateMaxDistanceAndTravelTime(bodies, posIc, targetDist, fieldMagnitude);
+
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real dt       = 1.0 / (maxOmega * 20);
 
-    const real terminationBonus = maxDistance * maxDistance * nbodies;
+    const real terminationBonus = maxDistance;
     
-    const real timeCoeffReward = 0.1_r  * nbodies * maxDistance * computeMinForwardVelocity(fieldMagnitude, bodies);
-    const real tmax            = 10.0_r * computeTimeToTravel(maxDistance, fieldMagnitude, bodies);
-    const real dtAction        = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
+    const real timeCoeffReward = maxDistance / maxTravelTime;
+    const real tmax            = 5.0_r * maxTravelTime;
+    const real dtAction        = 20.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
 
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
@@ -82,15 +110,15 @@ static Params createParams(const std::vector<RigidBody>& bodies, real maxDistanc
 
     fprintf(stderr,
             "----------------------------------------------------------\n"
-            "tmax %g ; steps %ld ; max omega %g\n"
-            "fieldMagnitude   %g\n"
+            "tmax             %g\n"
             "timeCoeffReward  %g\n"
+            "terminationBonus %g\n"
             "dt               %g\n"
             "dt action        %g\n"
+            "steps per action %ld\n"
             "----------------------------------------------------------\n",
-            tmax, nstepsPerAction, maxOmega,
-            fieldMagnitude, timeCoeffReward,
-            dt, dtAction);
+            tmax, timeCoeffReward, terminationBonus,
+            dt, dtAction, nstepsPerAction);
 
     const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold);
     return params;
@@ -104,7 +132,7 @@ std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
     auto targetDistance = createTargetDistance(config.at("targetDistance"));
     auto velField = msode::factory::createVelocityField(config.at("velocityField"));
 
-    auto params = createParams(bodies, posIc->computeMaxDistanceToTarget(),
+    auto params = createParams(bodies, posIc.get(), targetDistance.get(),
                                config.at("fieldMagnitude"), config.at("targetRadius"), config.at("dumpEvery"));
     
     return std::make_unique<MSodeEnvironment>(params, std::move(posIc), bodies, std::move(fieldAction), std::move(velField), std::move(targetDistance));
