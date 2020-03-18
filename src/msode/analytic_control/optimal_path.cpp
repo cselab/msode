@@ -1,6 +1,8 @@
 #include "optimal_path.h"
 #include "helpers.h"
 
+#include <LBFGS.h>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -175,6 +177,138 @@ real3 computeTimeGradient(const std::vector<real3>& A, real theta, real phi, rea
     }
 
     return gradient;
+}
+
+class TravelTimeSmoothFunction
+{
+public:
+    TravelTimeSmoothFunction(const std::vector<real3>& A, real epsilon) :
+        A_(A),
+        epsilon_(epsilon)
+    {}
+
+    real operator()(const Eigen::VectorXd& x, Eigen::VectorXd& grad) const
+    {
+        const real theta = x[0];
+        const real phi = x[1];
+        const real psi = x[2];
+        
+        const real ct = std::cos(theta);
+        const real st = std::sin(theta);
+
+        const real omct = 1.0_r - ct;
+    
+        const real cph = std::cos(phi);
+        const real sph = std::sin(phi);
+
+        const real cps = std::cos(psi);
+        const real sps = std::sin(psi);
+    
+        const real3 u {cph * sps, sph * sps, cps};
+
+        const real3 uph {-sph * sps, cph * sps, 0.0_r};
+        const real3 ups {cph * cps, sph * cps, -sps};
+    
+        // The rotation matrix columns
+
+        const real3 R0 {u.x * u.x * omct + ct,         u.y * u.x * omct + u.z * st,   u.z * u.x * omct - u.y * st};
+        const real3 R1 {u.x * u.y * omct - u.z * st,   u.y * u.y * omct + ct,         u.z * u.y * omct + u.x * st};
+        const real3 R2 {u.x * u.z * omct + u.y * st,   u.y * u.z * omct - u.x * st,   u.z * u.z * omct + ct      };
+    
+        // derivatives of the columns of the rotation matrix w.r.t. theta, phi and psi
+    
+        const real3 Rth0 {u.x * u.x * st - st,         u.y * u.x * st + u.z * ct,   u.z * u.x * st - u.y * ct};
+        const real3 Rth1 {u.x * u.y * st - u.z * ct,   u.y * u.y * st - st,         u.z * u.y * st + u.x * ct};
+        const real3 Rth2 {u.x * u.z * st + u.y * ct,   u.y * u.z * st - u.x * ct,   u.z * u.z * st - st      };
+
+        const real3 Rph0 {2 * uph.x * u.x * omct,         (uph.y * u.x + u.y * uph.x) * omct + uph.z * st,   (uph.z * u.x + u.z * uph.x) * omct - uph.y * st};
+        const real3 Rph1 {(uph.x * u.y + u.x * uph.y) * omct - uph.z * st,   2 * uph.y * u.y * omct,         (uph.z * u.y + u.z * uph.y) * omct + uph.x * st};
+        const real3 Rph2 {(uph.x * u.z + u.x * uph.z) * omct + uph.y * st,   (uph.y * u.z + u.y * uph.z) * omct - uph.x * st,   2 * uph.z * u.z * omct      };
+
+        const real3 Rps0 {2 * ups.x * u.x * omct,         (ups.y * u.x + u.y * ups.x) * omct + ups.z * st,   (ups.z * u.x + u.z * ups.x) * omct - ups.y * st};
+        const real3 Rps1 {(ups.x * u.y + u.x * ups.y) * omct - ups.z * st,   2 * ups.y * u.y * omct,         (ups.z * u.y + u.z * ups.y) * omct + ups.x * st};
+        const real3 Rps2 {(ups.x * u.z + u.x * ups.z) * omct + ups.y * st,   (ups.y * u.z + u.y * ups.z) * omct - ups.x * st,   2 * ups.z * u.z * omct      };
+
+        real tt {0.0_r};
+        grad[0] = grad[1] = grad[2] = 0;
+
+        for (auto a : A_)
+        {
+            const real aR0 = dot(a, R0);
+            const real aR1 = dot(a, R1);
+            const real aR2 = dot(a, R2);
+
+            // travel time
+            tt += smoothAbs(aR0) + smoothAbs(aR1) + smoothAbs(aR2);
+
+            // gradients
+            // theta
+            grad[0] += smoothSgn(aR0) * dot(a, Rth0) + smoothSgn(aR1) * dot(a, Rth1) + smoothSgn(aR2) * dot(a, Rth2);
+            // phi
+            grad[1] += smoothSgn(aR0) * dot(a, Rph0) + smoothSgn(aR1) * dot(a, Rph1) + smoothSgn(aR2) * dot(a, Rph2);
+            // psi
+            grad[2] += smoothSgn(aR0) * dot(a, Rps0) + smoothSgn(aR1) * dot(a, Rps1) + smoothSgn(aR2) * dot(a, Rps2);
+        }
+
+        return tt;
+    }
+
+private:
+    real smoothAbs(real x) const
+    {
+        return std::sqrt(x*x + epsilon_);
+    }
+
+    real smoothSgn(real x) const
+    {
+        return x / smoothAbs(x);
+    }
+    
+private:
+    const std::vector<real3>& A_;
+    const real epsilon_;
+};
+
+Quaternion findBestPathLBFGS(const std::vector<real3>& A)
+{
+    using Eigen::VectorXd;
+    using namespace LBFGSpp;
+    
+    // auto travelTimeFunction = [&](const VectorXd& x, VectorXd& grad) -> real
+    // {
+    //     real3 grad3 = computeTimeGradient(A, x[0], x[1], x[2]);
+    //     grad[0] = grad3.x;
+    //     grad[1] = grad3.y;
+    //     grad[2] = grad3.z;
+
+    //     const auto q = anglesToQuaternion(x[0], x[1], x[2]);
+    //     const auto tt = computeTime(A, q);
+    //     fprintf(stderr, "%g %g %g %g\n", x[0], x[1], x[2], tt);
+    //     return tt;
+    // };
+
+    TravelTimeSmoothFunction func(A, 5e-1_r);
+    
+    constexpr int n = 3; // theta, phi, psi
+
+    // Set up parameters
+    LBFGSParam<real> param;
+    param.epsilon = 1e-6_r;
+    param.max_iterations = 1000;
+
+    // Create solver and function object
+    LBFGSSolver<real, LineSearchBracketing> solver(param);
+
+    // Initial guess
+    VectorXd x = VectorXd::Zero(n);
+    // x will be overwritten to be the best point found
+    real fx;
+    const int niter = solver.minimize(func, x, fx);
+
+    if (niter >= param.max_iterations)
+        fprintf(stderr, "warning: did not converge in less that %d iterations\n", niter);
+
+    return anglesToQuaternion(x[0], x[1], x[2]);
 }
 
 } // namespace analytic_control

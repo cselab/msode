@@ -33,5 +33,7 @@ Quaternion findBestPath(const std::vector<real3>& A);
  */
 real3 computeTimeGradient(const std::vector<real3>& A, real theta, real phi, real psi);
 
+Quaternion findBestPathLBFGS(const std::vector<real3>& A);
+
 } // namespace analytic_control
 } // namespace msode

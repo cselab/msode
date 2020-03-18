@@ -84,6 +84,20 @@ GTEST_TEST( AC_OPT, derivative )
     }
 }
 
+GTEST_TEST( AC_OPT, optimum )
+{
+    const int n = 4;
+    std::mt19937 gen {4217};
+    const auto A = generateA(n, gen);
+
+    auto qCMA = analytic_control::findBestPath(A);
+    auto qGD = analytic_control::findBestPathLBFGS(A);
+
+    printf("%g %g\n",
+           analytic_control::computeTime(A, qGD),
+           analytic_control::computeTime(A, qCMA));
+}
+
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
