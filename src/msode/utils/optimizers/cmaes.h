@@ -25,7 +25,7 @@ public:
     void runGeneration();
 
 private:
-    Vector _generateSample();
+    Vector _generateNormal();
     void _computeOrdering(const std::vector<real>& values);
     
 private:

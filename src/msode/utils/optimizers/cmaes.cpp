@@ -59,7 +59,8 @@ void CMAES::runGeneration()
 
     for (int i = 0; i < lambda_; ++i)
     {
-        samples_       [i] = _generateSample();
+        ys_            [i] = _generateNormal();
+        samples_       [i] = mean_ + sigma_ * ys_[i];
         functionValues_[i] = function_(samples_[i]);
     }
 
@@ -76,7 +77,7 @@ void CMAES::runGeneration()
     // update mean
 
     mean_ += sigma_ * yw;
-    
+
     // cumulation for C
 
     const real omcc = 1.0_r - cC_;
@@ -84,7 +85,7 @@ void CMAES::runGeneration()
 
     if (pSigma_.norm() < 1.5_r * std::sqrt(n_))
         pC_ += std::sqrt((1.0_r - omcc*omcc) * muW_) * yw;
-    
+
     // cumulation for sigma
 
     const real omcs = 1.0_r - cSigma_;
@@ -92,7 +93,7 @@ void CMAES::runGeneration()
 
     const auto& U = CDecomposition_.eigenvectors().real();
     const auto& D = CDecomposition_.eigenvalues().real();
-
+    
     // C^{-1/2}
     Matrix Cmhalf =
         U
@@ -100,7 +101,7 @@ void CMAES::runGeneration()
         * U.transpose();
 
     pSigma_ += std::sqrt((1.0_r - omcs*omcs) * muW_) * Cmhalf * yw;
-    
+
     // update C
 
     C_ = (1.0_r -  c1_ - cMu_) * C_ + c1_ * pC_ * pC_.transpose();
@@ -110,7 +111,7 @@ void CMAES::runGeneration()
         const int id = order_[i];
         C_ += (cMu_ * weights_[id]) * ys_[id] * ys_[id].transpose();
     }
-    
+
     // update of sigma
 
     const real argexp = cSigma_ / dSigma_ * (pSigma_.norm() / chiSquareNumber_ - 1.0_r);
@@ -118,7 +119,7 @@ void CMAES::runGeneration()
 }
 
 
-CMAES::Vector CMAES::_generateSample()
+CMAES::Vector CMAES::_generateNormal()
 {
     Vector y = Vector::Zero(n_);
     const auto& eigenValues  = CDecomposition_.eigenvalues();
@@ -131,7 +132,7 @@ CMAES::Vector CMAES::_generateSample()
         y(i) = distr(gen_);
     }
 
-    return mean_ + sigma_ * (eigenVectors.real() * y);
+    return eigenVectors.real() * y;
 }
 
 
@@ -139,7 +140,7 @@ void CMAES::_computeOrdering(const std::vector<real>& values)
 {
     std::iota(order_.begin(), order_.end(), 0);
     std::sort(order_.begin(), order_.end(),
-              [&](int a, int b) { return values[a] > values[b]; } );
+              [&](int a, int b) { return values[a] < values[b]; } );
 }
 
 
