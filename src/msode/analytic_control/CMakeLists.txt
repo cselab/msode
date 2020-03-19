@@ -4,9 +4,6 @@ set(SRC_FILES
   optimal_path.cpp
   )
 
-set(EIGEN_ROOT "${CMAKE_SOURCE_DIR}/extern/eigen-git-mirror")
-find_package(EIGEN REQUIRED)
-
 set(LBFGS_ROOT "${CMAKE_SOURCE_DIR}/extern/LBFGSpp")
 add_library(lbfgs INTERFACE IMPORTED)
 

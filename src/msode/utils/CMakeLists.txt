@@ -1,10 +1,11 @@
 set(SRC_FILES
+  optimizers/cmaes.cpp
   mean_vel.cpp
   rnd.cpp
   )
 
 add_library(utils STATIC ${SRC_FILES})
-target_link_libraries(utils PUBLIC ${LIB_NAME_MSODE})
+target_link_libraries(utils PUBLIC ${LIB_NAME_MSODE} eigen)
 target_compile_features(utils PUBLIC cxx_std_14)
 target_include_directories(utils PUBLIC ${MSODE_INCLUDES})
 
