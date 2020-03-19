@@ -57,7 +57,7 @@
     },
     "targetDistance" :
     {
-	"__type" : "Square"
+	"__type" : "Euclidean"
     },
     "dumpEvery" : 1000
 }
