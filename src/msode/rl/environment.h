@@ -15,13 +15,15 @@ namespace rl {
 
 struct TimeParams
 {
-    real dt, tmax;
+    real dt;
+    real tmax;
     long nstepsPerAction;
     long dumpEvery;
 };
 
 struct RewardParams
 {
+    real distCoeff;
     real timeCoeff;
     real terminationBonus;
 };

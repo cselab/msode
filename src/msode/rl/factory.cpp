@@ -98,26 +98,28 @@ static Params createParams(const std::vector<RigidBody>& bodies,
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
     const real dt       = 1.0 / (maxOmega * 20);
 
-    const real terminationBonus = maxDistance;
-    
-    const real timeCoeffReward = 0.5_r * maxDistance / maxTravelTime;
+    const real terminationBonus = 1.0_r;
+
+    const real distCoeffReward = 1.0_r / maxDistance;
+    const real timeCoeffReward = 0.5_r / maxTravelTime;
     const real tmax            = 2.0_r * maxTravelTime;
     const real dtAction        = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
     const long nstepsPerAction = dtAction / dt;
 
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
-    const RewardParams rewardParams {timeCoeffReward, terminationBonus};
+    const RewardParams rewardParams {distCoeffReward, timeCoeffReward, terminationBonus};
 
     fprintf(stderr,
             "----------------------------------------------------------\n"
             "tmax             %g\n"
+            "distCoeffReward  %g\n"
             "timeCoeffReward  %g\n"
             "terminationBonus %g\n"
             "dt               %g\n"
             "dt action        %g\n"
             "steps per action %ld\n"
             "----------------------------------------------------------\n",
-            tmax, timeCoeffReward, terminationBonus,
+            tmax, distCoeffReward, timeCoeffReward, terminationBonus,
             dt, dtAction, nstepsPerAction);
 
     const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold);

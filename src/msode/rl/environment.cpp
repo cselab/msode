@@ -169,7 +169,7 @@ double MSodeEnvironment::getReward() const
     const auto& bodies = sim->getBodies();
     const auto currentDistance = targetDistance_->compute(bodies);
 
-    r += previousDistance_ - currentDistance;
+    r += rewardParams_.distCoeff * (previousDistance_ - currentDistance);
     r -= rewardParams_.timeCoeff * dt_ * nstepsPerAction_;
 
     if (status == Status::Success)
