@@ -1,6 +1,7 @@
 #include "factory.h"
 
 #include "none.h"
+#include "euclidean.h"
 #include "square.h"
 #include "travel_time.h"
 #include "travel_time_non_optimal.h"
@@ -18,6 +19,10 @@ std::unique_ptr<TargetDistance> createTargetDistance(const Config& config)
     if (type == "None")
     {
         td = std::make_unique<TargetDistanceNone>();
+    }
+    else if (type == "Euclidean")
+    {
+        td = std::make_unique<TargetDistanceEuclidean>();
     }
     else if (type == "Square")
     {
