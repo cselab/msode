@@ -93,7 +93,7 @@ GTEST_TEST( AC_OPT, optimum )
     const auto A = generateA(n, gen);
 
     mTimer timer;
-    Quaternion qCMAES, qCMAES2, qLBFGS;
+    Quaternion qCMAES, qLBFGS;
 
     const int numTries {10};
 
@@ -104,25 +104,18 @@ GTEST_TEST( AC_OPT, optimum )
 
     timer.start();
     for (int i = 0; i < numTries; ++i)
-        qCMAES2 = analytic_control::findBestPathCMAES2(A);
-    const double tCMAES2 = timer.elapsedAndReset() / numTries;
-
-    timer.start();
-    for (int i = 0; i < numTries; ++i)
         qLBFGS = analytic_control::findBestPathLBFGS(A);
     const double tLBFGS = timer.elapsedAndReset() / numTries;
 
     const real ttCMAES = analytic_control::computeTravelTime(A, qCMAES);
-    const real ttCMAES2 = analytic_control::computeTravelTime(A, qCMAES2);
     const real ttLBFGS = analytic_control::computeTravelTime(A, qLBFGS);
     
     printf("CMAES: %g in %g ms\n"
-           "CMAES2: %g in %g ms\n"
            "LBFGS: %g in %g ms\n",
-           ttCMAES, tCMAES, ttCMAES2, tCMAES2, ttLBFGS, tLBFGS);
+           ttCMAES, tCMAES, ttLBFGS, tLBFGS);
 
     // check that the approximate optimizer is within 1% bounds
-    ASSERT_NEAR(ttCMAES2, ttLBFGS, 0.01_r * std::abs(ttCMAES2));
+    ASSERT_NEAR(ttCMAES, ttLBFGS, 0.01_r * std::abs(ttCMAES));
 }
 
 int main(int argc, char **argv)

@@ -6,7 +6,6 @@ microswimmer ODE solver
 
 ### requirements
 
-- korali https://github.com/cselab/korali
 - smarties https://github.com/cselab/smarties
 
 

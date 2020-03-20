@@ -2,14 +2,7 @@
 #include "helpers.h"
 
 #include <msode/utils/optimizers/cmaes.h>
-
 #include <LBFGS.h>
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wshadow"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#include <korali.hpp>
-#pragma GCC diagnostic pop
 
 namespace msode {
 namespace analytic_control {
@@ -70,60 +63,34 @@ static inline Quaternion anglesToQuaternion(real theta, real phi, real psi)
     return q;
 }
 
-static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
-{
-    const real theta = static_cast<real>(params[0]);
-    const real phi   = static_cast<real>(params[1]);
-    const real psi   = static_cast<real>(params[2]);
-    return anglesToQuaternion(theta, phi, psi);
-}
-
-Quaternion findBestPathCMAES(const std::vector<real3>& A)
-{
-    auto evaluatePath = [&](korali::Sample& k)
-    {
-        const auto q = paramsToQuaternion(k["Parameters"]);
-        k["F(x)"] = -computeTravelTime(A, q); // maximize -T
-    };
-
-    auto e = korali::Experiment();
-    e["Problem"]["Type"] = "Optimization/Stochastic";
-    e["Problem"]["Objective Function"] = evaluatePath;
-
-    e["Solver"]["Type"] = "CMAES";
-    e["Solver"]["Population Size"] = 8;
-    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-3;
-    e["Solver"]["Termination Criteria"]["Max Generations"] = 1000;
-
-    e["Variables"][0]["Name"] = "theta";
-    e["Variables"][0]["Lower Bound"] =   - M_PI;
-    e["Variables"][0]["Upper Bound"] = 3 * M_PI;
-
-    e["Variables"][1]["Name"] = "phi";
-    e["Variables"][1]["Lower Bound"] = -2 * M_PI;
-    e["Variables"][1]["Upper Bound"] = +4 * M_PI;
-
-    e["Variables"][2]["Name"] = "psi";
-    e["Variables"][2]["Lower Bound"] =   - M_PI;
-    e["Variables"][2]["Upper Bound"] = 2 * M_PI;
-
-    e["Console Output"]["Frequency"] = 0;
-    e["Console Output"]["Verbosity"] = "Silent";
-    e["Results"]["Frequency"] = 0;
-
-    e["Random Seed"] = 424242;
-
-    auto k = korali::Engine();
-    k.run(e);
-
-    return paramsToQuaternion(e["Solver"]["Best Ever Variables"]);
-}
-
 template <typename T>
 int sgn(T val)
 {
     return (T(0) < val) - (val < T(0));
 }
+
+Quaternion findBestPathCMAES(const std::vector<real3>& A)
+{
+    using namespace utils;
+
+    auto travelTime = [&](const CMAES::Vector& x) -> real
+    {
+        const auto q = anglesToQuaternion(x(0), x(1), x(2));
+        return computeTravelTime(A, q);
+    };
+
+    const int lambda = 8;
+    CMAES::Vector x = CMAES::Vector::Zero(3);
+    const real sigma = 1.0_r;
+    
+    CMAES cma(travelTime, lambda, x, sigma, 424240);
+
+    real val;
+    std::tie(x, val) = cma.runMinimization(1e-3, 1000);
+
+    return anglesToQuaternion(x(0), x(1), x(2));
+}
+
 
 real3 computeTravelTimeGradient(const std::vector<real3>& A, real theta, real phi, real psi)
 {
@@ -300,28 +267,6 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
     //     fprintf(stderr, "warning: did not converge in less that %d iterations\n", niter);
 
     return anglesToQuaternion(x[0], x[1], x[2]);
-}
-
-Quaternion findBestPathCMAES2(const std::vector<real3>& A)
-{
-    using namespace utils;
-
-    auto travelTime = [&](const CMAES::Vector& x) -> real
-    {
-        const auto q = anglesToQuaternion(x(0), x(1), x(2));
-        return computeTravelTime(A, q);
-    };
-
-    const int lambda = 8;
-    CMAES::Vector x = CMAES::Vector::Zero(3);
-    const real sigma = 1.0_r;
-    
-    CMAES cma(travelTime, lambda, x, sigma, 424240);
-
-    real val;
-    std::tie(x, val) = cma.runMinimization(1e-3, 1000);
-
-    return anglesToQuaternion(x(0), x(1), x(2));
 }
 
 
