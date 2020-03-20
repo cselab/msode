@@ -8,20 +8,31 @@ microswimmer ODE solver
 
 - smarties https://github.com/cselab/smarties
 
-
-### debug mode (default)
-
-	mkdir buils
-	cd build
-	cmake ..
-	make -j <njobs>
-
-### release mode (no contracts)
+### build the libraries, tests and executables:
 
 	mkdir buils
 	cd build
-	cmake -DBUILD_WITH_CONTRACTS=ON ..
+	cmake <options> ..
 	make -j <njobs>
+
+The options are:
+
+- build mode:
+
+	-DCMAKE_BUILD_TYPE=Release (default)
+	-DCMAKE_BUILD_TYPE=Debug
+
+- for debugging with contracts:
+
+	-DBUILD_WITH_CONTRACTS=ON (default: ON)
+	-DENABLE_STACKTRACE=ON (default: ON)
+
+- sanitizers (for debugging):
+
+	-DSANITIZE_ADDRESS=ON
+	-DSANITIZE_MEMORY=ON
+	-DSANITIZE_THREAD=ON
+	-DSANITIZE_UNDEFINED=ON 
 
 
 ## usage
