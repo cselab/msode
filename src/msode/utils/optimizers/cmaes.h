@@ -24,6 +24,13 @@ public:
 
     using Function = std::function<real(Vector)>;
 
+    /** \brief Construct a CMAES object
+        \param function The function to optimize
+        \param lambda The population size
+        \param mean the initial mean
+        \param sigma The initial standard deviation
+        \param long seed random seed
+     */
     CMAES(const Function& function, int lambda, Vector mean, real sigma, long seed);
 
     /** \brief Run the minimization
@@ -31,6 +38,7 @@ public:
         \param maxGeneration maximum number of generations
         \param verbose if \c true, will print information on cout
         \return best ever sample and corresponding value
+        \note can be called only once per instance (TODO)
      */
     std::tuple<Vector, real> runMinimization(real absoluteThreshold, int maxGeneration, bool verbose = false);
 
