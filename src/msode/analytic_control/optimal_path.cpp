@@ -1,6 +1,8 @@
 #include "optimal_path.h"
 #include "helpers.h"
 
+#include <msode/utils/optimizers/cmaes.h>
+
 #include <LBFGS.h>
 
 #pragma GCC diagnostic push
@@ -298,6 +300,29 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
 
     return anglesToQuaternion(x[0], x[1], x[2]);
 }
+
+Quaternion findBestPathCMAES2(const std::vector<real3>& A)
+{
+    using namespace utils;
+
+    auto travelTime = [&](const CMAES::Vector& x) -> real
+    {
+        const auto q = anglesToQuaternion(x(0), x(1), x(2));
+        return computeTravelTime(A, q);
+    };
+
+    const int lambda = 8;
+    CMAES::Vector x = CMAES::Vector::Zero(3);
+    const real sigma = 2.0_r;
+    
+    CMAES cma(travelTime, lambda, x, sigma, 424242);
+
+    real val;
+    std::tie(x, val) = cma.runMinimization(1e-3, 100);
+
+    return anglesToQuaternion(x(0), x(1), x(2));
+}
+
 
 } // namespace analytic_control
 } // namespace msode

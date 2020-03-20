@@ -53,7 +53,7 @@ GTEST_TEST( OPTIMIZERS, cma )
     constexpr real tol = 1e-5_r;
 
     {
-        auto f = [](CMAES::Vector x) { return std::pow(x(0) - 1.0_r, 2) + std::pow(x(1) + 2.0_r, 2) + std::pow(x(2) - 1.5_r, 2); };
+        auto f = [](const CMAES::Vector& x) { return std::pow(x(0) - 1.0_r, 2) + std::pow(x(1) + 2.0_r, 2) + std::pow(x(2) - 1.5_r, 2); };
 
         CMAES::Vector x = CMAES::Vector::Zero(3);
         real val{0.0_r};

@@ -39,5 +39,7 @@ real3 computeTravelTimeGradient(const std::vector<real3>& A, real theta, real ph
  */
 Quaternion findBestPathLBFGS(const std::vector<real3>& A);
 
+Quaternion findBestPathCMAES2(const std::vector<real3>& A);
+
 } // namespace analytic_control
 } // namespace msode

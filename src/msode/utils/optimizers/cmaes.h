@@ -22,7 +22,7 @@ public:
     using Vector = Eigen::Matrix<real, Eigen::Dynamic, 1>;
     using Matrix = Eigen::Matrix<real, Eigen::Dynamic, Eigen::Dynamic>;
 
-    using Function = std::function<real(Vector)>;
+    using Function = std::function<real(const Vector&)>;
 
     /** \brief Construct a CMAES object
         \param function The function to optimize
