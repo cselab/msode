@@ -69,7 +69,7 @@ inline real length(real3 v)
 inline real3 normalized(real3 v)
 {
     const auto l = length(v);
-    MSODE_Expect(l > 0, "can not normalize zero vector");
+    MSODE_Expect(l > 0, "can not normalize the vector %g %g %g", v.x, v.y, v.z);
     return ( 1.0_r / l ) * v;
 }
 

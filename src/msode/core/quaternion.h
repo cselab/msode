@@ -113,7 +113,7 @@ struct Quaternion
 
     Quaternion& normalize()
     {
-        MSODE_Expect(norm() > 0, "can not normalize zero quaternion");
+        MSODE_Expect(norm() > 0, "can not normalize the quaternion %g %g %g %g", w, x, y, z);
         const real factor = 1.0_r / norm();
         return *this *= factor;
     }
@@ -206,7 +206,8 @@ private:
     // https://stackoverflow.com/a/11741520/11630848
     Quaternion(real3 u, real3 v)
     {
-        MSODE_Expect(length(u) > 0._r && length(v) > 0._r, "vector length must be greater than zero");
+        MSODE_Expect(length(u) > 0._r && length(v) > 0._r,
+                     "vector lengths must be greater than zero");
 
         const real k_cos_theta = dot(u, v);
         const real k = std::sqrt(dot(u, u) * dot(v, v));

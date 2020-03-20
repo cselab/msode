@@ -9,7 +9,7 @@ namespace utils {
 
 static inline real safeSqrt(real x)
 {
-    MSODE_Expect(x >= 0, "bad value for sqrt");
+    MSODE_Expect(x >= 0, "bad value for sqrt (got %g)", x);
     return std::sqrt(x);
 }
 

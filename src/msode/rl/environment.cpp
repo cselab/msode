@@ -32,7 +32,9 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
     targetPositions_(initialRBs.size(), posIc_->target),
     dumpEvery_(params.time.dumpEvery)
 {
-    MSODE_Expect(initialRBs.size() == targetPositions_.size(), "must give one target per body");
+    MSODE_Expect(initialRBs.size() == targetPositions_.size(),
+                 "must give one target per body (got %zu targets for %zu bodies)",
+                 targetPositions_.size(), initialRBs.size());
 
     magnFieldState->attach(this);
 

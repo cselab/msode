@@ -30,7 +30,8 @@ std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& posit
 real computeTravelTime(const std::vector<real3>& A, real3 direction)
 {
     MSODE_Expect(std::fabs(length(direction) - 1.0_r) < 1e-6_r,
-                 "Expect a direction with unit length");
+                 "Expect a direction with unit length, got %g %g %g",
+                 direction.x, direction.y, direction.z);
     
     real t {0._r};
     for (auto ai : A)
