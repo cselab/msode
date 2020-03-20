@@ -13,19 +13,17 @@ void printStacktrace();
 } // namespace msode
 
 #ifdef MSODE_FAIL_ON_CONTRACT
-#define MSODE_CHECK(val, msg) do {              \
-        if (!(val)) {                           \
-            std::cerr << (msg) << std::endl;    \
-            printStacktrace();                  \
-            exit(1);                            \
-        }                                       \
+#define MSODE_CHECK(val, pattern, ...) do {                             \
+        if (!(val)) {                                                   \
+            msode::die__(__FILE__, __LINE__, pattern, ##__VA_ARGS__);   \
+        }                                                               \
     } while(0)
 #else
-#define MSODE_CHECK(val, msg) do {} while(0)
+#define MSODE_CHECK(val, pattern, ...) do {} while(0)
 #endif
 
 
-#define MSODE_Expect(val, msg) MSODE_CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Expect : " + msg)
-#define MSODE_Ensure(val, msg) MSODE_CHECK(val, std::string(__FILE__) + ":" + std::to_string(__LINE__) + ": Failed Ensure : " + msg)
+#define MSODE_Expect(val, pattern, ...) MSODE_CHECK(val, pattern, ##__VA_ARGS__)
+#define MSODE_Ensure(val, pattern, ...) MSODE_CHECK(val, pattern, ##__VA_ARGS__)
 
 #define msode_die(pattern, ...) msode::die__(__FILE__, __LINE__, pattern, ##__VA_ARGS__)

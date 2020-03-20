@@ -11,7 +11,7 @@ static auto readFile(const std::string& fname)
 {
     FileParser::DataMap dataMap;
     std::ifstream file(fname);
-    MSODE_Expect(file.is_open(), "could not open file '" + fname + "' for read");
+    MSODE_Expect(file.is_open(), "could not open file '%s' for read", fname.c_str());
 
     for (std::string line {}; std::getline(file, line); )
     {

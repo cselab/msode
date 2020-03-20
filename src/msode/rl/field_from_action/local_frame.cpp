@@ -75,7 +75,7 @@ std::tuple<real3, real3, real3> FieldFromActionFromLocalFrame::getFrameReference
 void FieldFromActionFromLocalFrame::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == numActions(),
-                 std::string("expect action of size ") + std::to_string(numActions()));
+                 "expect action of size %d", numActions());
 
     const real3 a {static_cast<real>(action[1]),
                    static_cast<real>(action[2]),

@@ -27,7 +27,7 @@ real TargetDistanceTravelTime::compute(const std::vector<RigidBody>& bodies) con
     }
 
     const auto A = analytic_control::computeA(U_, getPositions(bodies));
-    const auto q = analytic_control::findBestPathLBFGS(A);
+    const auto q = analytic_control::findBestPathCMAES(A);
     const real travelTime = analytic_control::computeTravelTime(A, q);
 
     return travelTime;

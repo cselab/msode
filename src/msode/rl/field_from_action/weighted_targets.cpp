@@ -36,7 +36,7 @@ std::tuple<real3, real3, real3> FieldFromActionFromTargets::getFrameReference() 
 void FieldFromActionFromTargets::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == numActions(),
-                 std::string("expect action of size ") + std::to_string(numActions()));
+                 "expect action of size %d", numActions());
 
     omega_ = std::min(+maxOmega_, std::max(-maxOmega_, static_cast<real>(action[0])));
 

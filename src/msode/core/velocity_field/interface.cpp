@@ -50,7 +50,7 @@ void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 d
 
     std::ofstream f {fileName};
 
-    MSODE_Ensure(f.is_open(), "Error opening " + fileName);
+    MSODE_Ensure(f.is_open(), "Error opening %s", fileName.c_str());
 
     f << "# vtk DataFile Version 2.0\n"
       << "Velocity field dumped from msode\n"

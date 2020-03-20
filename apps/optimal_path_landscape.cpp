@@ -101,7 +101,7 @@ int main(int argc, char **argv)
     const char *outFileName = "out.vtk";
     std::ofstream f {outFileName};
 
-    MSODE_Ensure(f.is_open(), "Error opening " + outFileName);
+    MSODE_Ensure(f.is_open(), "Error opening file '%s'", outFileName);
 
     f << "# vtk DataFile Version 2.0\n"
       << "Velocity field dumped from msode\n"

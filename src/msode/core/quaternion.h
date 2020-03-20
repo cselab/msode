@@ -228,7 +228,7 @@ private:
             z = n.z;
         }
         this->normalize();
-        MSODE_Ensure(length(rotate(u)-v) < 1e-6_r, "constructor from 2 vectors failed by " + std::to_string(length(rotate(u)-v)));
+        MSODE_Ensure(length(rotate(u)-v) < 1e-6_r, "constructor from 2 vectors failed by %g", length(rotate(u)-v));
     }
 };
 
