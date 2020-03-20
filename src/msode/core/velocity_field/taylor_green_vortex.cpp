@@ -10,8 +10,7 @@ VelocityFieldTaylorGreenVortex::VelocityFieldTaylorGreenVortex(real3 magnitude, 
     magnitude_(magnitude),
     invPeriod_(invPeriod)
 {
-    const real incompressibilityError = dot(magnitude_, invPeriod_);
-    MSODE_Expect(incompressibilityError < 1e-6_r,
+    MSODE_Expect(dot(magnitude_, invPeriod_) < 1e-6_r,
                  "The parameters must satisfy the incompressibility condition");
 }
 

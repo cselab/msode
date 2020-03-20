@@ -21,5 +21,8 @@ target_compile_definitions(${LIB_NAME_MSODE} PUBLIC ${msode_definitions})
 
 target_link_libraries(${LIB_NAME_MSODE} PUBLIC nlohmann_json::nlohmann_json)
 
-target_include_directories(${LIB_NAME_MSODE} PUBLIC ${LIBBFD_INCLUDE_DIRS})
-target_link_libraries(${LIB_NAME_MSODE} PUBLIC ${LIBBFD_BFD_LIBRARY} -ldl)
+if (ENABLE_STACKTRACE)
+  set(backtrace_dir "${CMAKE_SOURCE_DIR}/extern/backward-cpp")
+  target_include_directories(${LIB_NAME_MSODE} PRIVATE ${LIBBFD_INCLUDE_DIRS} ${backtrace_dir})
+  target_link_libraries(${LIB_NAME_MSODE} PUBLIC ${LIBBFD_BFD_LIBRARY} -ldl)
+endif()

@@ -17,7 +17,7 @@ set(LIB_NAME_MSODE msode)
 set(msode_definitions "")
 
 if (BUILD_WITH_CONTRACTS)
-  set(msode_definitions "$msode_definitions;-DMSODE_FAIL_ON_CONTRACT")
+  set(msode_definitions "${msode_definitions};-DMSODE_FAIL_ON_CONTRACT")
 endif()
 
 set(JSON_BuildTests OFF CACHE INTERNAL "")
@@ -25,8 +25,10 @@ add_subdirectory(extern/json)
 
 if (ENABLE_STACKTRACE)
   find_package(LIBBFD REQUIRED)
-  set(msode_definitions "$msode_definitions;-DMSODE_ENABLE_STACKTRACE")
+  set(msode_definitions "${msode_definitions};-DMSODE_ENABLE_STACKTRACE")
 endif()
+
+message("definitions are ${msode_definitions}")
 
 add_subdirectory(src)
 add_subdirectory(units)

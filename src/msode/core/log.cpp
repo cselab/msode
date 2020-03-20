@@ -2,7 +2,7 @@
 
 #ifdef MSODE_ENABLE_STACKTRACE
 #define BACKWARD_HAS_BFD 1
-#include "../../../extern/backward-cpp/backward.hpp" // TODO
+#include <backward.hpp>
 #endif // MSODE_ENABLE_STACKTRACE
 
 #include <iostream>
