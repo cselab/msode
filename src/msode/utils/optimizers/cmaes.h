@@ -12,6 +12,9 @@
 namespace msode {
 namespace utils {
 
+/**
+   See https://arxiv.org/pdf/1604.00772.pdf p.36
+ */
 class CMAES
 {
 public:
@@ -25,17 +28,21 @@ public:
     void runGeneration();
 
 private:
-    Vector _generateNormal();
+    Vector _generateNormalDistrVector();
     void _computeOrdering(const std::vector<real>& values);
     
 private:
     Function function_;
-    std::mt19937 gen_;
 
+    std::mt19937 gen_;
+    std::normal_distribution<real> normDistr_{0.0_r, 1.0_r};
+    
     int n_;
+    int countEval_ {0};
     
     int lambda_;
     int mu_;
+    real muEff_;
     real sigma_;
     Vector mean_;
     Matrix C_;
@@ -47,16 +54,15 @@ private:
     real c1_;
     real cMu_;
     real dSigma_;
-    real chiSquareNumber_;
+    real chiSquareNumber_; ///< expectation of || N(0,I) ||
     std::vector<real> weights_;
 
     Eigen::EigenSolver<Matrix> CDecomposition_;
 
-    real muW_;
-
     std::vector<int> order_;
     std::vector<Vector> samples_;
     std::vector<Vector> ys_;
+    std::vector<Vector> zs_;
     std::vector<real> functionValues_;
 };
 

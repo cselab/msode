@@ -36,75 +36,88 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
     for (auto& w : weights_)
         w /= s1;
 
-    muW_ = s1 * s1 / s2;
+    muEff_ = s1 * s1 / s2;
     
-    cC_     = 4.0_r / n_;
-    cSigma_ = 4.0_r / n_;
-    c1_     = 2.0_r / (n_*n_);
-    cMu_    = muW_ / (n_*n_);
-    dSigma_ = 1.0_r + std::sqrt(muW_ / n_);
+    cC_     = (4.0_r+ muEff_ / n_) / (n_ + 4.0_r + 2.0_r * muEff_ / n_);
+    cSigma_ = (muEff_ + 2.0_r)/(n_ + muEff_ + 5.0_r);
+    c1_     = 2.0_r / (std::pow(n_ + 1.3_r, 2) + muEff_);
+    cMu_    = 2.0_r * (muEff_ - 2.0_r + 1.0_r / muEff_) / (std::pow(n_ + 2, 2) + muEff_); 
+    dSigma_ = 1.0_r + 2.0_r * std::max(0.0_r, std::sqrt((muEff_-1.0_r)/(n_+1.0_r))-1.0_r) + cSigma_;
 
     chiSquareNumber_ = std::sqrt((real) n_) * (1._r - 1._r/(4._r*n_) + 1._r/(21._r*n_*n_));
 
     order_.resize(lambda_);
     samples_.resize(lambda_);
     ys_.resize(lambda_);
+    zs_.resize(lambda_);
     functionValues_.resize(lambda_);
 }
 
 void CMAES::runGeneration()
 {
-    // sample
+    // eigen decomposition C = (B D) (D B)'
     CDecomposition_.compute(C_);
+    const Matrix B = CDecomposition_.eigenvectors().real();
+    Vector D = CDecomposition_.eigenvalues().real();
 
+    for (auto& d : D)
+        d = std::sqrt(d);
+
+    // std::cout << "B = " << B << std::endl;
+    // std::cout << "D = " << D << std::endl;
+    // std::cout << "C = " << C_ << std::endl;
+
+    // sample
     for (int i = 0; i < lambda_; ++i)
     {
-        ys_            [i] = _generateNormal();
+        zs_            [i] = _generateNormalDistrVector();
+        ys_            [i] = B * D.asDiagonal() * zs_[i];
+        // std::cout << i << " -> " << ys_[i].transpose() << std::endl;
         samples_       [i] = mean_ + sigma_ * ys_[i];
         functionValues_[i] = function_(samples_[i]);
     }
 
     _computeOrdering(functionValues_);
 
-    Vector yw = Vector::Zero(n_);
+    Vector zmean = Vector::Zero(n_);
 
     for (int i = 0; i < mu_; ++i)
     {
         const int id = order_[i];
-        yw += weights_[id] * ys_[id];
+        zmean += weights_[id] * zs_[id];
+    }
+
+    {
+        const int id = order_.front();
+        const auto& s = samples_[id];
+        const auto f = functionValues_[id];
+        printf("f = %g  [%g %g %g], sigma = %g\n",
+               f, s(0), s(1), s(2), sigma_);
     }
     
     // update mean
 
-    mean_ += sigma_ * yw;
-
-    // cumulation for C
-
-    const real omcc = 1.0_r - cC_;
-    pC_ = omcc * pC_;
-
-    if (pSigma_.norm() < 1.5_r * std::sqrt(n_))
-        pC_ += std::sqrt((1.0_r - omcc*omcc) * muW_) * yw;
+    mean_ += sigma_ * B * D.asDiagonal() * zmean;
 
     // cumulation for sigma
 
-    const real omcs = 1.0_r - cSigma_;
-    pSigma_ = omcs * pSigma_;
+    pSigma_ = (1.0_r-cSigma_) * pSigma_ + (std::sqrt(cSigma_*(2.0_r-cSigma_)*muEff_)) * (B * zmean);
 
-    const auto& U = CDecomposition_.eigenvectors().real();
-    const auto& D = CDecomposition_.eigenvalues().real();
+    // cumulation for C
+
+    const real pSigmaNorm = pSigma_.norm();
     
-    // C^{-1/2}
-    Matrix Cmhalf =
-        U
-        * D.unaryExpr([](real d) {return 1.0_r / std::sqrt(d);}).asDiagonal()
-        * U.transpose();
+    const int hsig =
+        (pSigmaNorm / std::sqrt(1.0_r - std::pow(1.0_r-cSigma_,2*countEval_/lambda_))/chiSquareNumber_)
+        < (1.4_r + 2.0_r /(n_+1));
 
-    pSigma_ += std::sqrt((1.0_r - omcs*omcs) * muW_) * Cmhalf * yw;
+    pC_ = (1.0_r - cC_) * pC_ + hsig * std::sqrt(cC_ * (2.0_r -cC_) * muEff_) * (B * D.asDiagonal() * zmean);
+    
+    // adapt covariance matrix C
 
-    // update C
-
-    C_ = (1.0_r -  c1_ - cMu_) * C_ + c1_ * pC_ * pC_.transpose();
+    C_ = (1.0_r - c1_ - cMu_) * C_ +   // discount old matrix
+          c1_ * (pC_ * pC_.transpose() + // rank 1 update
+                 (1-hsig) * cC_ * (2.0_r - cC_) * C_);
 
     for (int i = 0; i < mu_; ++i)
     {
@@ -112,27 +125,21 @@ void CMAES::runGeneration()
         C_ += (cMu_ * weights_[id]) * ys_[id] * ys_[id].transpose();
     }
 
-    // update of sigma
+    // adapt step size sigma
 
-    const real argexp = cSigma_ / dSigma_ * (pSigma_.norm() / chiSquareNumber_ - 1.0_r);
+    const real argexp = cSigma_ / dSigma_ * (pSigmaNorm / chiSquareNumber_ - 1.0_r);
     sigma_ *= std::exp(argexp);
 }
 
 
-CMAES::Vector CMAES::_generateNormal()
+CMAES::Vector CMAES::_generateNormalDistrVector()
 {
-    Vector y = Vector::Zero(n_);
-    const auto& eigenValues  = CDecomposition_.eigenvalues();
-    const auto& eigenVectors = CDecomposition_.eigenvectors();
-    
-    for (int i = 0; i < n_; ++i)
-    {
-        const real li = eigenValues(i).real();
-        std::normal_distribution<real> distr(0.0_r, std::sqrt(li));
-        y(i) = distr(gen_);
-    }
+    Vector z = Vector::Zero(n_);
 
-    return eigenVectors.real() * y;
+    for (auto& val : z)
+        val = normDistr_(gen_);
+
+    return z;
 }
 
 
