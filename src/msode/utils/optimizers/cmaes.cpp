@@ -1,5 +1,7 @@
 #include "cmaes.h"
 
+#include <limits>
+
 namespace msode {
 namespace utils {
 
@@ -51,9 +53,44 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
     ys_.resize(lambda_);
     zs_.resize(lambda_);
     functionValues_.resize(lambda_);
+
+    bestEverValue_     = std::numeric_limits<real>::max();
+    previousBestValue_ = std::numeric_limits<real>::max();
+    currentBestValue_  = std::numeric_limits<real>::max();
 }
 
-void CMAES::runGeneration()
+
+std::tuple<CMAES::Vector, real> CMAES::runMinimization(real absoluteThreshold, int maxGeneration, bool verbose)
+{
+    for (int generation = 0; generation < maxGeneration; ++generation)
+    {
+        previousBestValue_ = currentBestValue_;
+        _runGeneration();
+        currentBestValue_ = functionValues_[order_.front()];
+        
+        if (currentBestValue_ < bestEverValue_)
+        {
+            bestEverValue_ = currentBestValue_;
+            bestEverX_     = samples_[order_.front()];
+        }
+
+        if (verbose)
+        {
+            std::cout << "--------------------------------\n"
+                      << "generation " << generation << "\n"
+                      << "best value : " << currentBestValue_ << "\n"
+                      << bestEverX_.transpose() << "\n"
+                      << "---------------------------------" << std::endl;
+        }
+
+        if (std::abs(currentBestValue_ - previousBestValue_) < absoluteThreshold)
+            break;
+    }
+
+    return {std::move(bestEverX_), bestEverValue_};
+}
+
+void CMAES::_runGeneration()
 {
     // eigen decomposition C = (B D) (D B)'
     CDecomposition_.compute(C_);

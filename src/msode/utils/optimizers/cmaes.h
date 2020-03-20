@@ -7,6 +7,7 @@
 #include <Eigen/Eigenvalues>
 #include <functional>
 #include <random>
+#include <tuple>
 #include <vector>
 
 namespace msode {
@@ -25,9 +26,18 @@ public:
 
     CMAES(const Function& function, int lambda, Vector mean, real sigma, long seed);
 
-    void runGeneration();
+    /** \brief Run the minimization
+        \param absoluteThreshold The minimization will stop if two consecutive best values are separated only by this threshold
+        \param maxGeneration maximum number of generations
+        \param verbose if \c true, will print information on cout
+        \return best ever sample and corresponding value
+     */
+    std::tuple<Vector, real> runMinimization(real absoluteThreshold, int maxGeneration, bool verbose = false);
 
 private:
+    ///< sample points, evaluate function and update distribution. This does not set any of the bestValue/sample variables!
+    void _runGeneration();
+    
     /// generate a vector of size n_ whose entries are normally distrbuted N(0,1)
     Vector _generateNormalDistrVector();
     
@@ -69,6 +79,12 @@ private:
     std::vector<Vector> ys_;       ///< (list of samples minus the current mean) / sigma
     std::vector<Vector> zs_;       ///< normally distributed vectors used to generate current samples
     std::vector<real> functionValues_; ///< function values evaluated at the current samples
+
+    real bestEverValue_; ///< minimal function value ever encountered
+    Vector bestEverX_;   ///< sample corresponding to the bestEverValue_
+
+    real currentBestValue_;  ///< best value in the current generation
+    real previousBestValue_; ///< best value in the previous generation
 };
 
 } // namespace utils
