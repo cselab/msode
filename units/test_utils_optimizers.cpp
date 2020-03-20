@@ -1,5 +1,6 @@
 #include <msode/utils/optimizers/line_search.h>
 #include <msode/utils/optimizers/gradient_descent.h>
+#include <msode/utils/optimizers/cmaes.h>
 
 #include <gtest/gtest.h>
 #include <cmath>
@@ -43,6 +44,30 @@ GTEST_TEST( OPTIMIZERS, gradientDescent )
         ASSERT_NEAR(x.x,  1.0_r, tol);
         ASSERT_NEAR(x.y, -2.0_r, tol);
         ASSERT_NEAR(x.z,  0.0_r, tol);
+    }
+}
+
+GTEST_TEST( OPTIMIZERS, cma )
+{
+    using namespace utils;
+    constexpr real tol = 1e-5_r;
+
+    {
+        auto f = [](CMAES::Vector x) { return std::pow(x(0) - 1.0_r, 2) + std::pow(x(1) + 2.0_r, 2) + std::pow(x(2) - 1.5_r, 2); };
+
+        CMAES::Vector x = CMAES::Vector::Zero(3);
+        real val{0.0_r};
+        real lambda = 8;
+        CMAES optimizer(f, lambda, x, 1.0, 4242);
+
+        std::tie(x, val) = optimizer.runMinimization(1e-7_r, 100, false);
+
+        constexpr real tol = 1e-3_r;
+        
+        ASSERT_NEAR(x(0),  1.0_r, tol);
+        ASSERT_NEAR(x(1), -2.0_r, tol);
+        ASSERT_NEAR(x(2),  1.5_r, tol);
+        ASSERT_NEAR(val, 0.0_r, tol);
     }
 }
 
