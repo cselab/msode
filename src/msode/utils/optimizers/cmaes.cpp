@@ -63,16 +63,11 @@ void CMAES::runGeneration()
     for (auto& d : D)
         d = std::sqrt(d);
 
-    // std::cout << "B = " << B << std::endl;
-    // std::cout << "D = " << D << std::endl;
-    // std::cout << "C = " << C_ << std::endl;
-
     // sample
     for (int i = 0; i < lambda_; ++i)
     {
         zs_            [i] = _generateNormalDistrVector();
         ys_            [i] = B * D.asDiagonal() * zs_[i];
-        // std::cout << i << " -> " << ys_[i].transpose() << std::endl;
         samples_       [i] = xmean_ + sigma_ * ys_[i];
         functionValues_[i] = function_(samples_[i]);
         ++countEval_;
@@ -86,14 +81,6 @@ void CMAES::runGeneration()
     {
         const int id = order_[i];
         zmean += weights_[i] * zs_[id];
-    }
-
-    {
-        const int id = order_.front();
-        const auto& s = samples_[id];
-        const auto f = functionValues_[id];
-        printf("f = %g  [%g %g %g], sigma = %g\n",
-               f, s(0), s(1), s(2), sigma_);
     }
     
     // update mean
