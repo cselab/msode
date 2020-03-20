@@ -9,7 +9,7 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
     lambda_(lambda),
     mu_(lambda/2),
     sigma_(sigma),
-    mean_(mean),
+    xmean_(mean),
     C_     (Matrix::Identity(mean.rows(), mean.rows())),
     pC_    (Vector::Zero(mean.rows())),
     pSigma_(Vector::Zero(mean.rows()))
@@ -73,8 +73,9 @@ void CMAES::runGeneration()
         zs_            [i] = _generateNormalDistrVector();
         ys_            [i] = B * D.asDiagonal() * zs_[i];
         // std::cout << i << " -> " << ys_[i].transpose() << std::endl;
-        samples_       [i] = mean_ + sigma_ * ys_[i];
+        samples_       [i] = xmean_ + sigma_ * ys_[i];
         functionValues_[i] = function_(samples_[i]);
+        ++countEval_;
     }
 
     _computeOrdering(functionValues_);
@@ -84,7 +85,7 @@ void CMAES::runGeneration()
     for (int i = 0; i < mu_; ++i)
     {
         const int id = order_[i];
-        zmean += weights_[id] * zs_[id];
+        zmean += weights_[i] * zs_[id];
     }
 
     {
@@ -97,7 +98,7 @@ void CMAES::runGeneration()
     
     // update mean
 
-    mean_ += sigma_ * B * D.asDiagonal() * zmean;
+    xmean_ += sigma_ * B * D.asDiagonal() * zmean;
 
     // cumulation for sigma
 
@@ -108,10 +109,10 @@ void CMAES::runGeneration()
     const real pSigmaNorm = pSigma_.norm();
     
     const int hsig =
-        (pSigmaNorm / std::sqrt(1.0_r - std::pow(1.0_r-cSigma_,2*countEval_/lambda_))/chiSquareNumber_)
+        (pSigmaNorm / std::sqrt(1.0_r - std::pow(1.0_r-cSigma_, 2 * (1 + countEval_/lambda_)))/chiSquareNumber_)
         < (1.4_r + 2.0_r /(n_+1));
 
-    pC_ = (1.0_r - cC_) * pC_ + hsig * std::sqrt(cC_ * (2.0_r -cC_) * muEff_) * (B * D.asDiagonal() * zmean);
+    pC_ = (1.0_r - cC_) * pC_ + hsig * std::sqrt(cC_ * (2.0_r - cC_) * muEff_) * (B * D.asDiagonal() * zmean);
     
     // adapt covariance matrix C
 
@@ -122,7 +123,7 @@ void CMAES::runGeneration()
     for (int i = 0; i < mu_; ++i)
     {
         const int id = order_[i];
-        C_ += (cMu_ * weights_[id]) * ys_[id] * ys_[id].transpose();
+        C_ += (cMu_ * weights_[i]) * ys_[id] * ys_[id].transpose();
     }
 
     // adapt step size sigma

@@ -44,7 +44,7 @@ private:
     int mu_;
     real muEff_;
     real sigma_;
-    Vector mean_;
+    Vector xmean_;
     Matrix C_;
     Vector pC_;
     Vector pSigma_;
