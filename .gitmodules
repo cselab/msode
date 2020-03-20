@@ -10,3 +10,6 @@
 [submodule "extern/LBFGSpp"]
 	path = extern/LBFGSpp
 	url = git@github.com:yixuan/LBFGSpp.git
+[submodule "extern/backward-cpp"]
+	path = extern/backward-cpp
+	url = https://github.com/bombela/backward-cpp.git

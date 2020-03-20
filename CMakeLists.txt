@@ -22,6 +22,8 @@ endif()
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(extern/json)
 
+find_package(LIBBFD REQUIRED)
+
 add_subdirectory(src)
 add_subdirectory(units)
 add_subdirectory(apps)
