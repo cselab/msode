@@ -13,7 +13,7 @@ void printStacktrace();
 } // namespace msode
 
 #ifdef MSODE_FAIL_ON_CONTRACT
-#define MSODE_CHECK(val, msg) do {                   \
+#define MSODE_CHECK(val, msg) do {              \
         if (!(val)) {                           \
             std::cerr << (msg) << std::endl;    \
             printStacktrace();                  \

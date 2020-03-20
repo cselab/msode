@@ -1,14 +1,16 @@
 #include "log.h"
 
+#ifdef MSODE_ENABLE_STACKTRACE
 #define BACKWARD_HAS_BFD 1
-#include "../../../extern/backward-cpp/backward.hpp"
+#include "../../../extern/backward-cpp/backward.hpp" // TODO
+#endif // MSODE_ENABLE_STACKTRACE
 
 #include <iostream>
 #include <stdarg.h>
 
 namespace msode
 {
-
+#ifdef MSODE_ENABLE_STACKTRACE
 backward::SignalHandling sh;
 
 static void getStacktrace(std::ostream& stream, size_t traceCntMax = 100)
@@ -28,6 +30,9 @@ void printStacktrace()
 {
     getStacktrace(std::cerr);
 }
+#else
+void printStacktrace() {}
+#endif // MSODE_ENABLE_STACKTRACE
 
 void die__(const char *file, int line, const char* pattern, ...)
 {

@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0.0)
 cmake_policy(SET CMP0074 OLD)
 
 option(BUILD_WITH_CONTRACTS "build with contract checks" ON)
+option(ENABLE_STACKTRACE    "print a stacktrace when failing" ON)
 
 list( APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/cmake/Modules
@@ -22,7 +23,10 @@ endif()
 set(JSON_BuildTests OFF CACHE INTERNAL "")
 add_subdirectory(extern/json)
 
-find_package(LIBBFD REQUIRED)
+if (ENABLE_STACKTRACE)
+  find_package(LIBBFD REQUIRED)
+  set(msode_definitions "$msode_definitions;-DMSODE_ENABLE_STACKTRACE")
+endif()
 
 add_subdirectory(src)
 add_subdirectory(units)

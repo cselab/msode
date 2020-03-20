@@ -66,7 +66,8 @@ static inline Quaternion anglesToQuaternion(real theta, real phi, real psi)
                         std::cos(psi)};
 
     const auto q = Quaternion::createFromRotation(theta, normal);
-    return q.normalized();
+
+    return q;
 }
 
 static inline Quaternion paramsToQuaternion(const std::vector<double>& params)
@@ -315,7 +316,7 @@ Quaternion findBestPathCMAES2(const std::vector<real3>& A)
     CMAES::Vector x = CMAES::Vector::Zero(3);
     const real sigma = 2.0_r;
     
-    CMAES cma(travelTime, lambda, x, sigma, 424242);
+    CMAES cma(travelTime, lambda, x, sigma, 424240);
 
     real val;
     std::tie(x, val) = cma.runMinimization(1e-3, 100);
