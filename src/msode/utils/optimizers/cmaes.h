@@ -80,7 +80,7 @@ private:
 
     std::vector<real> weights_; ///< normalize recombination weights array
 
-    Eigen::EigenSolver<Matrix> CDecomposition_; ///< helper class to compute eigen decomposition of C
+    Eigen::SelfAdjointEigenSolver<Matrix> CDecomposition_; ///< helper class to compute eigen decomposition of C
 
     std::vector<int> order_;       ///< ordering of the best candidates (best has index order_[0])
     std::vector<Vector> samples_;  ///< list of samples for new candidates (in evaluation space)

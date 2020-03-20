@@ -102,8 +102,8 @@ void CMAES::_runGeneration()
 {
     // eigen decomposition C = (B D) (D B)'
     CDecomposition_.compute(C_);
-    const Matrix B = CDecomposition_.eigenvectors().real();
-    Vector D = CDecomposition_.eigenvalues().real();
+    const Matrix B = CDecomposition_.eigenvectors();
+    Vector D = CDecomposition_.eigenvalues();
 
     for (auto& d : D)
         d = safeSqrt(d);
