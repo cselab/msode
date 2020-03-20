@@ -28,6 +28,7 @@ target_link_libraries(run_ac msode analytic_control)
 
 add_executable(run_rl run_rl.cpp)
 target_link_libraries(run_rl rl)
+add_sanitizers(run_rl)
 
 add_executable(run_rl_comp run_rl_comp.cpp)
 target_link_libraries(run_rl_comp rl analytic_control)

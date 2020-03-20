@@ -32,3 +32,4 @@ if (ENABLE_STACKTRACE)
   target_link_libraries(${LIB_NAME_MSODE} PUBLIC ${LIBBFD_BFD_LIBRARY} -ldl)
 endif()
 
+add_sanitizers(${LIB_NAME_MSODE})

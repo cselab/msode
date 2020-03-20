@@ -22,3 +22,5 @@ target_compile_options(analytic_control PRIVATE
   $<$<CONFIG:Debug>:${cxx_debug_flags}>
   $<$<CONFIG:Release>:${cxx_release_flags}>
   )
+
+add_sanitizers(analytic_control)

@@ -13,3 +13,5 @@ target_compile_options(utils PRIVATE
   $<$<CONFIG:Debug>:${cxx_debug_flags}>
   $<$<CONFIG:Release>:${cxx_release_flags}>
   )
+
+add_sanitizers(utils)

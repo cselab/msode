@@ -12,10 +12,12 @@ if(NOT CMAKE_BUILD_TYPE)
     FORCE)
 endif()
 
-
 list( APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/cmake/Modules
+  ${CMAKE_SOURCE_DIR}/extern/sanitizers-cmake/cmake
 )
+
+find_package(Sanitizers)
 
 project(msode LANGUAGES CXX VERSION 0.1.0)
 enable_testing()
