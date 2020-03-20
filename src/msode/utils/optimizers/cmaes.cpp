@@ -20,7 +20,7 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
 
     weights_.resize(mu_);
 
-    for (int i = 0; i < n_; ++i)
+    for (int i = 0; i < mu_; ++i)
     {
         weights_[i] = std::log(std::max( (real)mu_, 0.5_r * lambda_) + 0.5_r) - std::log(i+1.0_r);
     }
@@ -29,7 +29,7 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
     real s1 = 0.0;
     real s2 = 0.0;
 
-    for (int i = 0; i < lambda; ++i)
+    for (int i = 0; i < mu_; ++i)
     {
         s1 += weights_[i];
         s2 += weights_[i]*weights_[i];
