@@ -1,9 +1,17 @@
 #include "cmaes.h"
 
+#include <msode/core/log.h>
+
 #include <limits>
 
 namespace msode {
 namespace utils {
+
+static inline real safeSqrt(real x)
+{
+    MSODE_Expect(x >= 0, "bad value for sqrt");
+    return std::sqrt(x);
+}
 
 CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long seed) :
     function_(function),
@@ -44,9 +52,9 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
     cSigma_ = (muEff_ + 2.0_r)/(n_ + muEff_ + 5.0_r);
     c1_     = 2.0_r / (std::pow(n_ + 1.3_r, 2) + muEff_);
     cMu_    = 2.0_r * (muEff_ - 2.0_r + 1.0_r / muEff_) / (std::pow(n_ + 2, 2) + muEff_); 
-    dSigma_ = 1.0_r + 2.0_r * std::max(0.0_r, std::sqrt((muEff_-1.0_r)/(n_+1.0_r))-1.0_r) + cSigma_;
+    dSigma_ = 1.0_r + 2.0_r * std::max(0.0_r, safeSqrt((muEff_-1.0_r)/(n_+1.0_r))-1.0_r) + cSigma_;
 
-    chiSquareNumber_ = std::sqrt((real) n_) * (1._r - 1._r/(4._r*n_) + 1._r/(21._r*n_*n_));
+    chiSquareNumber_ = safeSqrt((real) n_) * (1._r - 1._r/(4._r*n_) + 1._r/(21._r*n_*n_));
 
     order_.resize(lambda_);
     samples_.resize(lambda_);
@@ -98,7 +106,7 @@ void CMAES::_runGeneration()
     Vector D = CDecomposition_.eigenvalues().real();
 
     for (auto& d : D)
-        d = std::sqrt(d);
+        d = safeSqrt(d);
 
     // sample
     for (int i = 0; i < lambda_; ++i)
@@ -126,17 +134,17 @@ void CMAES::_runGeneration()
 
     // cumulation for sigma
 
-    pSigma_ = (1.0_r-cSigma_) * pSigma_ + (std::sqrt(cSigma_*(2.0_r-cSigma_)*muEff_)) * (B * zmean);
+    pSigma_ = (1.0_r-cSigma_) * pSigma_ + (safeSqrt(cSigma_*(2.0_r-cSigma_)*muEff_)) * (B * zmean);
 
     // cumulation for C
 
     const real pSigmaNorm = pSigma_.norm();
     
     const int hsig =
-        (pSigmaNorm / std::sqrt(1.0_r - std::pow(1.0_r-cSigma_, 2 * (1 + countEval_/lambda_)))/chiSquareNumber_)
+        (pSigmaNorm / safeSqrt(1.0_r - std::pow(1.0_r-cSigma_, 2 * (1 + countEval_/lambda_)))/chiSquareNumber_)
         < (1.4_r + 2.0_r /(n_+1));
 
-    pC_ = (1.0_r - cC_) * pC_ + hsig * std::sqrt(cC_ * (2.0_r - cC_) * muEff_) * (B * D.asDiagonal() * zmean);
+    pC_ = (1.0_r - cC_) * pC_ + hsig * safeSqrt(cC_ * (2.0_r - cC_) * muEff_) * (B * D.asDiagonal() * zmean);
     
     // adapt covariance matrix C
 
