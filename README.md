@@ -10,7 +10,7 @@ microswimmer ODE solver
 
 ### build the libraries, tests and executables:
 
-	mkdir buils
+	mkdir build
 	cd build
 	cmake <options> ..
 	make -j <njobs>
