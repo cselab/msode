@@ -33,5 +33,8 @@ target_link_libraries(rl PUBLIC ${LIB_NAME_MSODE} smarties utils analytic_contro
 target_include_directories(rl PUBLIC ${MSODE_INCLUDES})
 
 target_compile_features(rl PUBLIC cxx_std_14)
-set(cxx_private_flags -O3 -Wall -Wextra -Wshadow -Werror)
-target_compile_options(rl PRIVATE ${cxx_private_flags})
+target_compile_options(rl PRIVATE ${cxx_warning_flags})
+target_compile_options(rl PRIVATE
+  $<$<CONFIG:Debug>:${cxx_debug_flags}>
+  $<$<CONFIG:Release>:${cxx_release_flags}>
+  )

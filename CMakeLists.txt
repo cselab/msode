@@ -5,6 +5,14 @@ cmake_policy(SET CMP0074 OLD)
 option(BUILD_WITH_CONTRACTS "build with contract checks" ON)
 option(ENABLE_STACKTRACE    "print a stacktrace when failing" ON)
 
+# Choose Release mode as default.
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING
+    "Choose the type of build, options are: Debug Release"
+    FORCE)
+endif()
+
+
 list( APPEND CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/cmake/Modules
 )
@@ -27,8 +35,6 @@ if (ENABLE_STACKTRACE)
   find_package(LIBBFD REQUIRED)
   set(msode_definitions "${msode_definitions};-DMSODE_ENABLE_STACKTRACE")
 endif()
-
-message("definitions are ${msode_definitions}")
 
 add_subdirectory(src)
 add_subdirectory(units)

@@ -17,5 +17,8 @@ target_link_libraries(analytic_control PRIVATE lbfgs)
 target_compile_features(analytic_control PUBLIC cxx_std_14)
 target_include_directories(analytic_control PUBLIC ${MSODE_INCLUDES})
 
-set(cxx_private_flags -O3 -Wall -Wextra -Wshadow -Werror)
-target_compile_options(analytic_control PRIVATE ${cxx_private_flags})
+target_compile_options(analytic_control PRIVATE ${cxx_warning_flags})
+target_compile_options(analytic_control PRIVATE
+  $<$<CONFIG:Debug>:${cxx_debug_flags}>
+  $<$<CONFIG:Release>:${cxx_release_flags}>
+  )
