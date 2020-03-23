@@ -76,7 +76,7 @@ int sgn(T val)
     return (T(0) < val) - (val < T(0));
 }
 
-Quaternion findBestPathCMAES(const std::vector<real3>& A, bool verbose)
+Quaternion findBestPathCMAES(const std::vector<real3>& A, long seed, bool verbose)
 {
     using namespace utils;
 
@@ -90,10 +90,10 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A, bool verbose)
     CMAES::Vector x = CMAES::Vector::Zero(3);
     const real sigma = 1.0_r;
     
-    CMAES cma(travelTime, lambda, x, sigma, 424240);
+    CMAES cma(travelTime, lambda, x, sigma, seed);
 
     real val;
-    std::tie(x, val) = cma.runMinimization(1e-3, 1000, verbose);
+    std::tie(x, val) = cma.runMinimization(1e-5, 1000, verbose);
 
     return anglesToQuaternion(x(0), x(1), x(2));
 }
@@ -287,7 +287,7 @@ static inline Quaternion koraliParamsToQuaternion(const std::vector<double>& par
     return anglesToQuaternion(theta, phi, psi);
 }
 
-Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, bool verbose)
+Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, long seed, bool verbose)
 {
     auto evaluatePath = [&](korali::Sample& k)
     {
@@ -301,7 +301,7 @@ Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, bool verbose)
 
     e["Solver"]["Type"] = "CMAES";
     e["Solver"]["Population Size"] = 8;
-    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-3;
+    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-5;
     e["Solver"]["Termination Criteria"]["Max Generations"] = 1000;
 
 
@@ -334,7 +334,7 @@ Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, bool verbose)
         e["Results"]["Frequency"] = 0;
     }
 
-    e["Random Seed"] = 424242;
+    e["Random Seed"] = seed;
 
     auto k = korali::Engine();
     k.run(e);
