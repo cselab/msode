@@ -35,3 +35,6 @@ target_link_libraries(run_rl_comp rl analytic_control)
 
 add_executable(rotating rotating.cpp)
 target_link_libraries(rotating msode)
+
+add_executable(step_out_frequencies step_out_frequencies.cpp)
+target_link_libraries(step_out_frequencies msode)
