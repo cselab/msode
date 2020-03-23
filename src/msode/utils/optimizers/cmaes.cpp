@@ -57,7 +57,7 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
     chiSquareNumber_ = safeSqrt((real) n_) * (1._r - 1._r/(4._r*n_) + 1._r/(21._r*n_*n_));
 
     order_         .resize(lambda_);
-    samples_       .resize(lambda_);
+    xs_            .resize(lambda_);
     ys_            .resize(lambda_);
     zs_            .resize(lambda_);
     functionValues_.resize(lambda_);
@@ -79,7 +79,7 @@ std::tuple<CMAES::Vector, real> CMAES::runMinimization(real absoluteThreshold, i
         if (currentBestValue_ < bestEverValue_)
         {
             bestEverValue_ = currentBestValue_;
-            bestEverX_     = samples_[order_.front()];
+            bestEverX_     = xs_[order_.front()];
         }
 
         if (verbose)
@@ -113,8 +113,8 @@ void CMAES::_runGeneration()
     {
         zs_            [i] = _generateNormalDistrVector();
         ys_            [i] = B * D.asDiagonal() * zs_[i];
-        samples_       [i] = xmean_ + sigma_ * ys_[i];
-        functionValues_[i] = function_(samples_[i]);
+        xs_            [i] = xmean_ + sigma_ * ys_[i];
+        functionValues_[i] = function_(xs_[i]);
         ++countEval_;
     }
 

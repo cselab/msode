@@ -82,10 +82,10 @@ private:
 
     Eigen::SelfAdjointEigenSolver<Matrix> CDecomposition_; ///< helper class to compute eigen decomposition of C
 
-    std::vector<int> order_;       ///< ordering of the best candidates (best has index order_[0])
-    std::vector<Vector> samples_;  ///< list of samples for new candidates (in evaluation space)
-    std::vector<Vector> ys_;       ///< (list of samples minus the current mean) / sigma
-    std::vector<Vector> zs_;       ///< normally distributed vectors used to generate current samples
+    std::vector<int> order_;   ///< ordering of the best candidates (best has index order_[0])
+    std::vector<Vector> xs_;   ///< list of samples for new candidates (in evaluation space)
+    std::vector<Vector> ys_;   ///< (list of samples minus the current mean) / sigma
+    std::vector<Vector> zs_;   ///< normally distributed vectors used to generate current samples
     std::vector<real> functionValues_; ///< function values evaluated at the current samples
 
     real bestEverValue_; ///< minimal function value ever encountered
