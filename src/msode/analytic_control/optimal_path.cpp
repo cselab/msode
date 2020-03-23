@@ -96,7 +96,7 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A, long seed, bool verbos
     for (int i = 0; i < numTries; ++i)
     {
         CMAES cma(travelTime, lambda, CMAES::Vector::Zero(3), sigma, seed);
-        auto currInfo = cma.runMinimization(1e-5, 1000, verbose);
+        auto currInfo = cma.runMinimization(1e-5, 500, verbose);
         ++seed;
 
         if (currInfo.fval < info.fval)

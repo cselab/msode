@@ -181,18 +181,23 @@ GTEST_TEST( AC_OPT, robustness )
 
     const real best = *std::min_element(results.begin(), results.end());
     const real tol = 1e-3;
-    int numFailed = 0;
 
+    int numFailed = 0;
+    real maxError {0.0_r};
+    
     for (auto v : results)
     {
         if (v > best + tol)
+        {
             ++numFailed;
+        }
 
-        ASSERT_LE(v, best + tol);
+        maxError = std::max(maxError, v - (best + tol));
     }
 
-    
     printf("%d failed (%g%)\n", numFailed, 100.0 * (double) numFailed / (double) numTries);
+
+    ASSERT_LE(maxError, tol);
 }
 
 int main(int argc, char **argv)
