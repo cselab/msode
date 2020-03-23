@@ -4,6 +4,12 @@
 #include <msode/utils/optimizers/cmaes.h>
 #include <LBFGS.h>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#include <korali.hpp>
+#pragma GCC diagnostic pop
+
 namespace msode {
 namespace analytic_control {
 
@@ -269,6 +275,59 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
 
     return anglesToQuaternion(x[0], x[1], x[2]);
 }
+
+
+
+
+static inline Quaternion koraliParamsToQuaternion(const std::vector<double>& params)
+{
+    const real theta = static_cast<real>(params[0]);
+    const real phi   = static_cast<real>(params[1]);
+    const real psi   = static_cast<real>(params[2]);
+    return anglesToQuaternion(theta, phi, psi);
+}
+
+Quaternion findBestPathCMAESKorali(const std::vector<real3>& A)
+{
+    auto evaluatePath = [&](korali::Sample& k)
+    {
+        const auto q = koraliParamsToQuaternion(k["Parameters"]);
+        k["F(x)"] = -computeTravelTime(A, q); // maximize -T
+    };
+
+    auto e = korali::Experiment();
+    e["Problem"]["Type"] = "Optimization/Stochastic";
+    e["Problem"]["Objective Function"] = evaluatePath;
+
+    e["Solver"]["Type"] = "CMAES";
+    e["Solver"]["Population Size"] = 8;
+    e["Solver"]["Termination Criteria"]["Min Value Difference Threshold"] = 1e-3;
+    e["Solver"]["Termination Criteria"]["Max Generations"] = 1000;
+
+    e["Variables"][0]["Name"] = "theta";
+    e["Variables"][0]["Lower Bound"] =   - M_PI;
+    e["Variables"][0]["Upper Bound"] = 3 * M_PI;
+
+    e["Variables"][1]["Name"] = "phi";
+    e["Variables"][1]["Lower Bound"] = -2 * M_PI;
+    e["Variables"][1]["Upper Bound"] = +4 * M_PI;
+
+    e["Variables"][2]["Name"] = "psi";
+    e["Variables"][2]["Lower Bound"] =   - M_PI;
+    e["Variables"][2]["Upper Bound"] = 2 * M_PI;
+
+    e["Console Output"]["Frequency"] = 0;
+    e["Console Output"]["Verbosity"] = "Silent";
+    e["Results"]["Frequency"] = 0;
+
+    e["Random Seed"] = 424242;
+
+    auto k = korali::Engine();
+    k.run(e);
+
+    return koraliParamsToQuaternion(e["Solver"]["Best Ever Variables"]);
+}
+ 
 
 
 } // namespace analytic_control
