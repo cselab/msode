@@ -89,14 +89,17 @@ estimateMaxDistanceAndTravelTime(const std::vector<RigidBody>& bodies,
 }
 
 static Params createParams(const std::vector<RigidBody>& bodies,
-                           const EnvPosIC *posIc, const TargetDistance *targetDist,
-                           real fieldMagnitude, real distanceThreshold, long dumpEvery)
+                           const EnvPosIC *posIc, const TargetDistance *targetDist, const Config& config)
 {
+    const real distanceThreshold = config.at("targetRadius");
+    const real fieldMagnitude    = config.at("fieldMagnitude");
+    const long dumpEvery         = config.at("dumpEvery");
+
     real maxDistance, maxTravelTime;
     std::tie(maxDistance, maxTravelTime) = estimateMaxDistanceAndTravelTime(bodies, posIc, targetDist, fieldMagnitude);
 
     const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
-    const real dt       = 1.0 / (maxOmega * 20);
+    const real dt       = 1.0_r / (maxOmega * 20);
 
     const real terminationBonus = 1.0_r;
 
@@ -134,8 +137,7 @@ std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
     auto targetDistance = createTargetDistance(config.at("targetDistance"));
     auto velField = msode::factory::createVelocityField(config.at("velocityField"));
 
-    auto params = createParams(bodies, posIc.get(), targetDistance.get(),
-                               config.at("fieldMagnitude"), config.at("targetRadius"), config.at("dumpEvery"));
+    auto params = createParams(bodies, posIc.get(), targetDistance.get(), config);
     
     return std::make_unique<MSodeEnvironment>(params, std::move(posIc), bodies, std::move(fieldAction), std::move(velField), std::move(targetDistance));
 }
