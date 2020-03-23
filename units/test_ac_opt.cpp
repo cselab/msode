@@ -160,26 +160,6 @@ static std::vector<real3> computeADifficultCase()
     return analytic_control::computeA(U, positions);
 }
 
-// GTEST_TEST( AC_OPT, korali_comparison )
-// {
-//     const auto A = computeADifficultCase();
-
-//     const bool verbose = false;
-    
-//     for (long seed = 4242425; seed < 4242435; ++seed)
-//     {
-//         printf("\nseed %ld:\n", seed);
-//         auto qKorali = analytic_control::findBestPathCMAESKorali(A, seed, verbose);
-//         const real ttKorali = analytic_control::computeTravelTime(A, qKorali);
-//         printf("korali: %g\n", ttKorali);
-           
-//         auto qCMAES = analytic_control::findBestPathCMAES(A, seed, verbose);
-//         const real ttCMAES = analytic_control::computeTravelTime(A, qCMAES);
-//         printf("CMAES:  %g\n", ttCMAES);
-//     }
-// }
-
-
 GTEST_TEST( AC_OPT, robustness )
 {
     const auto A = computeADifficultCase();
@@ -202,46 +182,18 @@ GTEST_TEST( AC_OPT, robustness )
     const real best = *std::min_element(results.begin(), results.end());
     const real tol = 1e-3;
     int numFailed = 0;
+
     for (auto v : results)
     {
         if (v > best + tol)
             ++numFailed;
+
+        ASSERT_LE(v, best + tol);
     }
 
+    
     printf("%d failed (%g%)\n", numFailed, 100.0 * (double) numFailed / (double) numTries);
 }
-
-// GTEST_TEST( AC_OPT, robustnessKorali )
-// {
-//     const auto A = computeADifficultCase();
-
-//     const bool verbose = false;
-//     const int numTries = 1000;
-//     std::mt19937 gen {42424242};
-
-//     std::vector<real> results;
-//     results.reserve(numTries);
-    
-//     for (int i = 0; i < numTries; ++i)
-//     {
-//         const long seed = gen();
-//         auto q = analytic_control::findBestPathCMAESKorali(A, seed, verbose);
-//         const real tt = analytic_control::computeTravelTime(A, q);
-//         results.push_back(tt);
-//     }
-
-//     const real best = *std::min_element(results.begin(), results.end());
-//     const real tol = 1e-3;
-//     int numFailed = 0;
-//     for (auto v : results)
-//     {
-//         if (v > best + tol)
-//             ++numFailed;
-//     }
-
-//     printf("%d failed (%g%)\n", numFailed, 100.0 * (double) numFailed / (double) numTries);
-// }
-
 
 int main(int argc, char **argv)
 {
