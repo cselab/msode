@@ -4,6 +4,7 @@ cmake_policy(SET CMP0074 OLD)
 
 option(BUILD_WITH_CONTRACTS "build with contract checks" ON)
 option(ENABLE_STACKTRACE    "print a stacktrace when failing" ON)
+option(USE_KORALI           "compile and link to korali (for testing only)" OFF)
 
 # Choose Release mode as default.
 if(NOT CMAKE_BUILD_TYPE)

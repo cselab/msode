@@ -11,14 +11,20 @@ set_target_properties(lbfgs PROPERTIES
   INTERFACE_INCLUDE_DIRECTORIES "${LBFGS_ROOT}/include"
   )
 
-include(FindPkgConfig)
-pkg_check_modules(korali REQUIRED IMPORTED_TARGET korali)
-
 add_library(analytic_control STATIC ${SRC_FILES})
 target_link_libraries(analytic_control PUBLIC ${LIB_NAME_MSODE} eigen utils)
-target_link_libraries(analytic_control PRIVATE PkgConfig::korali lbfgs)
+target_link_libraries(analytic_control PRIVATE lbfgs)
 target_compile_features(analytic_control PUBLIC cxx_std_14)
 target_include_directories(analytic_control PUBLIC ${MSODE_INCLUDES})
+
+
+if (USE_KORALI)
+  include(FindPkgConfig)
+  pkg_check_modules(korali REQUIRED IMPORTED_TARGET korali)
+  target_link_libraries(analytic_control PRIVATE PkgConfig::korali)
+  target_compile_definitions(analytic_control PUBLIC "USE_KORALI")
+endif()
+
 
 target_compile_options(analytic_control PRIVATE ${cxx_warning_flags})
 target_compile_options(analytic_control PRIVATE

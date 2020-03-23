@@ -39,7 +39,9 @@ real3 computeTravelTimeGradient(const std::vector<real3>& A, real theta, real ph
  */
 Quaternion findBestPathLBFGS(const std::vector<real3>& A);
 
+#ifdef USE_KORALI
 Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, long seed = 42424242, bool verbose=false);
+#endif // USE_KORALI
 
 } // namespace analytic_control
 } // namespace msode

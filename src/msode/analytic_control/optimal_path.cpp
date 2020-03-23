@@ -4,11 +4,13 @@
 #include <msode/utils/optimizers/cmaes.h>
 #include <LBFGS.h>
 
+#ifdef USE_KORALI
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <korali.hpp>
 #pragma GCC diagnostic pop
+#endif // USE_KORALI
 
 namespace msode {
 namespace analytic_control {
@@ -286,6 +288,7 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
 
 
 
+#ifdef USE_KORALI
 
 static inline Quaternion koraliParamsToQuaternion(const std::vector<double>& params)
 {
@@ -343,7 +346,8 @@ Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, long seed, bool 
 
     return koraliParamsToQuaternion(e["Solver"]["Best Ever Variables"]);
 }
- 
+
+#endif //USE_KORALI
 
 
 } // namespace analytic_control
