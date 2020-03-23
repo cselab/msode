@@ -76,7 +76,7 @@ int sgn(T val)
     return (T(0) < val) - (val < T(0));
 }
 
-Quaternion findBestPathCMAES(const std::vector<real3>& A)
+Quaternion findBestPathCMAES(const std::vector<real3>& A, bool verbose)
 {
     using namespace utils;
 
@@ -93,7 +93,7 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A)
     CMAES cma(travelTime, lambda, x, sigma, 424240);
 
     real val;
-    std::tie(x, val) = cma.runMinimization(1e-3, 1000);
+    std::tie(x, val) = cma.runMinimization(1e-3, 1000, verbose);
 
     return anglesToQuaternion(x(0), x(1), x(2));
 }
@@ -287,7 +287,7 @@ static inline Quaternion koraliParamsToQuaternion(const std::vector<double>& par
     return anglesToQuaternion(theta, phi, psi);
 }
 
-Quaternion findBestPathCMAESKorali(const std::vector<real3>& A)
+Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, bool verbose)
 {
     auto evaluatePath = [&](korali::Sample& k)
     {
@@ -316,9 +316,12 @@ Quaternion findBestPathCMAESKorali(const std::vector<real3>& A)
     e["Variables"][2]["Lower Bound"] =   - M_PI;
     e["Variables"][2]["Upper Bound"] = 2 * M_PI;
 
-    e["Console Output"]["Frequency"] = 0;
-    e["Console Output"]["Verbosity"] = "Silent";
-    e["Results"]["Frequency"] = 0;
+    if (!verbose)
+    {
+        e["Console Output"]["Frequency"] = 0;
+        e["Console Output"]["Verbosity"] = "Silent";
+        e["Results"]["Frequency"] = 0;
+    }
 
     e["Random Seed"] = 424242;
 

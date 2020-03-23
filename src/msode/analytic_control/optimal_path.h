@@ -24,7 +24,7 @@ real computeTravelTime(const std::vector<real3>& A, Quaternion q);
 
 /** \brief Find the rotation that minimizes computeTravelTime() with CMA-ES
  */
-Quaternion findBestPathCMAES(const std::vector<real3>& A);
+Quaternion findBestPathCMAES(const std::vector<real3>& A, bool verbose=false);
 
 
 /** \brief Compute the derivative of the travel time with respect to 3 angles.
@@ -39,7 +39,7 @@ real3 computeTravelTimeGradient(const std::vector<real3>& A, real theta, real ph
  */
 Quaternion findBestPathLBFGS(const std::vector<real3>& A);
 
-Quaternion findBestPathCMAESKorali(const std::vector<real3>& A);
+Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, bool verbose=false);
 
 } // namespace analytic_control
 } // namespace msode
