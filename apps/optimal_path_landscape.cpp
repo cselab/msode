@@ -23,6 +23,34 @@ static std::vector<RigidBody> readBodies(const Config& config)
     return bodies;
 }
 
+static std::vector<real3> randomIC(int n)
+{
+    const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
+    const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};
+    const long seed = 42424242;
+    return analytic_control::generateRandomPositionsBox(n, boxLo, boxHi, seed);
+}
+
+static std::vector<real3> alignedIC(int n)
+{
+    const real3 direction = normalized(real3{0.4_r, 0.2_r, 0.8_r});
+    std::vector<real3> positions;
+    for (int i = 0; i < n; ++i)
+        positions.push_back(10.0_r * (i+1) * direction);
+    return positions;
+}
+
+static std::vector<real3> createIC(const std::string& mode, int n)
+{
+    if (mode == "random")
+        return randomIC(n);
+    else if (mode == "aligned")
+        return alignedIC(n);
+    else
+        msode_die("No match for ic mode \"%s\"", mode.c_str());
+    return {};
+}
+
 static inline Quaternion quaternionFromAngles(real theta, real phi, real psi)
 {
     const real3 normal {std::cos(theta) * std::sin(phi),
@@ -35,11 +63,17 @@ static inline Quaternion quaternionFromAngles(real theta, real phi, real psi)
 
 int main(int argc, char **argv)
 {
-    if (argc != 2                    ||
+    if (argc != 3                    ||
         std::string(argv[1]) == "-h" ||
         std::string(argv[1]) == "--help")
     {
-        fprintf(stderr, "usage : %s <config.json>\n\n", argv[0]);
+        fprintf(stderr,
+                "usage : %s <config.json> <initial conditions>\n"
+                "where:\n"
+                "\t<config.json> contains the list of bodies\n"
+                "\t<initial conditions> is either \"random\" or \"aligned\"\n"
+                "\n",
+                argv[0]);
         return 1;
     }
 
@@ -53,15 +87,11 @@ int main(int argc, char **argv)
     const real magneticFieldMagnitude = config.at("fieldMagnitude");
     const auto bodies = readBodies(config.at("bodies"));
 
-    const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
-    const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};
-
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
     const analytic_control::MatrixReal U = V.inverse();
 
-    const long seed = 42424242;
-    auto positions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
-
+    const std::string icMode = argv[2];
+    const auto positions = createIC(icMode, bodies.size());
     const auto A = analytic_control::computeA(U, positions);
 
     auto F = [&](real theta, real phi, real psi)
