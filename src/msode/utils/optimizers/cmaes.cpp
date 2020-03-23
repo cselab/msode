@@ -56,10 +56,10 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
 
     chiSquareNumber_ = safeSqrt((real) n_) * (1._r - 1._r/(4._r*n_) + 1._r/(21._r*n_*n_));
 
-    order_.resize(lambda_);
-    samples_.resize(lambda_);
-    ys_.resize(lambda_);
-    zs_.resize(lambda_);
+    order_         .resize(lambda_);
+    samples_       .resize(lambda_);
+    ys_            .resize(lambda_);
+    zs_            .resize(lambda_);
     functionValues_.resize(lambda_);
 
     bestEverValue_     = std::numeric_limits<real>::max();
@@ -152,7 +152,7 @@ void CMAES::_runGeneration()
           c1_ * (pC_ * pC_.transpose() + // rank 1 update
                  (1-hsig) * cC_ * (2.0_r - cC_) * C_);
 
-    for (int i = 0; i < mu_; ++i)
+    for (int i = 0; i < mu_; ++i) // rank mu update
     {
         const int id = order_[i];
         C_ += (cMu_ * weights_[i]) * ys_[id] * ys_[id].transpose();
