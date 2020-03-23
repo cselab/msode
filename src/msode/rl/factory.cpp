@@ -25,27 +25,6 @@ static std::vector<RigidBody> readBodies(const Config& config)
     return bodies;
 }
 
-static real computeActionTimeScale(real fieldMagnitude, const std::vector<RigidBody>& bodies)
-{
-    real wmax {0._r};
-    constexpr int perpDirection = 2;
-
-    for (const auto& body : bodies)
-        wmax = std::max(wmax, body.stepOutFrequency(fieldMagnitude, perpDirection));
-
-    return 1.0_r / wmax;
-}
-
-static real computeMaxOmegaNoSlip(real fieldMagnitude, const std::vector<RigidBody>& bodies)
-{
-    real wmax {0._r};
-
-    for (const auto& body : bodies)
-        wmax = std::max(wmax, body.stepOutFrequency(fieldMagnitude));
-
-    return wmax;
-}
-
 static inline void setPositions(std::vector<RigidBody>& bodies, const std::vector<real3>& positions)
 {
     MSODE_Expect(bodies.size() == positions.size(), "must have same size");
@@ -90,22 +69,24 @@ estimateMaxDistanceAndTravelTime(const std::vector<RigidBody>& bodies,
 
 static Params createParams(const std::vector<RigidBody>& bodies, const EnvPosIC *posIc, const TargetDistance *targetDist, const Config& config)
 {
-    const real distanceThreshold = config.at("targetRadius");
-    const real fieldMagnitude    = config.at("fieldMagnitude");
-    const long dumpEvery         = config.at("dumpEvery");
+    const real distanceThreshold = config.at("targetRadius").get<real>();
+    const real fieldMagnitude    = config.at("fieldMagnitude").get<real>();
+    const long dumpEvery         = config.at("dumpEvery").get<long>();
 
     real maxDistance, maxTravelTime;
     std::tie(maxDistance, maxTravelTime) = estimateMaxDistanceAndTravelTime(bodies, posIc, targetDist, fieldMagnitude);
 
-    const real maxOmega = config.at("fieldAction").at("maxOmega");
+    const real maxOmega = config.at("fieldAction").at("maxOmega").get<real>();
     const real dt       = 2.0_r * M_PI / (maxOmega * 20); // at least 20 steps per rotation
 
-    const real terminationBonus = 1.0_r;
+    auto rewConf = config.at("reward");
+    
+    const real terminationBonus = rewConf.at("bonus");
 
-    const real distCoeffReward = 1.0_r / maxDistance;
-    const real timeCoeffReward = 0.5_r / maxTravelTime;
+    const real distCoeffReward = rewConf.at("distCoeff").get<real>() / maxDistance;
+    const real timeCoeffReward = rewConf.at("timeCoeff").get<real>() / maxTravelTime;
     const real tmax            = 2.0_r * maxTravelTime;
-    const real dtAction        = 10.0_r * computeActionTimeScale(fieldMagnitude, bodies);
+    const real dtAction        = config.at("dtAction").get<real>();
     const long nstepsPerAction = dtAction / dt;
 
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};

@@ -44,5 +44,12 @@
     {
 	"__type" : "Euclidean"
     },
+    "reward" :
+    {
+	"bonus" : 1.0,
+	"distCoeff" : 1.0,
+	"timeCoeff" : 0.5
+    },
+    "dtAction" : 1.0,
     "dumpEvery" : 1000
 }
