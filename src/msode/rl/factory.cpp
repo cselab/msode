@@ -88,8 +88,7 @@ estimateMaxDistanceAndTravelTime(const std::vector<RigidBody>& bodies,
     return {maxDistance, maxTravelTime};
 }
 
-static Params createParams(const std::vector<RigidBody>& bodies,
-                           const EnvPosIC *posIc, const TargetDistance *targetDist, const Config& config)
+static Params createParams(const std::vector<RigidBody>& bodies, const EnvPosIC *posIc, const TargetDistance *targetDist, const Config& config)
 {
     const real distanceThreshold = config.at("targetRadius");
     const real fieldMagnitude    = config.at("fieldMagnitude");
@@ -98,8 +97,8 @@ static Params createParams(const std::vector<RigidBody>& bodies,
     real maxDistance, maxTravelTime;
     std::tie(maxDistance, maxTravelTime) = estimateMaxDistanceAndTravelTime(bodies, posIc, targetDist, fieldMagnitude);
 
-    const real maxOmega = 2.0_r * computeMaxOmegaNoSlip(fieldMagnitude, bodies);
-    const real dt       = 1.0_r / (maxOmega * 20);
+    const real maxOmega = config.at("fieldAction").at("maxOmega");
+    const real dt       = 2.0_r * M_PI / (maxOmega * 20); // at least 20 steps per rotation
 
     const real terminationBonus = 1.0_r;
 
