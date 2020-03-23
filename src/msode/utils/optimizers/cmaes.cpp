@@ -73,7 +73,11 @@ std::tuple<CMAES::Vector, real> CMAES::runMinimization(real absoluteThreshold, i
     for (int generation = 0; generation < maxGeneration; ++generation)
     {
         previousBestValue_ = currentBestValue_;
-        _runGeneration();
+        Status s = _runGeneration();
+
+        if (s != Status::Ok)
+            break;
+
         currentBestValue_ = functionValues_[order_.front()];
         
         if (currentBestValue_ < bestEverValue_)
@@ -98,12 +102,15 @@ std::tuple<CMAES::Vector, real> CMAES::runMinimization(real absoluteThreshold, i
     return {std::move(bestEverX_), bestEverValue_};
 }
 
-void CMAES::_runGeneration()
+CMAES::Status CMAES::_runGeneration()
 {
     // eigen decomposition C = (B D) (D B)'
     CDecomposition_.compute(C_);
     const Matrix B = CDecomposition_.eigenvectors();
     Vector D = CDecomposition_.eigenvalues();
+
+    if (D(0) < 0)
+        return Status::BadEigenValue;
 
     for (auto& d : D)
         d = safeSqrt(d);
@@ -134,7 +141,7 @@ void CMAES::_runGeneration()
 
     // cumulation for sigma
 
-    pSigma_ = (1.0_r-cSigma_) * pSigma_ + (safeSqrt(cSigma_*(2.0_r-cSigma_)*muEff_)) * (B * zmean);
+    pSigma_ = (1.0_r-cSigma_) * pSigma_ + safeSqrt(cSigma_*(2.0_r-cSigma_) * muEff_) * (B * zmean);
 
     // cumulation for C
 
@@ -162,6 +169,8 @@ void CMAES::_runGeneration()
 
     const real argexp = cSigma_ / dSigma_ * (pSigmaNorm / chiSquareNumber_ - 1.0_r);
     sigma_ *= std::exp(argexp);
+
+    return Status::Ok;
 }
 
 

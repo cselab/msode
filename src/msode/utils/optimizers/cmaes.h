@@ -24,6 +24,8 @@ public:
 
     using Function = std::function<real(const Vector&)>;
 
+    enum class Status {Ok, BadEigenValue};
+
     /** \brief Construct a CMAES object
         \param function The function to optimize
         \param lambda The population size
@@ -44,7 +46,7 @@ public:
 
 private:
     ///< sample points, evaluate function and update distribution. This does not set any of the bestValue/sample variables!
-    void _runGeneration();
+    Status _runGeneration();
     
     /// generate a vector of size n_ whose entries are normally distrbuted N(0,1)
     Vector _generateNormalDistrVector();
