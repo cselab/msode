@@ -26,6 +26,15 @@ public:
 
     enum class Status {Ok, BadEigenValue};
 
+    /// information returned by the optimization
+    struct Info
+    {
+        real fval;          ///< best value found
+        Vector x;           ///< corresponding input
+        int numGenerations; ///< number of generations used
+        Status status;      ///< The status of the optimization, may contain errors that have occured
+    };
+
     /** \brief Construct a CMAES object
         \param function The function to optimize
         \param lambda The population size
@@ -39,10 +48,10 @@ public:
         \param absoluteThreshold The minimization will stop if two consecutive best values are separated only by this threshold
         \param maxGeneration maximum number of generations
         \param verbose if \c true, will print information on cout
-        \return best ever sample and corresponding value
+        \return the result of the optimization
         \note can be called only once per instance (TODO)
      */
-    std::tuple<Vector, real> runMinimization(real absoluteThreshold, int maxGeneration, bool verbose = false);
+    Info runMinimization(real absoluteThreshold, int maxGeneration, bool verbose = false);
 
 private:
     ///< sample points, evaluate function and update distribution. This does not set any of the bestValue/sample variables!

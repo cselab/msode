@@ -68,14 +68,18 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
 }
 
 
-std::tuple<CMAES::Vector, real> CMAES::runMinimization(real absoluteThreshold, int maxGeneration, bool verbose)
+CMAES::Info CMAES::runMinimization(real absoluteThreshold, int maxGeneration, bool verbose)
 {
-    for (int generation = 0; generation < maxGeneration; ++generation)
+    Info info;
+    info.status = Status::Ok;
+    int generation {0};
+    
+    for (generation = 0; generation < maxGeneration; ++generation)
     {
         previousBestValue_ = currentBestValue_;
-        Status s = _runGeneration();
+        info.status = _runGeneration();
 
-        if (s != Status::Ok)
+        if (info.status != Status::Ok)
             break;
 
         currentBestValue_ = functionValues_[order_.front()];
@@ -99,7 +103,11 @@ std::tuple<CMAES::Vector, real> CMAES::runMinimization(real absoluteThreshold, i
             break;
     }
 
-    return {std::move(bestEverX_), bestEverValue_};
+    info.fval = bestEverValue_;
+    info.x = std::move(bestEverX_);
+    info.numGenerations = generation;
+    
+    return info;
 }
 
 CMAES::Status CMAES::_runGeneration()

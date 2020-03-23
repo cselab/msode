@@ -87,15 +87,13 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A, long seed, bool verbos
     };
 
     const int lambda = 8;
-    CMAES::Vector x = CMAES::Vector::Zero(3);
     const real sigma = M_PI;
     
-    CMAES cma(travelTime, lambda, x, sigma, seed);
+    CMAES cma(travelTime, lambda, CMAES::Vector::Zero(3), sigma, seed);
 
-    real val;
-    std::tie(x, val) = cma.runMinimization(1e-5, 1000, verbose);
+    auto info = cma.runMinimization(1e-5, 1000, verbose);
 
-    return anglesToQuaternion(x(0), x(1), x(2));
+    return anglesToQuaternion(info.x(0), info.x(1), info.x(2));
 }
 
 

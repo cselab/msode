@@ -55,19 +55,17 @@ GTEST_TEST( OPTIMIZERS, cma )
     {
         auto f = [](const CMAES::Vector& x) { return std::pow(x(0) - 1.0_r, 2) + std::pow(x(1) + 2.0_r, 2) + std::pow(x(2) - 1.5_r, 2); };
 
-        CMAES::Vector x = CMAES::Vector::Zero(3);
-        real val{0.0_r};
         real lambda = 8;
-        CMAES optimizer(f, lambda, x, 1.0, 4242);
+        CMAES optimizer(f, lambda, CMAES::Vector::Zero(3), 1.0, 4242);
 
-        std::tie(x, val) = optimizer.runMinimization(1e-7_r, 100, false);
+        auto info = optimizer.runMinimization(1e-7_r, 100, false);
 
         constexpr real tol = 1e-3_r;
         
-        ASSERT_NEAR(x(0),  1.0_r, tol);
-        ASSERT_NEAR(x(1), -2.0_r, tol);
-        ASSERT_NEAR(x(2),  1.5_r, tol);
-        ASSERT_NEAR(val, 0.0_r, tol);
+        ASSERT_NEAR(info.x(0),  1.0_r, tol);
+        ASSERT_NEAR(info.x(1), -2.0_r, tol);
+        ASSERT_NEAR(info.x(2),  1.5_r, tol);
+        ASSERT_NEAR(info.fval,  0.0_r, tol);
     }
 }
 
