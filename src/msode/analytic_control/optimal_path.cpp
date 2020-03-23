@@ -88,7 +88,7 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A, long seed, bool verbos
 
     const int lambda = 8;
     CMAES::Vector x = CMAES::Vector::Zero(3);
-    const real sigma = 1.0_r;
+    const real sigma = M_PI;
     
     CMAES cma(travelTime, lambda, x, sigma, seed);
 
@@ -305,25 +305,19 @@ Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, long seed, bool 
     e["Solver"]["Termination Criteria"]["Max Generations"] = 1000;
 
 
-    const real sigma = 1.0_r;
+    const real sigma = M_PI;
     
     e["Variables"][0]["Name"] = "theta";
-    // e["Variables"][0]["Lower Bound"] =   - M_PI;
-    // e["Variables"][0]["Upper Bound"] = 3 * M_PI;
     e["Variables"][0]["Initial Mean"] = 0.0;
     e["Variables"][0]["Initial Standard Deviation"] = sigma;
 
 
     e["Variables"][1]["Name"] = "phi";
-    // e["Variables"][1]["Lower Bound"] = -2 * M_PI;
-    // e["Variables"][1]["Upper Bound"] = +4 * M_PI;
     e["Variables"][1]["Initial Mean"] = 0.0;
     e["Variables"][1]["Initial Standard Deviation"] = sigma;
 
 
     e["Variables"][2]["Name"] = "psi";
-    // e["Variables"][2]["Lower Bound"] =   - M_PI;
-    // e["Variables"][2]["Upper Bound"] = 2 * M_PI;
     e["Variables"][2]["Initial Mean"] = 0.0;
     e["Variables"][2]["Initial Standard Deviation"] = sigma;
 
