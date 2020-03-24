@@ -2,7 +2,7 @@
 
 #include "interface.h"
 
-#include <msode/analytic_control/optimal_path.h>
+#include <msode/analytic_control/helpers.h>
 
 namespace msode {
 namespace rl {

@@ -18,6 +18,7 @@ set(SRC_FILES
   target_distances/factory.cpp
   target_distances/none.cpp
   target_distances/euclidean.cpp
+  target_distances/euclidean_tt.cpp
   target_distances/square.cpp
   target_distances/travel_time.cpp
   target_distances/travel_time_non_optimal.cpp

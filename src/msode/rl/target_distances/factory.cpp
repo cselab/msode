@@ -2,6 +2,7 @@
 
 #include "none.h"
 #include "euclidean.h"
+#include "euclidean_tt.h"
 #include "square.h"
 #include "travel_time.h"
 #include "travel_time_non_optimal.h"
@@ -24,17 +25,21 @@ std::unique_ptr<TargetDistance> createTargetDistance(const Config& config)
     {
         td = std::make_unique<TargetDistanceEuclidean>();
     }
+    else if (type == "EuclideanTT")
+    {
+        td = std::make_unique<TargetDistanceEuclideanTT>(config.at("fieldMagnitude").get<real>());
+    }
     else if (type == "Square")
     {
         td = std::make_unique<TargetDistanceSquare>();
     }
     else if (type == "TravelTime")
     {
-        td = std::make_unique<TargetDistanceTravelTime>(config.at("fieldMagnitude"));
+        td = std::make_unique<TargetDistanceTravelTime>(config.at("fieldMagnitude").get<real>());
     }
     else if (type == "TravelTimeNonOptimal")
     {
-        td = std::make_unique<TargetDistanceTravelTimeNonOptimal>(config.at("fieldMagnitude"));
+        td = std::make_unique<TargetDistanceTravelTimeNonOptimal>(config.at("fieldMagnitude").get<real>());
     }
     else
     {

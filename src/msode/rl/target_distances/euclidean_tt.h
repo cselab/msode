@@ -7,14 +7,12 @@
 namespace msode {
 namespace rl {
 
-/** Compute the travel time from the free-space/zero velocity approximation.
-    \note Assume that always the same bodies will be used with this object.
-    \note The travel time is optimized for each distance evaluation. This may lead to prohibitive compute times. 
+/** Euclidean travel time: sqrt(sum travel times squared)
  */
-class TargetDistanceTravelTime : public TargetDistance
+class TargetDistanceEuclideanTT : public TargetDistance
 {
 public:
-    TargetDistanceTravelTime(real magneticFieldMagnitude);
+    TargetDistanceEuclideanTT(real magneticFieldMagnitude);
     real compute(const std::vector<RigidBody>& bodies) const override;
 
 private:
