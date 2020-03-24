@@ -110,6 +110,13 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
     "targetDistance" : {
         "__type" : "Square"
     },
+    "reward" :
+    {
+	"bonus" : 1.0,
+	"distCoeff" : 1.0,
+	"timeCoeff" : 0.5
+    },
+    "dtAction" : 1.0,
     "dumpEvery" : 0
     }
     )");
