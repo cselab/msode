@@ -41,7 +41,7 @@
     "fieldAction" : {
 	"__type" : "Direct",
 	"minOmega" : 0.0,
-	"maxOmega" : 120.0
+	"maxOmega" : 230.0
     },
     "fieldMagnitude" : 1.0,
     "targetRadius" : 2.0,
