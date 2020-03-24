@@ -1,6 +1,9 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.2.0)
 
-cmake_policy(SET CMP0074 OLD)
+if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12.0")
+  cmake_policy(SET CMP0074 OLD)
+endif()
+
 
 option(BUILD_WITH_CONTRACTS "build with contract checks" ON)
 option(ENABLE_STACKTRACE    "print a stacktrace when failing" ON)
