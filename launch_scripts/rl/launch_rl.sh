@@ -75,13 +75,18 @@ training output:    $rundir
 EOF
 
 mkdir -p $rundir
+
+# setup
+
+# copy executable:
+cp $srcdir/../../build/apps/$app_name $rundir/exec
+
+# copy config
+cp $srcdir/$sim_config $rundir/config.json
+
 cd $rundir
 
 . mir.load
-
-export MSODE_ROOT=$srcdir/../../
-export CONF_FILE=$sim_config
-export APP_NAME=$app_name
 
 smarties.py $srcdir $settings \
 	    --nThreads 8 \
