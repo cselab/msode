@@ -1,7 +1,9 @@
 #! /bin/bash
 
 set -eu
+
 res_dir="results"
+use_sbatch=false
 
 usage()
 {
@@ -9,6 +11,7 @@ usage()
 usage: ./launch_rl.sh <name_specifier> <simulation config file>
     [-h | --help] Print this help message
     [-c | --comp] Launch the comparison rl + analytical methods
+    [-d | --daint] Launch on daint using sbatch
     [--settings=<rl-settings.json>] Use specific smarties settings (default: see smarties docs)
     [--res_dir=<res_dir>] store the simulation folder output in this directory (default: ${res_dir}/)
 
@@ -33,6 +36,10 @@ while test $# -ne 0; do
 	    ;;
 	-c|--comp)
 	    app_name="run_rl_comp"
+	    shift
+	    ;;
+	-d|--daint)
+	    use_sbatch=true
 	    shift
 	    ;;
 	--settings=*)
@@ -88,8 +95,26 @@ cd $rundir
 
 . mir.load
 
+if [ $use_sbatch = true ]; then
+
+    sbatch <<EOF
+#!/bin/bash -l
+#SBATCH --job-name=$name
+#SBATCH --time=00:30:00
+#SBATCH --nodes=1
+#SBATCH --constraint=gpu
+
 smarties.py $srcdir $settings \
-	    --nThreads 8 \
-	    --nEnvironments 1 \
-	    --nTrainSteps 20000000 \
-	    --restart .
+	--nThreads 8 \
+	--nEnvironments 1 \
+	--nTrainSteps 20000000 \
+	--restart .
+EOF
+    
+else
+    smarties.py $srcdir $settings \
+		--nThreads 8 \
+		--nEnvironments 1 \
+		--nTrainSteps 20000000 \
+		--restart .
+fi
