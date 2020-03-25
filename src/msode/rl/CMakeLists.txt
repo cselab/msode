@@ -11,6 +11,7 @@ set(SRC_FILES
   pos_ic/interface.cpp
   pos_ic/ball.cpp
   pos_ic/ball_growing.cpp
+  pos_ic/ball_line.cpp
   pos_ic/ball_random_walk.cpp
   pos_ic/ball_random_walk_drift.cpp
   pos_ic/box.cpp
