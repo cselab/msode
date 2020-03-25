@@ -2,6 +2,7 @@
 
 #include "ball.h"
 #include "ball_growing.h"
+#include "ball_line.h"
 #include "ball_random_walk.h"
 #include "ball_random_walk_drift.h"
 #include "box.h"
@@ -26,6 +27,11 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     else if (type == "Ball")
     {
         es = std::make_unique<EnvPosICBall>(config.at("radius").get<real>());
+    }
+    else if (type == "BallLine")
+    {
+        es = std::make_unique<EnvPosICBallLine>(config.at("radius").get<real>(),
+                                                config.at("probLine").get<real>());
     }
     else if (type == "BallRandomWalk")
     {
