@@ -9,9 +9,10 @@ usage()
 usage: ./launch_rl.sh <name_specifier> <simulation config file>
     [-h | --help] Print this help message
     [-c | --comp] Launch the comparison rl + analytical methods
-    [--settings=<rl-settings.json>] Use specific smarties settings
+    [--settings=<rl-settings.json>] Use specific smarties settings (default: see smarties docs)
+    [--res_dir=<res_dir>] store the simulation folder output in this directory (default: ${res_dir}/)
 
-The simulation will run in $res_dir/training_<name_specifier>
+The simulation will run in <res_dir>/training_<name_specifier>
 The simulation config file must be in the path relative to this launch script.
 
 EOF
@@ -36,6 +37,10 @@ while test $# -ne 0; do
 	    ;;
 	--settings=*)
 	    settings="${1#*=}"
+	    shift
+	    ;;
+	--res_dir=*)
+	    res_dir="${1#*=}"
 	    shift
 	    ;;
 	-*|--*)
