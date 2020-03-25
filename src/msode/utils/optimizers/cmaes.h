@@ -29,10 +29,10 @@ public:
     /// information returned by the optimization
     struct Info
     {
-        real fval;          ///< best value found
-        Vector x;           ///< corresponding input
-        int numGenerations; ///< number of generations used
-        Status status;      ///< The status of the optimization, may contain errors that have occured
+        real fval {0.0_r};          ///< best value found
+        Vector x;                   ///< corresponding input
+        int numGenerations {0};     ///< number of generations used
+        Status status {Status::Ok}; ///< The status of the optimization, may contain errors that have occured
     };
 
     /** \brief Construct a CMAES object
