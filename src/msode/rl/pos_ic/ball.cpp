@@ -8,7 +8,9 @@ namespace rl {
 
 EnvPosICBall::EnvPosICBall(real radius) :
     radius_(radius)
-{}
+{
+    MSODE_Expect(radius_ > 0.0_r, "radius must be positive (got %g)", radius_);
+}
 
 std::unique_ptr<EnvPosIC> EnvPosICBall::clone() const
 {

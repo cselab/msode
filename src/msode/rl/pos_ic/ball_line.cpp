@@ -9,7 +9,10 @@ namespace rl {
 EnvPosICBallLine::EnvPosICBallLine(real radius, real probLine) :
     EnvPosICBall(radius),
     probLine_(probLine)
-{}
+{
+    MSODE_Expect(probLine_ >= 0.0_r && probLine_ <= 1.0_r,
+                 "probLine must be in [0,1] (got %g)", probLine_);
+}
 
 std::unique_ptr<EnvPosIC> EnvPosICBallLine::clone() const
 {
