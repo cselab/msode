@@ -41,3 +41,6 @@ target_link_libraries(step_out_frequencies msode)
 
 add_executable(trajectory_distances trajectory_distances.cpp)
 target_link_libraries(trajectory_distances msode rl)
+
+add_executable(trajectory_sdf trajectory_sdf.cpp)
+target_link_libraries(trajectory_sdf msode rl)

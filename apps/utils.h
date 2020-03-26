@@ -24,7 +24,7 @@ std::vector<RigidBody> readBodies(const Config& config)
 // a trajectory is a sequence of TrajectoryPoints
 using TrajectoryPoint = std::vector<RigidBody>;
 
-static std::vector<TrajectoryPoint> readTrajectory(const std::vector<RigidBody>& templateBodies, const std::string& fileName)
+std::vector<TrajectoryPoint> readTrajectory(const std::vector<RigidBody>& templateBodies, const std::string& fileName)
 {
     std::ifstream file(fileName);
 
