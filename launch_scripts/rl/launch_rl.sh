@@ -38,7 +38,7 @@ while test $# -ne 0; do
 	    app_name="run_rl_comp"
 	    shift
 	    ;;
-	-cluster)
+	--cluster)
 	    launch_mode="cluster"
 	    shift
 	    ;;
