@@ -107,7 +107,7 @@ int main(int argc, char **argv)
     {
         for (int iy = 0; iy < res.y; ++iy)
         {
-            for (int ix = 0; ix < res.x; ++ix)
+            for (int ix = 0; ix < res.x; ++ix, ++i)
             {
                 const real3 r {start.x + ix * h.x,
                                start.y + iy * h.y,

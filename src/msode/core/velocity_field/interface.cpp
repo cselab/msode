@@ -13,6 +13,14 @@ BaseVelocityField::~BaseVelocityField() = default;
 
 void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 dimensions, real3 start, real3 size, real t) const
 {
+    std::ofstream stream {fileName};
+    MSODE_Ensure(stream.is_open(), "Error opening %s", fileName.c_str());
+
+    return this->dumpToVtkUniformGrid(stream, dimensions, start, size, t);
+}
+
+void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensions, real3 start, real3 size, real t) const
+{
     MSODE_Expect(dimensions.x > 0 && dimensions.y > 0 && dimensions.z > 0,
                  "grid dimensions must be positive");
     
@@ -46,31 +54,27 @@ void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 d
         }
     }
 
-    // Dump it to vtk
+    // write vtk
 
-    std::ofstream f {fileName};
-
-    MSODE_Ensure(f.is_open(), "Error opening %s", fileName.c_str());
-
-    f << "# vtk DataFile Version 2.0\n"
-      << "Velocity field dumped from msode\n"
-      << "ASCII\n";
+    stream << "# vtk DataFile Version 2.0\n"
+           << "Velocity field dumped from msode\n"
+           << "ASCII\n";
     
-    f << "DATASET STRUCTURED_POINTS\n"
-      << "DIMENSIONS " << dimensions.x << ' ' << dimensions.y << ' ' << dimensions.z << '\n'
-      << "ORIGIN " << start.x << ' ' << start.y << ' ' << start.z << '\n'
-      << "SPACING " << h.x << ' ' << h.y << ' ' << h.z << '\n';
+    stream << "DATASET STRUCTURED_POINTS\n"
+           << "DIMENSIONS " << dimensions.x << ' ' << dimensions.y << ' ' << dimensions.z << '\n'
+           << "ORIGIN " << start.x << ' ' << start.y << ' ' << start.z << '\n'
+           << "SPACING " << h.x << ' ' << h.y << ' ' << h.z << '\n';
 
-    f << "POINT_DATA " << numElements << "\n"
-      << "VECTORS velocity float\n";
-
+    stream << "POINT_DATA " << numElements << "\n"
+           << "VECTORS velocity float\n";
+    
     for (auto v : velocities)
-        f << v.x << ' ' << v.y << ' ' << v.z << '\n';
+        stream << v.x << ' ' << v.y << ' ' << v.z << '\n';
 
-    f << "VECTORS vorticity float\n";
+    stream << "VECTORS vorticity float\n";
 
     for (auto w : vorticities)
-        f << w.x << ' ' << w.y << ' ' << w.z << '\n';
+        stream << w.x << ' ' << w.y << ' ' << w.z << '\n';
 }
 
 } // namespace msode

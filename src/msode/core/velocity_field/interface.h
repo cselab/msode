@@ -3,6 +3,7 @@
 #include <msode/core/types.h>
 
 #include <memory>
+#include <ostream>
 #include <string>
 
 namespace msode
@@ -38,6 +39,15 @@ public:
         This method will fail if it cannot write to the file.
      */
     void dumpToVtkUniformGrid(const std::string& fileName, int3 dimensions, real3 start, real3 size, real t) const;
+
+    /** dump the velocity and vorticity fields on a uniform grid in vtk format to a given stream.
+        \param [in] stream The destination stream to dump to. 
+        \param [in] dimensions Number of points per dimension
+        \param [in] start The lowest corner of the domain
+        \param [in] size The size of the domain to dump
+        \param [in] t The time at which to dump the field
+     */
+    void dumpToVtkUniformGrid(std::ostream& stream, int3 dimensions, real3 start, real3 size, real t) const;
 };
 
 } // namespace msode
