@@ -83,7 +83,7 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool succesfulPrevio
 
     sim->reset(bodies, field);
 
-    if (simId != NO_DUMP)
+    if (dumpEvery_ > 0)
     {
         std::ostringstream ss;
         ss << std::setw(6) << std::setfill('0') << simId;
