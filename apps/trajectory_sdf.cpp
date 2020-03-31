@@ -71,9 +71,9 @@ static real distanceToAllSegments(real3 r, const std::vector<Segments>& allSegme
 
 int main(int argc, char **argv)
 {
-    if (argc != 4)
+    if (argc != 4 && argc != 7)
     {
-        fprintf(stderr, "usage : %s <config.json> <trajectory.dat> <field_and_sdf.vtk>\n\n", argv[0]);
+        fprintf(stderr, "usage : %s <config.json> <trajectory.dat> <field_and_sdf.vtk> [nx ny nz]\n\n", argv[0]);
         return 1;
     }
 
@@ -94,8 +94,19 @@ int main(int argc, char **argv)
     
     // values on the grid
 
-    const int n = 64;
-    const int3 res {n, n, n};
+    int3 res;
+    if (argc == 4)
+    {
+        const int n = 64;
+        res = int3 {n, n, n};
+    }
+    else
+    {
+        int i {4};
+        res.x = atoi(argv[i++]);
+        res.y = atoi(argv[i++]);
+        res.z = atoi(argv[i++]);
+    }
     const real3 start = posIc->getLowestPosition();
     const real3 end   = posIc->getHighestPosition();
     const real3 size = end - start;
