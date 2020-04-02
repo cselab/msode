@@ -123,6 +123,9 @@ GTEST_TEST( AC_OPT, robustness )
     const bool verbose = false;
     const int numTries = 1000;
     std::mt19937 gen {42424242};
+
+    // for (int atry = 0; atry < 20; ++atry)
+    // {
     const int n = 2;
     const auto A = generateA(n, gen);
 
@@ -156,11 +159,12 @@ GTEST_TEST( AC_OPT, robustness )
         maxError = std::max(maxError, v - (best + tol));
     }
 
-    printf("%d failed (%g%)  ellapsed time: %g ms\n",
+    printf("%d failed (%g%), maxError %g,  ellapsed time: %g ms\n",
            numFailed, 100.0 * (double) numFailed / (double) numTries,
-           wallTime);
+           maxError, wallTime);
 
     ASSERT_LE(maxError, tol);
+    // }
 }
 
 // case that caused troubles in previous cmaes version
