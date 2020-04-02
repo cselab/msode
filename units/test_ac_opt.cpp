@@ -118,6 +118,50 @@ GTEST_TEST( AC_OPT, optimum )
     ASSERT_NEAR(ttCMAES, ttLBFGS, 0.01_r * std::abs(ttCMAES));
 }
 
+GTEST_TEST( AC_OPT, robustness )
+{
+    const bool verbose = false;
+    const int numTries = 1000;
+    std::mt19937 gen {42424242};
+    const int n = 2;
+    const auto A = generateA(n, gen);
+
+    std::vector<real> results;
+    results.reserve(numTries);
+
+    mTimer timer;
+    timer.start();
+    for (int i = 0; i < numTries; ++i)
+    {
+        const long seed = gen();
+        auto q = analytic_control::findBestPathCMAES(A, seed, verbose);
+        const real tt = analytic_control::computeTravelTime(A, q);
+        results.push_back(tt);
+    }
+    const auto wallTime = timer.elapsedAndReset();
+
+    const real best = *std::min_element(results.begin(), results.end());
+    const real tol = 1e-3;
+
+    int numFailed = 0;
+    real maxError {0.0_r};
+    
+    for (auto v : results)
+    {
+        if (v > best + tol)
+        {
+            ++numFailed;
+        }
+
+        maxError = std::max(maxError, v - (best + tol));
+    }
+
+    printf("%d failed (%g%)  ellapsed time: %g ms\n",
+           numFailed, 100.0 * (double) numFailed / (double) numTries,
+           wallTime);
+
+    ASSERT_LE(maxError, tol);
+}
 
 // case that caused troubles in previous cmaes version
 static std::vector<real3> computeADifficultCase()
@@ -160,17 +204,19 @@ static std::vector<real3> computeADifficultCase()
     return analytic_control::computeA(U, positions);
 }
 
-GTEST_TEST( AC_OPT, robustness )
+GTEST_TEST( AC_OPT, robustnessDifficultCase )
 {
     const auto A = computeADifficultCase();
 
     const bool verbose = false;
-    const int numTries = 1000;
+    const int numTries = 100;
     std::mt19937 gen {42424242};
 
     std::vector<real> results;
     results.reserve(numTries);
-    
+
+    mTimer timer;
+    timer.start();
     for (int i = 0; i < numTries; ++i)
     {
         const long seed = gen();
@@ -178,6 +224,7 @@ GTEST_TEST( AC_OPT, robustness )
         const real tt = analytic_control::computeTravelTime(A, q);
         results.push_back(tt);
     }
+    const auto wallTime = timer.elapsedAndReset();
 
     const real best = *std::min_element(results.begin(), results.end());
     const real tol = 1e-3;
@@ -195,7 +242,9 @@ GTEST_TEST( AC_OPT, robustness )
         maxError = std::max(maxError, v - (best + tol));
     }
 
-    printf("%d failed (%g%)\n", numFailed, 100.0 * (double) numFailed / (double) numTries);
+    printf("%d failed (%g%)  ellapsed time: %g ms\n",
+           numFailed, 100.0 * (double) numFailed / (double) numTries,
+           wallTime);
 
     ASSERT_LE(maxError, tol);
 }
