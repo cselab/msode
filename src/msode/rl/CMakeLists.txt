@@ -23,6 +23,7 @@ set(SRC_FILES
   target_distances/square.cpp
   target_distances/travel_time.cpp
   target_distances/travel_time_non_optimal.cpp
+  target_distances/travel_time_ordered.cpp
   )
 
 include(FindPkgConfig)
