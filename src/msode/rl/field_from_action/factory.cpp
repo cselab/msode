@@ -2,6 +2,7 @@
 
 #include "weighted_targets.h"
 #include "action_change.h"
+#include "direct3.h"
 #include "direct.h"
 #include "local_frame.h"
 
@@ -19,6 +20,10 @@ std::unique_ptr<FieldFromAction> createFieldFromAction(const Config& config)
     {
         fa = std::make_unique<FieldFromActionDirect>(config.at("minOmega").get<real>(),
                                                      config.at("maxOmega").get<real>());
+    }
+    else if (type == "Direct3")
+    {
+        fa = std::make_unique<FieldFromActionDirect3>(config.at("maxOmega").get<real>());
     }
     else if (type == "Change")
     {
