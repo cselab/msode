@@ -16,6 +16,7 @@ set(SRC_FILES
   pos_ic/ball_random_walk.cpp
   pos_ic/ball_random_walk_drift.cpp
   pos_ic/box.cpp
+  pos_ic/const.cpp
   pos_ic/factory.cpp
   target_distances/factory.cpp
   target_distances/none.cpp

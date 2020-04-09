@@ -6,6 +6,7 @@
 #include "ball_random_walk.h"
 #include "ball_random_walk_drift.h"
 #include "box.h"
+#include "const.h"
 
 #include <msode/rl/factory.h>
 #include <msode/core/velocity_field/factory.h>
@@ -56,6 +57,20 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
         es = std::make_unique<EnvPosICBallGrowing>(config.at("targetRadius").get<real>(),
                                                    config.at("radius").get<real>(),
                                                    config.at("volumeGrowStep").get<real>());
+    }
+    else if (type == "Const")
+    {
+        std::vector<real3> positions;
+
+        auto posConf = config.at("positions");
+
+        if (!config.is_array())
+            msode_die("Const PosIC: Expected an array of real3 for variable 'positions'");
+
+        for (auto r : posConf)
+            positions.push_back(r.get<real3>());
+            
+        es = std::make_unique<EnvPosICConst>(positions);
     }
     else
     {
