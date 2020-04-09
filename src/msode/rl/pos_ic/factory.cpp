@@ -64,7 +64,7 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
 
         auto posConf = config.at("positions");
 
-        if (!config.is_array())
+        if (!posConf.is_array())
             msode_die("Const PosIC: Expected an array of real3 for variable 'positions'");
 
         for (auto r : posConf)
