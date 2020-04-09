@@ -14,7 +14,6 @@ public:
     
     real3 getLowestPosition()  const override;
     real3 getHighestPosition() const override;
-    real computeMaxDistanceToTarget() const override;
 
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
     std::vector<real3> generateUniformPositions(std::mt19937& gen, int n) const override;

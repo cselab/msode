@@ -19,15 +19,6 @@ std::unique_ptr<EnvPosIC> EnvPosICBox::clone() const
 real3 EnvPosICBox::getLowestPosition()  const {return domain_.lo;}
 real3 EnvPosICBox::getHighestPosition() const {return domain_.hi;}
 
-real EnvPosICBox::computeMaxDistanceToTarget() const
-{
-    auto distFromDst = [](real3 dst, real3 r) {return length(r-dst);};
-    real d{0.0_r};
-    for (auto r : domain_.getCorners())
-        d = std::max(d, distFromDst(target, r));
-    return d;
-}
-
 std::vector<real3> EnvPosICBox::generateNewPositions(std::mt19937& gen, int n)
 {
     return generateUniformPositions(gen, n);

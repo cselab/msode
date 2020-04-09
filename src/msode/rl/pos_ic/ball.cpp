@@ -20,8 +20,6 @@ std::unique_ptr<EnvPosIC> EnvPosICBall::clone() const
 real3 EnvPosICBall::getLowestPosition()  const {return {-radius_, -radius_, -radius_};}
 real3 EnvPosICBall::getHighestPosition() const {return {+radius_, +radius_, +radius_};}
 
-real EnvPosICBall::computeMaxDistanceToTarget() const {return radius_;}
-
 std::vector<real3> EnvPosICBall::generateNewPositions(std::mt19937& gen, int n)
 {
     return generateUniformPositions(gen, n);
