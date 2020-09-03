@@ -44,12 +44,12 @@ class ABFs:
         y0[n:-1] = self.thetas
         y0[-1  ] = self.theta_B
 
-        t = [0, dt]
+        t = np.linspace(0, dt, int(dt*10*w)+2)
         sol = odeint(rhs, y0, t)
 
-        self.x       = sol[1, :n]
-        self.thetas  = sol[1, n:-1]
-        self.theta_B = sol[1, -1]
+        self.x       = sol[-1, :n]
+        self.thetas  = sol[-1, n:-1]
+        self.theta_B = sol[-1, -1]
 
 
 if __name__ == '__main__':
@@ -59,25 +59,22 @@ if __name__ == '__main__':
 
     bmb = [1, 1]
     cmb = [1, 2]
-    x0 = [0, 0]
+    x0  = [0, 0]
 
-    abfs = ABFs(x0, bmb, cmb)
+    tend = 500
+    omegas = np.linspace(0, 4, 100)
 
-    nsteps = 1000
+    V = np.zeros((len(omegas), len(x0)))
 
-    dt = 0.1
-
-    x = np.zeros((len(x0), nsteps+1))
-    x[:,0] = x0
-    t = np.arange(nsteps+1) * dt
-
-    for i in range(nsteps):
-        w = 10
-
-        abfs.advance(w, dt)
-        x[:,i+1] = abfs.x
+    for i, w in enumerate(omegas):
+        abfs = ABFs(x0, bmb, cmb)
+        abfs.advance(w, tend)
+        V[i,:] = abfs.x / tend
 
     fig, ax = plt.subplots()
     for j in range(len(x0)):
-        ax.plot(t, x[j,:])
+        ax.plot(omegas, V[:,j])
+
+    ax.set_xlabel(r'$\omega$')
+    ax.set_ylabel(r'$V$')
     plt.show()
