@@ -53,7 +53,7 @@ class Environment:
         return state
 
     def getReward(self):
-        r = self.dt
+        r = - self.dt
 
         distances = np.abs(self.abfs.x)
         r += np.sum(self.prev_distances - distances)
