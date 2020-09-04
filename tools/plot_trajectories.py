@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--file', type=str, required=True, help='output of ODE simulation')
-parser.add_argument('--out', type=str, default="GUI")
+parser.add_argument('file',          type=str, help='Output of ODE simulation.')
+parser.add_argument('--out',         type=str, default="GUI")
+parser.add_argument('--L',           type=float, default=50, help='initial half box length')
 parser.add_argument('--multi_color', action='store_true', default=False)
-parser.add_argument('--L', type=float, default=50, help='initial half box length')
-parser.add_argument('--plot_shade', default=False, action='store_true', help='plot projection of trajectories along each axis')
+parser.add_argument('--plot_shade',  action='store_true', default=False, help='plot projection of trajectories along each axis')
 args = parser.parse_args()
 
 xG=[0,0,0]
@@ -64,7 +64,7 @@ cmaps = [plt.cm.viridis, plt.cm.jet]
 for i in range(nrigids):
     start = 5 + i * ncolumnds_per_rigid
     end = start + ncolumnds_per_rigid
-    q, pos, omega = read_rigid_data(data[:, start:end]) 
+    q, pos, omega = read_rigid_data(data[:, start:end])
 
     if args.multi_color:
         plot_trajectory_time_colored(ax, t, pos[:,0], pos[:,1], pos[:,2], cmaps[i%len(cmaps)])
@@ -93,4 +93,3 @@ if args.out == "GUI":
     plt.show()
 else:
     plt.savefig(args.out, transparent=True)
-
