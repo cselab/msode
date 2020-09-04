@@ -1,5 +1,6 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** run_rl_comp
-    
+
     Use smarties to find optimal policy for the problem stated in `run_ac` and compare to the `run_ac` results for the same setup.
  */
 
@@ -71,25 +72,25 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     const Config config = json::parse(confFile);
 
     const real magneticFieldMagnitude = config.at("fieldMagnitude").get<real>();
-    
+
     auto env = rl::factory::createEnvironment(config);
 
     const int dumpEvery = 1000;
 
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, env->getBodies());
     const analytic_control::MatrixReal U = V.inverse();
-    
+
     rl::setActionDims  (env.get(), comm);
     rl::setActionBounds(env.get(), comm);
     rl::setStateBounds (env.get(), comm);
-    
+
     bool isTraining {true};
     long simId {0};
 
     using Status = typename std::remove_pointer<decltype(env.get())>::type::Status;
 
     Status previousStatus {Status::Success};
-    
+
     while (isTraining)
     {
         auto status {Status::Running};

@@ -1,5 +1,6 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** trajectory_sdf.cpp
-    
+
     Compute the distance field of a set of ABF trajectories along with the velocity and vorticity fields
  */
 
@@ -49,9 +50,9 @@ static inline real distanceToSegment(real3 r, real3 a, real3 b)
 static real distanceToSegments(real3 r, const Segments& segments)
 {
     MSODE_Expect(segments.size() >= 2, "Need at least 2 positions to make a set of segments");
-    
+
     real distance = length(r - segments.front());
-    
+
     for (size_t i = 0; i < segments.size() - 1; ++i)
     {
         const real di = distanceToSegment(r, segments[i], segments[i+1]);
@@ -91,7 +92,7 @@ int main(int argc, char **argv)
 
     const auto trajectory = app_utils::readTrajectory(bodies, argv[2]);
     const auto allSegments = extractSegments(trajectory);
-    
+
     // values on the grid
 
     int3 res;
@@ -125,12 +126,12 @@ int main(int argc, char **argv)
                 const real3 r {start.x + ix * h.x,
                                start.y + iy * h.y,
                                start.z + iz * h.z};
-                
+
                 vals[i] = distanceToAllSegments(r, allSegments);
             }
         }
     }
-    
+
     // dump to vtk
 
     const char *outFileName = argv[3];
@@ -146,6 +147,6 @@ int main(int argc, char **argv)
 
     for (auto v : vals)
         f << v << '\n';
-    
+
     return 0;
 }

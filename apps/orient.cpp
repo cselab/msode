@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** orient
 
     A small case for reorienting randomly oriented ABFs along a given axis.
@@ -28,7 +29,7 @@ static inline Quaternion makeRandomOrientation(std::mt19937& gen)
 {
      constexpr real3 from {1.0_r, 0.0_r, 0.0_r};
      const real3 to = makeRandomUnitVector(gen);
-     return Quaternion::createFromVectors(from, to);     
+     return Quaternion::createFromVectors(from, to);
 }
 
 static inline auto readBodyAndRandomIC(const std::string& fname, int numBodies, unsigned long seed = 424242)
@@ -39,7 +40,7 @@ static inline auto readBodyAndRandomIC(const std::string& fname, int numBodies, 
     bodies.reserve(numBodies);
 
     std::mt19937 gen(seed);
-    
+
     for (int i = 0; i < numBodies; ++i)
     {
         RigidBody b = refBody;
@@ -55,7 +56,7 @@ static inline Quaternion makePerpendicularOrientation(real3 dir)
 {
      constexpr real3 from {1.0_r, 0.0_r, 0.0_r};
      const real3 to = normalized(anyOrthogonal(dir));
-     return Quaternion::createFromVectors(from, to);     
+     return Quaternion::createFromVectors(from, to);
 }
 
 static inline auto readBodyAndPeropIC(const std::string& fname, int numBodies, real3 dir)
@@ -103,12 +104,12 @@ int main(int argc, char **argv)
     const real magneticFieldMagnitude {1.0_r};
 
     const auto& body = bodies[0];
-    
+
     const real omegaC     = body.stepOutFrequency(magneticFieldMagnitude, 0);
     const real omegaCPerp = body.stepOutFrequency(magneticFieldMagnitude, 2);
 
     const real omegaTurn = omegaCPerp;
-    
+
     auto omegaField = [omegaC](real t) -> real
     {
         const real period = 2.0_r * 2.0_r * M_PI / omegaC;
@@ -116,7 +117,7 @@ int main(int argc, char **argv)
         const real sign = (id % 2) ? 1 : -1;
         return sign * omegaC * 0.5;
     };
-    
+
     auto rotatingDirection = [targetDir](real) -> real3
     {
         return normalized(targetDir);
@@ -128,7 +129,7 @@ int main(int argc, char **argv)
 
     const real nTurns = 5;
     const int nFrames = nTurns * 50;
-    
+
     const real tEnd = nTurns * 2 * M_PI / omegaTurn;
     const real tDump = tEnd / nFrames;
     const real dt    = 1.0_r / (500.0_r * omegaC);
@@ -136,6 +137,6 @@ int main(int argc, char **argv)
 
     simulation.activateDump("out.dat", tDump / dt);
     simulation.run(nsteps, dt);
-    
+
     return 0;
 }

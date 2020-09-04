@@ -1,6 +1,7 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** dump_velocity_field
-    
-    Read a config file compatible with one of ``run_rl`` or ``run_rl_comp`` and dump the velocity field that is described there. 
+
+    Read a config file compatible with one of ``run_rl`` or ``run_rl_comp`` and dump the velocity field that is described there.
 */
 
 #include <msode/core/velocity_field/factory.h>
@@ -25,12 +26,12 @@ int main(int argc, char **argv)
 
     if (!confFile.is_open())
         msode_die("Could not read config file %s", configName.c_str());
-    
+
     const Config config = json::parse(confFile);
-    
+
     auto field = factory::createVelocityField(config.at("velocityField"));
     auto posIc = rl::factory::createEnvPosIC(config.at("posIc"));
-    
+
     const real time = 0.0_r;
     const real3 start = posIc->getLowestPosition();
     const real3 end   = posIc->getHighestPosition();
@@ -38,8 +39,8 @@ int main(int argc, char **argv)
 
     const int n = 64;
     const int3 resolution {n, n, n};
-    
+
     field->dumpToVtkUniformGrid(outputName, resolution, start, size, time);
-    
+
     return 0;
 }

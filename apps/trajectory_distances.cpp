@@ -1,5 +1,6 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** trajectory_distances.cpp
-    
+
     Compute the given TargetDistance at all points of a given trajectory of ABFs.
  */
 
@@ -40,6 +41,6 @@ int main(int argc, char **argv)
         const real d = targetDistance->compute(tp);
         printf("%g\n", d);
     }
-    
+
     return 0;
 }

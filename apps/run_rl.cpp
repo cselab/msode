@@ -1,5 +1,6 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** run_rl
-    
+
     Use smarties to find optimal policy for the problem stated in `run_ac`.
  */
 
@@ -13,7 +14,7 @@
 inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*argv*/)
 {
     using namespace msode;
-    
+
     // ../ because we run in ${RUNDIR}/simulation%2d_%d/
     const std::string confFileName = "../config.json";
     std::ifstream confFile(confFileName);
@@ -24,18 +25,18 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     const Config config = json::parse(confFile);
 
     auto env = rl::factory::createEnvironment(config);
-    
+
     rl::setActionDims  (env.get(), comm);
     rl::setActionBounds(env.get(), comm);
     rl::setStateBounds (env.get(), comm);
-    
+
     bool isTraining {true};
     long simId {0};
 
     using Status = typename std::remove_pointer<decltype(env.get())>::type::Status;
 
     Status previousStatus {Status::Success};
-    
+
     while (isTraining)
     {
         auto status {Status::Running};

@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** rotating
 
     ABF in a rotating field with direction changing direction over time (describes a circle).
@@ -9,7 +10,7 @@
 int main(int argc, char **argv)
 {
     using namespace msode;
-    
+
     if (argc < 2)
     {
         fprintf(stderr, "usage : ./main <config0> <config1>...");
@@ -17,10 +18,10 @@ int main(int argc, char **argv)
     }
 
     std::vector<RigidBody> rigidBodies;
-    
+
     for (int i = 1; i < argc; ++i)
         rigidBodies.push_back(factory::readRigidBodyConfigFromFile(argv[i]));
-    
+
     const real magneticFieldMagnitude {1.0_r};
     auto omegaField = [](real) {return 0.5_r;};
 
@@ -35,7 +36,7 @@ int main(int argc, char **argv)
     };
 
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
-    
+
     Simulation simulation {rigidBodies, magneticField};
 
     const real tEnd = 2000.0_r;
@@ -45,6 +46,6 @@ int main(int argc, char **argv)
 
     simulation.activateDump("out.dat", tDump / dt);
     simulation.runForwardEuler(nsteps, dt);
-    
+
     return 0;
 }

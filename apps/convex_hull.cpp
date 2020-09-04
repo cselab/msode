@@ -1,7 +1,8 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** convex_hull
 
-    reports forward velocities for `N` given swimmers; 
-    output are "velocity vectors" (one for each omega sample) which can be processed to obtained the convex hull of that cloud 
+    reports forward velocities for `N` given swimmers;
+    output are "velocity vectors" (one for each omega sample) which can be processed to obtained the convex hull of that cloud
     this allows to choose a velocity matrix with optimal omegas.
  */
 
@@ -34,7 +35,7 @@ int main(int argc, char **argv)
         bodies.push_back(factory::readRigidBodyConfigFromFile(swimerNames[i]));
 
     const real dOmega = maxOmega / nOmegas;
-    
+
     for (int i = 0; i < nOmegas; ++i)
     {
         const real omega = i * dOmega;
@@ -45,6 +46,6 @@ int main(int argc, char **argv)
         }
         std::cout << '\n';
     }
-    
+
     return 0;
 }

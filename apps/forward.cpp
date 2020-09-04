@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** forward
 
     ABF in a field rotating with frequency `omega` in the yz plane.
@@ -21,7 +22,7 @@ static void runAndDump(RigidBody body, real omega, const std::string& out, int d
 
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
     body.r = rStart;
-        
+
     auto omegaField        = [omega](real) {return omega;};
     auto rotatingDirection = []     (real) {return real3{1.0_r, 0.0_r, 0.0_r};};
 
@@ -48,8 +49,8 @@ int main(int argc, char **argv)
 
     const real tDumpEvery = 1.0_r / fps;
     const int dumpEvery = static_cast<int>(tDumpEvery / dt);
-    
+
     runAndDump(body, omega, out, dumpEvery);
-    
+
     return 0;
 }

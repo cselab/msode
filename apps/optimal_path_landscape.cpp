@@ -1,5 +1,6 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** optimal_path_landscape
-    
+
     A tool to visualize the function to optimize in the analytical control setup.
     It corresponds to the travel time with respect to 3 given angles.
  */
@@ -100,11 +101,11 @@ int main(int argc, char **argv)
     };
 
     const int res = 128;
-    
+
     const int ntheta = 2*res;
     const int nphi = res;
     const int npsi = res;
-    
+
     const real dtheta = 2 * M_PI / ntheta;
     const real dphi   = M_PI     / nphi;
     const real dpsi   = 2 * M_PI / npsi;
@@ -136,7 +137,7 @@ int main(int argc, char **argv)
     f << "# vtk DataFile Version 2.0\n"
       << "Velocity field dumped from msode\n"
       << "ASCII\n";
-    
+
     f << "DATASET STRUCTURED_POINTS\n"
       << "DIMENSIONS " << ntheta << ' ' << nphi << ' ' << npsi << '\n'
       << "ORIGIN " << 0 << ' ' << 0 << ' ' << 0 << '\n'

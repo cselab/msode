@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** run_ac
 
     Finds a sequence of magnetic field rotation frequencies and directions to bring given ABFs to a target position optimally.
@@ -59,6 +60,6 @@ int main(int argc, char **argv)
                                                             std::move(velocityField), U, "ac_trajectories.dat", dumpEvery);
 
     std::cout << "Took " << tTot << " time units to bring to target" << std::endl;
-    
+
     return 0;
 }

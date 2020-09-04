@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** ac_separability
 
     Collect optimal travel time in one dimension for N swimmers, along with properties of the velocity matrix.
@@ -37,24 +38,24 @@ static RigidBody createRigidBody(real Vmax, real omegaC)
     P.C[0] = Cxx;
     P.C[1] = Cyy;
     P.C[2] = Czz;
-    
+
     const real3 magnMoment {0.0_r, m, 0.0_r};
-    
+
     const auto q = Quaternion::createFromComponents(1.0_r, 0.0_r, 0.0_r, 0.0_r);
     const real3 r {0.0_r, 0.0_r, 0.0_r};
 
     const RigidBody b {q, r, magnMoment, P};
-    
+
     MSODE_Ensure(std::abs(b.stepOutFrequency(magneticFieldMagnitude, 0) - omegaC) < 1e-6_r,
                  "wrong step out frequency");
-    
+
     return b;
 }
 
 static real computeSeparability(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
-    
+
     real S = 0.0_r;
     const int N = V.cols();
 
@@ -77,7 +78,7 @@ static real computeSeparability(const analytic_control::MatrixReal& V)
 static real computeLambdaRatio(const analytic_control::MatrixReal& V)
 {
     MSODE_Expect(V.cols() == V.rows(), "Expect a square matrix");
-    
+
     const auto eigenValues = analytic_control::computeEigenValues(V);
 
     real minL = std::numeric_limits<real>::max();
@@ -88,7 +89,7 @@ static real computeLambdaRatio(const analytic_control::MatrixReal& V)
         minL = std::min(minL, std::abs(l));
         maxL = std::max(maxL, std::abs(l));
     }
-    
+
     const real S = maxL / minL;
     return S;
 }
@@ -116,7 +117,7 @@ static real computeMeanTimeFromRandomIC(const analytic_control::MatrixReal& V, c
     const real3 boxLo {- 0.5_r * L, 0.0_r, 0.0_r};
     const real3 boxHi {+ 0.5_r * L, 0.0_r, 0.0_r};
     const real3 direction {1.0_r, 0.0_r, 0.0_r};
-    
+
     real tSum = 0.0_r;
     const int nsamples = 50000;
 
@@ -128,7 +129,7 @@ static real computeMeanTimeFromRandomIC(const analytic_control::MatrixReal& V, c
         const real t = analytic_control::computeTravelTime(A, direction);
         tSum += t;
     }
-    
+
     const real tMean = tSum / nsamples;
     return tMean;
 }
@@ -141,9 +142,9 @@ static real computeMeanTimeFromTestIC(const analytic_control::MatrixReal& V, con
 
     const real L {50.0_r};
     const real3 direction {1.0_r, 0.0_r, 0.0_r};
-    
+
     real tSum = 0.0_r;
-    
+
     const int nsamples = 1<<n;
     std::vector<real3> initialPositions(n);
 
@@ -158,7 +159,7 @@ static real computeMeanTimeFromTestIC(const analytic_control::MatrixReal& V, con
         const real t = analytic_control::computeTravelTime(A, direction);
         tSum += t;
     }
-    
+
     const real tMean = tSum / nsamples;
     return tMean;
 }
@@ -171,7 +172,7 @@ int main(int argc, char **argv)
         fprintf(stderr, "usage : %s <number of swimmers> <omega max> <number of samples>\n\n", argv[0]);
         return 1;
     }
-    
+
     const real Vmax = 1.0_r;
     const int nbodies = atoi(argv[1]);
     const real maxOmega = std::stod(argv[2]);
@@ -187,12 +188,12 @@ int main(int argc, char **argv)
     {
         std::mt19937 gen(seed0 * omp_get_thread_num() + seed1);
         std::uniform_real_distribution<real> dist(minOmega, maxOmega);
-        
+
         #pragma omp for
         for (int sSample = 0; sSample < nsSamples; ++sSample)
         {
             std::vector<msode::RigidBody> bodies;
-    
+
             for (int i = 0; i < nbodies; ++i)
             {
                 const real omegaC = dist(gen);
@@ -213,9 +214,9 @@ int main(int argc, char **argv)
             kappas [sSample] = k;
         }
     }
-    
+
     for (size_t i = 0; i < times.size(); ++i)
         printf("%g %g %g %g\n", seps[i], lratios[i], kappas[i], times[i]);
-    
+
     return 0;
 }

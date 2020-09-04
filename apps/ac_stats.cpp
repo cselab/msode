@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** ac_stats
 
     Compute mean travel time of multiple swimmers from a random position in a box to the origin.
@@ -11,7 +12,7 @@
 int main(int argc, char **argv)
 {
     using namespace msode;
-    
+
     if (argc < 4                     ||
         std::string(argv[1]) == "-h" ||
         std::string(argv[1]) == "--help")
@@ -22,12 +23,12 @@ int main(int argc, char **argv)
 
     const int nsamples = atoi(argv[1]);
     const char *outFilename = argv[2];
-    
+
     const real magneticFieldMagnitude = 1.0_r;
 
     const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
     const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};
-    
+
     std::vector<RigidBody> bodies;
     for (int i = 3; i < argc; ++i)
     {
@@ -54,10 +55,10 @@ int main(int argc, char **argv)
         fprintf(fout, "%g\n", t);
     }
     fclose(fout);
-    
+
     const real tMean = tSum / nsamples;
 
     printf("Average time %g\n", tMean);
-    
+
     return 0;
 }

@@ -1,5 +1,6 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** apps/step_out_frequencies
-    
+
     Compute  the step out frequencies of all ABFs in the given config
  */
 
@@ -46,6 +47,6 @@ int main(int argc, char **argv)
     {
         std::cout << body.stepOutFrequency(magneticFieldMagnitude) << std::endl;
     }
-    
+
     return 0;
 }

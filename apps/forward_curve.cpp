@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 /** forward_curve
 
     ABF in a field rotating with frequencies `omega` in the yz plane.
@@ -27,7 +28,7 @@ int main(int argc, char **argv)
     const int nOmegas     = std::stoi(argv[3]);
 
     const real dOmega = maxOmega / nOmegas;
-    
+
     for (int i = 0; i < nOmegas; ++i)
     {
         const real omega = i * dOmega;
@@ -35,6 +36,6 @@ int main(int argc, char **argv)
         const real v = utils::computeMeanVelocityAnalytical(body, magneticFieldMagnitude, omega, 10000);
         std::cout << omega << " " << v << std::endl;
     }
-    
+
     return 0;
 }
