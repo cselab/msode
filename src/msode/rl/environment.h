@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "field_from_action/interface.h"
@@ -43,14 +44,14 @@ class MSodeEnvironment
 public:
     enum class Status {Running, MaxTimeEllapsed, Success};
     enum {NO_DUMP = -1};
-    
+
     MSodeEnvironment(const Params& params,
                      std::unique_ptr<EnvPosIC> posIc,
                      const std::vector<RigidBody>& initialRBs,
                      std::unique_ptr<FieldFromAction> magnFieldStateFromAction,
                      std::unique_ptr<BaseVelocityField> velocityField,
                      std::unique_ptr<TargetDistance> targetDistance);
-    
+
     MSodeEnvironment(const MSodeEnvironment&) = delete;
     MSodeEnvironment& operator=(const MSodeEnvironment&) = delete;
 
@@ -87,7 +88,7 @@ public:
     std::unique_ptr<Simulation> sim;
     std::unique_ptr<FieldFromAction> magnFieldState;
     const real fieldMagnitude;
-    
+
 private:
     const long nstepsPerAction_;
     const real dt_;

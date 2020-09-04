@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "factory.h"
 #include "file_parser.h"
 #include "log.h"

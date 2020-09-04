@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "optimal_path.h"
 #include "helpers.h"
 
@@ -24,7 +25,7 @@ std::vector<real3> computeA(const MatrixReal& U, const std::vector<real3>& posit
     for (size_t i = 0; i < n; ++i)
     {
         auto ai = make_real3(0.0_r);
-        
+
         for (size_t j = 0; j < n; ++j)
             ai += U(i,j) * positions[j];
 
@@ -40,7 +41,7 @@ real computeTravelTime(const std::vector<real3>& A, real3 direction)
     MSODE_Expect(std::fabs(length(direction) - 1.0_r) < 1e-6_r,
                  "Expect a direction with unit length, got %g %g %g",
                  direction.x, direction.y, direction.z);
-    
+
     real t {0._r};
     for (auto ai : A)
         t += std::fabs(dot(ai, direction));
@@ -87,7 +88,7 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A, long seed, bool verbos
     const int maxTries = 4;
     const int maxIterations = 500;
     std::mt19937 gen {seed};
-    
+
     auto travelTime = [&](const CMAES::Vector& x) -> real
     {
         const auto q = anglesToQuaternion(x(0), x(1), x(2));
@@ -98,7 +99,7 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A, long seed, bool verbos
     const real sigma = 0.5 * M_PI;
     const real tolerance = 1e-5_r;
     std::uniform_real_distribution<real> dist(0, M_PI);
-    
+
     for (int i = 0; i < maxTries; ++i)
     {
         const CMAES::Vector initialGuess = CMAES::Vector::Zero(3);
@@ -106,7 +107,7 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A, long seed, bool verbos
         CMAES cma(travelTime, lambda, initialGuess, sigma, gen());
         auto currInfo = cma.runMinimization(tolerance, maxIterations, verbose);
         ++seed;
-        
+
         if (currInfo.fval < info.fval)
             std::swap(currInfo, info);
     }
@@ -121,26 +122,26 @@ real3 computeTravelTimeGradient(const std::vector<real3>& A, real theta, real ph
     const real st = std::sin(theta);
 
     const real omct = 1.0_r - ct;
-    
+
     const real cph = std::cos(phi);
     const real sph = std::sin(phi);
 
     const real cps = std::cos(psi);
     const real sps = std::sin(psi);
-    
+
     const real3 u {cph * sps, sph * sps, cps};
 
     const real3 uph {-sph * sps, cph * sps, 0.0_r};
     const real3 ups {cph * cps, sph * cps, -sps};
-    
+
     // The rotation matrix columns
 
     const real3 R0 {u.x * u.x * omct + ct,         u.y * u.x * omct + u.z * st,   u.z * u.x * omct - u.y * st};
     const real3 R1 {u.x * u.y * omct - u.z * st,   u.y * u.y * omct + ct,         u.z * u.y * omct + u.x * st};
     const real3 R2 {u.x * u.z * omct + u.y * st,   u.y * u.z * omct - u.x * st,   u.z * u.z * omct + ct      };
-    
+
     // derivatives of the columns of the rotation matrix w.r.t. theta, phi and psi
-    
+
     const real3 Rth0 {u.x * u.x * st - st,         u.y * u.x * st + u.z * ct,   u.z * u.x * st - u.y * ct};
     const real3 Rth1 {u.x * u.y * st - u.z * ct,   u.y * u.y * st - st,         u.z * u.y * st + u.x * ct};
     const real3 Rth2 {u.x * u.z * st + u.y * ct,   u.y * u.z * st - u.x * ct,   u.z * u.z * st - st      };
@@ -185,31 +186,31 @@ public:
         const real theta = x[0];
         const real phi = x[1];
         const real psi = x[2];
-        
+
         const real ct = std::cos(theta);
         const real st = std::sin(theta);
 
         const real omct = 1.0_r - ct;
-    
+
         const real cph = std::cos(phi);
         const real sph = std::sin(phi);
 
         const real cps = std::cos(psi);
         const real sps = std::sin(psi);
-    
+
         const real3 u {cph * sps, sph * sps, cps};
 
         const real3 uph {-sph * sps, cph * sps, 0.0_r};
         const real3 ups {cph * cps, sph * cps, -sps};
-    
+
         // The rotation matrix columns
 
         const real3 R0 {u.x * u.x * omct + ct,         u.y * u.x * omct + u.z * st,   u.z * u.x * omct - u.y * st};
         const real3 R1 {u.x * u.y * omct - u.z * st,   u.y * u.y * omct + ct,         u.z * u.y * omct + u.x * st};
         const real3 R2 {u.x * u.z * omct + u.y * st,   u.y * u.z * omct - u.x * st,   u.z * u.z * omct + ct      };
-    
+
         // derivatives of the columns of the rotation matrix w.r.t. theta, phi and psi
-    
+
         const real3 Rth0 {u.x * u.x * st - st,         u.y * u.x * st + u.z * ct,   u.z * u.x * st - u.y * ct};
         const real3 Rth1 {u.x * u.y * st - u.z * ct,   u.y * u.y * st - st,         u.z * u.y * st + u.x * ct};
         const real3 Rth2 {u.x * u.z * st + u.y * ct,   u.y * u.z * st - u.x * ct,   u.z * u.z * st - st      };
@@ -256,7 +257,7 @@ private:
     {
         return x / smoothAbs(x);
     }
-    
+
 private:
     const std::vector<real3>& A_;
     const real epsilon_;
@@ -268,7 +269,7 @@ Quaternion findBestPathLBFGS(const std::vector<real3>& A)
     using namespace LBFGSpp;
 
     TravelTimeSmoothFunction func(A, 5e-1_r);
-    
+
     constexpr int n = 3; // theta, phi, psi
 
     // Set up parameters
@@ -323,7 +324,7 @@ Quaternion findBestPathCMAESKorali(const std::vector<real3>& A, long seed, bool 
 
 
     const real sigma = M_PI;
-    
+
     e["Variables"][0]["Name"] = "theta";
     e["Variables"][0]["Initial Mean"] = 0.0;
     e["Variables"][0]["Initial Standard Deviation"] = sigma;

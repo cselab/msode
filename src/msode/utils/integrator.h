@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include <msode/core/log.h>
@@ -13,7 +14,7 @@ static real integrateTrapez(Function f, real a, real b, long n)
     MSODE_Expect(n > 2, "need more than two points");
 
     using namespace msode::literals;
-    
+
     const real h = (b-a) / (n-1);
     real integral {0.0_r};
 

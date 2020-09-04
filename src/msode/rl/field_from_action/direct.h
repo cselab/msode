@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "interface.h"
@@ -15,7 +16,7 @@ public:
 
     ActionBounds getActionBounds() const override;
     std::tuple<real3, real3, real3> getFrameReference() const override;
-    
+
     void setAction(const std::vector<double>& action) override;
     real getOmega(real) const override  {return omega_;}
     real3 getAxis(real) const override  {return axis_;}

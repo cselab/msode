@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "config.h"
@@ -8,7 +9,7 @@
 namespace msode {
 namespace factory {
 
-/// read rigid object from a file 
+/// read rigid object from a file
 RigidBody readRigidBodyConfigFromFile(const std::string& fname);
 
 /// read a RigidBody object from json format

@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "interface.h"
 
 #include <msode/core/log.h>
@@ -23,7 +24,7 @@ void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensio
 {
     MSODE_Expect(dimensions.x > 0 && dimensions.y > 0 && dimensions.z > 0,
                  "grid dimensions must be positive");
-    
+
     MSODE_Expect(size.x > 0 && size.y > 0 && size.z > 0,
                  "grid size must be non negative");
 
@@ -34,7 +35,7 @@ void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensio
     const int numElements = dimensions.x * dimensions.y * dimensions.z;
 
     // Compute the grid data
-    
+
     std::vector<real3> velocities, vorticities;
     velocities.reserve(numElements);
 
@@ -47,7 +48,7 @@ void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensio
                 const real3 r {start.x + ix * h.x,
                                start.y + iy * h.y,
                                start.z + iz * h.z};
-                
+
                 velocities .push_back(getVelocity (r, t));
                 vorticities.push_back(getVorticity(r, t));
             }
@@ -59,7 +60,7 @@ void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensio
     stream << "# vtk DataFile Version 2.0\n"
            << "Velocity field dumped from msode\n"
            << "ASCII\n";
-    
+
     stream << "DATASET STRUCTURED_POINTS\n"
            << "DIMENSIONS " << dimensions.x << ' ' << dimensions.y << ' ' << dimensions.z << '\n'
            << "ORIGIN " << start.x << ' ' << start.y << ' ' << start.z << '\n'
@@ -67,7 +68,7 @@ void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensio
 
     stream << "POINT_DATA " << numElements << "\n"
            << "VECTORS velocity float\n";
-    
+
     for (auto v : velocities)
         stream << v.x << ' ' << v.y << ' ' << v.z << '\n';
 

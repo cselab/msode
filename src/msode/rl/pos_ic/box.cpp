@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "box.h"
 
 #include <msode/core/math.h>
@@ -28,7 +29,7 @@ std::vector<real3> EnvPosICBox::generateUniformPositions(std::mt19937& gen, int 
 {
     std::vector<real3> positions(n);
     for (auto& p : positions)
-        p = utils::generateUniformPositionBox(gen, domain_.lo, domain_.hi); 
+        p = utils::generateUniformPositionBox(gen, domain_.lo, domain_.hi);
     return positions;
 }
 

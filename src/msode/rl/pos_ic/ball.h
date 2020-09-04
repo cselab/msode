@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "interface.h"
@@ -11,7 +12,7 @@ public:
     EnvPosICBall(real radius);
 
     std::unique_ptr<EnvPosIC> clone() const override;
-    
+
     real3 getLowestPosition()  const override;
     real3 getHighestPosition() const override;
 

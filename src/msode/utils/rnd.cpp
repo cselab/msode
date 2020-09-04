@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "rnd.h"
 
 namespace msode {
@@ -10,7 +11,7 @@ real3 generateUniformPositionBox(std::mt19937& gen, real3 lo, real3 hi)
     std::uniform_real_distribution<real> uniformx(lo.x, hi.x);
     std::uniform_real_distribution<real> uniformy(lo.y, hi.y);
     std::uniform_real_distribution<real> uniformz(lo.z, hi.z);
-    
+
     return {uniformx(gen), uniformy(gen), uniformz(gen)};
 }
 

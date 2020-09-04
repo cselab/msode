@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "ball.h"
@@ -16,7 +17,7 @@ public:
 
 private:
     std::vector<real3> _generateLines(std::mt19937& gen, int n) const;
-    
+
 protected:
     const real probLine_; ///< the probability to select all swimmers on a random line
 };

@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "factory.h"
 
 #include "weighted_targets.h"
@@ -15,7 +16,7 @@ std::unique_ptr<FieldFromAction> createFieldFromAction(const Config& config)
     std::unique_ptr<FieldFromAction> fa;
 
     const auto type = config.at("__type").get<std::string>();
-    
+
     if (type == "Direct")
     {
         fa = std::make_unique<FieldFromActionDirect>(config.at("minOmega").get<real>(),

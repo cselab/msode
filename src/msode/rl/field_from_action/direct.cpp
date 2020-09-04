@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "direct.h"
 
 #include <msode/core/log.h>
@@ -29,12 +30,12 @@ std::tuple<real3, real3, real3> FieldFromActionDirect::getFrameReference() const
 {
     return {ex, ey, ez};
 }
-    
-void FieldFromActionDirect::setAction(const std::vector<double>& action) 
+
+void FieldFromActionDirect::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == 4, "expect action of size 4");
     constexpr real tolerance = 1e-6_r;
-    
+
     omega_ = std::min(maxOmega_, std::max(minOmega_, static_cast<real>(action[0])));
     axis_.x = action[1];
     axis_.y = action[2];

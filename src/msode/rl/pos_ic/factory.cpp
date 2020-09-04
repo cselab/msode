@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "factory.h"
 
 #include "ball.h"
@@ -44,7 +45,7 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     else if (type == "BallRandomWalkDrift")
     {
         auto velField = msode::factory::createVelocityField(config.at("velocityField"));
-        
+
         es = std::make_unique<EnvPosICBallRandomWalkDrift>(config.at("radius").get<real>(),
                                                            config.at("targetRadius").get<real>(),
                                                            config.at("sigma").get<real>(),
@@ -69,7 +70,7 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
 
         for (auto r : posConf)
             positions.push_back(r.get<real3>());
-            
+
         es = std::make_unique<EnvPosICConst>(positions);
     }
     else

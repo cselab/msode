@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "cmaes.h"
 
 #include <msode/core/log.h>
@@ -42,16 +43,16 @@ CMAES::CMAES(const Function& function, int lambda, Vector mean, real sigma, long
         s1 += weights_[i];
         s2 += weights_[i]*weights_[i];
     }
-    
+
     for (auto& w : weights_)
         w /= s1;
 
     muEff_ = s1 * s1 / s2;
-    
+
     cC_     = (4.0_r+ muEff_ / n_) / (n_ + 4.0_r + 2.0_r * muEff_ / n_);
     cSigma_ = (muEff_ + 2.0_r)/(n_ + muEff_ + 5.0_r);
     c1_     = 2.0_r / (std::pow(n_ + 1.3_r, 2) + muEff_);
-    cMu_    = 2.0_r * (muEff_ - 2.0_r + 1.0_r / muEff_) / (std::pow(n_ + 2, 2) + muEff_); 
+    cMu_    = 2.0_r * (muEff_ - 2.0_r + 1.0_r / muEff_) / (std::pow(n_ + 2, 2) + muEff_);
     dSigma_ = 1.0_r + 2.0_r * std::max(0.0_r, safeSqrt((muEff_-1.0_r)/(n_+1.0_r))-1.0_r) + cSigma_;
 
     chiSquareNumber_ = safeSqrt((real) n_) * (1._r - 1._r/(4._r*n_) + 1._r/(21._r*n_*n_));
@@ -73,7 +74,7 @@ CMAES::Info CMAES::runMinimization(real absoluteThreshold, int maxGeneration, bo
     Info info;
     info.status = Status::Ok;
     int generation {0};
-    
+
     for (generation = 0; generation < maxGeneration; ++generation)
     {
         previousBestValue_ = currentBestValue_;
@@ -83,7 +84,7 @@ CMAES::Info CMAES::runMinimization(real absoluteThreshold, int maxGeneration, bo
             break;
 
         currentBestValue_ = functionValues_[order_.front()];
-        
+
         if (currentBestValue_ < bestEverValue_)
         {
             bestEverValue_ = currentBestValue_;
@@ -106,7 +107,7 @@ CMAES::Info CMAES::runMinimization(real absoluteThreshold, int maxGeneration, bo
     info.fval = bestEverValue_;
     info.x = std::move(bestEverX_);
     info.numGenerations = generation;
-    
+
     return info;
 }
 
@@ -142,7 +143,7 @@ CMAES::Status CMAES::_runGeneration()
         const int id = order_[i];
         zmean += weights_[i] * zs_[id];
     }
-    
+
     // update mean
 
     xmean_ += sigma_ * B * D.asDiagonal() * zmean;
@@ -154,13 +155,13 @@ CMAES::Status CMAES::_runGeneration()
     // cumulation for C
 
     const real pSigmaNorm = pSigma_.norm();
-    
+
     const int hsig =
         (pSigmaNorm / safeSqrt(1.0_r - std::pow(1.0_r-cSigma_, 2 * (1 + countEval_/lambda_)))/chiSquareNumber_)
         < (1.4_r + 2.0_r /(n_+1));
 
     pC_ = (1.0_r - cC_) * pC_ + hsig * safeSqrt(cC_ * (2.0_r - cC_) * muEff_) * (B * D.asDiagonal() * zmean);
-    
+
     // adapt covariance matrix C
 
     C_ = (1.0_r - c1_ - cMu_) * C_ +   // discount old matrix
@@ -203,4 +204,3 @@ void CMAES::_computeOrdering(const std::vector<real>& values)
 
 } // namespace utils
 } // namespace msode
-

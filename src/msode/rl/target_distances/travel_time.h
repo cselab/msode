@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "interface.h"
@@ -9,7 +10,7 @@ namespace rl {
 
 /** Compute the travel time from the free-space/zero velocity approximation.
     \note Assume that always the same bodies will be used with this object.
-    \note The travel time is optimized for each distance evaluation. This may lead to prohibitive compute times. 
+    \note The travel time is optimized for each distance evaluation. This may lead to prohibitive compute times.
  */
 class TargetDistanceTravelTime : public TargetDistance
 {

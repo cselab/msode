@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "environment.h"
 
 #include <iomanip>
@@ -48,7 +49,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
         const real3 axis = magnFieldState->getAxis(t);
         return normalized(axis);
     };
-    
+
     MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
     sim = std::make_unique<Simulation>(initialRBs, field, std::move(velocityField));
@@ -96,7 +97,7 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool succesfulPrevio
 void MSodeEnvironment::setPositions(const std::vector<real3>& positions)
 {
     auto& bodies = sim->getBodies();
-        
+
     for (size_t i = 0; i < bodies.size(); ++i)
         bodies[i].r = positions[i];
 }
@@ -105,7 +106,7 @@ std::vector<real3> MSodeEnvironment::getPositions() const
 {
     std::vector<real3> positions;
     auto bodies = sim->getBodies();
-        
+
     for (auto b : bodies)
         positions.push_back(b.r);
     return positions;
@@ -124,7 +125,7 @@ MSodeEnvironment::Status MSodeEnvironment::advance(const std::vector<double>& ac
         if (status != Status::Running)
             return status;
     }
-    
+
     return Status::Running;
 }
 
@@ -142,9 +143,9 @@ const std::vector<double>& MSodeEnvironment::getState() const
     }();
 
     const auto qRot = Quaternion::createFromMatrix(rot);
-        
+
     cachedState_.resize(0);
-    
+
     const auto& bodies = sim->getBodies();
 
     for (size_t i = 0; i < bodies.size(); ++i)
@@ -178,7 +179,7 @@ double MSodeEnvironment::getReward() const
         r += rewardParams_.terminationBonus;
 
     previousDistance_ = currentDistance;
-    
+
     return r;
 }
 
@@ -212,7 +213,7 @@ bool MSodeEnvironment::_bodiesWithinDistanceToTargets() const
 {
     real maxDistance = 0.0_r;
     const auto& bodies = sim->getBodies();
-    
+
     for (size_t i = 0; i < bodies.size(); ++i)
     {
         const real distance = length(bodies[i].r - targetPositions_[i]);
@@ -225,10 +226,10 @@ MSodeEnvironment::Status MSodeEnvironment::_getCurrentStatus() const
 {
     if (sim->getCurrentTime() > tmax_)
         return Status::MaxTimeEllapsed;
-        
+
     if (_bodiesWithinDistanceToTargets())
         return Status::Success;
-        
+
     return Status::Running;
 }
 

@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "travel_time_non_optimal.h"
 
 #include <msode/analytic_control/optimal_path.h>

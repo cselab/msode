@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include <msode/core/types.h>
@@ -30,7 +31,7 @@ public:
     virtual real3 getVorticity(real3 r, real t) const = 0;
 
     /** dump the velocity and vorticity fields on a uniform grid to a vtk file called \p fileName.
-        \param [in] fileName The destination file name. 
+        \param [in] fileName The destination file name.
         \param [in] dimensions Number of points per dimension
         \param [in] start The lowest corner of the domain
         \param [in] size The size of the domain to dump
@@ -41,7 +42,7 @@ public:
     void dumpToVtkUniformGrid(const std::string& fileName, int3 dimensions, real3 start, real3 size, real t) const;
 
     /** dump the velocity and vorticity fields on a uniform grid in vtk format to a given stream.
-        \param [in] stream The destination stream to dump to. 
+        \param [in] stream The destination stream to dump to.
         \param [in] dimensions Number of points per dimension
         \param [in] start The lowest corner of the domain
         \param [in] size The size of the domain to dump

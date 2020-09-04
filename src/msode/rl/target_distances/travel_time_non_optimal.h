@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "interface.h"
@@ -23,7 +24,7 @@ private:
 
     mutable bool initialized_ {false};
     mutable msode::analytic_control::MatrixReal U_; ///< inverse of the velocity matrix
-    Quaternion q_{Quaternion::createIdentity()}; ///< orientation used to compute the travel time 
+    Quaternion q_{Quaternion::createIdentity()}; ///< orientation used to compute the travel time
 };
 
 } // namespace rl

@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "apply_strategy.h"
 
 #include "helpers.h"
@@ -14,7 +15,7 @@ static inline std::vector<real> computeBetas(const std::vector<real3>& initialPo
 {
     const size_t n = initialPositions.size();
     std::vector<real> betas(n, 0.0_r);
-    
+
     for (size_t i = 0; i < n; ++i)
         for (size_t j = 0; j < n; ++j)
         {
@@ -48,7 +49,7 @@ real simulateOptimalPath(real magneticFieldMagnitude,
         bodies[i].r = initialPositions[i];
         bodies[i].q = q;
     }
-    
+
     const real3 e1 {1.0_r, 0.0_r, 0.0_r};
     const real3 e2 {0.0_r, 1.0_r, 0.0_r};
     const real3 e3 {0.0_r, 0.0_r, 1.0_r};
@@ -112,13 +113,13 @@ real simulateOptimalPath(real magneticFieldMagnitude,
         else if (t < scan2) return dir2;
         else                return dir3;
     };
-    
+
     MagneticField magnField(magneticFieldMagnitude, omega, rotatingDirection);
     Simulation sim(bodies, magnField, std::move(velocityField));
 
     const real tTot = scan2 + tReorient + t3;
     const real omegaMax = *std::max_element(omegas.begin(), omegas.end());
-    
+
     const real dt = 1.0_r / (omegaMax * 20);
     const long nsteps = static_cast<long>(tTot/dt);
 
@@ -160,7 +161,7 @@ real computeRequiredTime(real magneticFieldMagnitude,
         constexpr real secureFactor = 5.0_r;
         tReorient = secureFactor * 2.0_r * M_PI / omegaPerpMin;
     }
-    
+
     const real scan1 = tReorient + t1;
     const real scan2 = scan1 + tReorient + t2;
     const real tTot = scan2 + tReorient + t3;

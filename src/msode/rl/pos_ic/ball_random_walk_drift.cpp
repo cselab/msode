@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "ball_random_walk_drift.h"
 
 #include <msode/core/math.h>

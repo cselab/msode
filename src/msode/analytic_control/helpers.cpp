@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "helpers.h"
 
 #include <msode/utils/mean_vel.h>
@@ -36,7 +37,7 @@ MatrixReal createVelocityMatrix(real magneticFieldMagnitude, const std::vector<R
     constexpr long nIntegration = 10000;
     const size_t n = bodies.size();
     const auto omegas = computeStepOutFrequencies(magneticFieldMagnitude, bodies);
-    
+
     MatrixReal V(n, n);
 
     for (size_t i = 0; i < n; ++i)

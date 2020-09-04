@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "quaternion.h"
@@ -58,7 +59,7 @@ struct MagneticField
         if (phase >= twoPi) phase -= twoPi;
         if (phase < 0)      phase += twoPi;
     }
-    
+
     real3 operator()(real t) const
     {
         const real3 B {magnitude * std::cos(phase),
@@ -69,9 +70,9 @@ struct MagneticField
         const real3 currentDirection = rotatingDirection(t);
 
         MSODE_Ensure(length(currentDirection) > 0.0_r, "Rotating direction must be different than 0");
-        
+
         const auto q = Quaternion::createFromVectors(originalDirection, currentDirection);
-        
+
         return q.rotate(B);
     }
 
@@ -102,10 +103,10 @@ public:
 
     const std::vector<RigidBody>& getBodies() const {return rigidBodies_;}
     std::vector<RigidBody>& getBodies() {return rigidBodies_;}
-    
+
     const MagneticField& getField() const {return magneticField_;}
     real getCurrentTime() const {return currentTime_;}
-    
+
     void advanceForwardEuler(real dt);
     void advanceRK4(real dt);
     void dump();
@@ -113,7 +114,7 @@ public:
 private:
     void _stepForwardEuler(real dt);
     void _stepRK4(real dt);
-    
+
 private:
     real currentTime_ {0.0_r};
     long currentTimeStep_ {0};

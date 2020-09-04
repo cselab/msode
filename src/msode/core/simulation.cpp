@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "simulation.h"
 #include "math.h"
 #include "velocity_field/none.h"
@@ -18,7 +19,7 @@ Simulation::Simulation(const std::vector<RigidBody>& initialRBs, const MagneticF
     magneticField_(initialMF),
     velocityField_(std::move(velocityField))
 {}
-    
+
 
 
 static inline real3 operator*(const PropulsionMatrix::SubMatrix& A, const real3& v)
@@ -60,7 +61,7 @@ void Simulation::runForwardEuler(long nsteps, real dt)
 {
     MSODE_Expect(nsteps > 0, "expect positive number of steps");
     MSODE_Expect(dt > 0._r, "expect positive time step");
-    
+
     for (long step = 0; step < nsteps; ++step)
         advanceForwardEuler(dt);
 }
@@ -69,7 +70,7 @@ void Simulation::runRK4(long nsteps, real dt)
 {
     MSODE_Expect(nsteps > 0, "expect positive number of steps");
     MSODE_Expect(dt > 0._r, "expect positive time step");
-    
+
     for (long step = 0; step < nsteps; ++step)
         advanceRK4(dt);
 }
@@ -80,7 +81,7 @@ void Simulation::advanceForwardEuler(real dt)
         dump();
 
     _stepForwardEuler(dt);
-    
+
     ++currentTimeStep_;
 }
 
@@ -99,7 +100,7 @@ computeDerivatives(const RigidBody& b, real3 B)
 {
     const Quaternion q = b.q;
     const Quaternion qInv = q.conjugate();
-        
+
     const real3 m      = qInv.rotate(b.magnMoment);
     const real3 torque = cross(m, B);
     constexpr real3 force {0.0_r, 0.0_r, 0.0_r};
@@ -111,7 +112,7 @@ computeDerivatives(const RigidBody& b, real3 B)
 
     v     = qInv.rotate(v    );
     omega = qInv.rotate(omega);
-        
+
     const auto _omega = Quaternion::createPureVector(omega);
     const auto dq_dt = 0.5_r * q * _omega;
 
@@ -121,17 +122,17 @@ computeDerivatives(const RigidBody& b, real3 B)
 void Simulation::_stepForwardEuler(real dt)
 {
     const real3 B = magneticField_(currentTime_);
-    
+
     for (auto& rigidBody : rigidBodies_)
     {
         Quaternion dq_dt;
         std::tie(rigidBody.v, rigidBody.omega, dq_dt) = computeDerivatives(rigidBody, B);
 
         rigidBody.v += velocityField_->getVelocity(rigidBody.r, currentTime_);
-        
+
         rigidBody.r += dt * rigidBody.v;
         rigidBody.q += dt * dq_dt;
-        
+
         rigidBody.q = rigidBody.q.normalized();
     }
 
@@ -150,7 +151,7 @@ void Simulation::_stepRK4(real dt)
     magneticField_.advance(currentTime_ + dt_half, dt_half);
 
     const real3 B1 = magneticField_(currentTime_ + dt);
-    
+
     for (auto& rigidBody : rigidBodies_)
     {
         Quaternion dq_dt1, dq_dt2, dq_dt3, dq_dt4;
@@ -161,7 +162,7 @@ void Simulation::_stepRK4(real dt)
         std::tie(v1, bWork.omega, dq_dt1) = computeDerivatives(bWork, B0);
 
         v1 += velocityField_->getVelocity(rigidBody.r, currentTime_);
-        
+
         bWork.r = rigidBody.r + dt_half * v1;
         bWork.q = rigidBody.q + dt_half * dq_dt1;
         bWork.q = bWork.q.normalized();
@@ -171,7 +172,7 @@ void Simulation::_stepRK4(real dt)
         std::tie(v2, bWork.omega, dq_dt2) = computeDerivatives(bWork, Bh);
 
         v2 += velocityField_->getVelocity(bWork.r, currentTime_ + dt_half);
-        
+
         bWork.r = rigidBody.r + dt_half * v2;
         bWork.q = rigidBody.q + dt_half * dq_dt2;
         bWork.q = bWork.q.normalized();
@@ -181,7 +182,7 @@ void Simulation::_stepRK4(real dt)
         std::tie(v3, bWork.omega, dq_dt3) = computeDerivatives(bWork, Bh);
 
         v3 += velocityField_->getVelocity(bWork.r, currentTime_ + dt_half);
-        
+
         bWork.r = rigidBody.r + dt * v3;
         bWork.q = rigidBody.q + dt * dq_dt3;
         bWork.q = bWork.q.normalized();
@@ -201,7 +202,7 @@ void Simulation::_stepRK4(real dt)
         rigidBody.q = rigidBody.q.normalized();
         rigidBody.v = v4;
     }
-    
+
     currentTime_ += dt;
 }
 
@@ -209,7 +210,7 @@ void Simulation::dump()
 {
     const real omega = magneticField_.omega(currentTime_);
     const real3 dir  = magneticField_.rotatingDirection(currentTime_);
-    
+
     file_ << currentTime_ << " " << omega << " "  << dir.x << " "  << dir.y << " "  << dir.z;
 
     for (const auto& rigidBody : rigidBodies_)

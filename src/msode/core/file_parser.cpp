@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "file_parser.h"
 #include "log.h"
 
@@ -68,5 +69,5 @@ PropulsionMatrix::SubMatrix FileParser::getSubMatrix(const std::string& key) con
     iss >> M[0] >> M[1] >> M[2];
     return M;
 }
-         
+
 } // namespace msode

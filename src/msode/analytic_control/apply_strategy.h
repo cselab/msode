@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "helpers.h"
@@ -11,7 +12,7 @@ namespace analytic_control {
     \param magneticFieldMagnitude The magnetic field magnitude
     \param bodies The list of all RigidBody objects (positions are irrelevant)
     \param initialPositions The initial positions of each RigidBody. Must have the same dimensions as \p bodies
-    \param velocityField Background velocity field. 
+    \param velocityField Background velocity field.
     \param U the inverse of the velocity matrix associated to \p bodies
     \param fname Output file name of the trajectories. Only relevant if \p dumpEvery > 0
     \param dumpEvery Dump trajectory point every this amount of time steps. if <= 0, will not dump anything.

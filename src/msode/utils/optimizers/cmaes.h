@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include <msode/core/math.h>
@@ -56,22 +57,22 @@ public:
 private:
     ///< sample points, evaluate function and update distribution. This does not set any of the bestValue/sample variables!
     Status _runGeneration();
-    
+
     /// generate a vector of size n_ whose entries are normally distrbuted N(0,1)
     Vector _generateNormalDistrVector();
-    
+
     /// set the order_ array to contain the indices of \p values ordered from lowest to highest
     void _computeOrdering(const std::vector<real>& values);
-    
+
 private:
     Function function_; ///< objective function to minimize
 
     std::mt19937 gen_; ///< helper to generate random numbers
     std::normal_distribution<real> normDistr_{0.0_r, 1.0_r}; ///< normal distribution
-    
+
     int n_; ///< problem dimension
     int countEval_ {0}; ///< total number of function evaluations
-    
+
     int lambda_;    ///< population size
     int mu_;        ///< selection size
     real muEff_;    ///< variance-effective size of mu
@@ -108,4 +109,3 @@ private:
 
 } // namespace utils
 } // namespace msode
-

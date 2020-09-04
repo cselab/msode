@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "local_frame.h"
 
 #include <msode/rl/environment.h>
@@ -24,14 +25,14 @@ ActionBounds FieldFromActionFromLocalFrame::getActionBounds() const
 std::tuple<real3, real3, real3> FieldFromActionFromLocalFrame::getFrameReference() const
 {
     constexpr int NotFound = -1;
-        
+
     const auto& bodies  = env_->getBodies();
     const auto& targets = env_->getTargetPositions();
 
     auto selectId = [&bodies, &targets](int start) -> int
     {
         constexpr real minDist = 5e-1_r;
-        
+
         for (size_t i = start; i < bodies.size(); ++i)
         {
             const real3 dr = bodies[i].r - targets[i];
@@ -40,17 +41,17 @@ std::tuple<real3, real3, real3> FieldFromActionFromLocalFrame::getFrameReference
         }
         return NotFound;
     };
-        
+
     const int i1 = selectId(0);
 
     if (i1 == NotFound)
         return {ex, ey, ez};
-        
+
     const real3 n1 = normalized(bodies[i1].r - targets[i1]);
 
     const int i2 = selectId(i1 + 1);
     real3 n2;
-        
+
     if (i2 == NotFound)
     {
         n2 = normalized(anyOrthogonal(n1));
@@ -68,10 +69,10 @@ std::tuple<real3, real3, real3> FieldFromActionFromLocalFrame::getFrameReference
                  "n1 and n2 are not orthogonal");
     MSODE_Ensure(std::abs(length(n3) - 1.0_r) < 1e-5_r,
                  "Bad normalization");
-        
+
     return {n1, n2, n3};
 }
-    
+
 void FieldFromActionFromLocalFrame::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == numActions(),
@@ -80,7 +81,7 @@ void FieldFromActionFromLocalFrame::setAction(const std::vector<double>& action)
     const real3 a {static_cast<real>(action[1]),
                    static_cast<real>(action[2]),
                    static_cast<real>(action[3])};
-        
+
     omega_ = std::min(maxOmega_, std::max(minOmega_, static_cast<real>(action[0])));
 
     real3 n1, n2, n3;

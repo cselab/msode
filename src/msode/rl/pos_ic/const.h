@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "interface.h"
@@ -15,7 +16,7 @@ public:
     EnvPosICConst(const std::vector<real3>& positions);
 
     std::unique_ptr<EnvPosIC> clone() const override;
-    
+
     real3 getLowestPosition()  const override;
     real3 getHighestPosition() const override;
 

@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "helpers.h"
 
 #include <msode/rl/field_from_action/factory.h>

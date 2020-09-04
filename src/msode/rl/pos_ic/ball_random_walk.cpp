@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "ball_random_walk.h"
 
 #include <msode/core/math.h>
@@ -32,7 +33,7 @@ void EnvPosICBallRandomWalk::update(bool succesfulTry)
     else
     {
         ++numTries_;
-        
+
         if (numTries_ > curriculumTries_)
         {
             numTries_ = 0;
@@ -70,7 +71,7 @@ void EnvPosICBallRandomWalk::_setPositionsIfNotUnitialized(std::mt19937& gen, in
     }
 }
 
-real3 EnvPosICBallRandomWalk::_generateOnePositionMC(std::mt19937& gen, real3 r0) const 
+real3 EnvPosICBallRandomWalk::_generateOnePositionMC(std::mt19937& gen, real3 r0) const
 {
     bool accepted {false};
     real3 r;

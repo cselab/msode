@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "ball.h"
 
 #include <msode/core/math.h>

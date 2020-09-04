@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include <msode/core/types.h>
@@ -16,7 +17,7 @@ class FieldFromAction
 {
 public:
     FieldFromAction(real minOmega, real maxOmega);
-    
+
     void attach(const MSodeEnvironment *env);
     virtual int numActions() const = 0;
 
@@ -37,4 +38,3 @@ protected:
 
 } // namespace rl
 } // namespace msode
-

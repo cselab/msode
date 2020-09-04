@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "factory.h"
 
 #include <msode/analytic_control/optimal_path.h>
@@ -28,7 +29,7 @@ static std::vector<RigidBody> readBodies(const Config& config)
 static inline void setPositions(std::vector<RigidBody>& bodies, const std::vector<real3>& positions)
 {
     MSODE_Expect(bodies.size() == positions.size(), "must have same size");
-    
+
     for (size_t i = 0; i < positions.size(); ++i)
         bodies[i].r = positions[i];
 }
@@ -63,7 +64,7 @@ estimateMaxDistanceAndTravelTime(const std::vector<RigidBody>& bodies,
         maxDistance = std::max(maxDistance, dist);
         maxTravelTime = std::max(maxTravelTime, travelTime);
     }
-    
+
     return {maxDistance, maxTravelTime};
 }
 
@@ -80,7 +81,7 @@ static Params createParams(const std::vector<RigidBody>& bodies, const EnvPosIC 
     const real dt       = 2.0_r * M_PI / (maxOmega * 20); // at least 20 steps per rotation
 
     auto rewConf = config.at("reward");
-    
+
     const real terminationBonus = rewConf.at("bonus");
 
     const real distCoeffReward = rewConf.at("distCoeff").get<real>() / maxDistance;
@@ -118,7 +119,7 @@ std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
     auto velField = msode::factory::createVelocityField(config.at("velocityField"));
 
     auto params = createParams(bodies, posIc.get(), targetDistance.get(), config);
-    
+
     return std::make_unique<MSodeEnvironment>(params, std::move(posIc), bodies, std::move(fieldAction), std::move(velField), std::move(targetDistance));
 }
 

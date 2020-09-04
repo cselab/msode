@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "euclidean_tt.h"
 
 #include <msode/analytic_control/optimal_path.h>
@@ -34,7 +35,7 @@ real TargetDistanceEuclideanTT::compute(const std::vector<RigidBody>& bodies) co
 
     for (auto a : A)
         sum += dot(a, a);
-    
+
     return std::sqrt(sum);
 }
 

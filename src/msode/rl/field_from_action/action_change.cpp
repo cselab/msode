@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "action_change.h"
 
 #include <msode/core/log.h>
@@ -40,7 +41,7 @@ void FieldFromActionChange::setAction(const std::vector<double>& action)
     dAxis_.z = action[3];
 }
 
-void FieldFromActionChange::advance(real t) 
+void FieldFromActionChange::advance(real t)
 {
     // advance
     lastOmega_ += _omegaActionChange(t);

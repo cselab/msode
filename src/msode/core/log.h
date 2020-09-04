@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include <cstdio>
@@ -7,7 +8,7 @@
 
 namespace msode
 {
-void die__ [[gnu::format(printf, 3, 4)]] 
+void die__ [[gnu::format(printf, 3, 4)]]
 (const char *file, int line, const char* pattern, ...);
 void printStacktrace();
 } // namespace msode

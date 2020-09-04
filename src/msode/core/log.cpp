@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "log.h"
 
 #ifdef MSODE_ENABLE_STACKTRACE

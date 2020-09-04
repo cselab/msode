@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "const.h"
 
 #include <msode/core/math.h>
@@ -45,7 +46,7 @@ std::vector<real3> EnvPosICConst::generateNewPositions(std::mt19937& /* gen */, 
     MSODE_Expect(n == static_cast<int>(positions_.size()),
                  "incompatible number of positions (required %d, have %zu",
                  n, positions_.size());
-    
+
     return positions_;
 }
 
@@ -54,7 +55,7 @@ std::vector<real3> EnvPosICConst::generateUniformPositions(std::mt19937& /* gen 
     MSODE_Expect(n == static_cast<int>(positions_.size()),
                  "incompatible number of positions (required %d, have %zu",
                  n, positions_.size());
-    
+
     return positions_;
 }
 

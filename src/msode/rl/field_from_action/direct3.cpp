@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "direct3.h"
 
 #include <msode/core/log.h>
@@ -29,8 +30,8 @@ std::tuple<real3, real3, real3> FieldFromActionDirect3::getFrameReference() cons
 {
     return {ex, ey, ez};
 }
-    
-void FieldFromActionDirect3::setAction(const std::vector<double>& action) 
+
+void FieldFromActionDirect3::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == 3, "expect action of size 3");
     constexpr real tolerance = 1e-6_r;
@@ -38,7 +39,7 @@ void FieldFromActionDirect3::setAction(const std::vector<double>& action)
     real3 a {action[1], action[2], action[3]};
 
     omega_ = length(a);
-    
+
     axis_ = omega_ < tolerance ? ex : normalized(a);
 }
 

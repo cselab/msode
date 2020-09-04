@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "types.h"
@@ -11,7 +12,7 @@
 namespace msode
 {
 
-using RotMatrix = std::array<std::array<real, 3>, 3>; 
+using RotMatrix = std::array<std::array<real, 3>, 3>;
 
 struct Quaternion
 {
@@ -19,7 +20,7 @@ struct Quaternion
     {
         return {0.0_r, 1.0_r, 0.0_r, 0.0_r};
     }
-    
+
     static inline Quaternion createFromComponents(real w, real x, real y, real z)
     {
         return {w, x, y, z};
@@ -56,7 +57,7 @@ struct Quaternion
             const auto q = createFromComponents(w, x, y, z);
             return q * (0.5_r / std::sqrt(t));
         };
-        
+
         if (R[2][2] < 0.0_r)
         {
             if (R[0][0] > R[1][1])
@@ -89,11 +90,11 @@ struct Quaternion
     {
         return {from, to};
     }
-    
+
     Quaternion() = default; // create an UNINITIALIZED quaternion
     Quaternion(const Quaternion& q) = default;
     Quaternion& operator=(const Quaternion& q) = default;
-    
+
     ~Quaternion() = default;
 
     real realPart() const {return w;}
@@ -117,7 +118,7 @@ struct Quaternion
         const real factor = 1.0_r / norm();
         return *this *= factor;
     }
-    
+
     Quaternion normalized() const
     {
         Quaternion ret = *this;
@@ -165,7 +166,7 @@ struct Quaternion
                 q1.w * q2.y - q1.x * q2.z + q1.y * q2.w + q1.z * q2.x,
                 q1.w * q2.z + q1.x * q2.y - q1.y * q2.x + q1.z * q2.w};
     }
-    
+
     Quaternion& operator*=(const Quaternion& q)
     {
         *this = (*this) * q;
@@ -190,7 +191,7 @@ struct Quaternion
     {
         return stream << q.realPart() << " " << q.vectorPart();
     }
-    
+
     real w;       // real part
     real x, y, z; // vector part
 
@@ -202,7 +203,7 @@ private:
     Quaternion(real w_, real3 u) :
         w(w_), x(u.x), y(u.y), z(u.z)
     {}
-    
+
     // https://stackoverflow.com/a/11741520/11630848
     Quaternion(real3 u, real3 v)
     {

@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "travel_time_ordered.h"
 
 #include <msode/analytic_control/optimal_path.h>
@@ -37,7 +38,7 @@ real TargetDistanceTravelTimeOrdered::compute(const std::vector<RigidBody>& bodi
             scales_.y * std::abs(a.y) +
             scales_.z * std::abs(a.z);
     }
-        
+
     return tt;
 }
 

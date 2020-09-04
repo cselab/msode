@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "weighted_targets.h"
 
 #include <msode/rl/environment.h>
@@ -24,7 +25,7 @@ ActionBounds FieldFromActionFromTargets::getActionBounds() const
         lo.push_back(0.0_r);
         hi.push_back(1.0_r);
     }
-        
+
     return {std::move(lo), std::move(hi)};
 }
 
@@ -32,7 +33,7 @@ std::tuple<real3, real3, real3> FieldFromActionFromTargets::getFrameReference() 
 {
     return {ex, ey, ez};
 }
-    
+
 void FieldFromActionFromTargets::setAction(const std::vector<double>& action)
 {
     MSODE_Expect(static_cast<int>(action.size()) == numActions(),
@@ -50,7 +51,7 @@ void FieldFromActionFromTargets::setAction(const std::vector<double>& action)
         auto u = normalized(bodies[i].r - targets[i]);
         axis_ += action[i+1] * u;
     }
-        
+
     axis_ = normalized(axis_);
 }
 

@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "line_search.h"
@@ -11,17 +12,17 @@ template<class F, class DerF, class Point>
 std::tuple<Point, real> minimizeGradientDescent(const F& func, const DerF& derF, Point x, int maxIter, real tol)
 {
     constexpr real maxAlpha = 1.0_r;
-    
+
     Point grad;
     real fValCurr = func(x);
     real fValPrev = fValCurr;
-    
+
 
     auto lineSearchFunc = [&](real alpha)
     {
         return func(x - alpha * grad);
     };
-    
+
     for (int i = 0; i < maxIter; ++i)
     {
         grad = derF(x);
@@ -42,4 +43,3 @@ std::tuple<Point, real> minimizeGradientDescent(const F& func, const DerF& derF,
 
 } // namespace utils
 } // namespace msode
-

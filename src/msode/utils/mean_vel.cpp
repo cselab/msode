@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #include "mean_vel.h"
 #include "integrator.h"
 
@@ -16,7 +17,7 @@ real computeMeanVelocityODE(RigidBody body, real magneticFieldMagnitude, real om
 
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
     body.r = rStart;
-        
+
     auto omegaField        = [omega](real) {return omega;};
     auto rotatingDirection = []     (real) {return real3{1.0_r, 0.0_r, 0.0_r};};
 
@@ -37,7 +38,7 @@ real computeMeanVelocityAnalytical(RigidBody body, real magneticFieldMagnitude, 
     const real Bxx = body.propulsion.B[0];
     const real Cxx = body.propulsion.C[0];
     const real wc = magneticFieldMagnitude * m * Cxx;
-    
+
     if (omega <= wc)
     {
         const real prefactor = Bxx / Cxx;

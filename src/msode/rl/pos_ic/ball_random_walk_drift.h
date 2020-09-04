@@ -1,3 +1,4 @@
+// Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
 #include "ball_random_walk.h"
@@ -22,12 +23,12 @@ public:
     EnvPosICBallRandomWalkDrift(const EnvPosICBallRandomWalkDrift&);
 
     std::unique_ptr<EnvPosIC> clone() const override;
-    
+
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 private:
     real3 _applyInverseDrift(real3 r) const;
-    
+
 private:
     std::unique_ptr<BaseVelocityField> velField_;
     real driftTime_;
