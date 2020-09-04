@@ -44,7 +44,7 @@ class ABFs:
         y0[n:-1] = self.thetas
         y0[-1  ] = self.theta_B
 
-        t = np.linspace(0, dt, int(dt*10*w)+2)
+        t = np.linspace(0, dt, 100)
         sol = odeint(rhs, y0, t)
 
         self.x       = sol[-1, :n]
