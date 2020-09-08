@@ -22,7 +22,7 @@ real TargetDistanceTravelTimeNonOptimal::compute(const std::vector<RigidBody>& b
 {
     if (!initialized_)
     {
-        auto V = msode::analytic_control::createVelocityMatrix(magneticFieldMagnitude_, bodies);
+        const auto V = msode::analytic_control::createVelocityMatrix(magneticFieldMagnitude_, bodies);
         U_ = V.inverse();
         initialized_ = true;
     }
