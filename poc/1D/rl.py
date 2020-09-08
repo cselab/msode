@@ -15,21 +15,21 @@ class Environment:
     def __init__(self,
                  bmb: list=[1, 1],
                  cmb: list=[1, 2],
-                 dt: float=1):
+                 dt: float=10):
         self.bmb = bmb
         self.cmb = cmb
-        self.step = 0
+        self.t  = 0
         self.dt = dt
 
     def reset(self):
         x0 = np.random.uniform(-50, 50, len(self.bmb))
         self.abfs = ABFs(x0, self.bmb, self.cmb)
-        self.step = 0
+        self.t = 0
         self.w = 0
         self.prev_distances = np.abs(self.abfs.x)
 
     def isOver(self): # is episode over
-        return self.step >= 500
+        return self.t >= 500
 
     def isSuccess(self): # has reached the target
         rt = 1
@@ -39,7 +39,7 @@ class Environment:
     def advance(self, action):
         self.w = action[0]
         self.abfs.advance(self.w, self.dt)
-        self.step += 1
+        self.t += self.dt
 
         if self.isOver():
             return Status.Failed
