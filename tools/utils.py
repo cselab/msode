@@ -12,4 +12,3 @@ def read_rigid_data(data):
     r = data[:,4:7]
     w = data[:,7:10]
     return q, r, w
-
