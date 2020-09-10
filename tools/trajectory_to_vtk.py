@@ -15,19 +15,19 @@ def write_point_data_scalar(f, point_data, name):
     f.write('LOOKUP_TABLE {}\n'.format("default"))
     for val in point_data:
         f.write("{}\n".format(val))
-    
+
 def write_point_data_vector(f, point_data, name):
     f.write('VECTORS {} {}\n'.format(name, "FLOAT"))
     for val in point_data:
         f.write("{} {} {}\n".format(val[0], val[1], val[2]))
-    
+
 
 parser = argparse.ArgumentParser(description="Create a vtk file from the trajectory files output by an msode simulation")
 parser.add_argument('file',         type=str, help='output of ODE simulation')
 parser.add_argument('out_basename', type=str, help='vtk file output base name, will be basename.<swimmer id>.vtk')
 parser.add_argument('--with_field_from', type=str, default=None, metavar='config.json',
                     help='if set, the background velocity field will be evaluated at every point of the trajectory. \
-                    The velocity fielf is described in the json file passed in this argument.')
+                    The velocity field is described in the json file passed in this argument.')
 args = parser.parse_args()
 
 data = np.loadtxt(args.file)
@@ -42,10 +42,10 @@ omega_field = data[:,1]
 start_base = 5 # time, omega direction, omega magnitude
 
 for i in range(nrigids):
-    
+
     start = start_base + i * ncolumnds_per_rigid
     end   = start + ncolumnds_per_rigid
-    q, pos, omega = read_rigid_data(data[:, start:end]) 
+    q, pos, omega = read_rigid_data(data[:, start:end])
 
     x = pos[:,0]
     y = pos[:,1]
@@ -53,7 +53,7 @@ for i in range(nrigids):
     n = len(x)
 
     filename = args.out_basename + ".{:04d}.vtk".format(i)
-    
+
     f = open(filename, 'w')
     f.write('# vtk DataFile Version 2.0\n')
     f.write('generated from msode trajectories\n')
