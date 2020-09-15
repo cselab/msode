@@ -3,6 +3,7 @@
 #include <msode/rl/pos_ic/factory.h>
 #include <msode/rl/pos_ic/box.h>
 #include <msode/rl/pos_ic/ball.h>
+#include <msode/rl/pos_ic/ball_growing.h>
 #include <msode/rl/pos_ic/ball_random_walk.h>
 #include <msode/rl/pos_ic/ball_random_walk_drift.h>
 
@@ -21,7 +22,7 @@ GTEST_TEST( RL_POS_IC, box_samples_are_inside )
     const long nSamples = 1000;
 
     rl::EnvPosICBox posIc(L);
-    
+
     for (int i = 0; i < nSamples; ++i)
     {
         const auto positions = posIc.generateNewPositions(gen, nPos);
@@ -48,7 +49,7 @@ GTEST_TEST( RL_POS_IC, ball_samples_are_inside )
     const long nSamples = 1000;
 
     rl::EnvPosICBall posIc(R);
-    
+
     for (int i = 0; i < nSamples; ++i)
     {
         const auto positions = posIc.generateNewPositions(gen, nPos);
@@ -71,7 +72,7 @@ GTEST_TEST( RL_POS_IC, ball_random_walk_samples_are_inside )
     const long nSamples = 1000;
 
     rl::EnvPosICBallRandomWalk posIc(R, targetRadius, sigmaRW);
-    
+
     for (int i = 0; i < nSamples; ++i)
     {
         const auto positions = posIc.generateNewPositions(gen, nPos);
@@ -104,14 +105,14 @@ GTEST_TEST( RL_POS_IC, ball_random_walk_drift_correct_drift )
     rl::EnvPosICBallRandomWalkDrift posIc( R, targetRadius, sigmaRW,
                                           std::make_unique<VelocityFieldConstant>(vel),
                                           driftTime);
-    
+
     const auto initPos = posIc.generateNewPositions(gen, nPos);
     const auto nextPos = posIc.generateNewPositions(gen, nPos);
 
     for (size_t i = 0; i < initPos.size(); ++i)
     {
         constexpr real tol = 1e-6_r;
-        
+
         const real3 refDrift = -driftTime * vel;
         const real3 drift = nextPos[i] - initPos[i];
 
@@ -124,7 +125,7 @@ GTEST_TEST( RL_POS_IC, ball_random_walk_drift_correct_drift )
 static void assertSame(const std::vector<real3>& a, const std::vector<real3>& b)
 {
     ASSERT_EQ(a.size(), b.size());
-    
+
     for (size_t i = 0; i < a.size(); ++i)
     {
         ASSERT_EQ(a[i].x, b[i].x);
@@ -136,7 +137,7 @@ static void assertSame(const std::vector<real3>& a, const std::vector<real3>& b)
 static void assertNotSame(const std::vector<real3>& a, const std::vector<real3>& b)
 {
     ASSERT_EQ(a.size(), b.size());
-    
+
     for (size_t i = 0; i < a.size(); ++i)
     {
         ASSERT_NE(a[i].x, b[i].x);
@@ -191,6 +192,19 @@ GTEST_TEST( RL_POS_IC, ball_random_walk_curriculum )
     checkChangeAfterSuccess(0);
     checkChangeAfterSuccess(1);
     checkChangeAfterSuccess(16);
+}
+
+
+GTEST_TEST( RL_POS_IC, ball_growing )
+{
+    const real R0 = 2.0_r;
+    const real R1 = 50.0_r;
+
+    const real dV = 4 * M_PI / 3 * (R1*R1*R1 - R0*R0*R0);
+
+    rl::EnvPosICBallGrowing bg(R0, R1, dV);
+
+    ASSERT_EQ(bg.getCurrentRadius(), R0);
 }
 
 

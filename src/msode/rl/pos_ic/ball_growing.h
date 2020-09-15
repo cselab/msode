@@ -16,6 +16,8 @@ public:
     void update(bool succesfulTry) override;
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
+    real getCurrentRadius() const {return currentRadius_;}
+
 private:
     real targetRadius_;
     real currentRadius_;
