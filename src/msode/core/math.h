@@ -36,6 +36,15 @@ inline real3 operator*(real a, real3 v)
     return v *= a;
 }
 
+inline real3& operator/=(real3& v, real a)
+{
+    const real s = 1.0_r / a;
+    v.x *= s;
+    v.y *= s;
+    v.z *= s;
+    return v;
+}
+
 inline real3& operator-=(real3& a, const real3& b)
 {
     a.x -= b.x;
@@ -48,6 +57,11 @@ inline real3 operator-(real3 a, real3 b)
 {
     a -= b;
     return a;
+}
+
+inline real3 operator-(real3 a)
+{
+    return {-a.x, -a.y, -a.z};
 }
 
 inline real dot(real3 a, real3 b)

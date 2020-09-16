@@ -13,7 +13,12 @@ struct int3 {int x, y, z;};
 
 constexpr inline real3 make_real3(real a)
 {
-    return {(real)a, (real)a, (real)a};
+    return {a, a, a};
+}
+
+constexpr inline real3 make_real3(real x, real y, real z)
+{
+    return {x, y, z};
 }
 
 inline namespace literals
