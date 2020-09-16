@@ -205,6 +205,11 @@ GTEST_TEST( RL_POS_IC, ball_growing )
     rl::EnvPosICBallGrowing bg(R0, R1, dV);
 
     ASSERT_EQ(bg.getCurrentRadius(), R0);
+
+    constexpr bool successful = true;
+    bg.update(successful);
+
+    ASSERT_NEAR(bg.getCurrentRadius(), R1, 1e-6_r);
 }
 
 

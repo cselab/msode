@@ -29,9 +29,9 @@ void EnvPosICBallGrowing::update(bool succesfulTry)
 {
     if (succesfulTry)
     {
-        // neglect second and third order terms in dR
-        const real dR = volumeGrowStep_ * 4.0_r * M_PI / (currentRadius_ * currentRadius_);
-        currentRadius_ = std::min(radius_, std::max(targetRadius_, currentRadius_ + dR));
+        const real V0 = 4.0_r * M_PI / 3.0_r * currentRadius_ * currentRadius_ * currentRadius_;
+        currentRadius_ = std::pow((V0 + volumeGrowStep_) * 3.0_r / (4.0_r * M_PI), 1.0_r / 3.0_r);
+        currentRadius_ = std::min(radius_, std::max(targetRadius_, currentRadius_));
     }
 }
 
