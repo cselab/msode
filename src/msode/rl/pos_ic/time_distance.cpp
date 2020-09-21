@@ -83,6 +83,8 @@ std::vector<real3> EnvPosICTimeDistance::generateUniformPositions(std::mt19937& 
 
 std::vector<real3> EnvPosICTimeDistance::_generatePositions(std::mt19937& gen, int n) const
 {
+    MSODE_Expect(n == V_.cols(), "Mismatch in velocity matrix dimensions. Got n=%d instead of %ld.", n, V_.cols());
+
     const real3 T = generateTravelTimes(gen, travelTime_);
     std::vector<real3> positions(n);
 
