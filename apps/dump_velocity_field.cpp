@@ -29,8 +29,8 @@ int main(int argc, char **argv)
 
     const Config config = json::parse(confFile);
 
-    auto field = factory::createVelocityField(config.at("velocityField"));
-    auto posIc = rl::factory::createEnvPosIC(config.at("posIc"));
+    auto field = factory::createVelocityField(config, ConfPointer("/velocityField"));
+    auto posIc = rl::factory::createEnvPosIC(config, ConfPointer("/posIc"));
 
     const real time = 0.0_r;
     const real3 start = posIc->getLowestPosition();

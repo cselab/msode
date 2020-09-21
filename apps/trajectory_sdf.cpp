@@ -87,8 +87,8 @@ int main(int argc, char **argv)
 
     const real magneticFieldMagnitude = config.at("fieldMagnitude").get<real>();
     const auto bodies = app_utils::readBodies(config.at("bodies"));
-    auto field = factory::createVelocityField(config.at("velocityField"));
-    auto posIc = rl::factory::createEnvPosIC(config.at("posIc"));
+    auto field = factory::createVelocityField(config, ConfPointer("/velocityField"));
+    auto posIc = rl::factory::createEnvPosIC(config, ConfPointer("/posIc"));
 
     const auto trajectory = app_utils::readTrajectory(bodies, argv[2]);
     const auto allSegments = extractSegments(trajectory);

@@ -11,7 +11,7 @@ namespace msode {
 namespace rl {
 namespace factory {
 
-std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config);
+std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPointer& confPointer);
 
 } // namespace factory
 } // namespace rl

@@ -12,6 +12,7 @@ namespace msode
 
 using json = nlohmann::json;
 using Config = json;
+using ConfPointer = json::json_pointer;
 
 void to_json(json& j, const PropulsionMatrix& p);
 void from_json(const json& j, PropulsionMatrix& p);

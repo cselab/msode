@@ -110,13 +110,15 @@ static Params createParams(const std::vector<RigidBody>& bodies, const EnvPosIC 
     return params;
 }
 
-std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
+std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& rootConfig, ConfPointer confPointer)
 {
+    auto config = rootConfig.at(confPointer);
+
     auto bodies         = readBodies(config.at("bodies"));
-    auto posIc          = createEnvPosIC(config.at("posIc"));
+    auto posIc          = createEnvPosIC(config, ConfPointer("/posIc"));
     auto fieldAction    = createFieldFromAction(config.at("fieldAction"));
     auto targetDistance = createTargetDistance(config.at("targetDistance"));
-    auto velField = msode::factory::createVelocityField(config.at("velocityField"));
+    auto velField = msode::factory::createVelocityField(config, ConfPointer("/velocityField"));
 
     auto params = createParams(bodies, posIc.get(), targetDistance.get(), config);
 

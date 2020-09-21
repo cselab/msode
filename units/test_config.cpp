@@ -89,8 +89,8 @@ GTEST_TEST( CONFIG, pointer )
         }
     })");
 
-    json::json_pointer ptra("/main/a");
-    json::json_pointer ptrb(config.at("main").at("ptrb"));
+    const ConfPointer ptra("/main/a");
+    const ConfPointer ptrb(config.at("main").at("ptrb"));
 
     ASSERT_EQ(config.at(ptra).get<int>(), 1);
     ASSERT_EQ(config.at(ptrb).get<int>(), 2);

@@ -73,7 +73,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
     const real magneticFieldMagnitude = config.at("fieldMagnitude").get<real>();
 
-    auto env = rl::factory::createEnvironment(config);
+    auto env = rl::factory::createEnvironment(config, ConfPointer(""));
 
     const int dumpEvery = 1000;
 
@@ -103,7 +103,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
         const real tAC =  [&]()
         {
             const auto envBodies = env->getBodies();
-            auto velocityField = factory::createVelocityField(config.at("velocityField"));
+            auto velocityField = factory::createVelocityField(config, ConfPointer("/velocityField"));
             return analytic_control::simulateOptimalPath(magneticFieldMagnitude, envBodies, extractPositions(envBodies),
                                                          std::move(velocityField), U, generateACfname(simId), dumpEvery);
         }();

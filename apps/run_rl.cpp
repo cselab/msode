@@ -24,7 +24,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
     const Config config = json::parse(confFile);
 
-    auto env = rl::factory::createEnvironment(config);
+    auto env = rl::factory::createEnvironment(config, ConfPointer(""));
 
     rl::setActionDims  (env.get(), comm);
     rl::setActionBounds(env.get(), comm);

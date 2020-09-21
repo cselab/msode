@@ -8,6 +8,7 @@
 #include "ball_random_walk_drift.h"
 #include "box.h"
 #include "const.h"
+#include "time_distance.h"
 
 #include <msode/rl/factory.h>
 #include <msode/core/velocity_field/factory.h>
@@ -16,8 +17,9 @@ namespace msode {
 namespace rl {
 namespace factory {
 
-std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
+std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPointer& confPointer)
 {
+    auto config = rootConfig.at(confPointer);
     std::unique_ptr<EnvPosIC> es;
 
     const auto type = config.at("__type").get<std::string>();
@@ -44,7 +46,7 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     }
     else if (type == "BallRandomWalkDrift")
     {
-        auto velField = msode::factory::createVelocityField(config.at("velocityField"));
+        auto velField = msode::factory::createVelocityField(config, ConfPointer("velocityField"));
 
         es = std::make_unique<EnvPosICBallRandomWalkDrift>(config.at("radius").get<real>(),
                                                            config.at("targetRadius").get<real>(),
@@ -73,6 +75,21 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
 
         es = std::make_unique<EnvPosICConst>(positions);
     }
+    // else if (type == "TimeDistance")
+    // {
+    //     std::vector<real> V;
+
+    //     auto travelTime = config.at("travelTime").get<real>();
+    //     auto vConf = config.at("velocityMatrix");
+
+    //     if (!vConf.is_array())
+    //         msode_die("TimeDistance PosIC: Expected an array for variable 'velocityMatrix'");
+
+    //     for (auto r : posConf)
+    //         positions.push_back(r.get<real3>());
+
+    //     es = std::make_unique<EnvPosICTimeDistance>(travelTime, std::move(V));
+    // }
     else
     {
         msode_die("Could not generate an EnvPosIC object from type '%s'",

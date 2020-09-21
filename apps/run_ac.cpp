@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 
     const real magneticFieldMagnitude = config.at("fieldMagnitude");
     const auto bodies = readBodies(config.at("bodies"));
-    auto velocityField = factory::createVelocityField(config.at("velocityField"));
+    auto velocityField = factory::createVelocityField(config, ConfPointer("/velocityField"));
 
     const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
     const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};

@@ -14,9 +14,11 @@ namespace msode
 namespace factory
 {
 
-std::unique_ptr<BaseVelocityField> createVelocityField(const Config& config)
+std::unique_ptr<BaseVelocityField> createVelocityField(const Config& rootConfig, const ConfPointer& confPointer)
 {
     std::unique_ptr<BaseVelocityField> vf;
+
+    const Config& config = rootConfig.at(confPointer);
 
     const auto type = config.at("__type").get<std::string>();
 
