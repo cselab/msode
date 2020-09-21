@@ -18,9 +18,12 @@ public:
 
     std::unique_ptr<EnvPosIC> clone() const override;
 
+    real3 getLowestPosition() const override;
     real3 getHighestPosition() const override;
 
     void update(bool successfulTry) override;
+
+    std::vector<real3> generateUniformPositions(std::mt19937& gen, int n) const override;
 
 private:
     real successIncrement_;

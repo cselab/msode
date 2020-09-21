@@ -23,8 +23,8 @@ public:
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
     std::vector<real3> generateUniformPositions(std::mt19937& gen, int n) const override;
 
-private:
-    std::vector<real3> _generatePositions(std::mt19937& gen, int n) const;
+protected:
+    std::vector<real3> _generatePositions(std::mt19937& gen, int n, real travelTime) const;
 
 protected:
     real travelTime_;

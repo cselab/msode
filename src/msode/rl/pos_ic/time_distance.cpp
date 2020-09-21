@@ -73,19 +73,19 @@ static std::vector<real> genPositions1D(std::mt19937& gen, real travelTime, cons
 
 std::vector<real3> EnvPosICTimeDistance::generateNewPositions(std::mt19937& gen, int n)
 {
-    return _generatePositions(gen, n);
+    return _generatePositions(gen, n, travelTime_);
 }
 
 std::vector<real3> EnvPosICTimeDistance::generateUniformPositions(std::mt19937& gen, int n) const
 {
-    return _generatePositions(gen, n);
+    return _generatePositions(gen, n, travelTime_);
 }
 
-std::vector<real3> EnvPosICTimeDistance::_generatePositions(std::mt19937& gen, int n) const
+std::vector<real3> EnvPosICTimeDistance::_generatePositions(std::mt19937& gen, int n, real travelTime) const
 {
     MSODE_Expect(n == V_.cols(), "Mismatch in velocity matrix dimensions. Got n=%d instead of %ld.", n, V_.cols());
 
-    const real3 T = generateTravelTimes(gen, travelTime_);
+    const real3 T = generateTravelTimes(gen, travelTime);
     std::vector<real3> positions(n);
 
     const auto x = genPositions1D(gen, T.x, V_);

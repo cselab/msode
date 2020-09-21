@@ -18,6 +18,11 @@ std::unique_ptr<EnvPosIC> EnvPosICTimeDistanceCurriculum::clone() const
     return std::make_unique<EnvPosICTimeDistanceCurriculum>(*this);
 }
 
+real3 EnvPosICTimeDistanceCurriculum::getLowestPosition() const
+{
+    return - getHighestPosition();
+}
+
 real3 EnvPosICTimeDistanceCurriculum::getHighestPosition() const
 {
     real dmax{0.0_r};
@@ -33,6 +38,11 @@ void EnvPosICTimeDistanceCurriculum::update(bool successfulTry)
         return;
 
     travelTime_ = std::min(travelTime_ + successIncrement_, maxTravelTime_);
+}
+
+std::vector<real3> EnvPosICTimeDistanceCurriculum::generateUniformPositions(std::mt19937& gen, int n) const
+{
+    return _generatePositions(gen, n, maxTravelTime_);
 }
 
 } // namespace rl
