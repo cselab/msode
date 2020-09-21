@@ -23,9 +23,9 @@ std::unique_ptr<EnvPosIC> EnvPosICBallRandomWalk::clone() const
     return std::make_unique<EnvPosICBallRandomWalk>(*this);
 }
 
-void EnvPosICBallRandomWalk::update(bool succesfulTry)
+void EnvPosICBallRandomWalk::update(bool successfulTry)
 {
-    if (succesfulTry)
+    if (successfulTry)
     {
         needUpdate_ = true;
         numTries_ = 0;

@@ -19,6 +19,7 @@ set(SRC_FILES
   pos_ic/const.cpp
   pos_ic/factory.cpp
   pos_ic/time_distance.cpp
+  pos_ic/time_distance_curriculum.cpp
   target_distances/factory.cpp
   target_distances/none.cpp
   target_distances/euclidean.cpp

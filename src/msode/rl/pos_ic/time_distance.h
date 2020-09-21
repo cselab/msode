@@ -26,7 +26,7 @@ public:
 private:
     std::vector<real3> _generatePositions(std::mt19937& gen, int n) const;
 
-private:
+protected:
     real travelTime_;
     msode::analytic_control::MatrixReal V_; ///< velocity matrix
 };

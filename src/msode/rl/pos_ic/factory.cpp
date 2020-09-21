@@ -9,6 +9,7 @@
 #include "box.h"
 #include "const.h"
 #include "time_distance.h"
+#include "time_distance_curriculum.h"
 
 #include <msode/analytic_control/helpers.h>
 #include <msode/core/velocity_field/factory.h>
@@ -17,6 +18,13 @@
 namespace msode {
 namespace rl {
 namespace factory {
+
+static auto getVelocityMatrix(const Config& rootConfig)
+{
+    const auto bodies = msode::factory::readBodiesArray(rootConfig.at("bodies"));
+    const auto B = rootConfig.at("fieldMagnitude");
+    return analytic_control::createVelocityMatrix(B, bodies);
+}
 
 std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPointer& confPointer)
 {
@@ -78,13 +86,19 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPoi
     }
     else if (type == "TimeDistance")
     {
-        const auto bodies = msode::factory::readBodiesArray(rootConfig.at("bodies"));
-        const auto B = rootConfig.at("fieldMagnitude");
-        auto V = analytic_control::createVelocityMatrix(B, bodies);
-
-        auto travelTime = config.at("travelTime").get<real>();
+        auto V = getVelocityMatrix(rootConfig);
+        const auto travelTime = config.at("travelTime").get<real>();
 
         es = std::make_unique<EnvPosICTimeDistance>(travelTime, std::move(V));
+    }
+    else if (type == "TimeDistanceCurriculum")
+    {
+        auto V = getVelocityMatrix(rootConfig);
+        const auto initTravelTime = config.at("initTravelTime").get<real>();
+        const auto maxTravelTime = config.at("maxTravelTime").get<real>();
+        const auto incTravelTime = config.at("incTravelTime").get<real>();
+
+        es = std::make_unique<EnvPosICTimeDistanceCurriculum>(initTravelTime, maxTravelTime, incTravelTime, std::move(V));
     }
     else
     {

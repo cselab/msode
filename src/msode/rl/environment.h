@@ -64,7 +64,7 @@ public:
     /**
        \param simId simulation id, used to create the trajectory file name. Not relevant if dumpEvery_ is zero
      */
-    void reset(std::mt19937& gen, long simId, bool succesfulPreviousTry);
+    void reset(std::mt19937& gen, long simId, bool successfulPreviousTry);
     void setPositions(const std::vector<real3>& positions);
     std::vector<real3> getPositions() const;
 

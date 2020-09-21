@@ -10,7 +10,7 @@ namespace rl {
 EnvPosIC::EnvPosIC() = default;
 EnvPosIC::~EnvPosIC() = default;
 
-void EnvPosIC::update(bool /* succesfulTry */)
+void EnvPosIC::update(bool /* successfulTry */)
 {}
 
 } // namespace rl

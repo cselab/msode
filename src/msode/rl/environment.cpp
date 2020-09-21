@@ -66,14 +66,14 @@ ActionBounds MSodeEnvironment::getActionBounds() const
     return magnFieldState->getActionBounds();
 }
 
-void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool succesfulPreviousTry)
+void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool successfulPreviousTry)
 {
     MagneticField          field  = sim->getField();
     std::vector<RigidBody> bodies = sim->getBodies();
 
     field.phase = 0.0_r;
 
-    posIc_->update(succesfulPreviousTry);
+    posIc_->update(successfulPreviousTry);
     const auto positions = posIc_->generateNewPositions(gen, bodies.size());
 
     for (size_t i = 0; i < bodies.size(); ++i)
