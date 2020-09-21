@@ -10,8 +10,9 @@
 #include "const.h"
 #include "time_distance.h"
 
-#include <msode/rl/factory.h>
+#include <msode/analytic_control/helpers.h>
 #include <msode/core/velocity_field/factory.h>
+#include <msode/rl/factory.h>
 
 namespace msode {
 namespace rl {
@@ -75,21 +76,16 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPoi
 
         es = std::make_unique<EnvPosICConst>(positions);
     }
-    // else if (type == "TimeDistance")
-    // {
-    //     std::vector<real> V;
+    else if (type == "TimeDistance")
+    {
+        const auto bodies = msode::factory::readBodiesArray(rootConfig.at("bodies"));
+        const auto B = rootConfig.at("fieldMagnitude");
+        auto V = analytic_control::createVelocityMatrix(B, bodies);
 
-    //     auto travelTime = config.at("travelTime").get<real>();
-    //     auto vConf = config.at("velocityMatrix");
+        auto travelTime = config.at("travelTime").get<real>();
 
-    //     if (!vConf.is_array())
-    //         msode_die("TimeDistance PosIC: Expected an array for variable 'velocityMatrix'");
-
-    //     for (auto r : posConf)
-    //         positions.push_back(r.get<real3>());
-
-    //     es = std::make_unique<EnvPosICTimeDistance>(travelTime, std::move(V));
-    // }
+        es = std::make_unique<EnvPosICTimeDistance>(travelTime, std::move(V));
+    }
     else
     {
         msode_die("Could not generate an EnvPosIC object from type '%s'",

@@ -13,19 +13,6 @@ namespace msode {
 namespace rl {
 namespace factory {
 
-static std::vector<RigidBody> readBodies(const Config& config)
-{
-    if (!config.is_array())
-        msode_die("Expected an array of bodies in config");
-
-    std::vector<RigidBody> bodies;
-
-    for (const auto& c : config)
-        bodies.push_back(msode::factory::readRigidBodyFromConfig(c));
-
-    return bodies;
-}
-
 static inline void setPositions(std::vector<RigidBody>& bodies, const std::vector<real3>& positions)
 {
     MSODE_Expect(bodies.size() == positions.size(), "must have same size");
@@ -114,7 +101,7 @@ std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& rootConfig, Co
 {
     auto config = rootConfig.at(confPointer);
 
-    auto bodies         = readBodies(config.at("bodies"));
+    auto bodies         = msode::factory::readBodiesArray(config.at("bodies"));
     auto posIc          = createEnvPosIC(config, ConfPointer("/posIc"));
     auto fieldAction    = createFieldFromAction(config.at("fieldAction"));
     auto targetDistance = createTargetDistance(config.at("targetDistance"));
