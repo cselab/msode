@@ -38,7 +38,13 @@ def plot_comparison(fname: str,
     plt.show()
 
 
-def infer_TMCMC(fname: str):
+def infer_TMCMC(fname: str,
+                use_MPI: bool=False):
+
+    if use_MPI:
+        import mpi4py # Initializes MPI, do not remove
+
+
     df = pd.read_csv(fname)
     omegas = df['omega'].to_numpy()
     Vexp = df['V'].to_numpy()
@@ -58,9 +64,7 @@ def infer_TMCMC(fname: str):
 
     # Configuring TMCMC parameters
     e["Solver"]["Type"] = "Sampler/TMCMC"
-    e["Solver"]["Population Size"] = 1000
-    e["Solver"]["Target Coefficient Of Variation"] = 0.1
-    e["Solver"]["Covariance Scaling"] = 0.04
+    e["Solver"]["Population Size"] = 5000
 
     # Configuring the problem's random distributions
     e["Distributions"][0]["Name"] = "Uniform 0"
@@ -91,6 +95,9 @@ def infer_TMCMC(fname: str):
     # Starting Korali's Engine and running experiment
     #e["Console Output"]["Verbosity"] = "Detailed"
     k = korali.Engine()
+    if use_MPI:
+        k["Conduit"]["Type"] = "Distributed";
+
     k.run(e)
 
 
@@ -99,7 +106,8 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', type=str, default='data/V.csv', help="The experimental data.")
+    parser.add_argument('--mpi', action='store_true', default=False, help="Use the distributed conduit.")
     args = parser.parse_args()
 
-    infer_TMCMC(args.data)
+    infer_TMCMC(args.data, args.mpi)
     #plot_comparison(args.data, 10, 10)
