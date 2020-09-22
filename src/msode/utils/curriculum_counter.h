@@ -11,7 +11,7 @@ namespace utils {
     - The number of successes since the last update is greater than a given value.
     - The number of attempts since the last update is greater than a given value.
  */
-class Curriculum
+class CurriculumCounter
 {
 public:
 
@@ -20,8 +20,8 @@ public:
        Non positive values will make this equivalent to +infty.
        \param requiredSuccesfulTries The number of successful tries after which to force and update.
      */
-    Curriculum(int numTriesBeforeUpdate,
-               int requiredSuccesfulTries);
+    CurriculumCounter(int numTriesBeforeUpdate,
+                      int requiredSuccesfulTries);
 
     bool needUpdate(bool successfulTry);
 

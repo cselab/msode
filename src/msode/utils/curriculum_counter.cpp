@@ -1,17 +1,17 @@
 // Copyright 2020 ETH Zurich. All Rights Reserved.
 
-#include "curriculum.h"
+#include "curriculum_counter.h"
 
 namespace msode {
 namespace utils {
 
-Curriculum::Curriculum(int numTriesBeforeUpdate,
-                       int requiredSuccesfulTries) :
+CurriculumCounter::CurriculumCounter(int numTriesBeforeUpdate,
+                                     int requiredSuccesfulTries) :
     maxTries_{numTriesBeforeUpdate},
     requiredSuccesfulTries_{requiredSuccesfulTries}
 {}
 
-bool Curriculum::needUpdate(bool successfulTry)
+bool CurriculumCounter::needUpdate(bool successfulTry)
 {
     if (successfulTry)
         ++successfulTries_;

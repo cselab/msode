@@ -23,9 +23,9 @@ build_and_create_test(test_velocity_flow.cpp "gtest;${LIB_NAME_MSODE}")
 build_and_create_test(test_rl_pos_ic.cpp      "gtest;rl")
 build_and_create_test(test_rl_environment.cpp "gtest;rl")
 
-build_and_create_test(test_utils_curriculum.cpp  "gtest;utils")
-build_and_create_test(test_utils_integration.cpp "gtest;utils")
-build_and_create_test(test_utils_rnd.cpp         "gtest;utils")
-build_and_create_test(test_utils_optimizers.cpp  "gtest;utils")
+build_and_create_test(test_utils_curriculum_counter.cpp "gtest;utils")
+build_and_create_test(test_utils_integration.cpp        "gtest;utils")
+build_and_create_test(test_utils_rnd.cpp                "gtest;utils")
+build_and_create_test(test_utils_optimizers.cpp         "gtest;utils")
 
 build_and_create_test(test_ac_opt.cpp  "gtest;analytic_control")

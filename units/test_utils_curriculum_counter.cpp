@@ -1,4 +1,4 @@
-#include <msode/utils/curriculum.h>
+#include <msode/utils/curriculum_counter.h>
 
 #include <gtest/gtest.h>
 #include <cmath>
@@ -11,7 +11,7 @@ GTEST_TEST(curriculum, update_max_tries)
     const bool success = false;
     const int numTriesBeforeUpdate = 5;
     const int requiredSuccesfulTries = 99999999;
-    utils::Curriculum curriculumCounter(numTriesBeforeUpdate, requiredSuccesfulTries);
+    utils::CurriculumCounter curriculumCounter(numTriesBeforeUpdate, requiredSuccesfulTries);
 
     const int numTries = 1000;
     int numUpdates = 0;
@@ -30,7 +30,7 @@ GTEST_TEST(curriculum, update_successes)
     const bool success = true;
     const int numTriesBeforeUpdate = 0; // infty
     const int requiredSuccesfulTries = 42;
-    utils::Curriculum curriculumCounter(numTriesBeforeUpdate, requiredSuccesfulTries);
+    utils::CurriculumCounter curriculumCounter(numTriesBeforeUpdate, requiredSuccesfulTries);
 
     const int numTries = 1000;
     int numUpdates = 0;
@@ -49,7 +49,7 @@ GTEST_TEST(curriculum, no_update)
     const bool success = false;
     const int numTriesBeforeUpdate = 0; // infty
     const int requiredSuccesfulTries = 42;
-    utils::Curriculum curriculumCounter(numTriesBeforeUpdate, requiredSuccesfulTries);
+    utils::CurriculumCounter curriculumCounter(numTriesBeforeUpdate, requiredSuccesfulTries);
 
     const int numTries = 1000;
     int numUpdates = 0;
