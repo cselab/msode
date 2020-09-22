@@ -13,10 +13,9 @@ Curriculum::Curriculum(int numTriesBeforeUpdate,
 
 bool Curriculum::needUpdate(bool successfulTry)
 {
-    if (successfulTry) {
+    if (successfulTry)
         ++successfulTries_;
-    }
-    ++ numTries_;
+    ++numTries_;
 
     if (successfulTries_ >= requiredSuccesfulTries_)
     {
