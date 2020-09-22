@@ -44,6 +44,25 @@ GTEST_TEST(curriculum, update_successes)
     ASSERT_EQ(numUpdates, numTries / requiredSuccesfulTries);
 }
 
+GTEST_TEST(curriculum, no_update)
+{
+    const bool success = false;
+    const int numTriesBeforeUpdate = 0; // infty
+    const int requiredSuccesfulTries = 42;
+    utils::Curriculum curriculumCounter(numTriesBeforeUpdate, requiredSuccesfulTries);
+
+    const int numTries = 1000;
+    int numUpdates = 0;
+    for (int i = 0; i < numTries; ++i)
+    {
+        const bool needUpdate = curriculumCounter.needUpdate(success);
+        if (needUpdate)
+            ++numUpdates;
+    }
+
+    ASSERT_EQ(numUpdates, 0);
+}
+
 
 int main(int argc, char **argv)
 {
