@@ -98,7 +98,15 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPoi
         const auto maxTravelTime = config.at("maxTravelTime").get<real>();
         const auto incTravelTime = config.at("incTravelTime").get<real>();
 
-        es = std::make_unique<EnvPosICTimeDistanceCurriculum>(initTravelTime, maxTravelTime, incTravelTime, std::move(V));
+        const auto numTriesBeforeUpdate   = config.at("numTriesBeforeUpdate"  ).get<int>();
+        const auto requiredSuccesfulTries = config.at("requiredSuccesfulTries").get<int>();
+
+        es = std::make_unique<EnvPosICTimeDistanceCurriculum>(initTravelTime,
+                                                              maxTravelTime,
+                                                              incTravelTime,
+                                                              std::move(V),
+                                                              numTriesBeforeUpdate,
+                                                              requiredSuccesfulTries);
     }
     else
     {

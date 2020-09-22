@@ -4,6 +4,7 @@
 #include "time_distance.h"
 
 #include <msode/analytic_control/helpers.h>
+#include <msode/utils/curriculum_counter.h>
 
 namespace msode {
 namespace rl {
@@ -14,7 +15,12 @@ namespace rl {
 class EnvPosICTimeDistanceCurriculum: public EnvPosICTimeDistance
 {
 public:
-    EnvPosICTimeDistanceCurriculum(real initialTravelTime, real maxTravelTime, real successIncrement, msode::analytic_control::MatrixReal V);
+    EnvPosICTimeDistanceCurriculum(real initialTravelTime,
+                                   real maxTravelTime,
+                                   real successIncrement,
+                                   msode::analytic_control::MatrixReal V,
+                                   int numTriesBeforeUpdate,
+                                   int requiredSuccesfulTries);
 
     std::unique_ptr<EnvPosIC> clone() const override;
 
@@ -28,6 +34,7 @@ public:
 private:
     real successIncrement_;
     real maxTravelTime_;
+    utils::CurriculumCounter curriculumCounter_;
 };
 
 } // namespace rl

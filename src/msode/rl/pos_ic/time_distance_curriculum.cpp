@@ -7,10 +7,13 @@ namespace rl {
 EnvPosICTimeDistanceCurriculum::EnvPosICTimeDistanceCurriculum(real initialTravelTime,
                                                                real maxTravelTime,
                                                                real successIncrement,
-                                                               msode::analytic_control::MatrixReal V) :
+                                                               msode::analytic_control::MatrixReal V,
+                                                               int numTriesBeforeUpdate,
+                                                               int requiredSuccesfulTries) :
     EnvPosICTimeDistance(initialTravelTime, std::move(V)),
     successIncrement_(successIncrement),
-    maxTravelTime_(maxTravelTime)
+    maxTravelTime_(maxTravelTime),
+    curriculumCounter_(numTriesBeforeUpdate, requiredSuccesfulTries)
 {}
 
 std::unique_ptr<EnvPosIC> EnvPosICTimeDistanceCurriculum::clone() const
@@ -34,10 +37,8 @@ real3 EnvPosICTimeDistanceCurriculum::getHighestPosition() const
 
 void EnvPosICTimeDistanceCurriculum::update(bool successfulTry)
 {
-    if (!successfulTry)
-        return;
-
-    travelTime_ = std::min(travelTime_ + successIncrement_, maxTravelTime_);
+    if (curriculumCounter_.needUpdate(successfulTry))
+        travelTime_ = std::min(travelTime_ + successIncrement_, maxTravelTime_);
 }
 
 std::vector<real3> EnvPosICTimeDistanceCurriculum::generateUniformPositions(std::mt19937& gen, int n) const
