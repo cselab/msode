@@ -25,7 +25,10 @@
 	"__type" : "TimeDistanceCurriculum",
 	"initTravelTime" : 3.0,
 	"maxTravelTime" : 100.0,
-	"incTravelTime" : 0.1
+	"incTravelTime" : 0.1,
+
+	"numTriesBeforeUpdate" : 0,
+	"requiredSuccesfulTries": 10
     },
     "fieldAction" : {
 	"__type" : "Direct",
