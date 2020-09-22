@@ -14,6 +14,12 @@ namespace utils {
 class Curriculum
 {
 public:
+
+    /**
+       \param numTriesBeforeUpdate The number of tries (successful or not) before forcing an update.
+       Non positive values will make this equivalent to +infty.
+       \param requiredSuccesfulTries The number of successful tries after which to force and update.
+     */
     Curriculum(int numTriesBeforeUpdate,
                int requiredSuccesfulTries);
 

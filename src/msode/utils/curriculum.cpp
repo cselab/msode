@@ -25,7 +25,8 @@ bool Curriculum::needUpdate(bool successfulTry)
         return true;
     }
 
-    if (numTries_ >= maxTries_)
+    if (maxTries_ > 0 &&
+        numTries_ >= maxTries_)
     {
         numTries_ = 0;
         successfulTries_ = 0;
