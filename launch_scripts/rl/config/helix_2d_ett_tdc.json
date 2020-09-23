@@ -22,13 +22,18 @@
 	}
     ],
     "posIc" : {
-	"__type" : "Ball",
-	"radius" : 50.0
+	"__type" : "TimeDistanceCurriculum",
+	"initTravelTime" : 3.0,
+	"maxTravelTime" : 50.0,
+	"incTravelTime" : 1,
+
+	"numTriesBeforeUpdate" : 0,
+	"requiredSuccesfulTries": 100
     },
     "fieldAction" : {
-	"__type" : "LocalFrame",
+	"__type" : "Direct",
 	"minOmega" : 0.0,
-	"maxOmega" : 90.0
+	"maxOmega" : 120.0
     },
     "fieldMagnitude" : 1.0,
     "targetRadius" : 2.0,
@@ -37,13 +42,13 @@
     },
     "targetDistance" :
     {
-	"__type" : "TravelTimeNonOptimal",
+	"__type" : "EuclideanTT",
 	"fieldMagnitude" : 1.0
     },
     "reward" :
     {
 	"bonus" : 1.0,
-	"distCoeff" : 2.0,
+	"distCoeff" : 1.0,
 	"timeCoeff" : 0.5
     },
     "dtAction" : 1.0,
