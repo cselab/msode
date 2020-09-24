@@ -16,7 +16,7 @@ target_link_libraries(dump_velocity_field msode rl)
 
 add_executable(forward forward.cpp)
 target_link_libraries(forward msode)
-  
+
 add_executable(forward_curve forward_curve.cpp)
 target_link_libraries(forward_curve utils)
 

@@ -13,11 +13,11 @@ GTEST_TEST( CONFIG, propulsion_matrix )
     p1.A[0] = 1.0_r;
     p1.A[1] = 2.0_r;
     p1.A[2] = 3.0_r;
-    
+
     p1.B[0] = 4.0_r;
     p1.B[1] = 5.0_r;
     p1.B[2] = 6.0_r;
-    
+
     p1.C[0] = 7.0_r;
     p1.C[1] = 8.0_r;
     p1.C[2] = 9.0_r;

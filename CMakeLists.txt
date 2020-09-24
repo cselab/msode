@@ -45,5 +45,3 @@ endif()
 add_subdirectory(src)
 add_subdirectory(units)
 add_subdirectory(apps)
-
-

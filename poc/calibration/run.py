@@ -25,15 +25,20 @@ def plot_comparison(fname: str,
                     bmb: float,
                     cmb: float):
     df = pd.read_csv(fname)
-    omegas = df['omega'].to_numpy()
+    omegasexp = df['omega'].to_numpy()
     Vexp = df['V'].to_numpy()
 
+    omegas = np.linspace(0, 1.2*max(omegasexp), 100)
     V = [compute_V(bmb, cmb, w) for w in omegas]
 
     fig, ax = plt.subplots()
 
-    ax.plot(omegas, Vexp, '+')
+    ax.plot(omegasexp, Vexp, '+')
     ax.plot(omegas, V, '-')
+    ax.set_xlim(left=0)
+
+    ax.set_xlabel(r'$\omega [Hz]$')
+    ax.set_xlabel(r'$V [\mu m/s]$')
 
     plt.show()
 
@@ -59,8 +64,6 @@ def infer_TMCMC(fname: str):
     # Configuring TMCMC parameters
     e["Solver"]["Type"] = "Sampler/TMCMC"
     e["Solver"]["Population Size"] = 1000
-    e["Solver"]["Target Coefficient Of Variation"] = 0.1
-    e["Solver"]["Covariance Scaling"] = 0.04
 
     # Configuring the problem's random distributions
     e["Distributions"][0]["Name"] = "Uniform 0"
@@ -101,5 +104,5 @@ if __name__ == '__main__':
     parser.add_argument('--data', type=str, default='data/V.csv', help="The experimental data.")
     args = parser.parse_args()
 
-    infer_TMCMC(args.data)
-    #plot_comparison(args.data, 10, 10)
+    #infer_TMCMC(args.data)
+    plot_comparison(args.data, bmb=9.1, cmb=9.1)
