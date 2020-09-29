@@ -11,15 +11,15 @@ def read_rigid_data(data):
 
 
 def write_point_data_scalar(f, point_data, name):
-    f.write('SCALARS {} {}\n'.format(name, "FLOAT"))
-    f.write('LOOKUP_TABLE {}\n'.format("default"))
+    f.write(f"SCALARS {name} FLOAT\n")
+    f.write("LOOKUP_TABLE default\n")
     for val in point_data:
-        f.write("{}\n".format(val))
+        f.write(f"{val}\n")
 
 def write_point_data_vector(f, point_data, name):
-    f.write('VECTORS {} {}\n'.format(name, "FLOAT"))
+    f.write(f"VECTORS {name} FLOAT\n")
     for val in point_data:
-        f.write("{} {} {}\n".format(val[0], val[1], val[2]))
+        f.write(f"{val[0]} {val[1]} {val[2]}\n")
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Create a vtk file from the trajectory files output by an msode simulation")
@@ -54,23 +54,22 @@ def main(argv):
         filename = args.out_basename + ".{:04d}.vtk".format(i)
 
         with open(filename, 'w') as f:
-            f.write('# vtk DataFile Version 2.0\n')
-            f.write('generated from msode trajectories\n')
-            f.write('ASCII\n')
-            f.write('DATASET POLYDATA\n')
-            f.write('POINTS {} FLOAT\n'.format(n))
+            f.write("# vtk DataFile Version 2.0\n")
+            f.write("generated from msode trajectories\n")
+            f.write("ASCII\n")
+            f.write("DATASET POLYDATA\n")
+            f.write(f"POINTS {n} FLOAT\n")
 
             for j in range(n):
-                f.write("{} {} {}\n".format(x[j], y[j], z[j]))
+                f.write(f"{x[j]} {y[j]} {z[j]}\n")
 
             nl = n-1
-            f.write('LINES {} {}\n'.format(nl, 3 * nl))
+            f.write(f"LINES {nl} {3*nl}\n")
 
             for j in range(n-1):
-                f.write("2 {} {}\n".format(j, j+1))
+                f.write(f"2 {j} {j+1}\n")
 
-            f.write('\n')
-            f.write('POINT_DATA {}\n'.format(n))
+            f.write(f"\nPOINT_DATA {n}\n")
 
             write_point_data_scalar(f, time, "time")
             write_point_data_scalar(f, np.abs(omega_field), "omega")
