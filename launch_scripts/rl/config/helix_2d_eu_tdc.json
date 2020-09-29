@@ -24,11 +24,11 @@
     "posIc" : {
 	"__type" : "TimeDistanceCurriculum",
 	"initTravelTime" : 3.0,
-	"maxTravelTime" : 100.0,
-	"incTravelTime" : 0.1,
+	"maxTravelTime" : 50.0,
+	"incTravelTime" : 0.5,
 
 	"numTriesBeforeUpdate" : 0,
-	"requiredSuccesfulTries": 10
+	"requiredSuccesfulTries": 100
     },
     "fieldAction" : {
 	"__type" : "Direct",
