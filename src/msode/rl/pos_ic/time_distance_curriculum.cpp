@@ -4,13 +4,14 @@
 namespace msode {
 namespace rl {
 
-EnvPosICTimeDistanceCurriculum::EnvPosICTimeDistanceCurriculum(real initialTravelTime,
+EnvPosICTimeDistanceCurriculum::EnvPosICTimeDistanceCurriculum(bool ball,
+                                                               real initialTravelTime,
                                                                real maxTravelTime,
                                                                real successIncrement,
                                                                msode::analytic_control::MatrixReal V,
                                                                int numTriesBeforeUpdate,
                                                                int requiredSuccesfulTries) :
-    EnvPosICTimeDistance(initialTravelTime, std::move(V)),
+    EnvPosICTimeDistance(ball, initialTravelTime, std::move(V)),
     successIncrement_(successIncrement),
     maxTravelTime_(maxTravelTime),
     curriculumCounter_(numTriesBeforeUpdate, requiredSuccesfulTries)

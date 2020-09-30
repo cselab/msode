@@ -15,7 +15,8 @@ namespace rl {
 class EnvPosICTimeDistanceCurriculum: public EnvPosICTimeDistance
 {
 public:
-    EnvPosICTimeDistanceCurriculum(real initialTravelTime,
+    EnvPosICTimeDistanceCurriculum(bool ball,
+                                   real initialTravelTime,
                                    real maxTravelTime,
                                    real successIncrement,
                                    msode::analytic_control::MatrixReal V,

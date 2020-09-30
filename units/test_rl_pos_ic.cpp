@@ -224,9 +224,10 @@ GTEST_TEST( RL_POS_IC, time_distance )
     V(1, 1) = 1.0_r;
 
     const real T = 10.0_r;
+    const bool ball = false;
 
     std::mt19937 gen(4242);
-    rl::EnvPosICTimeDistance ic(T, V);
+    rl::EnvPosICTimeDistance ic(ball, T, V);
 
     const auto positions = ic.generateNewPositions(gen, n);
 

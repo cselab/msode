@@ -87,13 +87,15 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPoi
     else if (type == "TimeDistance")
     {
         auto V = getVelocityMatrix(rootConfig);
+        const auto ball = config.at("ball").get<bool>();
         const auto travelTime = config.at("travelTime").get<real>();
 
-        es = std::make_unique<EnvPosICTimeDistance>(travelTime, std::move(V));
+        es = std::make_unique<EnvPosICTimeDistance>(ball, travelTime, std::move(V));
     }
     else if (type == "TimeDistanceCurriculum")
     {
         auto V = getVelocityMatrix(rootConfig);
+        const auto ball = config.at("ball").get<bool>();
         const auto initTravelTime = config.at("initTravelTime").get<real>();
         const auto maxTravelTime = config.at("maxTravelTime").get<real>();
         const auto incTravelTime = config.at("incTravelTime").get<real>();
@@ -101,7 +103,8 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPoi
         const auto numTriesBeforeUpdate   = config.at("numTriesBeforeUpdate"  ).get<int>();
         const auto requiredSuccesfulTries = config.at("requiredSuccesfulTries").get<int>();
 
-        es = std::make_unique<EnvPosICTimeDistanceCurriculum>(initTravelTime,
+        es = std::make_unique<EnvPosICTimeDistanceCurriculum>(ball,
+                                                              initTravelTime,
                                                               maxTravelTime,
                                                               incTravelTime,
                                                               std::move(V),

@@ -13,7 +13,7 @@ namespace rl {
 class EnvPosICTimeDistance: public EnvPosIC
 {
 public:
-    EnvPosICTimeDistance(real travelTime, msode::analytic_control::MatrixReal V);
+    EnvPosICTimeDistance(bool ball, real travelTime, msode::analytic_control::MatrixReal V);
 
     std::unique_ptr<EnvPosIC> clone() const override;
 
@@ -27,6 +27,7 @@ protected:
     std::vector<real3> _generatePositions(std::mt19937& gen, int n, real travelTime) const;
 
 protected:
+    bool ball_; ///< if true, will generate random travel times up to travelTime_; otherwise will be exactly travelTime_.
     real travelTime_;
     msode::analytic_control::MatrixReal V_; ///< velocity matrix
 };

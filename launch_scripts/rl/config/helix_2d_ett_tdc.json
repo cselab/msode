@@ -23,6 +23,7 @@
     ],
     "posIc" : {
 	"__type" : "TimeDistanceCurriculum",
+	"ball" : true,
 	"initTravelTime" : 3.0,
 	"maxTravelTime" : 50.0,
 	"incTravelTime" : 1,

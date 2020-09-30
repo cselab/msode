@@ -23,8 +23,9 @@
     ],
     "posIc" : {
 	"__type" : "TimeDistanceCurriculum",
+	"ball" : true,
 	"initTravelTime" : 3.0,
-	"maxTravelTime" : 50.0,
+	"maxTravelTime" : 75.0,
 	"incTravelTime" : 0.5,
 
 	"numTriesBeforeUpdate" : 0,
@@ -51,5 +52,5 @@
 	"timeCoeff" : 0.5
     },
     "dtAction" : 1.0,
-    "dumpEvery" : 1000
+    "dumpEvery" : 100
 }
