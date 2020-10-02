@@ -5,7 +5,6 @@
 */
 
 #include <msode/core/velocity_field/factory.h>
-#include <msode/rl/pos_ic/factory.h>
 
 #include <fstream>
 
@@ -13,14 +12,15 @@ using namespace msode;
 
 int main(int argc, char **argv)
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        fprintf(stderr, "usage : %s <config.json> <filename.vtk> \n\n", argv[0]);
+        fprintf(stderr, "usage : %s <config.json> <filename.vtk> <L> \n\n", argv[0]);
         return 1;
     }
 
     const std::string configName (argv[1]);
     const std::string outputName (argv[2]);
+    const real L = static_cast<real>( std::atof(argv[3]) );
 
     std::ifstream confFile(configName);
 
@@ -30,11 +30,10 @@ int main(int argc, char **argv)
     const Config config = json::parse(confFile);
 
     auto field = factory::createVelocityField(config, ConfPointer("/velocityField"));
-    auto posIc = rl::factory::createEnvPosIC(config, ConfPointer("/posIc"));
 
     const real time = 0.0_r;
-    const real3 start = posIc->getLowestPosition();
-    const real3 end   = posIc->getHighestPosition();
+    const real3 start {-L/2, -L/2, -L/2};
+    const real3 end   {L/2, L/2, L/2};
     const real3 size = end - start;
 
     const int n = 64;

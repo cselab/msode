@@ -72,9 +72,9 @@ static real distanceToAllSegments(real3 r, const std::vector<Segments>& allSegme
 
 int main(int argc, char **argv)
 {
-    if (argc != 4 && argc != 7)
+    if (argc != 6)
     {
-        fprintf(stderr, "usage : %s <config.json> <trajectory.dat> <field_and_sdf.vtk> [nx ny nz]\n\n", argv[0]);
+        fprintf(stderr, "usage : %s <config.json> <trajectory.dat> <field_and_sdf.vtk> <L> <n>\n\n", argv[0]);
         return 1;
     }
 
@@ -88,28 +88,19 @@ int main(int argc, char **argv)
     const real magneticFieldMagnitude = config.at("fieldMagnitude").get<real>();
     const auto bodies = app_utils::readBodies(config.at("bodies"));
     auto field = factory::createVelocityField(config, ConfPointer("/velocityField"));
-    auto posIc = rl::factory::createEnvPosIC(config, ConfPointer("/posIc"));
 
     const auto trajectory = app_utils::readTrajectory(bodies, argv[2]);
     const auto allSegments = extractSegments(trajectory);
 
+    const real L = static_cast<real>( std::atof(argv[4]) );
+    const int n = static_cast<real>( std::atof(argv[5]) );
+
     // values on the grid
 
-    int3 res;
-    if (argc == 4)
-    {
-        const int n = 64;
-        res = int3 {n, n, n};
-    }
-    else
-    {
-        int i {4};
-        res.x = atoi(argv[i++]);
-        res.y = atoi(argv[i++]);
-        res.z = atoi(argv[i++]);
-    }
-    const real3 start = posIc->getLowestPosition();
-    const real3 end   = posIc->getHighestPosition();
+    const int3 res {n, n, n};
+
+    const real3 start {-L/2, -L/2, -L/2};
+    const real3 end   {L/2, L/2, L/2};
     const real3 size = end - start;
     const real3 h {size.x / res.x,
                    size.y / res.y,
