@@ -14,9 +14,12 @@ target_link_libraries(convex_hull utils)
 add_executable(dump_velocity_field dump_velocity_field.cpp)
 target_link_libraries(dump_velocity_field msode rl)
 
+add_executable(field_around_trajectories field_around_trajectories.cpp)
+target_link_libraries(field_around_trajectories msode)
+
 add_executable(forward forward.cpp)
 target_link_libraries(forward msode)
-  
+
 add_executable(forward_curve forward_curve.cpp)
 target_link_libraries(forward_curve utils)
 
