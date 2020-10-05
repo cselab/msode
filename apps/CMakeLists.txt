@@ -43,7 +43,7 @@ target_link_libraries(trajectory_sdf msode rl)
 
 
 
-if (NOT NO_SMARTIES)
+if (USE_SMARTIES)
   include(FindPkgConfig)
   pkg_check_modules(smarties REQUIRED IMPORTED_TARGET smarties)
 
