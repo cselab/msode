@@ -1,5 +1,5 @@
 // Copyright 2020 ETH Zurich. All Rights Reserved.
-#include "helpers.h"
+#include "rl_helpers.h"
 
 #include <msode/rl/field_from_action/factory.h>
 #include <msode/rl/pos_ic/factory.h>

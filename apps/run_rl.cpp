@@ -4,9 +4,10 @@
     Use smarties to find optimal policy for the problem stated in `run_ac`.
  */
 
+#include "rl_helpers.h"
+
 #include <msode/core/log.h>
 #include <msode/rl/factory.h>
-#include <msode/rl/helpers.h>
 
 #include <fstream>
 #include <type_traits>

@@ -1,5 +1,10 @@
 find_package(OpenMP)
 
+include(FindPkgConfig)
+pkg_check_modules(smarties REQUIRED IMPORTED_TARGET smarties)
+
+
+
 if(OpenMP_CXX_FOUND)
   add_executable(ac_separability ac_separability.cpp)
   target_link_libraries(ac_separability OpenMP::OpenMP_CXX msode analytic_control)
@@ -29,12 +34,12 @@ target_link_libraries(optimal_path_landscape analytic_control)
 add_executable(run_ac run_ac.cpp)
 target_link_libraries(run_ac msode analytic_control)
 
-add_executable(run_rl run_rl.cpp)
-target_link_libraries(run_rl rl)
+add_executable(run_rl run_rl.cpp rl_helpers.cpp)
+target_link_libraries(run_rl rl PkgConfig::smarties )
 add_sanitizers(run_rl)
 
-add_executable(run_rl_comp run_rl_comp.cpp)
-target_link_libraries(run_rl_comp rl analytic_control)
+add_executable(run_rl_comp run_rl_comp.cpp rl_helpers.cpp)
+target_link_libraries(run_rl_comp rl analytic_control PkgConfig::smarties )
 
 add_executable(rotating rotating.cpp)
 target_link_libraries(rotating msode)

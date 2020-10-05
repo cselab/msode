@@ -4,12 +4,13 @@
     Use smarties to find optimal policy for the problem stated in `run_ac` and compare to the `run_ac` results for the same setup.
  */
 
+#include "rl_helpers.h"
+
 #include <msode/analytic_control/apply_strategy.h>
 #include <msode/analytic_control/optimal_path.h>
 #include <msode/core/log.h>
 #include <msode/core/velocity_field/factory.h>
 #include <msode/rl/factory.h>
-#include <msode/rl/helpers.h>
 
 #include <fstream>
 #include <iomanip>

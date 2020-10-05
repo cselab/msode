@@ -1,10 +1,10 @@
 // Copyright 2020 ETH Zurich. All Rights Reserved.
 #pragma once
 
-#include "environment.h"
-
 #include <msode/core/factory.h>
 #include <msode/core/file_parser.h>
+#include <msode/rl/environment.h>
+
 #include <smarties.h>
 
 #include <memory>
