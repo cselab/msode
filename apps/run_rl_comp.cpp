@@ -81,9 +81,9 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, env->getBodies());
     const analytic_control::MatrixReal U = V.inverse();
 
-    rl::setActionDims  (env.get(), comm);
-    rl::setActionBounds(env.get(), comm);
-    rl::setStateBounds (env.get(), comm);
+    setActionDims  (env.get(), comm);
+    setActionBounds(env.get(), comm);
+    setStateBounds (env.get(), comm);
 
     bool isTraining {true};
     long simId {0};

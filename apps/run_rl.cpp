@@ -27,9 +27,9 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
     auto env = rl::factory::createEnvironment(config, ConfPointer(""));
 
-    rl::setActionDims  (env.get(), comm);
-    rl::setActionBounds(env.get(), comm);
-    rl::setStateBounds (env.get(), comm);
+    setActionDims  (env.get(), comm);
+    setActionBounds(env.get(), comm);
+    setStateBounds (env.get(), comm);
 
     bool isTraining {true};
     long simId {0};

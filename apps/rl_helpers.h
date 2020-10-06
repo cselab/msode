@@ -9,12 +9,6 @@
 
 #include <memory>
 
-namespace msode {
-namespace rl {
-
-void setActionDims  (const MSodeEnvironment *env, smarties::Communicator *const comm);
-void setActionBounds(const MSodeEnvironment *env, smarties::Communicator *const comm);
-void setStateBounds (const MSodeEnvironment *env, smarties::Communicator *const comm);
-
-} // namespace rl
-} // namespace msode
+void setActionDims  (const msode::rl::MSodeEnvironment *env, smarties::Communicator *const comm);
+void setActionBounds(const msode::rl::MSodeEnvironment *env, smarties::Communicator *const comm);
+void setStateBounds (const msode::rl::MSodeEnvironment *env, smarties::Communicator *const comm);
