@@ -16,12 +16,14 @@ def get_samples(fname: str):
     return samples
 
 def propagate(fname: str,
-              samples: np.ndarray):
+              samples: np.ndarray,
+              out: str):
+
     df = pd.read_csv(fname)
     wexp = df['omega'].to_numpy()
     Vexp = df['V'].to_numpy()
 
-    nws = 50
+    nws = 200
     nsamples = samples.shape[0]
     ws = np.linspace(0, 1.2*np.max(wexp), nws)
 
@@ -47,9 +49,9 @@ def propagate(fname: str,
 
     fig, ax = plt.subplots()
 
-    ax.plot(ws, Vmean, '-')
-    ax.fill_between(ws, Vlo, Vhi, alpha=0.25)
-    ax.plot(wexp, Vexp, '+')
+    ax.plot(ws, Vmean, '-', label='ODE model')
+    ax.fill_between(ws, Vlo, Vhi, alpha=0.5, lw=0)
+    ax.plot(wexp, Vexp, 'ok', label='Mhanna 2014')
 
     ax.set_xlim(0, np.max(ws))
     ax.set_ylim(0)
@@ -57,15 +59,21 @@ def propagate(fname: str,
     ax.set_xlabel(r'$\omega \; [Hz]$')
     ax.set_ylabel(r'$V \; [\mu m / s]$')
 
-    plt.show()
+    plt.legend()
+
+    if out == 'GUI':
+        plt.show()
+    else:
+        plt.savefig(out, transparent=True)
 
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', type=str, default='data/V.csv', help="The experimental data.")
-    parser.add_argument('--korali-dir', type=str, default='_korali_result/latest', help="json file that contains the results of the inference script.")
+    parser.add_argument('--korali-res', type=str, default='_korali_result/latest', help="json file that contains the results of the inference script.")
+    parser.add_argument('--out', type=str, default='GUI', help="Output name for the figure.")
     args = parser.parse_args()
 
-    samples = get_samples(args.korali_dir)
-    propagate(args.data, samples[:200,:])
+    samples = get_samples(args.korali_res)
+    propagate(args.data, samples[:200,:], args.out)
