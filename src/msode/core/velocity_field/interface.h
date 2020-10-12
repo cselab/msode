@@ -3,12 +3,15 @@
 
 #include <msode/core/types.h>
 
+#include <functional>
 #include <memory>
 #include <ostream>
 #include <string>
 
 namespace msode
 {
+
+using Filter = std::function<bool(real3)>;
 
 /// Base class that describes the background velocity field
 class BaseVelocityField
@@ -39,7 +42,8 @@ public:
 
         This method will fail if it cannot write to the file.
      */
-    void dumpToVtkUniformGrid(const std::string& fileName, int3 dimensions, real3 start, real3 size, real t) const;
+    void dumpToVtkUniformGrid(const std::string& fileName, int3 dimensions, real3 start, real3 size,
+                              real t, Filter filter = [](real3) {return true;}) const;
 
     /** dump the velocity and vorticity fields on a uniform grid in vtk format to a given stream.
         \param [in] stream The destination stream to dump to.
@@ -48,7 +52,8 @@ public:
         \param [in] size The size of the domain to dump
         \param [in] t The time at which to dump the field
      */
-    void dumpToVtkUniformGrid(std::ostream& stream, int3 dimensions, real3 start, real3 size, real t) const;
+    void dumpToVtkUniformGrid(std::ostream& stream, int3 dimensions, real3 start, real3 size,
+                              real t, Filter filter = [](real3) {return true;}) const;
 };
 
 } // namespace msode

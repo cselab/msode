@@ -8,16 +8,27 @@
 #include "ball_random_walk_drift.h"
 #include "box.h"
 #include "const.h"
+#include "time_distance.h"
+#include "time_distance_curriculum.h"
 
-#include <msode/rl/factory.h>
+#include <msode/analytic_control/helpers.h>
 #include <msode/core/velocity_field/factory.h>
+#include <msode/rl/factory.h>
 
 namespace msode {
 namespace rl {
 namespace factory {
 
-std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
+static auto getVelocityMatrix(const Config& rootConfig)
 {
+    const auto bodies = msode::factory::readBodiesArray(rootConfig.at("bodies"));
+    const auto B = rootConfig.at("fieldMagnitude");
+    return analytic_control::createVelocityMatrix(B, bodies);
+}
+
+std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPointer& confPointer)
+{
+    auto config = rootConfig.at(confPointer);
     std::unique_ptr<EnvPosIC> es;
 
     const auto type = config.at("__type").get<std::string>();
@@ -44,7 +55,7 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
     }
     else if (type == "BallRandomWalkDrift")
     {
-        auto velField = msode::factory::createVelocityField(config.at("velocityField"));
+        auto velField = msode::factory::createVelocityField(config, ConfPointer("velocityField"));
 
         es = std::make_unique<EnvPosICBallRandomWalkDrift>(config.at("radius").get<real>(),
                                                            config.at("targetRadius").get<real>(),
@@ -72,6 +83,33 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& config)
             positions.push_back(r.get<real3>());
 
         es = std::make_unique<EnvPosICConst>(positions);
+    }
+    else if (type == "TimeDistance")
+    {
+        auto V = getVelocityMatrix(rootConfig);
+        const auto ball = config.at("ball").get<bool>();
+        const auto travelTime = config.at("travelTime").get<real>();
+
+        es = std::make_unique<EnvPosICTimeDistance>(ball, travelTime, std::move(V));
+    }
+    else if (type == "TimeDistanceCurriculum")
+    {
+        auto V = getVelocityMatrix(rootConfig);
+        const auto ball = config.at("ball").get<bool>();
+        const auto initTravelTime = config.at("initTravelTime").get<real>();
+        const auto maxTravelTime = config.at("maxTravelTime").get<real>();
+        const auto incTravelTime = config.at("incTravelTime").get<real>();
+
+        const auto numTriesBeforeUpdate   = config.at("numTriesBeforeUpdate"  ).get<int>();
+        const auto requiredSuccesfulTries = config.at("requiredSuccesfulTries").get<int>();
+
+        es = std::make_unique<EnvPosICTimeDistanceCurriculum>(ball,
+                                                              initTravelTime,
+                                                              maxTravelTime,
+                                                              incTravelTime,
+                                                              std::move(V),
+                                                              numTriesBeforeUpdate,
+                                                              requiredSuccesfulTries);
     }
     else
     {

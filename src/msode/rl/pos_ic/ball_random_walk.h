@@ -15,7 +15,7 @@ public:
 
     std::unique_ptr<EnvPosIC> clone() const override;
 
-    void update(bool succesfulTry) override;
+    void update(bool successfulTry) override;
     std::vector<real3> generateNewPositions(std::mt19937& gen, int n) override;
 
 protected:

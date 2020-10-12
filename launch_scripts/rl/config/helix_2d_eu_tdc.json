@@ -22,11 +22,14 @@
 	}
     ],
     "posIc" : {
-	"__type" : "BallRandomWalk",
-	"radius" : 50.0,
-	"targetRadius" : 2.0,
-	"sigma" : 0.1,
-	"curriculumTries" : 200
+	"__type" : "TimeDistanceCurriculum",
+	"ball" : true,
+	"initTravelTime" : 3.0,
+	"maxTravelTime" : 75.0,
+	"incTravelTime" : 0.5,
+
+	"numTriesBeforeUpdate" : 0,
+	"requiredSuccesfulTries": 100
     },
     "fieldAction" : {
 	"__type" : "Direct",
@@ -40,8 +43,7 @@
     },
     "targetDistance" :
     {
-	"__type" : "TravelTime",
-	"fieldMagnitude" : 1.0
+	"__type" : "Euclidean"
     },
     "reward" :
     {
@@ -50,5 +52,5 @@
 	"timeCoeff" : 0.5
     },
     "dtAction" : 1.0,
-    "dumpEvery" : 1000
+    "dumpEvery" : 100
 }

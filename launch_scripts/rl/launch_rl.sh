@@ -93,6 +93,8 @@ cp $srcdir/$sim_config $rundir/config.json
 
 cd $rundir
 
+num_train_steps=20000000
+
 if [ $launch_mode = "cluster" ]; then
 
     . load
@@ -100,16 +102,16 @@ if [ $launch_mode = "cluster" ]; then
     smarties.py $srcdir $settings \
 	 --nThreads 8 \
 	 --nEnvironments 1 \
-	 --nTrainSteps 20000000 \
 	 --clockHours 24 \
+	 --nTrainSteps $num_train_steps \
 	 --restart .
-    
+
 else
     . mir.load
-    
+
     smarties.py $srcdir $settings \
 		--nThreads 8 \
 		--nEnvironments 1 \
-		--nTrainSteps 20000000 \
+		--nTrainSteps $num_train_steps \
 		--restart .
 fi

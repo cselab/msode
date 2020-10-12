@@ -72,9 +72,9 @@ static real distanceToAllSegments(real3 r, const std::vector<Segments>& allSegme
 
 int main(int argc, char **argv)
 {
-    if (argc != 6)
+    if (argc != 7)
     {
-        fprintf(stderr, "usage : %s <config.json> <trajectory.dat> <field_and_sdf.vtk> <L> <n>\n\n", argv[0]);
+        fprintf(stderr, "usage : %s <config.json> <trajectory.dat> <field_and_sdf.vtk> <L> <n> <l>\n\n", argv[0]);
         return 1;
     }
 
@@ -93,7 +93,8 @@ int main(int argc, char **argv)
     const auto allSegments = extractSegments(trajectory);
 
     const real L = static_cast<real>( std::atof(argv[4]) );
-    const int n = static_cast<real>( std::atof(argv[5]) );
+    const int n = std::atoi(argv[5]);
+    const real l = static_cast<real>( std::atof(argv[6]) );
 
     // values on the grid
 
@@ -102,26 +103,8 @@ int main(int argc, char **argv)
     const real3 start {-L/2, -L/2, -L/2};
     const real3 end   {L/2, L/2, L/2};
     const real3 size = end - start;
-    const real3 h {size.x / res.x,
-                   size.y / res.y,
-                   size.z / res.z};
 
-    std::vector<real> vals(res.x * res.y * res.z);
-
-    for (int iz = 0, i = 0; iz < res.z; ++iz)
-    {
-        for (int iy = 0; iy < res.y; ++iy)
-        {
-            for (int ix = 0; ix < res.x; ++ix, ++i)
-            {
-                const real3 r {start.x + ix * h.x,
-                               start.y + iy * h.y,
-                               start.z + iz * h.z};
-
-                vals[i] = distanceToAllSegments(r, allSegments);
-            }
-        }
-    }
+    msode::Filter filter = [&](real3 r){return distanceToAllSegments(r, allSegments) < l;};;
 
     // dump to vtk
 
@@ -131,13 +114,7 @@ int main(int argc, char **argv)
     MSODE_Ensure(f.is_open(), "Error opening file '%s'", outFileName);
 
     const real time {0.0_r};
-    field->dumpToVtkUniformGrid(f, res, start, size, time);
-
-    f << "SCALARS sdf float 1\n"
-      << "LOOKUP_TABLE default\n";
-
-    for (auto v : vals)
-        f << v << '\n';
+    field->dumpToVtkUniformGrid(f, res, start, size, time, filter);
 
     return 0;
 }

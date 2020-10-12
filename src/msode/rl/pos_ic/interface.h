@@ -27,7 +27,7 @@ public:
     /** \brief Update the internal state according to the success of the previous simulation.
         This allows to create curriculum-like ICs
      */
-    virtual void update(bool succesfulTry);
+    virtual void update(bool successfulTry);
 
     /** \brief generate new positions in the current space
         \param gen rng

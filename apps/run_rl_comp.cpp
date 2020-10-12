@@ -4,12 +4,13 @@
     Use smarties to find optimal policy for the problem stated in `run_ac` and compare to the `run_ac` results for the same setup.
  */
 
+#include "rl_helpers.h"
+
 #include <msode/analytic_control/apply_strategy.h>
 #include <msode/analytic_control/optimal_path.h>
 #include <msode/core/log.h>
 #include <msode/core/velocity_field/factory.h>
 #include <msode/rl/factory.h>
-#include <msode/rl/helpers.h>
 
 #include <fstream>
 #include <iomanip>
@@ -73,16 +74,16 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
 
     const real magneticFieldMagnitude = config.at("fieldMagnitude").get<real>();
 
-    auto env = rl::factory::createEnvironment(config);
+    auto env = rl::factory::createEnvironment(config, ConfPointer(""));
 
     const int dumpEvery = 1000;
 
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, env->getBodies());
     const analytic_control::MatrixReal U = V.inverse();
 
-    rl::setActionDims  (env.get(), comm);
-    rl::setActionBounds(env.get(), comm);
-    rl::setStateBounds (env.get(), comm);
+    setActionDims  (env.get(), comm);
+    setActionBounds(env.get(), comm);
+    setStateBounds (env.get(), comm);
 
     bool isTraining {true};
     long simId {0};
@@ -103,7 +104,7 @@ inline void appMain(smarties::Communicator *const comm, int /*argc*/, char **/*a
         const real tAC =  [&]()
         {
             const auto envBodies = env->getBodies();
-            auto velocityField = factory::createVelocityField(config.at("velocityField"));
+            auto velocityField = factory::createVelocityField(config, ConfPointer("/velocityField"));
             return analytic_control::simulateOptimalPath(magneticFieldMagnitude, envBodies, extractPositions(envBodies),
                                                          std::move(velocityField), U, generateACfname(simId), dumpEvery);
         }();

@@ -22,11 +22,11 @@
 	}
     ],
     "posIc" : {
-	"__type" : "BallRandomWalk",
-	"radius" : 50.0,
-	"targetRadius" : 2.0,
-	"sigma" : 0.1,
-	"curriculumTries" : 10
+	"__type" : "Const",
+	"positions" : [
+	    [50.0, 20.0, -5.0],
+	    [-10.0, 30.0, 20.0]
+	]
     },
     "fieldAction" : {
 	"__type" : "Direct",
@@ -36,9 +36,7 @@
     "fieldMagnitude" : 1.0,
     "targetRadius" : 2.0,
     "velocityField" : {
-	"__type" : "FieldTaylorGreenVortex",
-	"magnitude" : [0.8, 0.8, -1.6],
-	"invPeriod" : [0.1256637061, 0.1256637061, 0.1256637061]
+	"__type" : "None"
     },
     "targetDistance" :
     {
@@ -51,5 +49,5 @@
 	"timeCoeff" : 0.5
     },
     "dtAction" : 1.0,
-    "dumpEvery" : 1000
+    "dumpEvery" : 100
 }

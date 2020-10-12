@@ -8,6 +8,7 @@ endif()
 option(BUILD_WITH_CONTRACTS "build with contract checks" ON)
 option(ENABLE_STACKTRACE    "print a stacktrace when failing" ON)
 option(USE_KORALI           "compile and link to korali (for testing only)" OFF)
+option(USE_SMARTIES         "compile the apps that need smarties" ON)
 
 # Choose Release mode as default.
 if(NOT CMAKE_BUILD_TYPE)

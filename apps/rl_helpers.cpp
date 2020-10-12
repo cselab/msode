@@ -1,20 +1,19 @@
 // Copyright 2020 ETH Zurich. All Rights Reserved.
-#include "helpers.h"
+#include "rl_helpers.h"
 
 #include <msode/rl/field_from_action/factory.h>
 #include <msode/rl/pos_ic/factory.h>
 
-namespace msode {
-namespace rl {
+using namespace msode;
 
-void setActionDims(const MSodeEnvironment *env, smarties::Communicator *const comm)
+void setActionDims(const rl::MSodeEnvironment *env, smarties::Communicator *const comm)
 {
     const int nControlVars = env->numActions();
     const int nStateVars   = env->getState().size();
     comm->setStateActionDims(nStateVars, nControlVars);
 }
 
-void setActionBounds(const MSodeEnvironment *env, smarties::Communicator *const comm)
+void setActionBounds(const rl::MSodeEnvironment *env, smarties::Communicator *const comm)
 {
     const bool bounded = true;
     std::vector<double> lo, hi;
@@ -33,9 +32,9 @@ static real3 max3(real3 a, real3 b)
 }
 
 
-void setStateBounds(const MSodeEnvironment *env, smarties::Communicator *const comm)
+void setStateBounds(const rl::MSodeEnvironment *env, smarties::Communicator *const comm)
 {
-    const EnvPosIC *posIc = env->getEnvPosIC();
+    const rl::EnvPosIC *posIc = env->getEnvPosIC();
     std::vector<double> lo, hi;
 
     const real3 minr = min3(posIc->target, posIc->getLowestPosition());
@@ -50,6 +49,3 @@ void setStateBounds(const MSodeEnvironment *env, smarties::Communicator *const c
 
     comm->setStateScales(hi, lo);
 }
-
-} // namespace rl
-} // namespace msode

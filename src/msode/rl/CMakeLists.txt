@@ -8,7 +8,6 @@ set(SRC_FILES
   field_from_action/direct.cpp
   field_from_action/local_frame.cpp
   field_from_action/factory.cpp
-  helpers.cpp
   pos_ic/interface.cpp
   pos_ic/ball.cpp
   pos_ic/ball_growing.cpp
@@ -19,6 +18,7 @@ set(SRC_FILES
   pos_ic/const.cpp
   pos_ic/factory.cpp
   pos_ic/time_distance.cpp
+  pos_ic/time_distance_curriculum.cpp
   target_distances/factory.cpp
   target_distances/none.cpp
   target_distances/euclidean.cpp
@@ -29,14 +29,8 @@ set(SRC_FILES
   target_distances/travel_time_ordered.cpp
   )
 
-include(FindPkgConfig)
-pkg_check_modules(smarties REQUIRED IMPORTED_TARGET smarties)
-
-# Get all propreties that cmake supports
-execute_process(COMMAND cmake --help-property-list OUTPUT_VARIABLE CMAKE_PROPERTY_LIST)
-
 add_library(rl STATIC ${SRC_FILES})
-target_link_libraries(rl PUBLIC ${LIB_NAME_MSODE} PkgConfig::smarties utils analytic_control)
+target_link_libraries(rl PUBLIC ${LIB_NAME_MSODE} utils analytic_control)
 target_include_directories(rl PUBLIC ${MSODE_INCLUDES})
 
 target_compile_features(rl PUBLIC cxx_std_14)

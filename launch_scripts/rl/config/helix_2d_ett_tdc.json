@@ -22,11 +22,14 @@
 	}
     ],
     "posIc" : {
-	"__type" : "BallRandomWalk",
-	"radius" : 50.0,
-	"targetRadius" : 2.0,
-	"sigma" : 0.1,
-	"curriculumTries" : 10
+	"__type" : "TimeDistanceCurriculum",
+	"ball" : true,
+	"initTravelTime" : 3.0,
+	"maxTravelTime" : 50.0,
+	"incTravelTime" : 1,
+
+	"numTriesBeforeUpdate" : 0,
+	"requiredSuccesfulTries": 100
     },
     "fieldAction" : {
 	"__type" : "Direct",
@@ -36,13 +39,12 @@
     "fieldMagnitude" : 1.0,
     "targetRadius" : 2.0,
     "velocityField" : {
-	"__type" : "FieldTaylorGreenVortex",
-	"magnitude" : [0.4, 0.4, -0.8],
-	"invPeriod" : [0.1256637061, 0.1256637061, 0.1256637061]
+	"__type" : "None"
     },
     "targetDistance" :
     {
-	"__type" : "Euclidean"
+	"__type" : "EuclideanTT",
+	"fieldMagnitude" : 1.0
     },
     "reward" :
     {

@@ -12,15 +12,17 @@ namespace msode
 
 BaseVelocityField::~BaseVelocityField() = default;
 
-void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 dimensions, real3 start, real3 size, real t) const
+void BaseVelocityField::dumpToVtkUniformGrid(const std::string& fileName, int3 dimensions, real3 start, real3 size,
+                                             real t, Filter filter) const
 {
     std::ofstream stream {fileName};
     MSODE_Ensure(stream.is_open(), "Error opening %s", fileName.c_str());
 
-    return this->dumpToVtkUniformGrid(stream, dimensions, start, size, t);
+    return this->dumpToVtkUniformGrid(stream, dimensions, start, size, t, filter);
 }
 
-void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensions, real3 start, real3 size, real t) const
+void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensions, real3 start, real3 size,
+                                             real t, Filter filter) const
 {
     MSODE_Expect(dimensions.x > 0 && dimensions.y > 0 && dimensions.z > 0,
                  "grid dimensions must be positive");
@@ -49,8 +51,10 @@ void BaseVelocityField::dumpToVtkUniformGrid(std::ostream& stream, int3 dimensio
                                start.y + iy * h.y,
                                start.z + iz * h.z};
 
-                velocities .push_back(getVelocity (r, t));
-                vorticities.push_back(getVorticity(r, t));
+                const int a = filter(r);
+
+                velocities .push_back(a * getVelocity (r, t));
+                vorticities.push_back(a * getVorticity(r, t));
             }
         }
     }

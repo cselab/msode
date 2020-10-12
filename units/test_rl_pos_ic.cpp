@@ -1,3 +1,4 @@
+#include <msode/analytic_control/optimal_path.h>
 #include <msode/core/math.h>
 #include <msode/core/velocity_field/constant.h>
 #include <msode/rl/pos_ic/factory.h>
@@ -6,6 +7,7 @@
 #include <msode/rl/pos_ic/ball_growing.h>
 #include <msode/rl/pos_ic/ball_random_walk.h>
 #include <msode/rl/pos_ic/ball_random_walk_drift.h>
+#include <msode/rl/pos_ic/time_distance.h>
 
 #include <gtest/gtest.h>
 #include <cmath>
@@ -210,6 +212,33 @@ GTEST_TEST( RL_POS_IC, ball_growing )
     bg.update(successful);
 
     ASSERT_NEAR(bg.getCurrentRadius(), R1, 1e-6_r);
+}
+
+GTEST_TEST( RL_POS_IC, time_distance )
+{
+    const int n = 2;
+    analytic_control::MatrixReal V(n, n);
+    V(0, 0) = 1.0_r;
+    V(0, 1) = 0.3_r;
+    V(1, 0) = 0.2_r;
+    V(1, 1) = 1.0_r;
+
+    const real T = 10.0_r;
+    const bool ball = false;
+
+    std::mt19937 gen(4242);
+    rl::EnvPosICTimeDistance ic(ball, T, V);
+
+    const auto positions = ic.generateNewPositions(gen, n);
+
+    const auto A = analytic_control::computeA(V.inverse(), positions);
+
+    const real travelTime =
+        analytic_control::computeTravelTime(A, make_real3(1, 0, 0)) +
+        analytic_control::computeTravelTime(A, make_real3(0, 1, 0)) +
+        analytic_control::computeTravelTime(A, make_real3(0, 0, 1));
+
+    ASSERT_NEAR(travelTime, T, 1e-6_r);
 }
 
 

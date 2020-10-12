@@ -15,5 +15,7 @@ RigidBody readRigidBodyConfigFromFile(const std::string& fname);
 /// read a RigidBody object from json format
 RigidBody readRigidBodyFromConfig(const Config& config);
 
+std::vector<RigidBody> readBodiesArray(const Config& config);
+
 } // namespace factory
 } // namespace msode

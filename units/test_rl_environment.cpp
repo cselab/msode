@@ -27,10 +27,10 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     const real omegaCperp = body.stepOutFrequency(magneticFieldMagnitude, 2);
 
     const real orientScale = 2.0_r * M_PI / omegaCperp;
-    
+
     TimeParams tParams;
     RewardParams rParams;
-    
+
     tParams.dt              = 2.0_r * M_PI / omegaC / 50;
     tParams.tmax            = 500.0_r;
     tParams.nstepsPerAction = 10.0_r * orientScale / tParams.dt;
@@ -38,7 +38,7 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
 
     rParams.timeCoeff        = 0.0_r;
     rParams.terminationBonus = 0.0_r;
-    
+
     Params params(tParams, rParams, magneticFieldMagnitude, distanceThreshold);
 
     auto posIc = std::make_unique<EnvPosICBall>(domainRadius);
@@ -68,7 +68,7 @@ GTEST_TEST( RL_ENVIRONMENT, reward_positive_towards_target )
     const bool succesfulPreviousTry = true; // to always generate new positions
     env->reset(gen, MSodeEnvironment::NO_DUMP, succesfulPreviousTry);
     env->advance(computeAction(env.get()));
-    
+
     for (int i = 0; i < 10; ++i)
     {
         env->advance(computeAction(env.get()));
@@ -98,7 +98,7 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
         "radius" : 50.0
     },
     "fieldAction" : {
-        "__type" : "Direct", 
+        "__type" : "Direct",
         "minOmega" : 0.0,
         "maxOmega" : 120.0
     },
@@ -121,7 +121,7 @@ GTEST_TEST( RL_ENVIRONMENT, factory )
     }
     )");
 
-    auto env = factory::createEnvironment(config);
+    auto env = factory::createEnvironment(config, ConfPointer(""));
 
     auto space = env->getEnvPosIC();
 

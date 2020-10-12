@@ -14,6 +14,9 @@ target_link_libraries(convex_hull utils)
 add_executable(dump_velocity_field dump_velocity_field.cpp)
 target_link_libraries(dump_velocity_field msode rl)
 
+add_executable(field_around_trajectories field_around_trajectories.cpp)
+target_link_libraries(field_around_trajectories msode)
+
 add_executable(forward forward.cpp)
 target_link_libraries(forward msode)
 
@@ -26,13 +29,6 @@ target_link_libraries(optimal_path_landscape analytic_control)
 add_executable(run_ac run_ac.cpp)
 target_link_libraries(run_ac msode analytic_control)
 
-add_executable(run_rl run_rl.cpp)
-target_link_libraries(run_rl rl)
-add_sanitizers(run_rl)
-
-add_executable(run_rl_comp run_rl_comp.cpp)
-target_link_libraries(run_rl_comp rl analytic_control)
-
 add_executable(rotating rotating.cpp)
 target_link_libraries(rotating msode)
 
@@ -44,3 +40,17 @@ target_link_libraries(trajectory_distances msode rl)
 
 add_executable(trajectory_sdf trajectory_sdf.cpp)
 target_link_libraries(trajectory_sdf msode rl)
+
+
+
+if (USE_SMARTIES)
+  include(FindPkgConfig)
+  pkg_check_modules(smarties REQUIRED IMPORTED_TARGET smarties)
+
+  add_executable(run_rl run_rl.cpp rl_helpers.cpp)
+  target_link_libraries(run_rl rl PkgConfig::smarties )
+  add_sanitizers(run_rl)
+
+  add_executable(run_rl_comp run_rl_comp.cpp rl_helpers.cpp)
+  target_link_libraries(run_rl_comp rl analytic_control PkgConfig::smarties )
+endif()

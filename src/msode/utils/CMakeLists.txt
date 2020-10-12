@@ -1,4 +1,5 @@
 set(SRC_FILES
+  curriculum_counter.cpp
   optimizers/cmaes.cpp
   mean_vel.cpp
   rnd.cpp

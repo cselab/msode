@@ -37,7 +37,7 @@
     "targetRadius" : 2.0,
     "velocityField" : {
 	"__type" : "FieldTaylorGreenVortex",
-	"magnitude" : [0.2, 0.2, -0.4],
+	"magnitude" : [1.0, 1.0, -2.0],
 	"invPeriod" : [0.1256637061, 0.1256637061, 0.1256637061]
     },
     "targetDistance" :

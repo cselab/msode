@@ -22,31 +22,34 @@
 	}
     ],
     "posIc" : {
-	"__type" : "BallLine",
-	"radius" : 50.0,
-	"probLine" : 0.1
+	"__type" : "Const",
+	"positions" : [
+	    [50.0, 20.0, -5.0],
+	    [-10.0, 30.0, 20.0]
+	]
     },
     "fieldAction" : {
 	"__type" : "Direct",
 	"minOmega" : 0.0,
-	"maxOmega" : 90.0
+	"maxOmega" : 120.0
     },
     "fieldMagnitude" : 1.0,
     "targetRadius" : 2.0,
     "velocityField" : {
-	"__type" : "None"
+	"__type" : "FieldTaylorGreenVortex",
+	"magnitude" : [1.0, 1.0, -2.0],
+	"invPeriod" : [0.1256637061, 0.1256637061, 0.1256637061]
     },
     "targetDistance" :
     {
-	"__type" : "TravelTimeNonOptimal",
-	"fieldMagnitude" : 1.0
+	"__type" : "Euclidean"
     },
     "reward" :
     {
 	"bonus" : 1.0,
-	"distCoeff" : 2.0,
+	"distCoeff" : 1.0,
 	"timeCoeff" : 0.5
     },
     "dtAction" : 1.0,
-    "dumpEvery" : 1000
+    "dumpEvery" : 200
 }

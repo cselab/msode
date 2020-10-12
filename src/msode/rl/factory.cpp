@@ -13,19 +13,6 @@ namespace msode {
 namespace rl {
 namespace factory {
 
-static std::vector<RigidBody> readBodies(const Config& config)
-{
-    if (!config.is_array())
-        msode_die("Expected an array of bodies in config");
-
-    std::vector<RigidBody> bodies;
-
-    for (const auto& c : config)
-        bodies.push_back(msode::factory::readRigidBodyFromConfig(c));
-
-    return bodies;
-}
-
 static inline void setPositions(std::vector<RigidBody>& bodies, const std::vector<real3>& positions)
 {
     MSODE_Expect(bodies.size() == positions.size(), "must have same size");
@@ -96,6 +83,7 @@ static Params createParams(const std::vector<RigidBody>& bodies, const EnvPosIC 
     fprintf(stderr,
             "----------------------------------------------------------\n"
             "tmax             %g\n"
+            "dmax             %g\n"
             "distCoeffReward  %g\n"
             "timeCoeffReward  %g\n"
             "terminationBonus %g\n"
@@ -103,20 +91,22 @@ static Params createParams(const std::vector<RigidBody>& bodies, const EnvPosIC 
             "dt action        %g\n"
             "steps per action %ld\n"
             "----------------------------------------------------------\n",
-            tmax, distCoeffReward, timeCoeffReward, terminationBonus,
+            tmax, maxDistance, distCoeffReward, timeCoeffReward, terminationBonus,
             dt, dtAction, nstepsPerAction);
 
     const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold);
     return params;
 }
 
-std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config)
+std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& rootConfig, ConfPointer confPointer)
 {
-    auto bodies         = readBodies(config.at("bodies"));
-    auto posIc          = createEnvPosIC(config.at("posIc"));
+    auto config = rootConfig.at(confPointer);
+
+    auto bodies         = msode::factory::readBodiesArray(config.at("bodies"));
+    auto posIc          = createEnvPosIC(config, ConfPointer("/posIc"));
     auto fieldAction    = createFieldFromAction(config.at("fieldAction"));
     auto targetDistance = createTargetDistance(config.at("targetDistance"));
-    auto velField = msode::factory::createVelocityField(config.at("velocityField"));
+    auto velField = msode::factory::createVelocityField(config, ConfPointer("/velocityField"));
 
     auto params = createParams(bodies, posIc.get(), targetDistance.get(), config);
 

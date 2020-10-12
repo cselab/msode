@@ -25,9 +25,9 @@ std::unique_ptr<EnvPosIC> EnvPosICBallGrowing::clone() const
     return std::make_unique<EnvPosICBallGrowing>(*this);
 }
 
-void EnvPosICBallGrowing::update(bool succesfulTry)
+void EnvPosICBallGrowing::update(bool successfulTry)
 {
-    if (succesfulTry)
+    if (successfulTry)
     {
         const real V0 = 4.0_r * M_PI / 3.0_r * currentRadius_ * currentRadius_ * currentRadius_;
         currentRadius_ = std::pow((V0 + volumeGrowStep_) * 3.0_r / (4.0_r * M_PI), 1.0_r / 3.0_r);

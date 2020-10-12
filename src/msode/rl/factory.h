@@ -11,7 +11,7 @@ namespace msode {
 namespace rl {
 namespace factory {
 
-std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& config);
+std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& rootConfig, ConfPointer confPointer);
 
 } // namespace factory
 } // namespace rl
