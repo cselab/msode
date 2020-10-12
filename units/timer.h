@@ -14,7 +14,7 @@ public:
         start_ {_none()},
         end_   {_none()}
     {
-        static_assert(std::chrono::__is_ratio<Ratio>::value, "timer must be specialized with ratio");
+        static_assert(std::__is_ratio<Ratio>::value, "timer must be specialized with ratio");
     }
 
     /// Start the wall clock

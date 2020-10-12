@@ -92,9 +92,6 @@ public:
                std::unique_ptr<BaseVelocityField> velocityField);
     ~Simulation() = default;
 
-    Simulation(const Simulation&) = default;
-    Simulation& operator=(const Simulation&) = default;
-
     void reset(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
     void activateDump(const std::string& fname, long dumpEvery);
 

@@ -52,9 +52,9 @@ struct Quaternion
     // https://d3cw3dd2w32x2b.cloudfront.net/wp-content/uploads/2015/01/matrix-to-quat.pdf
     static inline Quaternion createFromMatrix(const RotMatrix& R)
     {
-        auto makeQ = [](real t, real w, real x, real y, real z)
+        auto makeQ = [](real t, real _w, real _x, real _y, real _z)
         {
-            const auto q = createFromComponents(w, x, y, z);
+            const auto q = createFromComponents(_w, _x, _y, _z);
             return q * (0.5_r / std::sqrt(t));
         };
 

@@ -33,7 +33,7 @@ static void checkDivergenceFree(const VelocityField& velocityField, real3 r)
     const real dzvz = invTwoH * (v00p.z - v00m.z);
 
     const real divergence = dxvx + dyvy + dzvz;
-    
+
     ASSERT_LE(divergence, tol);
 }
 
@@ -41,7 +41,7 @@ template<class VelocityField>
 static void checkDivergenceFree(const VelocityField& velocityField, int nsamples = 100, long seed = 424242L)
 {
     constexpr real L = 10.0_r;
-    std::mt19937 gen{seed};
+    std::mt19937 gen(seed);
     std::uniform_real_distribution<real> distr(-L, L);
 
     for (int i = 0; i < nsamples; ++i)
@@ -79,7 +79,7 @@ static void checkVorticity(const VelocityField& velocityField, real3 r)
 
 
     const real3 wref = velocityField.getVorticity(r, t);
-    
+
     ASSERT_NEAR(wfd.x, wref.x, tol);
     ASSERT_NEAR(wfd.y, wref.y, tol);
     ASSERT_NEAR(wfd.z, wref.z, tol);
@@ -89,7 +89,7 @@ template<class VelocityField>
 static void checkVorticity(const VelocityField& velocityField, int nsamples = 100, long seed = 424242L)
 {
     constexpr real L = 10.0_r;
-    std::mt19937 gen{seed};
+    std::mt19937 gen(seed);
     std::uniform_real_distribution<real> distr(-L, L);
 
     for (int i = 0; i < nsamples; ++i)

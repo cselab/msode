@@ -87,7 +87,7 @@ Quaternion findBestPathCMAES(const std::vector<real3>& A, long seed, bool verbos
     info.fval = std::numeric_limits<real>::max();
     const int maxTries = 4;
     const int maxIterations = 500;
-    std::mt19937 gen {seed};
+    std::mt19937 gen(seed);
 
     auto travelTime = [&](const CMAES::Vector& x) -> real
     {

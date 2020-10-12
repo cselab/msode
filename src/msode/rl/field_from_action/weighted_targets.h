@@ -15,7 +15,7 @@ public:
     int numActions() const override;
 
     ActionBounds getActionBounds() const override;
-    std::tuple<real3, real3, real3> getFrameReference() const;
+    std::tuple<real3, real3, real3> getFrameReference() const override;
 
     void setAction(const std::vector<double>& action) override;
 

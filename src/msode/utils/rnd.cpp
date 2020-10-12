@@ -4,8 +4,6 @@
 namespace msode {
 namespace utils {
 
-static inline real sq(real x) {return x*x;}
-
 real3 generateUniformPositionBox(std::mt19937& gen, real3 lo, real3 hi)
 {
     std::uniform_real_distribution<real> uniformx(lo.x, hi.x);

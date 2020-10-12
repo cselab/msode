@@ -3,6 +3,8 @@
 
 #include "interface.h"
 
+#include <array>
+
 namespace msode {
 namespace rl {
 

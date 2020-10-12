@@ -17,6 +17,7 @@ class FieldFromAction
 {
 public:
     FieldFromAction(real minOmega, real maxOmega);
+    virtual ~FieldFromAction() = default;
 
     void attach(const MSodeEnvironment *env);
     virtual int numActions() const = 0;

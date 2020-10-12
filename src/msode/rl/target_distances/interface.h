@@ -15,6 +15,8 @@ namespace rl {
 class TargetDistance
 {
 public:
+    virtual ~TargetDistance() = default;
+
     /** \brief compute the distance given a list of bodies.
         \param bodies The list of bodies to compute the distance from.
         \return The distance to the target.
