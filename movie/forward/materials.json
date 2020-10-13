@@ -1,0 +1,23 @@
+{
+    "family" : "OSPRay",
+    "version" : "0.0",
+    "materials" : {
+	"scratched": {
+	    "type": "Principled",
+	    "doubles" : {
+		"metallic" : [1.0]
+	    },
+	    "textures" : {
+		"normalMap" : "metal_Normal.jpg",
+		"baseColorMap" : "metal_Base_Color.jpg",
+		"roughnessMap" : "metal_Roughness.jpg"
+	    }
+	},
+	"tiles" : {
+	    "type" : "OBJMaterial",
+	    "textures" : {
+		"map_d" : "/Users/amoudruz/projects/msode/movie/forward/background.png"
+	    }
+	}
+    }
+}

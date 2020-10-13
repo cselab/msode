@@ -1,0 +1,6 @@
+"tiles" : {
+    "type" : "OBJMaterial",
+    "textures" : {
+	"map_d" : "/Users/amoudruz/projects/msode/movie/forward/background.png"
+    }
+}
