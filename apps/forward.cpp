@@ -16,7 +16,7 @@ constexpr real dt {1e-3_r};
 
 static void runAndDump(RigidBody body, real omega, const std::string& out, int dumpEvery)
 {
-    const int nRevolutions = 10;
+    const int nRevolutions = 25;
     const real tEnd = nRevolutions * 2 * M_PI / omega;
     const long nsteps = tEnd / dt;
 
