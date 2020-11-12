@@ -79,6 +79,10 @@ public:
 
     real getSimulationTime() const;
 
+    /** \return The time remaining before cutting the episode. */
+    real getRemainingTimeBeforeCutting() const;
+
+
 private:
     void _setDistances();
     bool _bodiesWithinDistanceToTargets() const;

@@ -203,6 +203,11 @@ real MSodeEnvironment::getSimulationTime() const
     return sim->getCurrentTime();
 }
 
+real MSodeEnvironment::getRemainingTimeBeforeCutting() const
+{
+    return tmax_ - getSimulationTime();
+}
+
 void MSodeEnvironment::_setDistances()
 {
     const auto& bodies = sim->getBodies();
