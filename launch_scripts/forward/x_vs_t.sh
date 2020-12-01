@@ -12,7 +12,7 @@ mkdir -p $res
 
 wc=69.8364
 
-for a in 0.6 0.8 1 1.2 1.4 1.6; do
+for a in 0.6 1 1.4 1.8; do
     w=`python -c "print($wc * $a)"`
     $apps/forward $config $w $fps $res/xt_w_$w.dat
 done
