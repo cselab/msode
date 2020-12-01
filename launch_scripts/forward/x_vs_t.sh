@@ -10,6 +10,9 @@ res=results
 
 mkdir -p $res
 
-for w in 40 60 80 100 120; do
+wc=69.8364
+
+for a in 0.6 0.8 1 1.2 1.4 1.6; do
+    w=`python -c "print($wc * $a)"`
     $apps/forward $config $w $fps $res/xt_w_$w.dat
 done
