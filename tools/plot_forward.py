@@ -28,10 +28,10 @@ for filename in args.files:
         labels = [str(x) for x in locs]
         locs   = np.append(locs, wc)
         labels = np.append(labels, r'$\omega_c$')
-        
+
         ax.set_xticks(locs)
         ax.set_xticklabels(labels)
-    
+
 ax.set_xlabel(r'$\omega$ [Hz]')
 ax.set_ylabel(r'$V$ [body length / s]')
 
@@ -45,4 +45,3 @@ if args.out == "GUI":
     plt.show()
 else:
     plt.savefig(args.out, transparent=True)
-
