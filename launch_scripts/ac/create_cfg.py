@@ -15,7 +15,7 @@ def create_swimmer_cfg(*,
 
     Bxx = Vmax / Vmax
     Cxx = wc / Vmax
-    Cyy = 6 * Cxx # 6 times more difficult to steer (see DPD)
+    Cyy = Cxx / 6 # 6 times more difficult to steer (see DPD)
     Czz = Cyy
 
     cfg = {

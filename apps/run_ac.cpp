@@ -54,7 +54,7 @@ int main(int argc, char **argv)
     const analytic_control::MatrixReal U = V.inverse();
 
     const long seed = 42424242;
-    const int dumpEvery = 1000;
+    const int dumpEvery = config.at("dumpEvery");
     auto initialPositions = analytic_control::generateRandomPositionsBox(bodies.size(), boxLo, boxHi, seed);
     const real tTot = analytic_control::simulateOptimalPath(magneticFieldMagnitude, bodies, initialPositions,
                                                             std::move(velocityField), U, "ac_trajectories.dat", dumpEvery);
