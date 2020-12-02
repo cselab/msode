@@ -28,26 +28,9 @@
 	    [-10.0, 30.0, 20.0]
 	]
     },
-    "fieldAction" : {
-	"__type" : "Direct",
-	"minOmega" : 0.0,
-	"maxOmega" : 120.0
-    },
     "fieldMagnitude" : 1.0,
-    "targetRadius" : 2.0,
     "velocityField" : {
 	"__type" : "None"
     },
-    "targetDistance" :
-    {
-	"__type" : "Euclidean"
-    },
-    "reward" :
-    {
-	"bonus" : 1.0,
-	"distCoeff" : 1.0,
-	"timeCoeff" : 0.5
-    },
-    "dtAction" : 1.0,
     "dumpEvery" : 100
 }
