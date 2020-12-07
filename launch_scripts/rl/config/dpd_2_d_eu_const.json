@@ -1,0 +1,53 @@
+{
+    "bodies" : [
+	{
+	    "moment": [0.0, 0.06756756757, 0.0],
+	    "quaternion": [0.0, 1.0, 0.0, 0.0],
+	    "position": [0.0, 0.0, 0.0],
+	    "propulsion": {
+		"A": [0.17, 0.14, 0.14],
+		"B": [14.8, 0.0, 0.0],
+		"C": [2.47, 0.36, 0.36]
+	    }
+	},
+	{
+	    "moment": [0.0, 0.1607717042, 0.0],
+	    "quaternion": [0.0, 1.0, 0.0, 0.0],
+	    "position": [0.0, 0.0, 0.0],
+	    "propulsion": {
+		"A": [0.21, 0.17, 0.17],
+		"B": [6.22, 0.0, 0.0],
+		"C": [4.00, 0.53, 0.53]
+	    }
+	}
+    ],
+    "posIc" : {
+	"__type" : "Const",
+	"positions" : [
+	    [50.0, 20.0, -5.0],
+	    [-10.0, 30.0, 20.0]
+	]
+    },
+    "fieldAction" : {
+	"__type" : "Direct",
+	"minOmega" : 0.0,
+	"maxOmega" : 120.0
+    },
+    "fieldMagnitude" : 1.0,
+    "targetRadius" : 2.0,
+    "velocityField" : {
+	"__type" : "None"
+    },
+    "targetDistance" :
+    {
+	"__type" : "Euclidean"
+    },
+    "reward" :
+    {
+	"bonus" : 1.0,
+	"distCoeff" : 1.0,
+	"timeCoeff" : 0.5
+    },
+    "dtAction" : 1.0,
+    "dumpEvery" : 100
+}
