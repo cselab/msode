@@ -17,7 +17,7 @@ Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, rea
 
 MSodeEnvironment::MSodeEnvironment(const Params& params,
                                    std::unique_ptr<EnvPosIC> posIc,
-                                   const std::vector<RigidBody>& initialRBs,
+                                   std::vector<RigidBody> initialRBs,
                                    std::unique_ptr<FieldFromAction> magnFieldStateFromAction,
                                    std::unique_ptr<BaseVelocityField> velocityField,
                                    std::unique_ptr<TargetDistance> targetDistance) :
@@ -52,7 +52,7 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
 
     MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
-    sim = std::make_unique<Simulation>(initialRBs, field, std::move(velocityField));
+    sim = std::make_unique<Simulation>(std::move(initialRBs), std::move(field), std::move(velocityField));
     _setDistances();
 }
 
@@ -82,7 +82,7 @@ void MSodeEnvironment::reset(std::mt19937& gen, long simId, bool successfulPrevi
         bodies[i].q = utils::generateUniformQuaternion(gen);
     }
 
-    sim->reset(bodies, field);
+    sim->reset(std::move(bodies), std::move(field));
 
     if (dumpEvery_ > 0)
     {
@@ -105,9 +105,9 @@ void MSodeEnvironment::setPositions(const std::vector<real3>& positions)
 std::vector<real3> MSodeEnvironment::getPositions() const
 {
     std::vector<real3> positions;
-    auto bodies = sim->getBodies();
+    const auto& bodies = sim->getBodies();
 
-    for (auto b : bodies)
+    for (const auto& b : bodies)
         positions.push_back(b.r);
     return positions;
 }

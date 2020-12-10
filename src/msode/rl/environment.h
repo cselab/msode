@@ -47,7 +47,7 @@ public:
 
     MSodeEnvironment(const Params& params,
                      std::unique_ptr<EnvPosIC> posIc,
-                     const std::vector<RigidBody>& initialRBs,
+                     std::vector<RigidBody> initialRBs,
                      std::unique_ptr<FieldFromAction> magnFieldStateFromAction,
                      std::unique_ptr<BaseVelocityField> velocityField,
                      std::unique_ptr<TargetDistance> targetDistance);
