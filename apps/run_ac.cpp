@@ -47,8 +47,9 @@ int main(int argc, char **argv)
     const auto bodies = readBodies(config.at("bodies"));
     auto velocityField = factory::createVelocityField(config, ConfPointer("/velocityField"));
 
-    const real3 boxLo{-50.0_r, -50.0_r, -50.0_r};
-    const real3 boxHi{+50.0_r, +50.0_r, +50.0_r};
+    const real L = 5000.0_r;
+    const real3 boxLo{-L, -L, -L};
+    const real3 boxHi{+L, +L, +L};
 
     const analytic_control::MatrixReal V = analytic_control::createVelocityMatrix(magneticFieldMagnitude, bodies);
     const analytic_control::MatrixReal U = V.inverse();
