@@ -104,7 +104,7 @@ int main(int argc, char **argv)
     const real3 end   {L/2, L/2, L/2};
     const real3 size = end - start;
 
-    msode::Filter filter = [&](real3 r){return distanceToAllSegments(r, allSegments) < l;};;
+    msode::Filter filter = [&](real3 r){return distanceToAllSegments(r, allSegments) < l;};
 
     // dump to vtk
 

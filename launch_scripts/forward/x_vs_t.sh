@@ -3,14 +3,14 @@
 set -eu
 
 apps=../../build/apps
-config=../../data/helix/config/swimmer_00.json
+config=../../data/dpd_helix/config/P_2.0.json
 fps=120
 
 res=results
 
 mkdir -p $res
 
-wc=69.8364
+wc=123.998
 
 for a in 0.6 1 1.4 1.8; do
     w=`python -c "print($wc * $a)"`
