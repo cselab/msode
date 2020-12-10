@@ -8,15 +8,15 @@
 namespace msode
 {
 
-Simulation::Simulation(const std::vector<RigidBody>& initialRBs,
-                       const MagneticField& initialMF) :
-    Simulation(initialRBs, initialMF, std::make_unique<VelocityFieldNone>())
+Simulation::Simulation(std::vector<RigidBody> initialRBs,
+                       MagneticField initialMF) :
+    Simulation(std::move(initialRBs), std::move(initialMF), std::make_unique<VelocityFieldNone>())
 {}
 
-Simulation::Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF,
+Simulation::Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF,
                        std::unique_ptr<BaseVelocityField> velocityField) :
-    rigidBodies_(initialRBs),
-    magneticField_(initialMF),
+    rigidBodies_(std::move(initialRBs)),
+    magneticField_(std::move(initialMF)),
     velocityField_(std::move(velocityField))
 {}
 
@@ -37,12 +37,12 @@ static inline std::tuple<real3, real3> computeVelocities(const PropulsionMatrix&
     return {v, w};
 }
 
-void Simulation::reset(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF)
+void Simulation::reset(std::vector<RigidBody> initialRBs, MagneticField initialMF)
 {
     currentTimeStep_ = 0;
     currentTime_     = 0._r;
-    rigidBodies_ = initialRBs;
-    magneticField_ = initialMF;
+    rigidBodies_ = std::move(initialRBs);
+    magneticField_ = std::move(initialMF);
 }
 
 void Simulation::activateDump(const std::string& fname, long dumpEvery)

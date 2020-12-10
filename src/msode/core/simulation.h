@@ -47,8 +47,8 @@ struct MagneticField
 {
     MagneticField(real magnitude_, std::function<real(real)> omega_, std::function<real3(real)> rotatingDirection_) :
         magnitude(magnitude_),
-        omega(omega_),
-        rotatingDirection(rotatingDirection_)
+        omega(std::move(omega_)),
+        rotatingDirection(std::move(rotatingDirection_))
     {}
 
     void advance(real t, real dt)
@@ -87,12 +87,12 @@ public:
 
     enum class ODEScheme {ForwardEuler, RK4};
 
-    Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
-    Simulation(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF,
+    Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF);
+    Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF,
                std::unique_ptr<BaseVelocityField> velocityField);
     ~Simulation() = default;
 
-    void reset(const std::vector<RigidBody>& initialRBs, const MagneticField& initialMF);
+    void reset(std::vector<RigidBody> initialRBs, MagneticField initialMF);
     void activateDump(const std::string& fname, long dumpEvery);
 
     void runForwardEuler(long nsteps, real dt);
