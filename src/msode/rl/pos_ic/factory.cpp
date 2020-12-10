@@ -8,6 +8,7 @@
 #include "ball_random_walk_drift.h"
 #include "box.h"
 #include "const.h"
+#include "gaussian.h"
 #include "time_distance.h"
 #include "time_distance_curriculum.h"
 
@@ -83,6 +84,22 @@ std::unique_ptr<EnvPosIC> createEnvPosIC(const Config& rootConfig, const ConfPoi
             positions.push_back(r.get<real3>());
 
         es = std::make_unique<EnvPosICConst>(positions);
+    }
+    else if (type == "Gaussian")
+    {
+        std::vector<real3> positions;
+
+        auto posConf = config.at("positions");
+
+        if (!posConf.is_array())
+            msode_die("Const PosIC: Expected an array of real3 for variable 'positions'");
+
+        for (auto r : posConf)
+            positions.push_back(r.get<real3>());
+
+        const auto sigma = config.at("sigma").get<real>();
+
+        es = std::make_unique<EnvPosICGaussian>(positions, sigma);
     }
     else if (type == "TimeDistance")
     {

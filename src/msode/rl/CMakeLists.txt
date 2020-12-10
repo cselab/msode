@@ -17,6 +17,7 @@ set(SRC_FILES
   pos_ic/box.cpp
   pos_ic/const.cpp
   pos_ic/factory.cpp
+  pos_ic/gaussian.cpp
   pos_ic/time_distance.cpp
   pos_ic/time_distance_curriculum.cpp
   target_distances/factory.cpp
