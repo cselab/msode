@@ -110,7 +110,7 @@ std::unique_ptr<MSodeEnvironment> createEnvironment(const Config& rootConfig, Co
 
     auto params = createParams(bodies, posIc.get(), targetDistance.get(), config);
 
-    return std::make_unique<MSodeEnvironment>(params, std::move(posIc), bodies, std::move(fieldAction), std::move(velField), std::move(targetDistance));
+    return std::make_unique<MSodeEnvironment>(params, std::move(posIc), std::move(bodies), std::move(fieldAction), std::move(velField), std::move(targetDistance));
 }
 
 } // namespace factory
