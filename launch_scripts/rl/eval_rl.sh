@@ -112,7 +112,7 @@ if [ $launch_mode = "cluster" ]; then
 	 --nTrainSteps 20000000 \
 	 --clockHours 24 \
 	 --restart $trained_dir \
-	 --nEvalSeqs $nevals
+	 --nEvalEpisodes $nevals
 
 else
     . mir.load
@@ -122,5 +122,5 @@ else
 		--nEnvironments 1 \
 		--nTrainSteps 20000000 \
 		--restart $trained_dir \
-		--nEvalSeqs $nevals
+		--nEvalEpisodes $nevals
 fi
