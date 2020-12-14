@@ -45,7 +45,7 @@ std::unique_ptr<BaseVelocityField> createVelocityField(const Config& rootConfig,
             msode_die("Expected an array of fields in velocity field of type 'Sum'");
 
         for (const auto& cfg : fieldsCfg)
-            fields.push_back(createVelocityField(cfg, confPointer));
+            fields.push_back(createVelocityField(cfg, ConfPointer("")));
 
         vf = std::make_unique<VelocityFieldSum>(std::move(fields));
     }
