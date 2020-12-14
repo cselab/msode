@@ -8,6 +8,7 @@ set(MSODE_SOURCES
   velocity_field/factory.cpp
   velocity_field/none.cpp
   velocity_field/constant.cpp
+  velocity_field/sum.cpp
   velocity_field/taylor_green_vortex.cpp
   )
 

@@ -1,6 +1,7 @@
 #include <msode/core/simulation.h>
 #include <msode/core/velocity_field/constant.h>
 #include <msode/core/velocity_field/none.h>
+#include <msode/core/velocity_field/sum.h>
 #include <msode/core/velocity_field/taylor_green_vortex.h>
 
 #include <gtest/gtest.h>
@@ -142,6 +143,27 @@ GTEST_TEST( VELOCITY_FIELD, vorticity_taylorGreenVortex )
     const real3 invPeriod {0.3_r, 0.3_r, 0.3_r};
     const VelocityFieldTaylorGreenVortex vel{magn, invPeriod};
     checkVorticity(vel);
+}
+
+GTEST_TEST( VELOCITY_FIELD, sum_constants )
+{
+    const real3 v0 {-1.04_r, 2.3_r, 0.12_r};
+    const real3 v1 {18.42_r, 3.2_r, 1.34_r};
+    std::vector<std::unique_ptr<BaseVelocityField>> fields;
+    fields.push_back(std::make_unique<VelocityFieldConstant>(v0));
+    fields.push_back(std::make_unique<VelocityFieldConstant>(v1));
+
+    const VelocityFieldSum vel(std::move(fields));
+
+    checkDivergenceFree(vel);
+    checkVorticity(vel);
+
+    const auto v = vel.getVelocity({0.0_r, 0.0_r, 0.0_r}, 0.0_r);
+
+    constexpr real tol = 1e-6_r;
+    ASSERT_NEAR(v.x, v0.x + v1.x, tol);
+    ASSERT_NEAR(v.y, v0.y + v1.y, tol);
+    ASSERT_NEAR(v.z, v0.z + v1.z, tol);
 }
 
 int main(int argc, char **argv)

@@ -3,6 +3,7 @@
 
 #include "none.h"
 #include "constant.h"
+#include "sum.h"
 #include "taylor_green_vortex.h"
 
 #include <msode/core/log.h>
@@ -34,6 +35,19 @@ std::unique_ptr<BaseVelocityField> createVelocityField(const Config& rootConfig,
     {
         vf = std::make_unique<VelocityFieldTaylorGreenVortex>(config.at("magnitude").get<real3>(),
                                                               config.at("invPeriod").get<real3>());
+    }
+    else if (type == "Sum")
+    {
+        std::vector<std::unique_ptr<BaseVelocityField>> fields;
+        auto fieldsCfg = config.at("fields");
+
+        if (!fieldsCfg.is_array())
+            msode_die("Expected an array of fields in velocity field of type 'Sum'");
+
+        for (const auto& cfg : fieldsCfg)
+            fields.push_back(createVelocityField(cfg, confPointer));
+
+        vf = std::make_unique<VelocityFieldSum>(std::move(fields));
     }
     else
     {
