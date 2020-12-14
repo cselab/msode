@@ -107,7 +107,7 @@ if [ $launch_mode = "cluster" ]; then
     . load
     echo $settings
     smarties.py $srcdir $settings \
-	 --nThreads 8 \
+	 --nThreads 2 \
 	 --nEnvironments 1 \
 	 --nTrainSteps 20000000 \
 	 --clockHours 24 \
@@ -118,7 +118,7 @@ else
     . mir.load
 
     smarties.py $srcdir $settings \
-		--nThreads 8 \
+		--nThreads 2 \
 		--nEnvironments 1 \
 		--nTrainSteps 20000000 \
 		--restart $trained_dir \
