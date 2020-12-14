@@ -28,15 +28,16 @@ static std::vector<RigidBody> readBodies(const Config& config)
 
 int main(int argc, char **argv)
 {
-    if (argc != 2                    ||
+    if (argc != 3                    ||
         std::string(argv[1]) == "-h" ||
         std::string(argv[1]) == "--help")
     {
-        fprintf(stderr, "usage : %s <config.json>\n\n", argv[0]);
+        fprintf(stderr, "usage : %s <config.json> <L>\n\n", argv[0]);
         return 1;
     }
 
     std::ifstream confFile(argv[1]);
+    const real L = static_cast<real>(std::atof(argv[2]));
 
     if (!confFile.is_open())
         msode_die("Could not open the config file '%s'", argv[1]);
@@ -47,7 +48,6 @@ int main(int argc, char **argv)
     const auto bodies = readBodies(config.at("bodies"));
     auto velocityField = factory::createVelocityField(config, ConfPointer("/velocityField"));
 
-    const real L = 5000.0_r;
     const real3 boxLo{-L, -L, -L};
     const real3 boxHi{+L, +L, +L};
 

@@ -40,6 +40,7 @@ def main(argv: list):
     parser.add_argument('--Vmax', type=float, default=1, help='max velocity of the swimmers')
     parser.add_argument('--m', type=float, default=1, help='magnetic moment of the swimmers')
     parser.add_argument('--L', type=float, default=50, help='domain size')
+    parser.add_argument('--dump-every', type=float, default=1000, help='Number of steps between 2 dumps')
     args = parser.parse_args(argv)
 
     N = args.N
@@ -63,7 +64,7 @@ def main(argv: list):
     cfg['velocityField'] = {
 	"__type" : "None"
     }
-    cfg['dumpEvery'] = 100
+    cfg['dumpEvery'] = args.dump_every
 
     filename = args.out
     with open(filename, "w") as outfile:
