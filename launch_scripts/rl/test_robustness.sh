@@ -15,6 +15,7 @@ task()
     echo $conf
 
     if [[ -f $res_dir/s_$s.dat ]]; then
+	echo Skipping s=$s.
         exit 0
     fi
 
@@ -26,9 +27,21 @@ task()
     rm -f $conf
 )
 
+# for debugging
+#task() (echo start $s; sleep 1; echo end $s)
+
+
+jobid=0
+nprocs=8
+
 for s in `seq 0.00 0.05 2.00`; do
     task $s &
+    jobid=$((jobid+1))
+
+    if ! (( $jobid % $nprocs )) ; then
+        wait
+    fi
 done
 
 wait
-echo Done with all jobs
+echo Done with all $jobid jobs
