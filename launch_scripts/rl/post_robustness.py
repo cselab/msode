@@ -47,7 +47,7 @@ def post(files: list):
         data[p]["s"].append(s)
 
     for p, val in data.items():
-        print(p, val)
+        #print(p, val)
 
         df = pd.DataFrame(val)
         df.to_csv(f"p_{p}.csv", index=False)
