@@ -16,13 +16,25 @@ namespace analytic_control {
     \param U the inverse of the velocity matrix associated to \p bodies
     \param fname Output file name of the trajectories. Only relevant if \p dumpEvery > 0
     \param dumpEvery Dump trajectory point every this amount of time steps. if <= 0, will not dump anything.
+    \param verbose If true, print to console more information
     \note The \p velocityField is just to see the effect of the field on the validity of the method. The method only solved the problem for No velocityFields
  */
 real simulateOptimalPath(real magneticFieldMagnitude,
                          std::vector<RigidBody> bodies,
                          const std::vector<real3>& initialPositions,
                          std::unique_ptr<BaseVelocityField> velocityField,
-                         const MatrixReal& U, const std::string& fname, int dumpEvery);
+                         const MatrixReal& U, const std::string& fname, int dumpEvery,
+                         bool verbose=false);
+
+/** Same as simulateOptimalPath() but with orientation reset explicitely (no arbitrary magnetic field method that tries to reorient teh swimmers).
+ */
+real simulateOptimalPathForceReorient(real magneticFieldMagnitude,
+                                      std::vector<RigidBody> bodies, // by copy because will be modified (IC)
+                                      const std::vector<real3>& initialPositions,
+                                      std::unique_ptr<BaseVelocityField> velocityField,
+                                      const MatrixReal& U, const std::string& fname, int dumpEvery,
+                                      bool verbose=false);
+
 
 /** Compute the time taken bty the analytical method to bring the bodies to the target in free space, zero flow.
     \param magneticFieldMagnitude The magnetic field magnitude
