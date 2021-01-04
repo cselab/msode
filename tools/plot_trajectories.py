@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import numpy as np
+import matplotlib
 import argparse
 from utils import *
 import matplotlib.pyplot as plt
@@ -18,6 +19,10 @@ xG=[0,0,0]
 
 max_swimmers = 32
 colors = ['C'+str(i%10) for i in range(max_swimmers)]
+
+if (args.out != "GUI"):
+ plt.ioff()
+ matplotlib.use('Agg')
 
 def plot_trajectory(i, ax, x, y, z):
     if args.plot_shade:
@@ -92,4 +97,4 @@ plt.grid()
 if args.out == "GUI":
     plt.show()
 else:
-    plt.savefig(args.out, transparent=True)
+    plt.savefig(args.out, transparent=True, bbox_inches='tight')
