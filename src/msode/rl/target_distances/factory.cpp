@@ -5,6 +5,7 @@
 #include "euclidean.h"
 #include "euclidean_tt.h"
 #include "square.h"
+#include "sum.h"
 #include "travel_time.h"
 #include "travel_time_non_optimal.h"
 #include "travel_time_ordered.h"
@@ -34,6 +35,10 @@ std::unique_ptr<TargetDistance> createTargetDistance(const Config& config)
     else if (type == "Square")
     {
         td = std::make_unique<TargetDistanceSquare>();
+    }
+    else if (type == "Sum")
+    {
+        td = std::make_unique<TargetDistanceSum>();
     }
     else if (type == "TravelTime")
     {
