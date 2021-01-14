@@ -20,7 +20,7 @@ static inline std::vector<real> computeBetas(const std::vector<real3>& initialPo
         for (size_t j = 0; j < n; ++j)
         {
             const real xn = dot(initialPositions[j], dir);
-                betas[i] += U(i,j) * xn;
+            betas[i] += U(i,j) * xn;
         }
     return betas;
 }
