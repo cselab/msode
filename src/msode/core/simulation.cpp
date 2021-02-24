@@ -96,7 +96,7 @@ void Simulation::advanceRK4(real dt)
 }
 
 static inline std::tuple<real3, real3, Quaternion>
-computeDerivatives(const RigidBody& b, real3 B)
+computeDerivatives(const RigidBody& b, real3 B, const BaseVelocityField *velocityField, real time)
 {
     const Quaternion q = b.q;
     const Quaternion qInv = q.conjugate();
@@ -113,6 +113,9 @@ computeDerivatives(const RigidBody& b, real3 B)
     v     = qInv.rotate(v    );
     omega = qInv.rotate(omega);
 
+    v     +=         velocityField->getVelocity (b.r, time);
+    omega += 0.5_r * velocityField->getVorticity(b.r, time);
+
     const auto _omega = Quaternion::createPureVector(omega);
     const auto dq_dt = 0.5_r * q * _omega;
 
@@ -126,9 +129,9 @@ void Simulation::_stepForwardEuler(real dt)
     for (auto& rigidBody : rigidBodies_)
     {
         Quaternion dq_dt;
-        std::tie(rigidBody.v, rigidBody.omega, dq_dt) = computeDerivatives(rigidBody, B);
+        std::tie(rigidBody.v, rigidBody.omega, dq_dt) = computeDerivatives(rigidBody, B, velocityField_.get(), currentTime_);
 
-        rigidBody.v += velocityField_->getVelocity(rigidBody.r, currentTime_);
+
 
         rigidBody.r += dt * rigidBody.v;
         rigidBody.q += dt * dq_dt;
@@ -159,9 +162,7 @@ void Simulation::_stepRK4(real dt)
 
         // compute k1 = f(y0, t)
         RigidBody bWork = rigidBody;
-        std::tie(v1, bWork.omega, dq_dt1) = computeDerivatives(bWork, B0);
-
-        v1 += velocityField_->getVelocity(rigidBody.r, currentTime_);
+        std::tie(v1, bWork.omega, dq_dt1) = computeDerivatives(bWork, B0, velocityField_.get(), currentTime_);
 
         bWork.r = rigidBody.r + dt_half * v1;
         bWork.q = rigidBody.q + dt_half * dq_dt1;
@@ -169,9 +170,7 @@ void Simulation::_stepRK4(real dt)
         bWork.v = v1;
 
         // compute k2 = f(y0 + dt/2 * k1, t + dt/2)
-        std::tie(v2, bWork.omega, dq_dt2) = computeDerivatives(bWork, Bh);
-
-        v2 += velocityField_->getVelocity(bWork.r, currentTime_ + dt_half);
+        std::tie(v2, bWork.omega, dq_dt2) = computeDerivatives(bWork, Bh, velocityField_.get(), currentTime_+dt_half);
 
         bWork.r = rigidBody.r + dt_half * v2;
         bWork.q = rigidBody.q + dt_half * dq_dt2;
@@ -179,9 +178,7 @@ void Simulation::_stepRK4(real dt)
         bWork.v = v2;
 
         // compute k3 = f(y0 + dt/2 * k2, t + dt/2)
-        std::tie(v3, bWork.omega, dq_dt3) = computeDerivatives(bWork, Bh);
-
-        v3 += velocityField_->getVelocity(bWork.r, currentTime_ + dt_half);
+        std::tie(v3, bWork.omega, dq_dt3) = computeDerivatives(bWork, Bh, velocityField_.get(), currentTime_+dt_half);
 
         bWork.r = rigidBody.r + dt * v3;
         bWork.q = rigidBody.q + dt * dq_dt3;
@@ -189,9 +186,7 @@ void Simulation::_stepRK4(real dt)
         bWork.v = v3;
 
         // compute k4 = f(y0 + dt * k3, t + dt)
-        std::tie(v4, rigidBody.omega, dq_dt4) = computeDerivatives(bWork, B1);
-
-        v4 += velocityField_->getVelocity(bWork.r, currentTime_ + dt);
+        std::tie(v4, rigidBody.omega, dq_dt4) = computeDerivatives(bWork, B1, velocityField_.get(), currentTime_+dt);
 
         // compute y1 = y0 + (k1/6 + k2/3 + k3/3 + k4/6) * dt
         constexpr real one_third = 1.0_r / 3.0_r;
