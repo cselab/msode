@@ -23,6 +23,7 @@ public:
 
     real3 getVelocity(real3 r, real t) const override;
     real3 getVorticity(real3 r, real t) const override;
+    DeformationRateTensor getDeformationRateTensor(real3 r, real t) const override;
 
 private:
     real3 magnitude_; ///< magnitudes along the 3 directions

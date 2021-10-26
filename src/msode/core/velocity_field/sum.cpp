@@ -40,4 +40,21 @@ real3 VelocityFieldSum::getVorticity(real3 r, real t) const
     return w;
 }
 
+DeformationRateTensor VelocityFieldSum::getDeformationRateTensor(real3 r, real t) const
+{
+    DeformationRateTensor T {0.0_r, 0.0_r, 0.0_r, 0.0_r, 0.0_r, 0.0_r};
+    for (const auto& f : fields_)
+    {
+        const auto Tf = f->getDeformationRateTensor(r, t);
+        T.xx += Tf.xx;
+        T.xy += Tf.xy;
+        T.xz += Tf.xz;
+        T.yy += Tf.yy;
+        T.yz += Tf.yz;
+        T.zz += Tf.zz;
+    }
+
+    return T;
+}
+
 } // namespace msode

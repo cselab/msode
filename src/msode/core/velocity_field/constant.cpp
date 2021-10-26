@@ -23,4 +23,9 @@ real3 VelocityFieldConstant::getVorticity(real3 /* r */, real /* t */) const
     return {0.0_r, 0.0_r, 0.0_r};
 }
 
+DeformationRateTensor VelocityFieldConstant::getDeformationRateTensor(real3 /* r */, real /* t */) const
+{
+    return {0.0_r, 0.0_r, 0.0_r, 0.0_r, 0.0_r, 0.0_r};
+}
+
 } // namespace msode
