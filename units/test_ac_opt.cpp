@@ -60,7 +60,7 @@ GTEST_TEST( AC_OPT, derivative )
     };
 
     std::uniform_real_distribution<real> dstr(0.0_r, 1.0_r);
-    
+
     for (int i = 0; i < numTries; ++i)
     {
         const real theta = dstr(gen) * 2 * M_PI;
@@ -109,7 +109,7 @@ GTEST_TEST( AC_OPT, optimum )
 
     const real ttCMAES = analytic_control::computeTravelTime(A, qCMAES);
     const real ttLBFGS = analytic_control::computeTravelTime(A, qLBFGS);
-    
+
     printf("CMAES: %g in %g ms\n"
            "LBFGS: %g in %g ms\n",
            ttCMAES, tCMAES, ttLBFGS, tLBFGS);
@@ -148,7 +148,7 @@ GTEST_TEST( AC_OPT, robustness )
 
     int numFailed = 0;
     real maxError {0.0_r};
-    
+
     for (auto v : results)
     {
         if (v > best + tol)
@@ -181,7 +181,8 @@ static std::vector<real3> computeADifficultCase()
         "A": [0.2463907364779919, 0.20047533416665167, 0.19963144341455386],
         "B": [0.1, 0.0, 0.0],
         "C": [6.9836362589703, 1.1539878672490023, 1.2181219967949395]
-    }
+    },
+    "aspectRatio": 1.0
 },
 {
     "moment": [0.0, 3.0356727390869245, 0.0],
@@ -191,7 +192,8 @@ static std::vector<real3> computeADifficultCase()
         "A": [0.3239313882752511, 0.2413293038414949, 0.2543042668817562],
         "B": [0.32941627307981225, 0.0, 0.0],
         "C": [9.43265794343002, 1.681798137390105, 1.7429895150200194]
-    }
+    },
+    "aspectRatio": 1.0
 }
 ]
 })");
@@ -235,7 +237,7 @@ GTEST_TEST( AC_OPT, robustnessDifficultCase )
 
     int numFailed = 0;
     real maxError {0.0_r};
-    
+
     for (auto v : results)
     {
         if (v > best + tol)

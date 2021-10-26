@@ -29,8 +29,8 @@ inline RigidBody generateRandomBody(std::mt19937& gen)
     const real3 r {0.0_r, 0.0_r, 0.0_r};
     const real3 m {0.0_r, 2.0_r, 0.0_r};
     const auto propulsion = generateRandomPropulsion(gen);
-    
-    return {q, r, m, propulsion};    
+
+    return {q, r, m, propulsion, 1.0};
 }
 
 } // namespace helpers

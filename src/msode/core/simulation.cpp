@@ -116,6 +116,11 @@ computeDerivatives(const RigidBody& b, real3 B, const BaseVelocityField *velocit
     v     +=         velocityField->getVelocity (b.r, time);
     omega += 0.5_r * velocityField->getVorticity(b.r, time);
 
+    const auto T = velocityField->getDeformationRateTensor(b.r, time);
+    const real3 p = qInv.rotate({1.0_r, 0.0_r, 0.0_r});
+    const real L = (b.aspectRatio*b.aspectRatio - 1.0_r) / (b.aspectRatio*b.aspectRatio + 1.0_r);
+    omega += L * cross(p, multiply(T, p));
+
     const auto _omega = Quaternion::createPureVector(omega);
     const auto dq_dt = 0.5_r * q * _omega;
 

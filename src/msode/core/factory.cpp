@@ -30,8 +30,9 @@ RigidBody readRigidBodyFromConfig(const Config& config)
     const Quaternion q = config.at("quaternion").get<Quaternion>();
     const real3 r = config.at("position").get<real3>();
     const real3 m = config.at("moment").get<real3>();
+    const real aspectRatio = config.at("aspectRatio").get<real>();
 
-    return {q, r, m, propulsion};
+    return {q, r, m, propulsion, aspectRatio};
 }
 
 std::vector<RigidBody> readBodiesArray(const Config& config)

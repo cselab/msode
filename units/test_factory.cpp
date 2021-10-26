@@ -20,7 +20,8 @@ GTEST_TEST( FACTORY, rigidBody )
             "A" : [0.246391, 0.200475, 0.199631],
             "B" : [0.100000, 0.000000, 0.000000],
             "C" : [6.983636, 1.153988, 1.218122]
-    }
+    },
+    "aspectRatio": 2.0
 }
 )");
     fclose(f);
@@ -42,6 +43,8 @@ GTEST_TEST( FACTORY, rigidBody )
     ASSERT_EQ(body.propulsion.C[0], 6.983636_r);
     ASSERT_EQ(body.propulsion.C[1], 1.153988_r);
     ASSERT_EQ(body.propulsion.C[2], 1.218122_r);
+
+    ASSERT_EQ(body.aspectRatio, 2.0_r);
 }
 
 int main(int argc, char **argv)

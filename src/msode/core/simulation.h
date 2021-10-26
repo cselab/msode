@@ -28,6 +28,7 @@ struct RigidBody
     Quaternion q;
     real3 r, magnMoment;
     PropulsionMatrix propulsion;
+    real aspectRatio {1.0_r};
 
     real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r};
 

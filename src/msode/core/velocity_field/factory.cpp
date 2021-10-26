@@ -3,6 +3,7 @@
 
 #include "none.h"
 #include "constant.h"
+#include "shear.h"
 #include "sum.h"
 #include "taylor_green_vortex.h"
 
@@ -35,6 +36,10 @@ std::unique_ptr<BaseVelocityField> createVelocityField(const Config& rootConfig,
     {
         vf = std::make_unique<VelocityFieldTaylorGreenVortex>(config.at("magnitude").get<real3>(),
                                                               config.at("invPeriod").get<real3>());
+    }
+    else if (type == "Shear")
+    {
+        vf = std::make_unique<VelocityFieldShear>(config.at("G").get<real>());
     }
     else if (type == "Sum")
     {
