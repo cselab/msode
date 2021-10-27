@@ -67,7 +67,7 @@ GTEST_TEST( SHEAR, ellipsoid )
     const int nsteps = 50;
     const real dt {tEnd/nsteps};
 
-    real theta = M_PI/2;
+    real theta = 0.0_r;
 
     for (int i = 0; i < nsteps; ++i)
     {
@@ -76,7 +76,7 @@ GTEST_TEST( SHEAR, ellipsoid )
         {
             const real ct = std::cos(theta);
             const real st = std::sin(theta);
-            const real omega = G * (ct*ct + lambda*lambda * st*st) / (1.0_r + lambda*lambda);
+            const real omega = G * (lambda*lambda * ct*ct + st*st) / (1.0_r + lambda*lambda);
             theta += dt/100 * omega;
         }
 
@@ -90,7 +90,7 @@ GTEST_TEST( SHEAR, ellipsoid )
 
         const real ct = std::cos(theta);
         const real st = std::sin(theta);
-        const real omega = G * (ct*ct + lambda*lambda * st*st) / (1.0_r + lambda*lambda);
+        const real omega = G * (lambda*lambda * ct*ct + st*st) / (1.0_r + lambda*lambda);
 
         ASSERT_NEAR(w.x, 0.0_r, eps);
         ASSERT_NEAR(w.y, 0.0_r, eps);
