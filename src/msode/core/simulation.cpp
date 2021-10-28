@@ -95,8 +95,10 @@ void Simulation::advanceRK4(real dt)
     ++currentTimeStep_;
 }
 
-static inline std::tuple<real3, real3, Quaternion>
-computeDerivatives(const RigidBody& b, real3 B, const BaseVelocityField *velocityField, real time)
+static inline std::tuple<real3, real3>
+computeVelocities(const RigidBody& b, real3 B,
+                  const BaseVelocityField *velocityField,
+                  real time)
 {
     const Quaternion q = b.q;
     const Quaternion qInv = q.conjugate();
@@ -121,11 +123,32 @@ computeDerivatives(const RigidBody& b, real3 B, const BaseVelocityField *velocit
     const real L = (b.aspectRatio*b.aspectRatio - 1.0_r) / (b.aspectRatio*b.aspectRatio + 1.0_r);
     omega += L * cross(p, multiply(T, p));
 
-    const auto _omega = Quaternion::createPureVector(omega);
-    const auto dq_dt = 0.5_r * q * _omega;
-
-    return {v, omega, dq_dt};
+    return {v, omega};
 }
+
+static inline Quaternion quaternionDerivative(Quaternion q, real3 omega)
+{
+    return 0.5_r * q * Quaternion::createPureVector(omega);
+}
+
+
+static inline void addThermalNoise(RigidBody& b,
+                                   real dt,
+                                   std::mt19937& gen,
+                                   std::normal_distribution<real>& normal)
+{
+    if (b.transDiffusion > 0)
+    {
+        const real3 eta {normal(gen), normal(gen), normal(gen)};
+        b.v += std::sqrt(2 * b.transDiffusion / dt) * eta;
+    }
+    if (b.rotDiffusion > 0)
+    {
+        const real3 eta {normal(gen), normal(gen), normal(gen)};
+        b.omega += std::sqrt(2 * b.rotDiffusion / dt) * eta;
+    }
+}
+
 
 void Simulation::_stepForwardEuler(real dt)
 {
@@ -133,10 +156,12 @@ void Simulation::_stepForwardEuler(real dt)
 
     for (auto& rigidBody : rigidBodies_)
     {
-        Quaternion dq_dt;
-        std::tie(rigidBody.v, rigidBody.omega, dq_dt) = computeDerivatives(rigidBody, B, velocityField_.get(), currentTime_);
+        std::tie(rigidBody.v, rigidBody.omega) = computeVelocities(rigidBody, B,
+                                                                   velocityField_.get(),
+                                                                   currentTime_);
+        addThermalNoise(rigidBody, dt, gen_, normal_);
 
-
+        const Quaternion dq_dt = quaternionDerivative(rigidBody.q, rigidBody.omega);
 
         rigidBody.r += dt * rigidBody.v;
         rigidBody.q += dt * dq_dt;
@@ -162,12 +187,17 @@ void Simulation::_stepRK4(real dt)
 
     for (auto& rigidBody : rigidBodies_)
     {
-        Quaternion dq_dt1, dq_dt2, dq_dt3, dq_dt4;
+        MSODE_Ensure(rigidBody.transDiffusion == 0 && rigidBody.rotDiffusion == 0,
+                     "SDE not implemented for RK4. Expect zero diffusion.");
+
         real3 v1, v2, v3, v4;
 
         // compute k1 = f(y0, t)
         RigidBody bWork = rigidBody;
-        std::tie(v1, bWork.omega, dq_dt1) = computeDerivatives(bWork, B0, velocityField_.get(), currentTime_);
+        std::tie(v1, bWork.omega) = computeVelocities(bWork, B0,
+                                                      velocityField_.get(),
+                                                      currentTime_);
+        const auto dq_dt1 = quaternionDerivative(bWork.q, bWork.omega);
 
         bWork.r = rigidBody.r + dt_half * v1;
         bWork.q = rigidBody.q + dt_half * dq_dt1;
@@ -175,7 +205,10 @@ void Simulation::_stepRK4(real dt)
         bWork.v = v1;
 
         // compute k2 = f(y0 + dt/2 * k1, t + dt/2)
-        std::tie(v2, bWork.omega, dq_dt2) = computeDerivatives(bWork, Bh, velocityField_.get(), currentTime_+dt_half);
+        std::tie(v2, bWork.omega) = computeVelocities(bWork, Bh,
+                                                      velocityField_.get(),
+                                                      currentTime_+dt_half);
+        const auto dq_dt2 = quaternionDerivative(bWork.q, bWork.omega);
 
         bWork.r = rigidBody.r + dt_half * v2;
         bWork.q = rigidBody.q + dt_half * dq_dt2;
@@ -183,7 +216,10 @@ void Simulation::_stepRK4(real dt)
         bWork.v = v2;
 
         // compute k3 = f(y0 + dt/2 * k2, t + dt/2)
-        std::tie(v3, bWork.omega, dq_dt3) = computeDerivatives(bWork, Bh, velocityField_.get(), currentTime_+dt_half);
+        std::tie(v3, bWork.omega) = computeVelocities(bWork, Bh,
+                                                      velocityField_.get(),
+                                                      currentTime_+dt_half);
+        const auto dq_dt3 = quaternionDerivative(bWork.q, bWork.omega);
 
         bWork.r = rigidBody.r + dt * v3;
         bWork.q = rigidBody.q + dt * dq_dt3;
@@ -191,7 +227,10 @@ void Simulation::_stepRK4(real dt)
         bWork.v = v3;
 
         // compute k4 = f(y0 + dt * k3, t + dt)
-        std::tie(v4, rigidBody.omega, dq_dt4) = computeDerivatives(bWork, B1, velocityField_.get(), currentTime_+dt);
+        std::tie(v4, rigidBody.omega) = computeVelocities(bWork, B1,
+                                                          velocityField_.get(),
+                                                          currentTime_+dt);
+        const auto dq_dt4 = quaternionDerivative(rigidBody.q, rigidBody.omega);
 
         // compute y1 = y0 + (k1/6 + k2/3 + k3/3 + k4/6) * dt
         constexpr real one_third = 1.0_r / 3.0_r;

@@ -19,6 +19,7 @@ build_and_create_test(test_factory.cpp       "gtest;${LIB_NAME_MSODE}")
 build_and_create_test(test_file_parser.cpp   "gtest;${LIB_NAME_MSODE}")
 build_and_create_test(test_forward.cpp       "gtest;${LIB_NAME_MSODE};utils")
 build_and_create_test(test_quaternions.cpp   "gtest;${LIB_NAME_MSODE}")
+build_and_create_test(test_thermal_noise.cpp "gtest;${LIB_NAME_MSODE}")
 build_and_create_test(test_velocity_flow.cpp "gtest;${LIB_NAME_MSODE}")
 
 build_and_create_test(test_rl_pos_ic.cpp      "gtest;rl")

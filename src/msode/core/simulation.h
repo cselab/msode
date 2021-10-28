@@ -11,6 +11,7 @@
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -29,6 +30,8 @@ struct RigidBody
     real3 r, magnMoment;
     PropulsionMatrix propulsion;
     real aspectRatio {1.0_r};
+    real transDiffusion {0.0_r};
+    real rotDiffusion {0.0_r};
 
     real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r};
 
@@ -82,6 +85,7 @@ struct MagneticField
     std::function<real3(real)> rotatingDirection;
 };
 
+
 class Simulation
 {
 public:
@@ -122,6 +126,9 @@ private:
 
     long dumpEvery_ {0};
     std::ofstream file_ {};
+
+    std::mt19937 gen_{424242};
+    std::normal_distribution<real> normal_{0.0_r, 1.0_r};
 };
 
 
