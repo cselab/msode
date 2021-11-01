@@ -43,8 +43,10 @@ task()
 jobid=0
 nprocs=8
 
-Drs=`python -c 'import numpy as np; print(*np.logspace(np.log(0.01)/np.log(10), np.log(1.0)/np.log(10), 10).tolist())'`
-Dts=`python -c 'import numpy as np; print(*np.logspace(np.log(0.01)/np.log(10), np.log(1.0)/np.log(10), 10).tolist())'`
+n=20
+
+Drs=`python -c "import numpy as np; print(*np.logspace(np.log(0.01)/np.log(10), np.log(1.0)/np.log(10), $n).tolist())"`
+Dts=`python -c "import numpy as np; print(*np.logspace(np.log(0.01)/np.log(10), np.log(1.0)/np.log(10), $n).tolist())"`
 
 for Dr in $Drs; do
     for Dt in $Dts; do
