@@ -31,12 +31,13 @@ struct RewardParams
 
 struct Params
 {
-    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_);
+    Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, real kBT_);
 
     const TimeParams time;
     const RewardParams reward;
     const real fieldMagnitude;
     const real distanceThreshold;
+    const real kBT;
 };
 
 class MSodeEnvironment

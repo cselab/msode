@@ -14,6 +14,7 @@ constexpr real magneticFieldMagnitude {0.0_r};
 
 GTEST_TEST( SHEAR, sphere )
 {
+    const real kBT{0.0_r};
     std::mt19937 gen{424242L};
     const real G {5.0_r};
 
@@ -25,7 +26,7 @@ GTEST_TEST( SHEAR, sphere )
                                 [](real){return 0.0_r;},
                                 [](real){return real3 {1.0_r, 0.0_r, 0.0_r};});
 
-    Simulation sim(bodies, magneticField, std::move(velField));
+    Simulation sim(bodies, magneticField, kBT, std::move(velField));
 
     const real tEnd {10.0_r};
     const int nsteps = 100;
@@ -48,6 +49,7 @@ GTEST_TEST( SHEAR, sphere )
 
 GTEST_TEST( SHEAR, ellipsoid )
 {
+    const real kBT{0.0_r};
     std::mt19937 gen{424242L};
     const real G {5.0_r};
     const real lambda = 2.0_r;
@@ -61,7 +63,7 @@ GTEST_TEST( SHEAR, ellipsoid )
                                 [](real){return 0.0_r;},
                                 [](real){return real3 {1.0_r, 0.0_r, 0.0_r};});
 
-    Simulation sim(bodies, magneticField, std::move(velField));
+    Simulation sim(bodies, magneticField, kBT, std::move(velField));
 
     const real tEnd {0.2_r};
     const int nsteps = 50;

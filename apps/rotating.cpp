@@ -17,6 +17,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    const real kBT{0.0_r};
     std::vector<RigidBody> rigidBodies;
 
     for (int i = 1; i < argc; ++i)
@@ -37,7 +38,7 @@ int main(int argc, char **argv)
 
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
 
-    Simulation simulation {rigidBodies, magneticField};
+    Simulation simulation {rigidBodies, magneticField, kBT};
 
     const real tEnd = 2000.0_r;
     const real tDump = 0.1_r;

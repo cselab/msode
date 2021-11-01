@@ -1,5 +1,3 @@
-#include "helpers.h"
-
 #include <msode/core/simulation.h>
 #include <msode/core/velocity_field/none.h>
 
@@ -11,21 +9,34 @@ using namespace msode;
 // zero external field, so only thermal noise is driving the simulation
 constexpr real magneticFieldMagnitude {0.0_r};
 
+RigidBody createSphere(real eta, real a)
+{
+    PropulsionMatrix p;
+    p.A[0] = p.A[1] = p.A[2] = 1.0_r / (6 * M_PI * eta * a);
+    p.B[0] = p.B[1] = p.B[2] = 0.0_r;
+    p.C[0] = p.C[1] = p.C[2] = 1.0_r / (8 * M_PI * eta * a*a*a);
+
+    RigidBody b{Quaternion::createIdentity(), // q
+                make_real3(0.0_r), make_real3(0.0_r), // r, m
+                p};
+    return b;
+}
+
 
 GTEST_TEST( THERMAL_NOISE, translation )
 {
-    const real D {1.2345_r};
+    const real kBT{2.0_r};
+    const real a{1.0_r};
+    const real eta{1.0_r};
 
-    std::mt19937 gen{424242L};
-    std::vector<RigidBody> bodies = {helpers::generateRandomBody(gen)};
-    bodies[0].transDiffusion = D;
+    std::vector<RigidBody> bodies = {createSphere(eta, a)};
 
     auto velField = std::make_unique<VelocityFieldNone>();
     MagneticField magneticField(magneticFieldMagnitude,
                                 [](real){return 0.0_r;},
                                 [](real){return real3 {1.0_r, 0.0_r, 0.0_r};});
 
-    Simulation sim(bodies, magneticField, std::move(velField));
+    Simulation sim(bodies, magneticField, kBT, std::move(velField));
 
     const int nSamples = 5000;
 
@@ -46,7 +57,8 @@ GTEST_TEST( THERMAL_NOISE, translation )
     MSD /= nSamples;
 
     const real DMSD = MSD / (tEnd * 6.0_r);
-    ASSERT_NEAR(DMSD, D, 1e-1_r);
+    const real D = kBT / (6 * M_PI * eta * a); // Einstein-stokes relation
+    ASSERT_NEAR(DMSD, D, D * 1e-2_r);
 }
 
 int main(int argc, char **argv)

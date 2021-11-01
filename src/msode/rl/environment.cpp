@@ -7,11 +7,12 @@
 namespace msode {
 namespace rl {
 
-Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_) :
+Params::Params(TimeParams time_, RewardParams reward_, real fieldMagnitude_, real distanceThreshold_, real kBT_) :
     time(time_),
     reward(reward_),
     fieldMagnitude(fieldMagnitude_),
-    distanceThreshold(distanceThreshold_)
+    distanceThreshold(distanceThreshold_),
+    kBT(kBT_)
 {}
 
 
@@ -52,7 +53,8 @@ MSodeEnvironment::MSodeEnvironment(const Params& params,
 
     MagneticField field{params.fieldMagnitude, omegaFunction, rotatingDirection};
 
-    sim = std::make_unique<Simulation>(std::move(initialRBs), std::move(field), std::move(velocityField));
+    sim = std::make_unique<Simulation>(std::move(initialRBs), std::move(field),
+                                       params.kBT, std::move(velocityField));
     _setDistances();
 }
 

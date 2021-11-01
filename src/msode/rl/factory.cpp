@@ -77,6 +77,10 @@ static Params createParams(const std::vector<RigidBody>& bodies, const EnvPosIC 
     const real dtAction        = config.at("dtAction").get<real>();
     const long nstepsPerAction = dtAction / dt;
 
+    real kBT {0.0_r};
+    if (config.contains("kBT"))
+        kBT = config.at("kBT").get<real>();
+
     const TimeParams timeParams {dt, tmax, nstepsPerAction, dumpEvery};
     const RewardParams rewardParams {distCoeffReward, timeCoeffReward, terminationBonus};
 
@@ -90,11 +94,12 @@ static Params createParams(const std::vector<RigidBody>& bodies, const EnvPosIC 
             "dt               %g\n"
             "dt action        %g\n"
             "steps per action %ld\n"
+            "kBT              %g\n"
             "----------------------------------------------------------\n",
             tmax, maxDistance, distCoeffReward, timeCoeffReward, terminationBonus,
-            dt, dtAction, nstepsPerAction);
+            dt, dtAction, nstepsPerAction, kBT);
 
-    const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold);
+    const Params params(timeParams, rewardParams, fieldMagnitude, distanceThreshold, kBT);
     return params;
 }
 

@@ -35,10 +35,6 @@ RigidBody readRigidBodyFromConfig(const Config& config)
 
     if (config.contains("aspectRatio"))
         b.aspectRatio = config.at("aspectRatio").get<real>();
-    if (config.contains("transDiffusion"))
-        b.transDiffusion = config.at("transDiffusion").get<real>();
-    if (config.contains("rotDiffusion"))
-        b.rotDiffusion = config.at("rotDiffusion").get<real>();
 
     return b;
 }

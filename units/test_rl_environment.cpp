@@ -18,6 +18,7 @@ using namespace msode::rl;
 constexpr real magneticFieldMagnitude = 1.0_r;
 constexpr real distanceThreshold      = 2.0_r;
 constexpr real domainRadius           = 50.0_r;
+constexpr real kBT                    = 0.0_r;
 
 static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
 {
@@ -39,7 +40,7 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     rParams.timeCoeff        = 0.0_r;
     rParams.terminationBonus = 0.0_r;
 
-    Params params(tParams, rParams, magneticFieldMagnitude, distanceThreshold);
+    Params params(tParams, rParams, magneticFieldMagnitude, distanceThreshold, kBT);
 
     auto posIc = std::make_unique<EnvPosICBall>(domainRadius);
     std::vector<RigidBody> initialBodies = {body};
@@ -47,7 +48,10 @@ static std::unique_ptr<MSodeEnvironment> createTestEnv(std::mt19937& gen)
     auto velField = std::make_unique<VelocityFieldNone>();
     auto targetDistance = std::make_unique<TargetDistanceSquare>();
 
-    return std::make_unique<MSodeEnvironment>(params, std::move(posIc), initialBodies, std::move(actionField), std::move(velField), std::move(targetDistance));
+    return std::make_unique<MSodeEnvironment>(params,
+                                              std::move(posIc), initialBodies,
+                                              std::move(actionField), std::move(velField),
+                                              std::move(targetDistance));
 }
 
 GTEST_TEST( RL_ENVIRONMENT, reward_positive_towards_target )

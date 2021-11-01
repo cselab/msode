@@ -30,8 +30,6 @@ struct RigidBody
     real3 r, magnMoment;
     PropulsionMatrix propulsion;
     real aspectRatio {1.0_r};
-    real transDiffusion {0.0_r};
-    real rotDiffusion {0.0_r};
 
     real3 v {0._r, 0._r, 0._r}, omega {0._r, 0._r, 0._r};
 
@@ -92,8 +90,8 @@ public:
 
     enum class ODEScheme {ForwardEuler, RK4};
 
-    Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF);
-    Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF,
+    Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF, real kBT);
+    Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF, real kBT,
                std::unique_ptr<BaseVelocityField> velocityField);
     ~Simulation() = default;
 
@@ -127,6 +125,7 @@ private:
     long dumpEvery_ {0};
     std::ofstream file_ {};
 
+    real kBT_{0.0_r};
     std::mt19937 gen_{424242};
     std::normal_distribution<real> normal_{0.0_r, 1.0_r};
 };

@@ -12,6 +12,7 @@ static inline real meanVelocity(real3 r0, real3 r1, real T)
 
 real computeMeanVelocityODE(RigidBody body, real magneticFieldMagnitude, real omega, real tEnd)
 {
+    const real kBT{0.0_r};
     const real dt {3e-2_r / omega};
     const long nsteps = tEnd / dt;
 
@@ -23,7 +24,7 @@ real computeMeanVelocityODE(RigidBody body, real magneticFieldMagnitude, real om
 
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
     const std::vector<RigidBody> rigidBodies {body};
-    Simulation simulation {rigidBodies, magneticField};
+    Simulation simulation {rigidBodies, magneticField, kBT};
 
     simulation.runRK4(nsteps, dt);
 

@@ -40,6 +40,7 @@ real simulateOptimalPath(real magneticFieldMagnitude,
                          const MatrixReal& U, const std::string& fname, int dumpEvery,
                          bool verbose)
 {
+    const real kBT{0.0_r};
     const auto A = computeA(U, initialPositions);
     const Quaternion q = findBestPathCMAES(A);
 
@@ -123,7 +124,7 @@ real simulateOptimalPath(real magneticFieldMagnitude,
     };
 
     MagneticField magnField(magneticFieldMagnitude, omega, rotatingDirection);
-    Simulation sim(bodies, magnField, std::move(velocityField));
+    Simulation sim(bodies, magnField, kBT, std::move(velocityField));
 
     const real tTot = scan2 + tReorient + t3;
     const real omegaMax = *std::max_element(omegas.begin(), omegas.end());
@@ -157,6 +158,7 @@ real simulateOptimalPathForceReorient(real magneticFieldMagnitude,
 {
     const auto A = computeA(U, initialPositions);
     const Quaternion q = findBestPathCMAES(A);
+    const real kBT{0.0_r};
 
     const std::vector<real> omegas = computeStepOutFrequencies(magneticFieldMagnitude, bodies);
 
@@ -224,7 +226,7 @@ real simulateOptimalPathForceReorient(real magneticFieldMagnitude,
     };
 
     MagneticField magnField(magneticFieldMagnitude, omega, rotatingDirection);
-    Simulation sim(bodies, magnField, std::move(velocityField));
+    Simulation sim(bodies, magnField, kBT, std::move(velocityField));
 
     const real tTot = scan2 + t3;
     const real omegaMax = *std::max_element(omegas.begin(), omegas.end());

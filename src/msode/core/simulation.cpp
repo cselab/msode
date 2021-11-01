@@ -9,15 +9,16 @@ namespace msode
 {
 
 Simulation::Simulation(std::vector<RigidBody> initialRBs,
-                       MagneticField initialMF) :
-    Simulation(std::move(initialRBs), std::move(initialMF), std::make_unique<VelocityFieldNone>())
+                       MagneticField initialMF, real kBT) :
+    Simulation(std::move(initialRBs), std::move(initialMF), kBT, std::make_unique<VelocityFieldNone>())
 {}
 
-Simulation::Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF,
+Simulation::Simulation(std::vector<RigidBody> initialRBs, MagneticField initialMF, real kBT,
                        std::unique_ptr<BaseVelocityField> velocityField) :
     rigidBodies_(std::move(initialRBs)),
     magneticField_(std::move(initialMF)),
-    velocityField_(std::move(velocityField))
+    velocityField_(std::move(velocityField)),
+    kBT_(kBT)
 {}
 
 
@@ -133,19 +134,28 @@ static inline Quaternion quaternionDerivative(Quaternion q, real3 omega)
 
 
 static inline void addThermalNoise(RigidBody& b,
+                                   real kBT,
                                    real dt,
                                    std::mt19937& gen,
                                    std::normal_distribution<real>& normal)
 {
-    if (b.transDiffusion > 0)
+    if (kBT > 0)
     {
-        const real3 eta {normal(gen), normal(gen), normal(gen)};
-        b.v += std::sqrt(2 * b.transDiffusion / dt) * eta;
-    }
-    if (b.rotDiffusion > 0)
-    {
-        const real3 eta {normal(gen), normal(gen), normal(gen)};
-        b.omega += std::sqrt(2 * b.rotDiffusion / dt) * eta;
+        const real3 etaF {normal(gen), normal(gen), normal(gen)};
+        const real3 etaT {normal(gen), normal(gen), normal(gen)};
+
+        const real two_kBT_dt = 2 * kBT / dt;
+        const auto A = b.propulsion.A;
+        const auto B = b.propulsion.B;
+        const auto C = b.propulsion.C;
+
+        b.v.x     += std::sqrt(two_kBT_dt * A[0]) * etaF.x + std::sqrt(two_kBT_dt * B[0]) * etaT.x;
+        b.v.y     += std::sqrt(two_kBT_dt * A[1]) * etaF.y + std::sqrt(two_kBT_dt * B[1]) * etaT.y;
+        b.v.z     += std::sqrt(two_kBT_dt * A[2]) * etaF.z + std::sqrt(two_kBT_dt * B[2]) * etaT.z;
+
+        b.omega.x += std::sqrt(two_kBT_dt * B[0]) * etaF.x + std::sqrt(two_kBT_dt * C[0]) * etaT.x;
+        b.omega.y += std::sqrt(two_kBT_dt * B[1]) * etaF.y + std::sqrt(two_kBT_dt * C[1]) * etaT.y;
+        b.omega.z += std::sqrt(two_kBT_dt * B[2]) * etaF.z + std::sqrt(two_kBT_dt * C[2]) * etaT.z;
     }
 }
 
@@ -159,7 +169,7 @@ void Simulation::_stepForwardEuler(real dt)
         std::tie(rigidBody.v, rigidBody.omega) = computeVelocities(rigidBody, B,
                                                                    velocityField_.get(),
                                                                    currentTime_);
-        addThermalNoise(rigidBody, dt, gen_, normal_);
+        addThermalNoise(rigidBody, kBT_, dt, gen_, normal_);
 
         const Quaternion dq_dt = quaternionDerivative(rigidBody.q, rigidBody.omega);
 
@@ -187,7 +197,7 @@ void Simulation::_stepRK4(real dt)
 
     for (auto& rigidBody : rigidBodies_)
     {
-        MSODE_Ensure(rigidBody.transDiffusion == 0 && rigidBody.rotDiffusion == 0,
+        MSODE_Ensure(kBT_ == 0,
                      "SDE not implemented for RK4. Expect zero diffusion.");
 
         real3 v1, v2, v3, v4;

@@ -19,6 +19,7 @@ static void runAndDump(RigidBody body, real omega, const std::string& out, int d
     const int nRevolutions = 25;
     const real tEnd = nRevolutions * 2 * M_PI / omega;
     const long nsteps = tEnd / dt;
+    const real kBT{0.0_r};
 
     constexpr real3 rStart {0.0_r, 0.0_r, 0.0_r};
     body.r = rStart;
@@ -28,7 +29,7 @@ static void runAndDump(RigidBody body, real omega, const std::string& out, int d
 
     MagneticField magneticField {magneticFieldMagnitude, omegaField, rotatingDirection};
     const std::vector<RigidBody> rigidBodies {body};
-    Simulation simulation {rigidBodies, magneticField};
+    Simulation simulation {rigidBodies, magneticField, kBT};
 
     simulation.activateDump(out, dumpEvery);
     simulation.runForwardEuler(nsteps, dt);
