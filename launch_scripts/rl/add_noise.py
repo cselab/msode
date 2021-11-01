@@ -10,17 +10,14 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument('config', type=str, help='Input config. Must have TaylorGreen flow properties.')
     parser.add_argument('--out',  type=str, default="config_noise.json")
-    parser.add_argument('--transDiffusion', type=float, default=0, help='Translational diffusion.')
-    parser.add_argument('--rotDiffusion', type=float, default=0, help='Rotational diffusion.')
+    parser.add_argument('--kBT', type=float, default=0, help='Temperature, energy units.')
     parser.add_argument('--no-dump', action='store_true', default=False, help='Set "dumpEvery" to 0.')
     args = parser.parse_args()
 
     with open(args.config, "r") as f:
         cfg = json.load(f)
 
-    for body in cfg["bodies"]:
-        body["transDiffusion"] = args.transDiffusion
-        body["rotDiffusion"] = args.rotDiffusion
+    cfg["kBT"] = args.kBT
 
     if args.no_dump:
         cfg["dumpEvery"] = 0
