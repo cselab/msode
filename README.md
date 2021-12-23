@@ -2,6 +2,9 @@
 
 microswimmer ODE solver
 
+[![DOI](https://zenodo.org/badge/201909399.svg)](https://zenodo.org/badge/latestdoi/201909399)
+
+
 ## build the libraries, tests and executables:
 
 	mkdir build
